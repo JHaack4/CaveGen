@@ -1,0 +1,499 @@
+
+###############################################################################
+#
+# wszst settings:
+# ---------------
+#
+# This is the settings file for wszst (tool of "Wiimms SZS Tools"). It
+# was created by the EXTRACT command and is needed by the CREATE command
+# to rebuild the original source archive with or without modifications.
+# You can edit it, if you know what you do.
+#
+###############################################################################
+
+# The first part contains some general settings:
+
+# The internal archive format (U8, WU8, BRRES, BREFF or BREFT):
+archive-format = RARC
+
+# The file format (YAZ0, YAZ1 or BZ for a compressed archive, other ignored):
+file-format = YAZ0
+
+# An archive format related version number (-1: unknown or not relevant)
+version = -1
+
+# For U8+WU8 archives: Is there a special '.' base directory:
+have-pt-dir = 0
+
+# The minimum and maximum file data positions:
+min-data-offset = 0x0
+max-data-offset = 0x0
+
+# The calculated alignment of all files:
+data-align = 0x20
+
+###############################################################################
+#
+# Some general rules for the next sections:
+#   All pathes are relative to the current base directory (directory that
+#   contains the file wszst-setup.txt). Prefix at least pathes that starts
+#   not with a letter, digit, point, star or underscore with "./".
+#
+#------------------------------------------------------------------------------
+
+[include-pattern]
+
+# All files and directories start with a . are hidden (unix like) and excluded
+# automatically. But filenames in one of the include sections are included
+# independent of this point. Also the include sections takes precedence over
+# the exclude sections.
+
+# This section expects file patterns with wildcards.
+
+#------------------------------------------------------------------------------
+
+[include]
+
+# This second include section accpepts only complete file names and none of
+# characters have any special meaning.
+
+
+#------------------------------------------------------------------------------
+
+[exclude-pattern]
+
+# Files and directories in this section are ignored by the CREATE command.
+# The include sections takes precedence over the exclude sections.
+
+# This section expects file patterns with wildcards.
+# Here we exclude all original, backup and temp files:
+
+*.orig
+*.bak
+*.tmp
+*.temp
+
+# Exclude all *.d directories. To enable it, remove "# " at the beginning.
+# *.d
+
+# Exclude all PNG files. The intention is to allow the creation of new PNG
+# images and mipmap files without any need to edit this setup file. All
+# extracted PNG files are automatically listed in the [exclude] section.
+# So the exclusion of all PNG is not really needed, but may help. The second
+# (disabled) line is an alternative to exclude all mipmap PNG files.
+
+*.png
+# *.mm#.png
+
+#------------------------------------------------------------------------------
+
+[exclude]
+
+# Files and directories in this section are ignored by the CREATE command.
+# This second exclude section accepts only complete file names and none of
+# characters have any special meaning.
+
+./armor/texture.bti.d
+./baby/texture.bti.d
+./bigfoot/texture.bti.d
+./bigtreasure/texture.bti.d
+./blackman/texture.bti.d
+./blackpom/texture.bti.d
+./bluechappy/texture.bti.d
+./bluekochappy/texture.bti.d
+./bluepom/texture.bti.d
+./bombotakara/texture.bti.d
+./bombsarai/texture.bti.d
+./catfish/texture.bti.d
+./chappy/texture.bti.d
+./clover/texture.bti.d
+./daiodored/texture.bti.d
+./damagumo/texture.bti.d
+./dangomushi/texture.bti.d
+./demon/texture.bti.d
+./diodered/texture.bti.d
+./elecbug/texture.bti.d
+./elecotakara/texture.bti.d
+./fart/texture.bti.d
+./firechappy/texture.bti.d
+./fireotakara/texture.bti.d
+./frog/texture.bti.d
+./fuefuki/texture.bti.d
+./gasotakara/texture.bti.d
+./hana/texture.bti.d
+./hanachirashi/texture.bti.d
+./hikarikinoko/texture.bti.d
+./houdai/texture.bti.d
+./imomushi/texture.bti.d
+./jigumo/texture.bti.d
+./kabuto/texture.bti.d
+./kingchappy/texture.bti.d
+./kochappy/texture.bti.d
+./kogane/texture.bti.d
+./kumachappy/texture.bti.d
+./kumakochappy/texture.bti.d
+./kurage/texture.bti.d
+./leafchappy/texture.bti.d
+./magaret/texture.bti.d
+./mar/texture.bti.d
+./marofrog/texture.bti.d
+./minihoudai/texture.bti.d
+./miulin/texture.bti.d
+./nekojarashi/texture.bti.d
+./onikurage/texture.bti.d
+./ooinu_l/texture.bti.d
+./oopanmodoki/texture.bti.d
+./panmodoki/texture.bti.d
+./pelplant/texture.bti.d
+./pom/texture.bti.d
+./queen/texture.bti.d
+./qurione/texture.bti.d
+./randpom/texture.bti.d
+./redpom/texture.bti.d
+./rkabuto/texture.bti.d
+./sarai/texture.bti.d
+./shijimichou/texture.bti.d
+./snakecrow/texture.bti.d
+./snakewhole/texture.bti.d
+./sokkuri/texture.bti.d
+./tadpole/texture.bti.d
+./tamagomushi/texture.bti.d
+./tank/texture.bti.d
+./tanpopo/texture.bti.d
+./tobi/texture.bti.d
+./tukushi/texture.bti.d
+./ujia/texture.bti.d
+./ujib/texture.bti.d
+./umimushi/texture.bti.d
+./umimushiblind/texture.bti.d
+./wakame_l/texture.bti.d
+./watage/texture.bti.d
+./waterotakara/texture.bti.d
+./wealthy/texture.bti.d
+./whitepom/texture.bti.d
+./wszst-setup.txt
+./wtank/texture.bti.d
+./yellowchappy/texture.bti.d
+./yellowkochappy/texture.bti.d
+./yellowpom/texture.bti.d
+./zenmai/texture.bti.d
+./zzdummy/texture.bti.d
+
+#------------------------------------------------------------------------------
+
+[encode]
+
+# Encode (and overwrite without notice) the listed files before adding them
+# to the new archive. The source is searched under the same filename with the
+# correct source extension added or, if this failed, a replaced extension.
+#   Example: For "message.bmg" search files "message.bmg.txt" or "message.txt"
+# The source file itself is set on the exclude list and will not stored into
+# the new archive.
+#
+# The syntax of this file section is a little bit different as the other file
+# sections. Each line begins with a comma separated list of keywords followed
+# by an equal sign.
+#   Syntax:  COMMA_SEPARATED_FORMAT_LIST = relative_filename
+#   Example: BREFT,IA8,3 = ./files/rk_steam
+# The first keyword is the file format. The following keywords describe sub
+# formats. An additonal integer is a file type specific information:
+#  -> For image files it is the number of images (main image + mipmaps).
+#     A value of 0 means: Use the tools default (see option --n-mipmaps).
+#
+# A file is only encoded if the destination does not exist or if the source
+# is younger than the destination. Encoding can be controlled by options
+# --no-encode, --encode-img and --encode-all (short: --noenc --eimg --eall).
+
+BTI,RGB5A3,1	= ./armor/texture.bti
+BTI,RGB5A3,1	= ./baby/texture.bti
+BTI,RGB5A3,1	= ./bigfoot/texture.bti
+BTI,RGB5A3,1	= ./bigtreasure/texture.bti
+BTI,RGB5A3,1	= ./blackman/texture.bti
+BTI,RGB5A3,1	= ./blackpom/texture.bti
+BTI,RGB5A3,1	= ./bluechappy/texture.bti
+BTI,RGB5A3,1	= ./bluekochappy/texture.bti
+BTI,RGB5A3,1	= ./bluepom/texture.bti
+BTI,RGB5A3,1	= ./bombotakara/texture.bti
+BTI,RGB5A3,1	= ./bombsarai/texture.bti
+BTI,RGB5A3,1	= ./catfish/texture.bti
+BTI,RGB5A3,1	= ./chappy/texture.bti
+BTI,RGB5A3,1	= ./clover/texture.bti
+BTI,RGB5A3,1	= ./daiodored/texture.bti
+BTI,RGB5A3,1	= ./damagumo/texture.bti
+BTI,RGB5A3,1	= ./dangomushi/texture.bti
+BTI,RGB5A3,1	= ./demon/texture.bti
+BTI,RGB5A3,1	= ./diodered/texture.bti
+BTI,RGB5A3,1	= ./elecbug/texture.bti
+BTI,RGB5A3,1	= ./elecotakara/texture.bti
+BTI,RGB5A3,1	= ./fart/texture.bti
+BTI,RGB5A3,1	= ./firechappy/texture.bti
+BTI,RGB5A3,1	= ./fireotakara/texture.bti
+BTI,RGB5A3,1	= ./frog/texture.bti
+BTI,RGB5A3,1	= ./fuefuki/texture.bti
+BTI,RGB5A3,1	= ./gasotakara/texture.bti
+BTI,RGB5A3,1	= ./hana/texture.bti
+BTI,RGB5A3,1	= ./hanachirashi/texture.bti
+BTI,RGB5A3,1	= ./hikarikinoko/texture.bti
+BTI,RGB5A3,1	= ./houdai/texture.bti
+BTI,RGB5A3,1	= ./imomushi/texture.bti
+BTI,RGB5A3,1	= ./jigumo/texture.bti
+BTI,RGB5A3,1	= ./kabuto/texture.bti
+BTI,RGB5A3,1	= ./kingchappy/texture.bti
+BTI,RGB5A3,1	= ./kochappy/texture.bti
+BTI,RGB5A3,1	= ./kogane/texture.bti
+BTI,RGB5A3,1	= ./kumachappy/texture.bti
+BTI,RGB5A3,1	= ./kumakochappy/texture.bti
+BTI,RGB5A3,1	= ./kurage/texture.bti
+BTI,RGB5A3,1	= ./leafchappy/texture.bti
+BTI,RGB5A3,1	= ./magaret/texture.bti
+BTI,RGB5A3,1	= ./mar/texture.bti
+BTI,RGB5A3,1	= ./marofrog/texture.bti
+BTI,RGB5A3,1	= ./minihoudai/texture.bti
+BTI,RGB5A3,1	= ./miulin/texture.bti
+BTI,RGB5A3,1	= ./nekojarashi/texture.bti
+BTI,RGB5A3,1	= ./onikurage/texture.bti
+BTI,RGB5A3,1	= ./ooinu_l/texture.bti
+BTI,RGB5A3,1	= ./oopanmodoki/texture.bti
+BTI,RGB5A3,1	= ./panmodoki/texture.bti
+BTI,RGB5A3,1	= ./pelplant/texture.bti
+BTI,RGB5A3,1	= ./pom/texture.bti
+BTI,RGB5A3,1	= ./queen/texture.bti
+BTI,RGB5A3,1	= ./qurione/texture.bti
+BTI,RGB5A3,1	= ./randpom/texture.bti
+BTI,RGB5A3,1	= ./redpom/texture.bti
+BTI,RGB5A3,1	= ./rkabuto/texture.bti
+BTI,RGB5A3,1	= ./sarai/texture.bti
+BTI,RGB5A3,1	= ./shijimichou/texture.bti
+BTI,RGB5A3,1	= ./snakecrow/texture.bti
+BTI,RGB5A3,1	= ./snakewhole/texture.bti
+BTI,RGB5A3,1	= ./sokkuri/texture.bti
+BTI,RGB5A3,1	= ./tadpole/texture.bti
+BTI,RGB5A3,1	= ./tamagomushi/texture.bti
+BTI,RGB5A3,1	= ./tank/texture.bti
+BTI,RGB5A3,1	= ./tanpopo/texture.bti
+BTI,RGB5A3,1	= ./tobi/texture.bti
+BTI,RGB5A3,1	= ./tukushi/texture.bti
+BTI,RGB5A3,1	= ./ujia/texture.bti
+BTI,RGB5A3,1	= ./ujib/texture.bti
+BTI,RGB5A3,1	= ./umimushi/texture.bti
+BTI,RGB5A3,1	= ./umimushiblind/texture.bti
+BTI,RGB5A3,1	= ./wakame_l/texture.bti
+BTI,RGB5A3,1	= ./watage/texture.bti
+BTI,RGB5A3,1	= ./waterotakara/texture.bti
+BTI,RGB5A3,1	= ./wealthy/texture.bti
+BTI,RGB5A3,1	= ./whitepom/texture.bti
+BTI,RGB5A3,1	= ./wtank/texture.bti
+BTI,RGB5A3,1	= ./yellowchappy/texture.bti
+BTI,RGB5A3,1	= ./yellowkochappy/texture.bti
+BTI,RGB5A3,1	= ./yellowpom/texture.bti
+BTI,RGB5A3,1	= ./zenmai/texture.bti
+BTI,RGB5A3,1	= ./zzdummy/texture.bti
+
+#------------------------------------------------------------------------------
+
+[create]
+
+# Create (and overwrite without notice) the listed files before adding them to
+# the new archive. The source directory is searched under the same filename
+# with an appended ".d" or, if this fails, with an extension replaced by ".d".
+# If a source directory does not exist, the job is ignored silently.
+#   Example: For "my.brres" search directories "my.brres.d" or "my.d"
+# The source directory itself is set on the exclude list and will not stored
+# into the new archive. Creating can be controlled by the options:
+#   --no-recurse  : Do not create archives recursively.
+#   --no-encode   : Do not encode files before creating an archive.
+#   --encode-img  : Encode all image files (TEX,TPL,BREFT/sub), overrides --no-encode.
+#   --encode-all  : Encode all files and ignore timestamps.
+#   --pt-dir      : Set `point directory' mode.
+#   --u8          : Create an U8 archive.
+#   --brres       : Create an BRRES archive.
+#   --breff       : Create an BREFF archive.
+#   --breft       : Create an BREFT archive.
+#   --no-compress : Create an uncompressed file (U8 instead of SZS).
+#   ...
+
+
+#------------------------------------------------------------------------------
+
+[order]
+
+# This list contains all extracted files in the order of the original archive.
+# If creating archives (but not U8) this list will be used to sort the found
+# files. For archives with directory support (all but not PACK) it is very
+# important, that the directories are listed before the files that resides in
+# the directories.
+#
+# The value before the equal sign is the file offset in the original archive
+# and is ignored for sorting.
+
+		= ./armor/
+    0x2720	= ./armor/texture.bti
+		= ./baby/
+    0x33c0	= ./baby/texture.bti
+		= ./bigfoot/
+    0x4060	= ./bigfoot/texture.bti
+		= ./bigtreasure/
+    0x7280	= ./bigtreasure/texture.bti
+		= ./blackman/
+    0xa4a0	= ./blackman/texture.bti
+		= ./blackpom/
+    0xd6c0	= ./blackpom/texture.bti
+		= ./bluechappy/
+    0xe360	= ./bluechappy/texture.bti
+		= ./bluekochappy/
+    0xf000	= ./bluekochappy/texture.bti
+		= ./bluepom/
+    0xfca0	= ./bluepom/texture.bti
+		= ./bombotakara/
+   0x10940	= ./bombotakara/texture.bti
+		= ./bombsarai/
+   0x115e0	= ./bombsarai/texture.bti
+		= ./catfish/
+   0x12280	= ./catfish/texture.bti
+		= ./chappy/
+   0x12f20	= ./chappy/texture.bti
+		= ./clover/
+   0x13bc0	= ./clover/texture.bti
+		= ./daiodored/
+   0x14860	= ./daiodored/texture.bti
+		= ./damagumo/
+   0x15500	= ./damagumo/texture.bti
+		= ./dangomushi/
+   0x18720	= ./dangomushi/texture.bti
+		= ./demon/
+   0x1b940	= ./demon/texture.bti
+		= ./diodered/
+   0x1c5e0	= ./diodered/texture.bti
+		= ./elecbug/
+   0x1d280	= ./elecbug/texture.bti
+		= ./elecotakara/
+   0x1df20	= ./elecotakara/texture.bti
+		= ./fart/
+   0x1ebc0	= ./fart/texture.bti
+		= ./firechappy/
+   0x1f860	= ./firechappy/texture.bti
+		= ./fireotakara/
+   0x22a80	= ./fireotakara/texture.bti
+		= ./frog/
+   0x23720	= ./frog/texture.bti
+		= ./fuefuki/
+   0x243c0	= ./fuefuki/texture.bti
+		= ./gasotakara/
+   0x25060	= ./gasotakara/texture.bti
+		= ./hana/
+   0x25d00	= ./hana/texture.bti
+		= ./hanachirashi/
+   0x269a0	= ./hanachirashi/texture.bti
+		= ./hikarikinoko/
+   0x27640	= ./hikarikinoko/texture.bti
+		= ./houdai/
+   0x282e0	= ./houdai/texture.bti
+		= ./imomushi/
+   0x2b500	= ./imomushi/texture.bti
+		= ./jigumo/
+   0x2c1a0	= ./jigumo/texture.bti
+		= ./kabuto/
+   0x2ce40	= ./kabuto/texture.bti
+		= ./kingchappy/
+   0x2dae0	= ./kingchappy/texture.bti
+		= ./kochappy/
+   0x30d00	= ./kochappy/texture.bti
+		= ./kogane/
+   0x319a0	= ./kogane/texture.bti
+		= ./kumachappy/
+   0x32640	= ./kumachappy/texture.bti
+		= ./kumakochappy/
+   0x332e0	= ./kumakochappy/texture.bti
+		= ./kurage/
+   0x33f80	= ./kurage/texture.bti
+		= ./leafchappy/
+   0x34c20	= ./leafchappy/texture.bti
+		= ./magaret/
+   0x358c0	= ./magaret/texture.bti
+		= ./mar/
+   0x36560	= ./mar/texture.bti
+		= ./marofrog/
+   0x37200	= ./marofrog/texture.bti
+		= ./minihoudai/
+   0x37ea0	= ./minihoudai/texture.bti
+		= ./miulin/
+   0x38b40	= ./miulin/texture.bti
+		= ./nekojarashi/
+   0x397e0	= ./nekojarashi/texture.bti
+		= ./onikurage/
+   0x3a480	= ./onikurage/texture.bti
+		= ./ooinu_l/
+   0x3b120	= ./ooinu_l/texture.bti
+		= ./oopanmodoki/
+   0x3bdc0	= ./oopanmodoki/texture.bti
+		= ./panmodoki/
+   0x3efe0	= ./panmodoki/texture.bti
+		= ./pelplant/
+   0x3fc80	= ./pelplant/texture.bti
+		= ./pom/
+   0x40920	= ./pom/texture.bti
+		= ./queen/
+   0x415c0	= ./queen/texture.bti
+		= ./qurione/
+   0x447e0	= ./qurione/texture.bti
+		= ./randpom/
+   0x45480	= ./randpom/texture.bti
+		= ./redpom/
+   0x46120	= ./redpom/texture.bti
+		= ./rkabuto/
+   0x46dc0	= ./rkabuto/texture.bti
+		= ./sarai/
+   0x47a60	= ./sarai/texture.bti
+		= ./shijimichou/
+   0x48700	= ./shijimichou/texture.bti
+		= ./snakecrow/
+   0x493a0	= ./snakecrow/texture.bti
+		= ./snakewhole/
+   0x4c5c0	= ./snakewhole/texture.bti
+		= ./sokkuri/
+   0x4f7e0	= ./sokkuri/texture.bti
+		= ./tadpole/
+   0x50480	= ./tadpole/texture.bti
+		= ./tamagomushi/
+   0x51120	= ./tamagomushi/texture.bti
+		= ./tank/
+   0x51dc0	= ./tank/texture.bti
+		= ./tanpopo/
+   0x52a60	= ./tanpopo/texture.bti
+		= ./tobi/
+   0x53700	= ./tobi/texture.bti
+		= ./tukushi/
+   0x543a0	= ./tukushi/texture.bti
+		= ./ujia/
+   0x55040	= ./ujia/texture.bti
+		= ./ujib/
+   0x55ce0	= ./ujib/texture.bti
+		= ./umimushi/
+   0x56980	= ./umimushi/texture.bti
+		= ./umimushiblind/
+   0x59ba0	= ./umimushiblind/texture.bti
+		= ./wakame_l/
+   0x5a840	= ./wakame_l/texture.bti
+		= ./watage/
+   0x5b4e0	= ./watage/texture.bti
+		= ./waterotakara/
+   0x5c180	= ./waterotakara/texture.bti
+		= ./wealthy/
+   0x5ce20	= ./wealthy/texture.bti
+		= ./whitepom/
+   0x5dac0	= ./whitepom/texture.bti
+		= ./wtank/
+   0x5e760	= ./wtank/texture.bti
+		= ./yellowchappy/
+   0x5f400	= ./yellowchappy/texture.bti
+		= ./yellowkochappy/
+   0x600a0	= ./yellowkochappy/texture.bti
+		= ./yellowpom/
+   0x60d40	= ./yellowpom/texture.bti
+		= ./zenmai/
+   0x619e0	= ./zenmai/texture.bti
+		= ./zzdummy/
+   0x62680	= ./zzdummy/texture.bti
+
+#------------------------------------------------------------------------------
+

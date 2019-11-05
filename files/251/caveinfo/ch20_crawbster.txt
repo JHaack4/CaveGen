@@ -1,0 +1,103 @@
+# CaveInfo
+{
+	{c000} 4 2 	# 階層
+	{_eof} 
+}
+2 # FloorInfo
+{
+	{f000} 4 0 	# 階はじめ
+	{f001} 4 0 	# 階おわり
+	{f002} 4 7 	# 敵最大数
+	{f003} 4 3	# アイテム最大数
+	{f004} 4 0	# ゲート最大数
+	{f014} 4 10	# キャップ最大数
+	{f005} 4 4 	# ルーム数
+	{f006} 4 0.000000 	# ルートの割合
+	{f007} 4 0 	# 帰還噴水(1=あり)
+	{f008} -1 CH20_1_tsuchi.txt	# 使用ユニット
+	{f009} -1 normal_light_cha.ini 	# 使用ライト
+	{f00A} -1 scronch # VRBOX
+	{f010} 4 0 	# 階段を壊す岩で隠す(0=オフ 1=オン)
+	{f011} 4 4 	# α属性
+	{f012} 4 0 	# β属性
+	{f013} 4 0 	# 隠し床
+	{f015} 4 1 	# Version
+	{_eof} 
+}
+# TekiInfo
+{
+	8	# num
+	Hiba 50
+	5
+	WaterOtakara_flower_blue 30
+	1
+	Tank_thermometer 10
+	0
+	Jigumo_chocowhite 20
+	1
+	Mar_bell 10
+	0
+	FireOtakara_flower_red 30
+	0
+	FireChappy_key 10
+	0
+	Clover 6
+	6
+}
+# ItemInfo
+{
+	3	# num
+	fireflower 10
+	chess_king_white 10
+	chess_queen_black 10
+	
+}
+# GateInfo
+{
+	0 	# num
+}
+# CapInfo
+{
+	1 	# num
+	0
+	$Egg 40
+	1
+}
+{
+	{f000} 4 1 	# 階はじめ
+	{f001} 4 1 	# 階おわり
+	{f002} 4 10	# 敵最大数
+	{f003} 4 3	# アイテム最大数
+	{f004} 4 0	# ゲート最大数
+	{f014} 4 0 	# キャップ最大数
+	{f005} 4 1 	# ルーム数
+	{f006} 4 0.000000 	# ルートの割合
+	{f007} 4 1 	# 帰還噴水(1=あり)
+	{f008} -1 CH20_2_tile.txt	# 使用ユニット
+	{f009} -1 normal_light_cha.ini 	# 使用ライト
+	{f00A} -1 none	# VRBOX
+	{f010} 4 0 	# 階段を壊す岩で隠す(0=オフ 1=オン)
+	{f011} 4 0	# α属性
+	{f012} 4 0 	# β属性
+	{f013} 4 0 	# 隠し床
+	{f015} 4 1 	# Version
+	{_eof} 
+}
+# TekiInfo
+{
+	1	# num
+	DangoMushi_key 10
+	1
+}
+# ItemInfo
+{
+	0	# num
+}
+# GateInfo
+{
+	0 	# num
+}
+# CapInfo
+{
+	0	# num
+}

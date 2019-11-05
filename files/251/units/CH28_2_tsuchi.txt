@@ -1,0 +1,18 @@
+#
+#
+#	units definition file
+#
+#
+1 	# number of units
+# room_kingchap_a_tsuchi
+{
+	1 	# version
+	room_kingchap_a_tsuchi 	# foldername
+	7 10 	# dX/dZ ; cell size
+	1 	# room type
+	0 1 	# room Flags
+	1 	# num doors
+	0 	# index
+	0 3 0 	# dir/offs/wpindex
+	0 	# door links
+}

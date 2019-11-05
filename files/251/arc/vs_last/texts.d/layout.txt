@@ -1,0 +1,479 @@
+# BaseGen file
+53      # num gens
+# basegen 0
+{
+	7     # ship spawn
+	-98.20 -30.00 667.03         # pos
+	0.00     # ang
+	0.00     # radius
+	1     # min num
+	1     # max num
+}
+# basegen 1
+{
+	6     # plants
+	-207.70 -30.00 502.33         # pos
+	0.00     # ang
+	0.00     # radius
+	1     # min num
+	1     # max num
+}
+# basegen 2
+{
+	6     # plants
+	-150.10 -30.00 508.64         # pos
+	0.00     # ang
+	0.00     # radius
+	1     # min num
+	1     # max num
+}
+# basegen 3
+{
+	6     # plants
+	-66.40 -30.00 546.44         # pos
+	0.00     # ang
+	0.00     # radius
+	1     # min num
+	1     # max num
+}
+# basegen 4
+{
+	6     # plants
+	-2158.55 47.76 614.65         # pos
+	0.00     # ang
+	0.00     # radius
+	1     # min num
+	1     # max num
+}
+# basegen 5
+{
+	6     # plants
+	-2160.55 46.79 681.65         # pos
+	0.00     # ang
+	0.00     # radius
+	1     # min num
+	1     # max num
+}
+# basegen 6
+{
+	6     # plants
+	-2162.55 46.19 728.65         # pos
+	0.00     # ang
+	0.00     # radius
+	1     # min num
+	1     # max num
+}
+# basegen 7
+{
+	2     # treasure
+	-1545.85 20.00 1311.78         # pos
+	0.00     # ang
+	0.00     # radius
+	1     # min num
+	1     # max num
+}
+# basegen 8
+{
+	8     # enemy C
+	-1638.45 -10.00 427.30         # pos
+	0.00     # ang
+	0.00     # radius
+	1     # min num
+	1     # max num
+}
+# basegen 9
+{
+	8     # enemy C
+	-1657.35 -10.00 472.30         # pos
+	0.00     # ang
+	0.00     # radius
+	1     # min num
+	1     # max num
+}
+# basegen 10
+{
+	8     # enemy C
+	-1585.35 -10.00 484.90         # pos
+	0.00     # ang
+	0.00     # radius
+	1     # min num
+	1     # max num
+}
+# basegen 11
+{
+	8     # enemy C
+	-1583.55 -10.00 413.79         # pos
+	0.00     # ang
+	0.00     # radius
+	1     # min num
+	1     # max num
+}
+# basegen 12
+{
+	8     # enemy C
+	-1606.95 -10.00 360.69         # pos
+	0.00     # ang
+	0.00     # radius
+	1     # min num
+	1     # max num
+}
+# basegen 13
+{
+	8     # enemy C
+	-287.80 -30.00 864.85         # pos
+	0.00     # ang
+	0.00     # radius
+	1     # min num
+	1     # max num
+}
+# basegen 14
+{
+	8     # enemy C
+	-300.80 -30.00 897.85         # pos
+	0.00     # ang
+	0.00     # radius
+	1     # min num
+	1     # max num
+}
+# basegen 15
+{
+	8     # enemy C
+	-332.80 -30.00 869.85         # pos
+	0.00     # ang
+	0.00     # radius
+	1     # min num
+	1     # max num
+}
+# basegen 16
+{
+	8     # enemy C
+	-289.80 -30.00 818.85         # pos
+	0.00     # ang
+	0.00     # radius
+	1     # min num
+	1     # max num
+}
+# basegen 17
+{
+	8     # enemy C
+	-224.80 -30.00 849.85         # pos
+	0.00     # ang
+	0.00     # radius
+	1     # min num
+	1     # max num
+}
+# basegen 18
+{
+	1     # enemy B
+	-873.80 20.00 590.59         # pos
+	455.00     # ang
+	0.00     # radius
+	1     # min num
+	1     # max num
+}
+# basegen 19
+{
+	1     # enemy B
+	-899.40 20.00 932.83         # pos
+	124.00     # ang
+	0.00     # radius
+	1     # min num
+	1     # max num
+}
+# basegen 20
+{
+	1     # enemy B
+	-670.60 20.00 740.92         # pos
+	234.00     # ang
+	0.00     # radius
+	1     # min num
+	1     # max num
+}
+# basegen 21
+{
+	1     # enemy B
+	-484.20 0.00 1431.83         # pos
+	233.00     # ang
+	0.00     # radius
+	1     # min num
+	1     # max num
+}
+# basegen 22
+{
+	1     # enemy B
+	-178.30 0.00 1384.36         # pos
+	312.00     # ang
+	0.00     # radius
+	1     # min num
+	1     # max num
+}
+# basegen 23
+{
+	1     # enemy B
+	-142.20 0.00 1684.38         # pos
+	201.00     # ang
+	0.00     # radius
+	1     # min num
+	1     # max num
+}
+# basegen 24
+{
+	0     # enemy A
+	-1366.25 30.00 589.80         # pos
+	0.00     # ang
+	0.00     # radius
+	1     # min num
+	1     # max num
+}
+# basegen 25
+{
+	0     # enemy A
+	-1252.25 30.00 711.80         # pos
+	0.00     # ang
+	0.00     # radius
+	1     # min num
+	1     # max num
+}
+# basegen 26
+{
+	0     # enemy A
+	-1090.25 20.00 603.80         # pos
+	0.00     # ang
+	0.00     # radius
+	1     # min num
+	1     # max num
+}
+# basegen 27
+{
+	0     # enemy A
+	-1118.35 20.00 770.43         # pos
+	0.00     # ang
+	0.00     # radius
+	1     # min num
+	1     # max num
+}
+# basegen 28
+{
+	0     # enemy A
+	-848.35 20.00 753.17         # pos
+	0.00     # ang
+	0.00     # radius
+	1     # min num
+	1     # max num
+}
+# basegen 29
+{
+	0     # enemy A
+	-742.75 20.00 492.50         # pos
+	0.00     # ang
+	0.00     # radius
+	1     # min num
+	1     # max num
+}
+# basegen 30
+{
+	0     # enemy A
+	-540.85 20.00 711.34         # pos
+	0.00     # ang
+	0.00     # radius
+	1     # min num
+	1     # max num
+}
+# basegen 31
+{
+	1     # enemy B
+	-1264.35 30.00 255.13         # pos
+	345.00     # ang
+	0.00     # radius
+	1     # min num
+	1     # max num
+}
+# basegen 32
+{
+	0     # enemy A
+	-1261.65 30.00 404.55         # pos
+	0.00     # ang
+	0.00     # radius
+	1     # min num
+	1     # max num
+}
+# basegen 33
+{
+	0     # enemy A
+	-294.85 0.00 1637.11         # pos
+	0.00     # ang
+	0.00     # radius
+	1     # min num
+	1     # max num
+}
+# basegen 34
+{
+	0     # enemy A
+	-428.75 0.00 1282.31         # pos
+	0.00     # ang
+	0.00     # radius
+	1     # min num
+	1     # max num
+}
+# basegen 35
+{
+	0     # enemy A
+	-36.15 0.00 1200.43         # pos
+	0.00     # ang
+	0.00     # radius
+	1     # min num
+	1     # max num
+}
+# basegen 36
+{
+	0     # enemy A
+	143.95 30.00 1905.59         # pos
+	0.00     # ang
+	0.00     # radius
+	1     # min num
+	1     # max num
+}
+# basegen 37
+{
+	0     # enemy A
+	290.85 30.00 1632.67         # pos
+	0.00     # ang
+	0.00     # radius
+	1     # min num
+	1     # max num
+}
+# basegen 38
+{
+	2     # treasure
+	368.55 154.92 1305.29         # pos
+	0.00     # ang
+	0.00     # radius
+	1     # min num
+	1     # max num
+}
+# basegen 39
+{
+	2     # treasure
+	-261.95 153.25 2287.95         # pos
+	0.00     # ang
+	0.00     # radius
+	1     # min num
+	1     # max num
+}
+# basegen 40
+{
+	2     # treasure
+	-585.65 69.23 1890.27         # pos
+	0.00     # ang
+	0.00     # radius
+	1     # min num
+	1     # max num
+}
+# basegen 41
+{
+	2     # treasure
+	-512.75 110.23 939.20         # pos
+	0.00     # ang
+	0.00     # radius
+	1     # min num
+	1     # max num
+}
+# basegen 42
+{
+	6     # plants
+	-255.00 39.46 2077.08         # pos
+	0.00     # ang
+	0.00     # radius
+	1     # min num
+	1     # max num
+}
+# basegen 43
+{
+	6     # plants
+	-260.75 48.85 2165.62         # pos
+	0.00     # ang
+	0.00     # radius
+	1     # min num
+	1     # max num
+}
+# basegen 44
+{
+	6     # plants
+	285.50 59.25 1369.89         # pos
+	0.00     # ang
+	0.00     # radius
+	1     # min num
+	1     # max num
+}
+# basegen 45
+{
+	6     # plants
+	264.80 37.92 1497.52         # pos
+	0.00     # ang
+	0.00     # radius
+	1     # min num
+	1     # max num
+}
+# basegen 46
+{
+	0     # enemy A
+	-1388.95 30.00 928.30         # pos
+	0.00     # ang
+	0.00     # radius
+	1     # min num
+	1     # max num
+}
+# basegen 47
+{
+	50     # invalid type
+	-1232.55 30.00 1150.25         # pos
+	0.00     # ang
+	0.00     # radius
+	1     # min num
+	1     # max num
+}
+# basegen 48
+{
+	4     # hole/geyser
+	-166.85 0.00 1883.35         # pos
+	0.00     # ang
+	0.00     # radius
+	1     # min num
+	1     # max num
+}
+# basegen 49
+{
+	8     # enemy C
+	125.95 22.50 1129.60         # pos
+	0.00     # ang
+	0.00     # radius
+	1     # min num
+	1     # max num
+}
+# basegen 50
+{
+	0     # enemy A
+	-560.15 0.00 1610.94         # pos
+	0.00     # ang
+	0.00     # radius
+	1     # min num
+	1     # max num
+}
+# basegen 51
+{
+	0     # enemy A
+	-303.75 0.00 1456.68         # pos
+	0.00     # ang
+	0.00     # radius
+	1     # min num
+	1     # max num
+}
+# basegen 52
+{
+	0     # enemy A
+	-303.75 0.00 1456.68         # pos
+	0.00     # ang
+	0.00     # radius
+	1     # min num
+	1     # max num
+}

@@ -1,0 +1,20 @@
+# BaseGen file
+2 	 # num gens
+# basegen spawn
+{
+	7 	# type [Start]
+	110.000000 20.000000 -160.000000 	# pos
+	0.000000 	# ang
+	0.000000 	# radius
+	1 	# min num
+	1 	# max num
+}
+# basegen 0
+{
+	4 	# type [FixObj]
+	-20.000000 25.000000 -245.000000 	# pos
+	45.000000 	# ang
+	0.000000 	# radius
+	1 	# min num
+	1 	# max num
+}

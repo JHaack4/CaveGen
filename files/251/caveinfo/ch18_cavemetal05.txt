@@ -1,0 +1,110 @@
+# CaveInfo
+{
+	{c000} 4 2 	# 階層
+	{_eof} 
+}
+2 # FloorInfo
+{
+	{f000} 4 0 	# 階はじめ
+	{f001} 4 0 	# 階おわり
+	{f002} 4 7 	# 敵最大数
+	{f003} 4 3	# アイテム最大数
+	{f004} 4 0	# ゲート最大数
+	{f014} 4 10	# キャップ最大数
+	{f005} 4 1 	# ルーム数
+	{f006} 4 0.000000 	# ルートの割合
+	{f007} 4 0 	# 帰還噴水(1=あり)
+	{f008} -1 CH18_1_metal.txt	# 使用ユニット
+	{f009} -1 metal_light_cha.ini 	# 使用ライト
+	{f00A} -1 build	# VRBOX
+	{f010} 4 0 	# 階段を壊す岩で隠す(0=オフ 1=オン)
+	{f011} 4 4 	# α属性
+	{f012} 4 0 	# β属性
+	{f013} 4 0 	# 隠し床
+	{f015} 4 1 	# Version
+	{_eof} 
+}
+# TekiInfo
+{
+	7	# num
+	$Kabuto_key 10
+	0
+	$Bomb 40
+	1
+	$Kabuto_be_dama_blue_l 10
+	0
+	$Kabuto_be_dama_blue_l 10
+	0
+	$Kabuto_be_dama_blue_l 10
+	0
+	BlueKochappy_be_dama_blue 60
+	0
+	DaiodoGreen 6
+	6
+}
+# ItemInfo
+{
+	3 	# num
+	gear 10
+	sinkukan 10
+	bane 10
+}
+# GateInfo
+{
+	0 	# num
+}
+# CapInfo
+{
+	1 	# num
+	0
+	YellowPom 10
+	1
+}
+{
+	{f000} 4 1 	# 階はじめ
+	{f001} 4 1 	# 階おわり
+	{f002} 4 10	# 敵最大数
+	{f003} 4 3	# アイテム最大数
+	{f004} 4 0	# ゲート最大数
+	{f014} 4 0 	# キャップ最大数
+	{f005} 4 1 	# ルーム数
+	{f006} 4 0.000000 	# ルートの割合
+	{f007} 4 1 	# 帰還噴水(1=あり)
+	{f008} -1 CH18_2_houdai2.txt	# 使用ユニット
+	{f009} -1 metal_light_cha.ini 	# 使用ライト
+	{f00A} -1 ice	# VRBOX
+	{f010} 4 0 	# 階段を壊す岩で隠す(0=オフ 1=オン)
+	{f011} 4 4 	# α属性
+	{f012} 4 0 	# β属性
+	{f013} 4 0 	# 隠し床
+	{f015} 4 1 	# Version
+	{_eof} 
+}
+# TekiInfo
+{
+	3	# num
+	Houdai_key 10
+	1
+	DaiodoRed 6
+	6
+	GasHiba 50
+	5
+}
+# ItemInfo
+{
+	3	# num
+	radar_a 10
+	donutsichigo_s 10
+	robot_head 10
+}
+# GateInfo
+{
+	0 	# num
+}
+# CapInfo
+{
+	1	# num
+	0
+	YellowPom 20
+	1
+}

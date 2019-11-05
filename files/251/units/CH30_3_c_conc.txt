@@ -1,0 +1,51 @@
+#
+#
+#	units definition file
+#
+#
+2 	# number of units
+# item_cap_conc
+{
+	1 	# version
+	item_cap_conc 	# foldername
+	1 1 	# dX/dZ ; cell size
+	0 	# room type
+	0 0 	# room Flags
+	1 	# num doors
+	0 	# index
+	2 0 0 	# dir/offs/wpindex
+	0 	# door links
+}
+# room_4x4c_4_conc
+{
+	1 	# version
+	room_4x4c_4_conc 	# foldername
+	4 4 	# dX/dZ ; cell size
+	1 	# room type
+	0 1 	# room Flags
+	4 	# num doors
+	0 	# index
+	0 1 0 	# dir/offs/wpindex
+	3 	# door links
+	488.608826 1 1 	# dist/door-id/tekiflag
+	911.002747 2 1 	# dist/door-id/tekiflag
+	693.790894 3 1 	# dist/door-id/tekiflag
+	1 	# index
+	1 0 1 	# dir/offs/wpindex
+	3 	# door links
+	488.608795 0 1 	# dist/door-id/tekiflag
+	1222.404785 2 1 	# dist/door-id/tekiflag
+	1005.192871 3 1 	# dist/door-id/tekiflag
+	2 	# index
+	2 2 2 	# dir/offs/wpindex
+	3 	# door links
+	911.002747 0 1 	# dist/door-id/tekiflag
+	1222.404663 1 1 	# dist/door-id/tekiflag
+	657.244812 3 1 	# dist/door-id/tekiflag
+	3 	# index
+	3 2 3 	# dir/offs/wpindex
+	3 	# door links
+	693.790894 0 1 	# dist/door-id/tekiflag
+	1005.192871 1 1 	# dist/door-id/tekiflag
+	657.244812 2 1 	# dist/door-id/tekiflag
+}

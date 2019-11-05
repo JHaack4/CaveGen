@@ -1,0 +1,425 @@
+# BaseGen file
+46 	 # num gens
+# start
+{
+	7 	# type [Start]
+	0.000 25.000000 0.000	# pos
+	0.000000 	# ang
+	0.000000 	# radius
+	1 	# min num
+	1 	# max num
+}
+# start
+{
+	0 	# type [TekiA]
+	-1006.140015 50.000000 -610.776562 	# pos
+	-40.000000 	# ang
+	0.000000 	# radius
+	1 	# min num
+	1 	# max num
+}
+# start
+{
+	0 	# type [TekiA]
+	-1266.140015 50.000000 -280.776562 	# pos
+	120.000000 	# ang
+	0.000000 	# radius
+	1 	# min num
+	1 	# max num
+}
+# start
+{
+	0 	# type [TekiA]
+	-1446.140015 50.000000 -770.776562 	# pos
+	100.000000 	# ang
+	0.000000 	# radius
+	1 	# min num
+	1 	# max num
+}
+# start
+{
+	0 	# type [TekiA]
+	-1506.140015 50.000000 -1110.776562 	# pos
+	40.000000 	# ang
+	0.000000 	# radius
+	1 	# min num
+	1 	# max num
+}
+# start
+{
+	0 	# type [TekiA]
+	-1316.140015 50.000000 -1410.776562 	# pos
+	50.000000 	# ang
+	0.000000 	# radius
+	1 	# min num
+	1 	# max num
+}
+# start
+{
+	0 	# type [TekiA]
+	-1006.140015 50.000000 -1440.776562 	# pos
+	0.000000 	# ang
+	0.000000 	# radius
+	1 	# min num
+	1 	# max num
+}
+# start
+{
+	0 	# type [TekiA]
+	-1166.140015 50.000000 -910.776562 	# pos
+	100.000000 	# ang
+	0.000000 	# radius
+	1 	# min num
+	1 	# max num
+}
+# start
+{
+	0 	# type [TekiA]
+	-706.140015 50.000000 -1190.776562 	# pos
+	0.000000 	# ang
+	0.000000 	# radius
+	1 	# min num
+	1 	# max num
+}
+# start
+{
+	0 	# type [TekiA]
+	-246.140015 50.000000 -1150.776562 	# pos
+	120.000000 	# ang
+	0.000000 	# radius
+	1 	# min num
+	1 	# max num
+}
+# start
+{
+	0 	# type [TekiA]
+	-1066.140015 50.000000 -1660.776562 	# pos
+	120.000000 	# ang
+	0.000000 	# radius
+	1 	# min num
+	1 	# max num
+}
+# start
+{
+	0 	# type [TekiA]
+	-986.140015 50.000000 -2150.776562 	# pos
+	220.000000 	# ang
+	0.000000 	# radius
+	1 	# min num
+	1 	# max num
+}
+# start
+{
+	0 	# type [TekiA]
+	-576.140015 50.000000 -2180.776562 	# pos
+	40.000000 	# ang
+	0.000000 	# radius
+	1 	# min num
+	1 	# max num
+}
+# start
+{
+	0 	# type [TekiA]
+	-186.140015 50.000000 -2450.776562 	# pos
+	0.000000 	# ang
+	0.000000 	# radius
+	1 	# min num
+	1 	# max num
+}
+# start
+{
+	0 	# type [TekiA]
+	96.140015 50.000000 -2210.776562 	# pos
+	-20.000000 	# ang
+	0.000000 	# radius
+	1 	# min num
+	1 	# max num
+}
+# start
+{
+	0 	# type [TekiA]
+	-216.140015 50.000000 -1810.776562 	# pos
+	40.000000 	# ang
+	0.000000 	# radius
+	1 	# min num
+	1 	# max num
+}
+# start
+{
+	0 	# type [TekiA]
+	446.140015 50.000000 -1510.776562 	# pos
+	-40.000000 	# ang
+	0.000000 	# radius
+	1 	# min num
+	1 	# max num
+}
+# start
+{
+	0 	# type [TekiA]
+	676.140015 50.000000 -780.776562 	# pos
+	220.000000 	# ang
+	0.000000 	# radius
+	1 	# min num
+	1 	# max num
+}
+# start
+{
+	0 	# type [TekiA]
+	526.140015 50.000000 -90.776562 	# pos
+	-90.000000 	# ang
+	0.000000 	# radius
+	1 	# min num
+	1 	# max num
+}
+# start
+{
+	0 	# type [TekiA]
+	96.140015 50.000000 560.776562 	# pos
+	210.000000 	# ang
+	0.000000 	# radius
+	1 	# min num
+	1 	# max num
+}
+# start
+{
+	0 	# type [TekiA]
+	-1006.140015 50.000000 80.776562 	# pos
+	120.000000 	# ang
+	0.000000 	# radius
+	1 	# min num
+	1 	# max num
+}
+# start
+{
+	1 	# type [TekiB]
+	-106.140015 50.000000 -600.776562 	# pos
+	0.000000 	# ang
+	0.000000 	# radius
+	1 	# min num
+	1 	# max num
+}
+# start
+{
+	1 	# type [TekiB]
+	-746.140015 50.000000 -1700.776562 	# pos
+	70.000000 	# ang
+	0.000000 	# radius
+	1 	# min num
+	1 	# max num
+}
+# start
+{
+	1 	# type [TekiB]
+	-826.140015 50.000000 -2290.776562 	# pos
+	50.000000 	# ang
+	0.000000 	# radius
+	1 	# min num
+	1 	# max num
+}
+# start
+{
+	1 	# type [TekiB]
+	-396.140015 50.000000 -2450.776562 	# pos
+	0.000000 	# ang
+	0.000000 	# radius
+	1 	# min num
+	1 	# max num
+}
+# start
+{
+	1 	# type [TekiB]
+	-1166.140015 50.000000 -2560.776562 	# pos
+	0.000000 	# ang
+	0.000000 	# radius
+	1 	# min num
+	1 	# max num
+}
+# start
+{
+	1 	# type [TekiB]
+	-1866.140015 50.000000 -450.776562 	# pos
+	0.000000 	# ang
+	0.000000 	# radius
+	1 	# min num
+	1 	# max num
+}
+# start
+{
+	1 	# type [TekiB]
+	-706.140015 50.000000 -850.776562 	# pos
+	50.000000 	# ang
+	0.000000 	# radius
+	1 	# min num
+	1 	# max num
+}
+# start
+{
+	1 	# type [TekiB]
+	-486.140015 50.000000 180.776562 	# pos
+	120.000000 	# ang
+	0.000000 	# radius
+	1 	# min num
+	1 	# max num
+}
+# start
+{
+	1 	# type [TekiB]
+	-406.140015 50.000000 -1200.776562 	# pos
+	0.000000 	# ang
+	0.000000 	# radius
+	1 	# min num
+	1 	# max num
+}
+# start
+{
+	2 	# type [Item]
+	-886.140015 50.000000 -666.776562 	# pos
+	0.000000 	# ang
+	0.000000 	# radius
+	1 	# min num
+	1 	# max num
+}
+# start
+{
+	2 	# type [Item]
+	-1686.140015 50.000000 -866.776562 	# pos
+	0.000000 	# ang
+	0.000000 	# radius
+	1 	# min num
+	1 	# max num
+}
+# start
+{
+	2 	# type [Item]
+	-450.140015 50.000000 -916.776562 	# pos
+	0.000000 	# ang
+	0.000000 	# radius
+	1 	# min num
+	1 	# max num
+}
+# start
+{
+	2 	# type [Item]
+	626.140015 50.000000 -626.776562 	# pos
+	0.000000 	# ang
+	0.000000 	# radius
+	1 	# min num
+	1 	# max num
+}
+# start
+{
+	2 	# type [Item]
+	566.140015 50.000000 946.776562 	# pos
+	0.000000 	# ang
+	0.000000 	# radius
+	1 	# min num
+	1 	# max num
+}
+# start
+{
+	2 	# type [Item]
+	-1356.140015 50.000000 105.776562 	# pos
+	0.000000 	# ang
+	0.000000 	# radius
+	1 	# min num
+	1 	# max num
+}
+# start
+{
+	2 	# type [Item]
+	-896.140015 50.000000 -2566.776562 	# pos
+	0.000000 	# ang
+	0.000000 	# radius
+	1 	# min num
+	1 	# max num
+}
+# start
+{
+	2 	# type [Item]
+	-536.140015 50.000000 -2556.776562 	# pos
+	0.000000 	# ang
+	0.000000 	# radius
+	1 	# min num
+	1 	# max num
+}
+# start
+{
+	2 	# type [Item]
+	-1476.140015 50.000000 -1466.776562 	# pos
+	0.000000 	# ang
+	0.000000 	# radius
+	1 	# min num
+	1 	# max num
+}
+# start
+{
+	8 	# type [TekiF]
+	420.140015 50.000000 -1476.776562 	# pos
+	-60.000000 	# ang
+	0.000000 	# radius
+	1 	# min num
+	1 	# max num
+}
+# start
+{
+	8 	# type [TekiF]
+	166.140015 50.000000 176.776562 	# pos
+	-140.000000 	# ang
+	0.000000 	# radius
+	1 	# min num
+	1 	# max num
+}
+# start
+{
+	8 	# type [TekiF]
+	-226.140015 50.000000 76.776562 	# pos
+	140.000000 	# ang
+	0.000000 	# radius
+	1 	# min num
+	1 	# max num
+}
+# start
+{
+	8 	# type [TekiF]
+	-156.140015 50.000000 -1286.776562 	# pos
+	-140.000000 	# ang
+	0.000000 	# radius
+	1 	# min num
+	1 	# max num
+}
+# start
+{
+	8 	# type [TekiF]
+	96.140015 50.000000 -1876.776562 	# pos
+	0.000000 	# ang
+	0.000000 	# radius
+	1 	# min num
+	1 	# max num
+}
+# start
+{
+	8 	# type [TekiF]
+	326.140015 50.000000 -870.776562 	# pos
+	180.000000 	# ang
+	0.000000 	# radius
+	1 	# min num
+	1 	# max num
+}
+# start
+{
+	4 	# type [TekiA]
+	-1006.140015 50.000000 -610.776562 	# pos
+	-40.000000 	# ang
+	0.000000 	# radius
+	1 	# min num
+	1 	# max num
+}
+# start
+{
+	4 	# type [TekiA]
+	-1446.140015 50.000000 -310.776562 	# pos
+	-40.000000 	# ang
+	0.000000 	# radius
+	1 	# min num
+	1 	# max num
+}

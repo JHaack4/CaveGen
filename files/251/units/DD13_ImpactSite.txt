@@ -1,0 +1,11 @@
+1 	# number
+#
+# room_impactsite
+{
+	1 	# version
+	room_impactsite 	# foldername
+	10 10 	# dX/dZ ; cell size
+	1 	# room type
+	0 0 	# room Flags
+	0 	# num doors
+}

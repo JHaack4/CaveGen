@@ -1,0 +1,18 @@
+#
+#
+#	units definition file
+#
+#
+1 	# number of units
+# room_maze_casino
+{
+	1 	# version
+	room_maze_casino 	# foldername
+	7 7 	# dX/dZ ; cell size
+	1 	# room type
+	0 1 	# room Flags
+	1 	# num doors
+	0 	# index
+	2 3 0 	# dir/offs/wpindex
+	0 	# door links
+}

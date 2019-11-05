@@ -1,0 +1,26 @@
+2 	# number
+#
+# forest
+{
+	1 	# version
+	vs_last # foldername
+	15 15 	# dX/dZ ; cell size
+	1 	# room type
+	0 0 	# room Flags
+	1 	# num doors
+	0 	# index
+	3 0 0 	# dir/offs/wpindex
+	0 	# door links
+}
+# room_filler
+{
+	1 	# version
+	room_filler_last 	# foldername
+	2 2 	# dX/dZ ; cell size
+	1 	# room type
+	0 0 	# room Flags
+	1 	# num doors
+	0 	# index
+	3 0 0 	# dir/offs/wpindex
+	0 	# door links
+}

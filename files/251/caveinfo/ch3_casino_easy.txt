@@ -1,0 +1,104 @@
+# CaveInfo (general cave data)
+{
+	{c000} 4 2 	# Total Sublevels
+	{_eof} 
+}
+2 # Total Sublevels (again)
+{
+	{f000} 4 0 	# ThisSublevel - 1
+	{f001} 4 0 	# ThisSublevel - 1 (again)
+	{f002} 4 8 	# maximum enemies (only relevant if using weighted spawns)
+	{f003} 4 2  # maximum treasures (not counting ones in enemies)
+	{f004} 4 0 	# number of gates (requires data in GateInfo)
+	{f014} 4 100 # number of dead ends
+	{f005} 4 3 	# number of rooms
+	{f006} 4 0.000000 	# ratio of rooms to corridors
+	{f007} 4 0	# 1=geyser 0= no geyser
+	{f008} -1 CH3_1_casino.txt 	# unit list
+	{f009} -1 toy_light_cha.ini 	# lighting file
+	{f00A} -1 casino	# Skybox model
+	{f010} 4 0 	# 1=clogged hole 0=not clogged
+	{f011} 4 5 	# can be 0-5, controls ambient sfx/echo 
+	{f012} 4 0 	# 0=normal music, 1=muted, 2=rest floor
+	{f013} 4 1 	# 0=invisible floor, used for toy and garden caves
+	{f015} 4 1 	# leave this alone
+	{_eof} 
+}
+# TekiInfo (data for enemies)
+{
+	4 	# num
+	BlueKochappy_apple_blue 60
+	0
+	GasOtakara_locket 40
+	0
+	UjiB_toy_ring_b_red 40
+	1
+	UjiA_flower_blue 50
+	0
+}
+# ItemInfo (data for treasures)
+{
+	2 	# num
+	key 10
+	kan_b_gold 10
+}
+# GateInfo (data for gates)
+{
+	0	# num
+	
+}
+# CapInfo (stuff spawning in dead ends)
+{
+	0 	# num
+}
+{
+	{f000} 4 1
+	{f001} 4 1
+	{f002} 4 8
+	{f003} 4 6
+	{f004} 4 0
+	{f014} 4 20
+	{f005} 4 2
+	{f006} 4 0.0
+	{f007} 4 1
+	{f008} -1 CH3_2_midcasino.txt
+	{f009} -1 toy_light_cha.ini
+	{f00A} -1 casino
+	{f010} 4 0
+	{f011} 4 5
+	{f012} 4 0
+	{f013} 4 1
+	{f015} 4 1
+	{_eof} 
+}
+# TekiInfo
+{
+	5 	# num
+	Kochappy_dia_b_red 60
+	0
+	Chappy_yoyo_yellow 10
+	1
+	Jigumo_peanutgun 40
+	0
+	Hanachirashi_sandbag 20
+	1
+	Chappy_key 10
+	1
+}
+# ItemInfo
+{
+	4 	# num
+	uji_jisyaku 10
+	bell_red 10
+	silver_medal 10
+	yoyo_blue 10
+}
+# GateInfo
+{
+	0	# num
+	
+}
+# CapInfo
+{
+	0 	# num
+}

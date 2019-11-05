@@ -1,0 +1,106 @@
+#CaveInfo
+{
+	{c000} 4 2 	# 階層
+	{_eof} 
+}
+2 # FloorInfo
+{
+	{f000} 4 0 	# 階はじめ
+	{f001} 4 0 	# 階おわり
+	{f002} 4 20	# 敵最大数
+	{f003} 4 1 	# アイテム最大数
+	{f004} 4 0 	# ゲート最大数
+	{f014} 4 50 	# キャップ最大数
+	{f005} 4 1 	# ルーム数
+	{f006} 4 0.000000 	# ルートの割合
+	{f007} 4 0 	# 帰還噴水(1=あり)
+	{f008} -1 CH11_1_railroad.txt 	# 使用ユニット
+	{f009} -1 toy_light_cha.ini 	# 使用ライト
+	{f00A} -1 tatami	# VRBOX
+	{f010} 4 0 	# 階段を壊す岩で隠す(0=オフ 1=オン)
+	{f011} 4 0 	# α属性
+	{f012} 4 0 	# β属性
+	{f013} 4 1 	# 隠し床
+	{f015} 4 1 	# Version
+	{_eof} 
+}
+# TekiInfo
+{
+	6	# num
+	PanModoki_cookie 20
+	0
+	PanModoki_key 10
+	0
+	Armor_silver_medal 30
+	1
+	YellowKochappy_creap 70
+	1
+	UjiA_bird_hane 40
+	0
+	Chiyogami 5
+	6
+}
+# ItemInfo
+{
+	4	# num
+	kan_imuraya 10
+	patty 10
+	sandvich 10
+	yoyo_yellow 10
+}
+# GateInfo
+{
+	0 	# num
+}
+# CapInfo
+{
+	0 	# num
+}
+{
+	{f000} 4 1 	# 階はじめ
+	{f001} 4 1 	# 階おわり
+	{f002} 4 20	# 敵最大数
+	{f003} 4 5 	# アイテム最大数
+	{f004} 4 0 	# ゲート最大数
+	{f014} 4 50 	# キャップ最大数
+	{f005} 4 1 	# ルーム数
+	{f006} 4 0.000000 	# ルートの割合
+	{f007} 4 1 	# 帰還噴水(1=あり)
+	{f008} -1 CH11_2_racetrack.txt 	# 使用ユニット
+	{f009} -1 toy_light_cha.ini 	# 使用ライト
+	{f00A} -1 tatami	# VRBOX
+	{f010} 4 0 	# 階段を壊す岩で隠す(0=オフ 1=オン)
+	{f011} 4 0 	# α属性
+	{f012} 4 0 	# β属性
+	{f013} 4 1 	# 隠し床
+	{f015} 4 1 	# Version
+	{_eof} 
+}
+# TekiInfo
+{
+	4	# num
+	OoPanModoki_key 10
+	1
+	PanModoki_g_futa_kyusyu 20
+	1
+	Sarai_bolt 30
+	0
+	Kochappy_be_dama_red 30
+	0
+}
+# ItemInfo
+{
+	4	# num
+	donutsichigo 10
+	medama_yaki 10
+	chocolate_l 10
+	chocowhite_l 10
+}
+# GateInfo
+{
+	0 	# num
+}
+# CapInfo
+{
+	0 	# num
+}

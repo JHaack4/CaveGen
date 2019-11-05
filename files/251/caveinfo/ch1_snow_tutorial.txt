@@ -1,0 +1,104 @@
+# CaveInfo
+{
+	{c000} 4 2 	# SublevelCount
+	{_eof} 
+}
+2 # FloorInfo
+{
+	{f000} 4 0 # CurrentSublevelIndex
+	{f001} 4 0 # CurrentSublevelIndex
+	{f002} 4 20 # EntityTotal
+	{f003} 4 3 # TreasureTotal
+	{f004} 4 0 # GateTotal
+	{f005} 4 2 # RoomTotal
+	{f006} 4 0.000000 # CorridorRatio
+	{f007} 4 0 # Geyser
+	{f008} -1 CH1_1_snow.txt # UnitFile
+	{f009} -1 normal_light_cha.ini # LightFile
+	{f00A} -1 none # Skybox
+	{f010} 4 0 # CloggedHole
+	{f011} 4 0 # Unknown
+	{f012} 4 0 # MusicType
+	{f013} 4 0 # SolidPlane
+    {f014} 4 20 # caps
+	{f015} 4 1 # Version(0=IgnoreCapInfo)
+	{_eof} 
+}
+# TekiInfo
+{
+	4 # num
+	YellowKochappy_be_dama_blue 60
+	0
+	UjiA_bird_hane 50
+	1
+	YellowKochappy_key 10
+	0
+	KareOoinu_s 5
+	6
+}
+# ItemInfo
+{
+	3 # num
+	be_dama_blue_l 10
+	be_dama_red_l 10
+	be_dama_yellow_l 10
+}
+# GateInfo
+{
+	0 # num
+}
+# CapInfo
+{
+	0 # num
+}
+# FloorInfo
+{
+	{f000} 4 1 # CurrentSublevelIndex
+	{f001} 4 1 # CurrentSublevelIndex
+	{f002} 4 20 # EntityTotal
+	{f003} 4 3 # TreasureTotal
+	{f004} 4 0 # GateTotal
+	{f005} 4 1 # RoomTotal
+	{f006} 4 0.000000 # CorridorRatio
+	{f007} 4 1 # Geyser
+	{f008} -1 CH1_2_snow.txt # UnitFile
+	{f009} -1 normal_light_cha.ini # LightFile
+	{f00A} -1 none # Skybox
+	{f010} 4 0 # CloggedHole
+	{f011} 4 0 # SFX
+	{f012} 4 0 # MusicType
+	{f013} 4 0 # SolidPlane
+    {f014} 4 29 # DeadEndTotal
+	{f015} 4 1 # Version(0=IgnoreCapInfo)
+	{_eof} 
+}
+# TekiInfo
+{
+	4 # num
+	YellowChappy_key 10 # weight
+	1 # type
+	YellowKochappy_mariocap 40 # weight
+	1 # type
+	UjiB_be_dama_red 50 # weight
+	0 # type
+	KareOoinu_l 8 # weight
+	6 # type
+}
+# ItemInfo
+{
+	3 # num
+	toy_ring_c_green 10 # weight
+	toy_ring_c_blue 10 # weight
+	apple 10
+}
+# GateInfo
+{
+	0 # num
+}
+# CapInfo
+{
+	1 # num
+	0 # captype
+	Egg 20 # weight
+	1 # type
+}

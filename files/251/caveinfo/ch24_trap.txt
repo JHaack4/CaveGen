@@ -1,0 +1,62 @@
+# CaveInfo
+{
+	{c000} 4 1 	# SublevelCount
+	{_eof} 
+}
+1 # FloorInfo
+{
+	{f000} 4 0 # CurrentSublevelIndex
+	{f001} 4 0 # CurrentSublevelIndex
+	{f002} 4 20 # EntityTotal
+	{f003} 4 4 # TreasureTotal
+	{f004} 4 0 # GateTotal
+	{f005} 4 3 # RoomTotal
+	{f006} 4 0.000000 # CorridorRatio
+	{f007} 4 0 # Geyser
+	{f008} -1 CH24_1_tsuchi.txt # UnitFile
+	{f009} -1 normal_light_cha.ini # LightFile
+	{f00A} -1 none # Skybox
+	{f010} 4 0 # CloggedHole
+	{f011} 4 0 # Unknown
+	{f012} 4 0 # MusicType
+	{f013} 4 0 # SolidPlane
+    {f014} 4 20 # caps
+	{f015} 4 1 # Version(0=IgnoreCapInfo)
+	{_eof} 
+}
+# TekiInfo
+{
+	8 # num
+	$2BlueChappy_diamond_blue_l 20
+	1
+	$2KumaChappy_key 10
+	1
+	$2BlueKochappy_momiji_normal 60
+	0
+	$2BombOtakara 40
+	0
+	$4BombOtakara 30
+	0
+	$4ElecOtakara 40
+	1
+	$2Bomb 80
+	1
+	Rock 80
+	1
+}
+# ItemInfo
+{
+	4 # num
+	diamond_red_l 10
+	tape_red 10
+	bane_red 10
+	momiji_red 10
+}
+# GateInfo
+{
+	0 # num
+}
+# CapInfo
+{
+	0 # num
+}

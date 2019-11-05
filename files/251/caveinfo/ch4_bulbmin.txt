@@ -1,0 +1,114 @@
+#CaveInfo
+{
+	{c000} 4 2 	# 階層
+	{_eof} 
+}
+2 # FloorInfo
+{
+	{f000} 4 0 	# 階はじめ
+	{f001} 4 0 	# 階おわり
+	{f002} 4 20	# 敵最大数
+	{f003} 4 1 	# アイテム最大数
+	{f004} 4 0 	# ゲート最大数
+	{f014} 4 50 	# キャップ最大数
+	{f005} 4 1 	# ルーム数
+	{f006} 4 0.000000 	# ルートの割合
+	{f007} 4 0 	# 帰還噴水(1=あり)
+	{f008} -1 CH4_1_snagret.txt 	# 使用ユニット
+	{f009} -1 normal_light_cha.ini 	# 使用ライト
+	{f00A} -1 none	# VRBOX
+	{f010} 4 0 	# 階段を壊す岩で隠す(0=オフ 1=オン)
+	{f011} 4 0 	# α属性
+	{f012} 4 0 	# β属性
+	{f013} 4 0 	# 隠し床
+	{f015} 4 1 	# Version
+	{_eof} 
+}
+# TekiInfo
+{
+	3	# num
+	Tobi_toy_ring_c_red 60
+	0
+	Miulin_key 10
+	8
+	Ooinu_s 5
+	6
+}
+# ItemInfo
+{
+	1 	# num
+	haniwa 10
+}
+# GateInfo
+{
+	0 	# num
+}
+# CapInfo
+{
+	0 	# num
+}
+{
+	{f000} 4 1 	# 階はじめ
+	{f001} 4 1 	# 階おわり
+	{f002} 4 20	# 敵最大数
+	{f003} 4 5 	# アイテム最大数
+	{f004} 4 0 	# ゲート最大数
+	{f014} 4 50 	# キャップ最大数
+	{f005} 4 3 	# ルーム数
+	{f006} 4 0.000000 	# ルートの割合
+	{f007} 4 1 	# 帰還噴水(1=あり)
+	{f008} -1 CH4_2_garden.txt 	# 使用ユニット
+	{f009} -1 kusachi_light_cha.ini 	# 使用ライト
+	{f00A} -1 soil	# VRBOX
+	{f010} 4 0 	# 階段を壊す岩で隠す(0=オフ 1=オン)
+	{f011} 4 0 	# α属性
+	{f012} 4 0 	# β属性
+	{f013} 4 1 	# 隠し床
+	{f015} 4 1 	# Version
+	{_eof} 
+}
+# TekiInfo
+{
+	12	# num
+	LeafChappy_key 10
+	1
+	LeafChappy_diamond_green 20
+	1
+	Wtank_toy_gentle 10
+	0
+	Tank_flower_red 10
+	0
+	Mar_apple 10
+	1
+	ElecBug_cookie_s 40
+	1
+	Ooinu_s 4
+	6
+	Ooinu_l 3
+	6
+	Clover 3
+	6
+	Tanpopo 5
+	6
+	Watage 5
+	6
+	Magaret 4
+	6
+}
+# ItemInfo
+{
+	5	# num
+	kinoko_tubu 10
+	kinoko_doku 10
+	leaf_normal 10
+	leaf_kare 10
+	ichigo_l 10
+}
+# GateInfo
+{
+	0 	# num
+}
+# CapInfo
+{
+	0 	# num
+}

@@ -1,0 +1,30 @@
+#
+#
+#	units definition file
+#
+#
+2	# number of units
+# room_north_1_metal
+{
+	1 	# version
+	room_north_1_metal	# foldername
+	5 5 	# dX/dZ ; cell size
+	1 	# room type
+	0 1 	# room Flags
+	1 	# num doors
+	0 	# index
+	2 2 0 	# dir/offs/wpindex
+	0 	# door links
+}
+# item_cap_metal
+{
+	1 	# version
+	item_cap_metal 	# foldername
+	1 1 	# dX/dZ ; cell size
+	0 	# room type
+	0 0 	# room Flags
+	1 	# num doors
+	0 	# index
+	2 0 0 	# dir/offs/wpindex
+	0 	# door links
+}

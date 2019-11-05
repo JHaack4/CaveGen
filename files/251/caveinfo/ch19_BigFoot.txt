@@ -1,0 +1,57 @@
+#CaveInfo
+{
+	{c000} 4 1 	# 階層
+	{_eof} 
+}
+1 # FloorInfo
+{
+	{f000} 4 0 	# 階はじめ
+	{f001} 4 0 	# 階おわり
+	{f002} 4 50	# 敵最大数
+	{f003} 4 1 	# アイテム最大数
+	{f004} 4 0 	# ゲート最大数
+	{f014} 4 0 	# キャップ最大数
+	{f005} 4 1 	# ルーム数
+	{f006} 4 0.000000 	# ルートの割合
+	{f007} 4 1 	# 帰還噴水(1=あり)
+	{f008} -1 CH19_1_snow.txt 	# 使用ユニット
+	{f009} -1 normal_light_cha.ini 	# 使用ライト
+	{f00A} -1 none	# VRBOX
+	{f010} 4 0 	# 階段を壊す岩で隠す(0=オフ 1=オン)
+	{f011} 4 4 	# α属性
+	{f012} 4 0 	# β属性
+	{f013} 4 0 	# 隠し床
+	{f015} 4 1 	# Version
+	{_eof} 
+}
+# TekiInfo
+{
+	7	# num
+	BigFoot_key 10
+	1
+	BlackPom 10
+	0
+	BlackPom 10
+	0
+	FireOtakara_be_dama_red 30
+	0
+	KareOoinu_s 8
+	6
+	KareOoinu_l 4
+	6
+	Clover 7
+	6
+}
+# ItemInfo
+{
+	1	# num
+	map02 10
+}
+# GateInfo
+{
+	0 	# num
+}
+# CapInfo
+{
+	0 	# num
+}

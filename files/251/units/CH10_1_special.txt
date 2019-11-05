@@ -1,0 +1,10 @@
+1 	# number
+# forest
+{
+	1 	# version
+	room_special_cha	# foldername
+	10 10 	# dX/dZ ; cell size
+	1 	# room type
+	0 0 	# room Flags
+	0 	# num doors
+}

@@ -1,0 +1,141 @@
+# CaveInfo
+{
+	{c000} 4 3 	# SublevelCount
+	{_eof} 
+}
+3 # FloorInfo
+{
+	{f000} 4 0 # CurrentSublevelIndex
+	{f001} 4 0 # CurrentSublevelIndex
+	{f002} 4 20 # EntityTotal
+	{f003} 4 3 # TreasureTotal
+	{f004} 4 0 # GateTotal
+	{f005} 4 2 # RoomTotal
+	{f006} 4 0.000000 # CorridorRatio
+	{f007} 4 0 # Geyser
+	{f008} -1 CH28_2_tsuchi.txt # UnitFile
+	{f009} -1 normal_light_cha.ini # LightFile
+	{f00A} -1 none # Skybox
+	{f010} 4 0 # CloggedHole
+	{f011} 4 0 # Unknown
+	{f012} 4 0 # MusicType
+	{f013} 4 0 # SolidPlane
+    {f014} 4 20 # caps
+	{f015} 4 1 # Version(0=IgnoreCapInfo)
+	{_eof} 
+}
+# TekiInfo
+{
+	5 # num
+	KumaChappy_key 10
+	1
+	FireChappy_apple 10
+	1
+	KumaKochappy_be_dama_yellow 60
+	0
+	Hiba 60
+	8
+	Wakame_s 6
+	6
+}
+# ItemInfo
+{
+	0 # num
+}
+# GateInfo
+{
+	0 # num
+}
+# CapInfo
+{
+	0 # num
+}
+{
+	{f000} 4 1 # CurrentSublevelIndex
+	{f001} 4 1 # CurrentSublevelIndex
+	{f002} 4 20 # EntityTotal
+	{f003} 4 6 # TreasureTotal
+	{f004} 4 0 # GateTotal
+	{f005} 4 1 # RoomTotal
+	{f006} 4 0.000000 # CorridorRatio
+	{f007} 4 0 # Geyser
+	{f008} -1 CH28_1_tsuchi.txt # UnitFile
+	{f009} -1 normal_light_cha.ini # LightFile
+	{f00A} -1 none # Skybox
+	{f010} 4 0 # CloggedHole
+	{f011} 4 0 # Unknown
+	{f012} 4 0 # MusicType
+	{f013} 4 0 # SolidPlane
+    {f014} 4 20 # caps
+	{f015} 4 1 # Version(0=IgnoreCapInfo)
+	{_eof} 
+}
+# TekiInfo
+{
+	4 # num
+	KingChappy_g_futa_koiwai 20
+	1
+	KingChappy_key 10
+	1
+	Bomb 80
+	0
+	Zenmai 5
+	6
+}
+# ItemInfo
+{
+	3 # num
+	dia_c_red 10
+	watch 10
+	toy_teala 10
+}
+# GateInfo
+{
+	0 # num
+}
+# CapInfo
+{
+	0 # num
+}
+{
+	{f000} 4 2 # CurrentSublevelIndex
+	{f001} 4 2 # CurrentSublevelIndex
+	{f002} 4 20 # EntityTotal
+	{f003} 4 6 # TreasureTotal
+	{f004} 4 1 # GateTotal
+	{f005} 4 1 # RoomTotal
+	{f006} 4 0.000000 # CorridorRatio
+	{f007} 4 1 # Geyser
+	{f008} -1 CH28_3_tsuchi.txt # UnitFile
+	{f009} -1 normal_light_cha.ini # LightFile
+	{f00A} -1 none # Skybox
+	{f010} 4 0 # CloggedHole
+	{f011} 4 0 # Unknown
+	{f012} 4 0 # MusicType
+	{f013} 4 0 # SolidPlane
+    {f014} 4 1 # caps
+	{f015} 4 1 # Version(0=IgnoreCapInfo)
+	{_eof}
+}
+# TekiInfo
+{
+	2 # num
+	Queen_key 10
+	1
+	$Bomb 6
+	6
+}
+# ItemInfo
+{
+	0 # num
+}
+# GateInfo
+{
+	1 # num
+	gate 1000
+	1
+}
+# CapInfo
+{
+	0 # num
+}

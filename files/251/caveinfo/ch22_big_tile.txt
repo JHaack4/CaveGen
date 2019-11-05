@@ -1,0 +1,116 @@
+#CaveInfo
+{
+	{c000} 4 2	# 階層
+	{_eof} 
+}
+2 # FloorInfo
+{
+	{f000} 4 0 	# 階はじめ
+	{f001} 4 0 	# 階おわり
+	{f002} 4 50	# 敵最大数
+	{f003} 4 8	# アイテム最大数
+	{f004} 4 0 	# ゲート最大数
+	{f014} 4 0 	# キャップ最大数
+	{f005} 4 4 	# ルーム数
+	{f006} 4 0.100000 	# ルートの割合
+	{f007} 4 0 	# 帰還噴水(1=あり)
+	{f008} -1 CH22_1_tile.txt 	# 使用ユニット
+	{f009} -1 normal_light_cha.ini 	# 使用ライト
+	{f00A} -1 none	# VRBOX
+	{f010} 4 0 	# 階段を壊す岩で隠す(0=オフ 1=オン)
+	{f011} 4 4 	# α属性
+	{f012} 4 0 	# β属性
+	{f013} 4 0 	# 隠し床
+	{f015} 4 1 	# Version
+	{_eof} 
+}
+# TekiInfo
+{
+	12	# num
+	$Kurage_bell_yellow 20
+	0
+	$Kurage_bell_yellow 20
+	0
+	$Tadpole_flower_blue 80
+	0
+	Tank_bell_red 10
+	0
+	Tank_bell_red 20
+	0
+	MaroFrog_whistle 10
+	1
+	MaroFrog_whistle 20
+	1
+	MaroFrog_whistle 20
+	1
+	UmiMushiBlind_key 10
+	1
+	ElecHiba 30
+	5
+	Hiba 30
+	5
+	Wakame_l 5
+	6
+}
+# ItemInfo
+{
+	4	# num
+	toy_lady 10
+	ahiru 10
+	g_futa_kyodo 10
+	turi_uki 50
+}
+# GateInfo
+{
+	0 	# num
+}
+# CapInfo
+{
+	0 	# num
+}
+{
+	{f000} 4 1	# 階はじめ
+	{f001} 4 1 	# 階おわり
+	{f002} 4 50	# 敵最大数
+	{f003} 4 2 	# アイテム最大数
+	{f004} 4 0 	# ゲート最大数
+	{f014} 4 0 	# キャップ最大数
+	{f005} 4 1 	# ルーム数
+	{f006} 4 0.000000 	# ルートの割合
+	{f007} 4 0 	# 帰還噴水(1=あり)
+	{f008} -1 CH22_2_bunki_tile.txt 	# 使用ユニット
+	{f009} -1 normal_light_cha.ini 	# 使用ライト
+	{f00A} -1 none	# VRBOX
+	{f010} 4 0 	# 階段を壊す岩で隠す(0=オフ 1=オン)
+	{f011} 4 4 	# α属性
+	{f012} 4 0 	# β属性
+	{f013} 4 0 	# 隠し床
+	{f015} 4 1 	# Version
+	{_eof} 
+}
+# TekiInfo
+{
+	4	# num
+	UmiMushi_key 10
+	1
+	Rock 80
+	0
+	Kabuto_juji_key 20
+	1
+	Rkabuto_juji_key_fc 20
+	1
+}
+# ItemInfo
+{
+	2	# num
+	nut_l 10
+	kan_kyokuyo 10
+}
+# GateInfo
+{
+	0 	# num
+}
+# CapInfo
+{
+	0 	# num
+}

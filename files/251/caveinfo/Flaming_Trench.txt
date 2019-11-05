@@ -1,0 +1,262 @@
+# CaveInfo
+{
+	{c000} 4 5 	# 階層
+	{_eof} 
+}
+5 # FloorInfo
+{
+	{f000} 4 0 	# 階はじめ
+	{f001} 4 0 	# 階おわり
+	{f002} 4 20 	# 敵最大数
+	{f003} 4 0 	# アイテム最大数
+	{f004} 4 1 	# ゲート最大数
+	{f014} 4 33 	# キャップ最大数
+	{f005} 4 2 	# ルーム数
+	{f006} 4 0.000000 	# ルートの割合
+	{f007} 4 0 	# 帰還噴水(1=あり)
+	{f008} -1 HOB1_nor4_uzu1_tsuchi.txt 	# 使用ユニット
+	{f009} -1 HOB_redlightlv1.ini 	# 使用ライト
+	{f00A} -1 none 	# VRBOX
+	{f010} 4 0 	# 階段を壊す岩で隠す(0=オフ 1=オン)
+	{f011} 4 0 	# α属性
+	{f012} 4 0 	# β属性
+	{f013} 4 0 	# 隠し床
+	{f015} 4 1 	# Version
+	{_eof} 
+}
+# TekiInfo
+{
+	6 	# num
+	UjiB 30 	# weight
+	0 	# type
+	UjiA 40 	# weight
+	1 	# type
+	hiba 40
+	0
+	Armor_momiji_red 10 	# weight
+	8 	# type
+	Tukushi 2 	# weight
+	6 	# type
+	KareOoinu_s 2 	# weight
+	6 	# type
+}
+# ItemInfo
+{
+	0 	# num
+}
+# GateInfo
+{
+	1 	# num
+	gate 1400
+	1
+}
+# CapInfo
+{
+	0 	# num
+}
+# FloorInfo
+{
+	{f000} 4 1 	# 階はじめ
+	{f001} 4 1 	# 階おわり
+	{f002} 4 27 	# 敵最大数
+	{f003} 4 2 	# アイテム最大数
+	{f004} 4 0 	# ゲート最大数
+	{f014} 4 0 	# キャップ最大数
+	{f005} 4 3 	# ルーム数
+	{f006} 4 0.100000 	# ルートの割合
+	{f007} 4 0 	# 帰還噴水(1=あり)
+	{f008} -1 HOB2_b_c_d_conc.txt 	# 使用ユニット
+	{f009} -1 HOB_redlightlv3.ini 	# 使用ライト
+	{f00A} -1 none 	# VRBOX
+	{f010} 4 0 	# 階段を壊す岩で隠す(0=オフ 1=オン)
+	{f011} 4 0 	# α属性
+	{f012} 4 0 	# β属性
+	{f013} 4 0 	# 隠し床
+	{f015} 4 1 	# Version
+	{_eof} 
+}
+# TekiInfo
+{
+	6	# num
+	Hiba 80 	# weight
+	5 	# type
+	Tank 10
+	0
+	Tank 10
+	0
+	sokkuri 50
+	1
+	FireChappy_locket 10
+	0
+	Zenmai 6 	# weight
+	6 	# type
+}
+# ItemInfo
+{
+	2	# num
+	toy_cat 10
+	denchi_3_black 10
+}
+# GateInfo
+{
+	0 	# num
+}
+# CapInfo
+{
+	1 	# num
+	0
+	egg 20
+	1
+}
+# FloorInfo
+{
+	{f000} 4 2 	# 階はじめ
+	{f001} 4 2 	# 階おわり
+	{f002} 4 20	# 敵最大数
+	{f003} 4 1 	# アイテム最大数
+	{f004} 4 0 	# ゲート最大数
+	{f014} 4 100 	# キャップ最大数
+	{f005} 4 1 	# ルーム数
+	{f006} 4 0.000000 	# ルートの割合
+	{f007} 4 0 	# 帰還噴水(1=あり)
+	{f008} -1 HOB3_mid2_tsuchi.txt 	# 使用ユニット
+	{f009} -1 HOB_redlightlv0.ini 	# 使用ライト
+	{f00A} -1 none 	# VRBOX
+	{f010} 4 0 	# 階段を壊す岩で隠す(0=オフ 1=オン)
+	{f011} 4 0 	# α属性
+	{f012} 4 0 	# β属性
+	{f013} 4 0 	# 隠し床
+	{f015} 4 1 	# Version
+	{_eof} 
+}
+# TekiInfo
+{
+	5 	# num
+	Chappy_teala_dia_b 10
+	1
+	Kochappy 50
+	1
+	Hiba 50
+	5
+	HikariKinoko 6 	# weight
+	6 	# type
+	KareOoinu_s 2 	# weight
+	6 	# type
+}
+# ItemInfo
+{
+	1 	# num
+	kouseki_suisyou 10
+}
+# GateInfo
+{
+	0 	# num
+}
+# CapInfo
+{
+	1 	# num
+	0 	# captype
+	Egg 20 	# weight
+	1 	# type
+}
+# FloorInfo
+{
+	{f000} 4 3 	# 階はじめ
+	{f001} 4 3 	# 階おわり
+	{f002} 4 15 	# 敵最大数
+	{f003} 4 1 	# アイテム最大数
+	{f004} 4 0 	# ゲート最大数
+	{f014} 4 50 	# キャップ最大数
+	{f005} 4 4 	# ルーム数
+	{f006} 4 0.100000 	# ルートの割合
+	{f007} 4 0 	# 帰還噴水(1=あり)
+	{f008} -1 HOB4_cent2_4_tsuchi.txt 	# 使用ユニット
+	{f009} -1 HOB_redlightlv1.ini 	# 使用ライト
+	{f00A} -1 none 	# VRBOX
+	{f010} 4 0 	# 階段を壊す岩で隠す(0=オフ 1=オン)
+	{f011} 4 0 	# α属性
+	{f012} 4 0 	# β属性
+	{f013} 4 0 	# 隠し床
+	{f015} 4 1 	# Version
+	{_eof} 
+}
+# TekiInfo
+{
+	6 	# num
+	BlueChappy_g_futa_kyosin 10 	# weight
+	1 	# type
+	Hiba 60 	# weight
+	5 	# type
+	fireotakara 30
+	0
+	Bluekochappy 40
+	1
+	Tank 20
+	0
+	HikariKinoko 6 	# weight
+	6 	# type
+}
+# ItemInfo
+{
+	1 	# num
+	fireflower 10
+}
+# GateInfo
+{
+	0 	# num
+}
+# CapInfo
+{
+	1 	# num
+	0 	# captype
+	Egg 20 	# weight
+	1 	# type
+}
+# FloorInfo
+{
+	{f000} 4 4 	# 階はじめ
+	{f001} 4 4 	# 階おわり
+	{f002} 4 5 	# 敵最大数
+	{f003} 4 0 	# アイテム最大数
+	{f004} 4 0 	# ゲート最大数
+	{f014} 4 50 	# キャップ最大数
+	{f005} 4 1 	# ルーム数
+	{f006} 4 0.000000 	# ルートの割合
+	{f007} 4 1 	# 帰還噴水(1=あり)
+	{f008} -1 HOB6_north_large_tsuchi.txt 	# 使用ユニット
+	{f009} -1 HOB_redlightlv2.ini 	# 使用ライト
+	{f00A} -1 none 	# VRBOX
+	{f010} 4 1 	# 階段を壊す岩で隠す(0=オフ 1=オン)
+	{f011} 4 0 	# α属性
+	{f012} 4 1 	# β属性
+	{f013} 4 0 	# 隠し床
+	{f015} 4 1 	# Version
+	{_eof} 
+}
+# TekiInfo
+{
+	4 	# num
+	SnakeCrow_suit_fire 10 	# weight
+	0 	# type
+	SnakeCrow 10
+	0
+	Hiba 8 	# weight
+	6 	# type
+	Nekojarashi 40
+	1
+}
+# ItemInfo
+{
+	0 	# num
+}
+# GateInfo
+{
+	0 	# num
+}
+# CapInfo
+{
+	1 	# num
+	0
+	egg 10
+	1
+}

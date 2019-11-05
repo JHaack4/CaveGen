@@ -1,0 +1,971 @@
+
+###############################################################################
+#
+# wszst settings:
+# ---------------
+#
+# This is the settings file for wszst (tool of "Wiimms SZS Tools"). It
+# was created by the EXTRACT command and is needed by the CREATE command
+# to rebuild the original source archive with or without modifications.
+# You can edit it, if you know what you do.
+#
+###############################################################################
+
+# The first part contains some general settings:
+
+# The internal archive format (U8, WU8, BRRES, BREFF or BREFT):
+archive-format = RARC
+
+# The file format (YAZ0, YAZ1 or BZ for a compressed archive, other ignored):
+file-format = YAZ0
+
+# An archive format related version number (-1: unknown or not relevant)
+version = -1
+
+# For U8+WU8 archives: Is there a special '.' base directory:
+have-pt-dir = 0
+
+# The minimum and maximum file data positions:
+min-data-offset = 0x0
+max-data-offset = 0x0
+
+# The calculated alignment of all files:
+data-align = 0x20
+
+###############################################################################
+#
+# Some general rules for the next sections:
+#   All pathes are relative to the current base directory (directory that
+#   contains the file wszst-setup.txt). Prefix at least pathes that starts
+#   not with a letter, digit, point, star or underscore with "./".
+#
+#------------------------------------------------------------------------------
+
+[include-pattern]
+
+# All files and directories start with a . are hidden (unix like) and excluded
+# automatically. But filenames in one of the include sections are included
+# independent of this point. Also the include sections takes precedence over
+# the exclude sections.
+
+# This section expects file patterns with wildcards.
+
+#------------------------------------------------------------------------------
+
+[include]
+
+# This second include section accpepts only complete file names and none of
+# characters have any special meaning.
+
+
+#------------------------------------------------------------------------------
+
+[exclude-pattern]
+
+# Files and directories in this section are ignored by the CREATE command.
+# The include sections takes precedence over the exclude sections.
+
+# This section expects file patterns with wildcards.
+# Here we exclude all original, backup and temp files:
+
+*.orig
+*.bak
+*.tmp
+*.temp
+
+# Exclude all *.d directories. To enable it, remove "# " at the beginning.
+# *.d
+
+# Exclude all PNG files. The intention is to allow the creation of new PNG
+# images and mipmap files without any need to edit this setup file. All
+# extracted PNG files are automatically listed in the [exclude] section.
+# So the exclusion of all PNG is not really needed, but may help. The second
+# (disabled) line is an alternative to exclude all mipmap PNG files.
+
+*.png
+# *.mm#.png
+
+#------------------------------------------------------------------------------
+
+[exclude]
+
+# Files and directories in this section are ignored by the CREATE command.
+# This second exclude section accepts only complete file names and none of
+# characters have any special meaning.
+
+./ahiru/texture.bti.d
+./ahiru_head/texture.bti.d
+./akagai/texture.bti.d
+./apple/texture.bti.d
+./apple_blue/texture.bti.d
+./badminton/texture.bti.d
+./bane/texture.bti.d
+./bane_blue/texture.bti.d
+./bane_red/texture.bti.d
+./bane_yellow/texture.bti.d
+./baum_kuchen/texture.bti.d
+./baum_kuchen_s/texture.bti.d
+./be_dama_blue/texture.bti.d
+./be_dama_blue_l/texture.bti.d
+./be_dama_red/texture.bti.d
+./be_dama_red_l/texture.bti.d
+./be_dama_yellow/texture.bti.d
+./be_dama_yellow_l/texture.bti.d
+./bell/texture.bti.d
+./bell_blue/texture.bti.d
+./bell_red/texture.bti.d
+./bell_yellow/texture.bti.d
+./bey_goma/texture.bti.d
+./bird_hane/texture.bti.d
+./bolt/texture.bti.d
+./bolt_l/texture.bti.d
+./castanets/texture.bti.d
+./channel/texture.bti.d
+./chess_king_black/texture.bti.d
+./chess_king_white/texture.bti.d
+./chess_queen_black/texture.bti.d
+./chess_queen_white/texture.bti.d
+./chocoichigo/texture.bti.d
+./chocoichigo_l/texture.bti.d
+./chocolate/texture.bti.d
+./chocolate_l/texture.bti.d
+./chocowhite/texture.bti.d
+./chocowhite_l/texture.bti.d
+./compact/texture.bti.d
+./compact_make/texture.bti.d
+./cookie/texture.bti.d
+./cookie_m_l/texture.bti.d
+./cookie_s/texture.bti.d
+./cookie_s_l/texture.bti.d
+./cookie_u/texture.bti.d
+./cookie_u_l/texture.bti.d
+./creap/texture.bti.d
+./dashboots/texture.bti.d
+./denchi_1_black/texture.bti.d
+./denchi_1_red/texture.bti.d
+./denchi_2_black/texture.bti.d
+./denchi_2_red/texture.bti.d
+./denchi_3_black/texture.bti.d
+./denchi_3_red/texture.bti.d
+./dia_a_blue/texture.bti.d
+./dia_a_green/texture.bti.d
+./dia_a_red/texture.bti.d
+./dia_b_blue/texture.bti.d
+./dia_b_green/texture.bti.d
+./dia_b_red/texture.bti.d
+./dia_c_blue/texture.bti.d
+./dia_c_green/texture.bti.d
+./dia_c_red/texture.bti.d
+./diamond_blue/texture.bti.d
+./diamond_blue_l/texture.bti.d
+./diamond_green/texture.bti.d
+./diamond_green_l/texture.bti.d
+./diamond_red/texture.bti.d
+./diamond_red_l/texture.bti.d
+./doll/texture.bti.d
+./donguri/texture.bti.d
+./donguri_l/texture.bti.d
+./donutschoco/texture.bti.d
+./donutschoco_s/texture.bti.d
+./donutsichigo/texture.bti.d
+./donutsichigo_s/texture.bti.d
+./donutswhite/texture.bti.d
+./donutswhite_s/texture.bti.d
+./elec/texture.bti.d
+./fire/texture.bti.d
+./fire_helmet/texture.bti.d
+./flask/texture.bti.d
+./flower_blue/texture.bti.d
+./flower_red/texture.bti.d
+./fue_a/texture.bti.d
+./fue_b/texture.bti.d
+./fue_pullout/texture.bti.d
+./fue_wide/texture.bti.d
+./futa_a_gold/texture.bti.d
+./futa_a_silver/texture.bti.d
+./g_futa_daisen/texture.bti.d
+./g_futa_hirosima/texture.bti.d
+./g_futa_hiruzen/texture.bti.d
+./g_futa_kajiwara/texture.bti.d
+./g_futa_kitaama/texture.bti.d
+./g_futa_koiwai/texture.bti.d
+./g_futa_kyodo/texture.bti.d
+./g_futa_kyosin/texture.bti.d
+./g_futa_kyusyu/texture.bti.d
+./g_futa_nihonraku/texture.bti.d
+./g_futa_sakotani/texture.bti.d
+./g_futa_sikoku/texture.bti.d
+./g_futa_titiyas/texture.bti.d
+./gas/texture.bti.d
+./gear/texture.bti.d
+./gear_silver/texture.bti.d
+./gold_medal/texture.bti.d
+./gum_tape/texture.bti.d
+./gum_tape_s/texture.bti.d
+./halloween/texture.bti.d
+./haniwa/texture.bti.d
+./hotate/texture.bti.d
+./ichigo/texture.bti.d
+./ichigo_l/texture.bti.d
+./j_block_blue/texture.bti.d
+./j_block_green/texture.bti.d
+./j_block_red/texture.bti.d
+./j_block_white/texture.bti.d
+./j_block_yellow/texture.bti.d
+./juji_key/texture.bti.d
+./juji_key_fc/texture.bti.d
+./kan/texture.bti.d
+./kan_b_gold/texture.bti.d
+./kan_b_silver/texture.bti.d
+./kan_imuraya/texture.bti.d
+./kan_iwate/texture.bti.d
+./kan_kyokuyo/texture.bti.d
+./kan_maruha/texture.bti.d
+./kan_meidiya/texture.bti.d
+./kan_nichiro/texture.bti.d
+./key/texture.bti.d
+./kinoko/texture.bti.d
+./kinoko_doku/texture.bti.d
+./kinoko_tubu/texture.bti.d
+./kouseki_suisyou/texture.bti.d
+./kumakibori/texture.bti.d
+./kuri/texture.bti.d
+./leaf_kare/texture.bti.d
+./leaf_normal/texture.bti.d
+./leaf_yellow/texture.bti.d
+./light_a/texture.bti.d
+./locket/texture.bti.d
+./loozy/texture.bti.d
+./makigai/texture.bti.d
+./map01/texture.bti.d
+./map02/texture.bti.d
+./matu_bokkuri/texture.bti.d
+./medama_yaki/texture.bti.d
+./milk_cap/texture.bti.d
+./mojiban/texture.bti.d
+./momiji_kare/texture.bti.d
+./momiji_normal/texture.bti.d
+./momiji_red/texture.bti.d
+./nut/texture.bti.d
+./nut_l/texture.bti.d
+./otama/texture.bti.d
+./radar_a/texture.bti.d
+./radar_b/texture.bti.d
+./robot_head/texture.bti.d
+./saru_head/texture.bti.d
+./sensya/texture.bti.d
+./silver_medal/texture.bti.d
+./sinjyu/texture.bti.d
+./sinkukan/texture.bti.d
+./sinkukan_b/texture.bti.d
+./sinkukan_c/texture.bti.d
+./suit_fire/texture.bti.d
+./suit_powerup/texture.bti.d
+./tape_blue/texture.bti.d
+./tape_red/texture.bti.d
+./tape_yellow/texture.bti.d
+./tatebue/texture.bti.d
+./teala_dia_a/texture.bti.d
+./teala_dia_b/texture.bti.d
+./teala_dia_c/texture.bti.d
+./teala_dia_d/texture.bti.d
+./teki_carcass/texture.bti.d
+./tel_dial/texture.bti.d
+./toy_cat/texture.bti.d
+./toy_dog/texture.bti.d
+./toy_gentle/texture.bti.d
+./toy_lady/texture.bti.d
+./toy_ring_a_blue/texture.bti.d
+./toy_ring_a_green/texture.bti.d
+./toy_ring_a_red/texture.bti.d
+./toy_ring_b_blue/texture.bti.d
+./toy_ring_b_green/texture.bti.d
+./toy_ring_b_red/texture.bti.d
+./toy_ring_c_blue/texture.bti.d
+./toy_ring_c_green/texture.bti.d
+./toy_ring_c_red/texture.bti.d
+./toy_teala/texture.bti.d
+./turi_uki/texture.bti.d
+./uji_jisyaku/texture.bti.d
+./wadou_kaichin/texture.bti.d
+./watch/texture.bti.d
+./water/texture.bti.d
+./whistle/texture.bti.d
+./wszst-setup.txt
+./xmas_item/texture.bti.d
+./yoyo_blue/texture.bti.d
+./yoyo_red/texture.bti.d
+./yoyo_yellow/texture.bti.d
+
+#------------------------------------------------------------------------------
+
+[encode]
+
+# Encode (and overwrite without notice) the listed files before adding them
+# to the new archive. The source is searched under the same filename with the
+# correct source extension added or, if this failed, a replaced extension.
+#   Example: For "message.bmg" search files "message.bmg.txt" or "message.txt"
+# The source file itself is set on the exclude list and will not stored into
+# the new archive.
+#
+# The syntax of this file section is a little bit different as the other file
+# sections. Each line begins with a comma separated list of keywords followed
+# by an equal sign.
+#   Syntax:  COMMA_SEPARATED_FORMAT_LIST = relative_filename
+#   Example: BREFT,IA8,3 = ./files/rk_steam
+# The first keyword is the file format. The following keywords describe sub
+# formats. An additonal integer is a file type specific information:
+#  -> For image files it is the number of images (main image + mipmaps).
+#     A value of 0 means: Use the tools default (see option --n-mipmaps).
+#
+# A file is only encoded if the destination does not exist or if the source
+# is younger than the destination. Encoding can be controlled by options
+# --no-encode, --encode-img and --encode-all (short: --noenc --eimg --eall).
+
+BTI,RGB5A3,1	= ./ahiru/texture.bti
+BTI,RGB5A3,1	= ./ahiru_head/texture.bti
+BTI,RGB5A3,1	= ./akagai/texture.bti
+BTI,RGB5A3,1	= ./apple/texture.bti
+BTI,RGB5A3,1	= ./apple_blue/texture.bti
+BTI,RGB5A3,1	= ./badminton/texture.bti
+BTI,RGB5A3,1	= ./bane/texture.bti
+BTI,RGB5A3,1	= ./bane_blue/texture.bti
+BTI,RGB5A3,1	= ./bane_red/texture.bti
+BTI,RGB5A3,1	= ./bane_yellow/texture.bti
+BTI,RGB5A3,1	= ./baum_kuchen/texture.bti
+BTI,RGB5A3,1	= ./baum_kuchen_s/texture.bti
+BTI,RGB5A3,1	= ./be_dama_blue/texture.bti
+BTI,RGB5A3,1	= ./be_dama_blue_l/texture.bti
+BTI,RGB5A3,1	= ./be_dama_red/texture.bti
+BTI,RGB5A3,1	= ./be_dama_red_l/texture.bti
+BTI,RGB5A3,1	= ./be_dama_yellow/texture.bti
+BTI,RGB5A3,1	= ./be_dama_yellow_l/texture.bti
+BTI,RGB5A3,1	= ./bell/texture.bti
+BTI,RGB5A3,1	= ./bell_blue/texture.bti
+BTI,RGB5A3,1	= ./bell_red/texture.bti
+BTI,RGB5A3,1	= ./bell_yellow/texture.bti
+BTI,RGB5A3,1	= ./bey_goma/texture.bti
+BTI,RGB5A3,1	= ./bird_hane/texture.bti
+BTI,RGB5A3,1	= ./bolt/texture.bti
+BTI,RGB5A3,1	= ./bolt_l/texture.bti
+BTI,RGB5A3,1	= ./castanets/texture.bti
+BTI,RGB5A3,1	= ./channel/texture.bti
+BTI,RGB5A3,1	= ./chess_king_black/texture.bti
+BTI,RGB5A3,1	= ./chess_king_white/texture.bti
+BTI,RGB5A3,1	= ./chess_queen_black/texture.bti
+BTI,RGB5A3,1	= ./chess_queen_white/texture.bti
+BTI,RGB5A3,1	= ./chocoichigo/texture.bti
+BTI,RGB5A3,1	= ./chocoichigo_l/texture.bti
+BTI,RGB5A3,1	= ./chocolate/texture.bti
+BTI,RGB5A3,1	= ./chocolate_l/texture.bti
+BTI,RGB5A3,1	= ./chocowhite/texture.bti
+BTI,RGB5A3,1	= ./chocowhite_l/texture.bti
+BTI,RGB5A3,1	= ./compact/texture.bti
+BTI,RGB5A3,1	= ./compact_make/texture.bti
+BTI,RGB5A3,1	= ./cookie/texture.bti
+BTI,RGB5A3,1	= ./cookie_m_l/texture.bti
+BTI,RGB5A3,1	= ./cookie_s/texture.bti
+BTI,RGB5A3,1	= ./cookie_s_l/texture.bti
+BTI,RGB5A3,1	= ./cookie_u/texture.bti
+BTI,RGB5A3,1	= ./cookie_u_l/texture.bti
+BTI,RGB5A3,1	= ./creap/texture.bti
+BTI,RGB5A3,1	= ./dashboots/texture.bti
+BTI,RGB5A3,1	= ./denchi_1_black/texture.bti
+BTI,RGB5A3,1	= ./denchi_1_red/texture.bti
+BTI,RGB5A3,1	= ./denchi_2_black/texture.bti
+BTI,RGB5A3,1	= ./denchi_2_red/texture.bti
+BTI,RGB5A3,1	= ./denchi_3_black/texture.bti
+BTI,RGB5A3,1	= ./denchi_3_red/texture.bti
+BTI,RGB5A3,1	= ./dia_a_blue/texture.bti
+BTI,RGB5A3,1	= ./dia_a_green/texture.bti
+BTI,RGB5A3,1	= ./dia_a_red/texture.bti
+BTI,RGB5A3,1	= ./dia_b_blue/texture.bti
+BTI,RGB5A3,1	= ./dia_b_green/texture.bti
+BTI,RGB5A3,1	= ./dia_b_red/texture.bti
+BTI,RGB5A3,1	= ./dia_c_blue/texture.bti
+BTI,RGB5A3,1	= ./dia_c_green/texture.bti
+BTI,RGB5A3,1	= ./dia_c_red/texture.bti
+BTI,RGB5A3,1	= ./diamond_blue/texture.bti
+BTI,RGB5A3,1	= ./diamond_blue_l/texture.bti
+BTI,RGB5A3,1	= ./diamond_green/texture.bti
+BTI,RGB5A3,1	= ./diamond_green_l/texture.bti
+BTI,RGB5A3,1	= ./diamond_red/texture.bti
+BTI,RGB5A3,1	= ./diamond_red_l/texture.bti
+BTI,RGB5A3,1	= ./doll/texture.bti
+BTI,RGB5A3,1	= ./donguri/texture.bti
+BTI,RGB5A3,1	= ./donguri_l/texture.bti
+BTI,RGB5A3,1	= ./donutschoco/texture.bti
+BTI,RGB5A3,1	= ./donutschoco_s/texture.bti
+BTI,RGB5A3,1	= ./donutsichigo/texture.bti
+BTI,RGB5A3,1	= ./donutsichigo_s/texture.bti
+BTI,RGB5A3,1	= ./donutswhite/texture.bti
+BTI,RGB5A3,1	= ./donutswhite_s/texture.bti
+BTI,RGB5A3,1	= ./elec/texture.bti
+BTI,RGB5A3,1	= ./fire/texture.bti
+BTI,RGB5A3,1	= ./fire_helmet/texture.bti
+BTI,RGB5A3,1	= ./flask/texture.bti
+BTI,RGB5A3,1	= ./flower_blue/texture.bti
+BTI,RGB5A3,1	= ./flower_red/texture.bti
+BTI,RGB5A3,1	= ./fue_a/texture.bti
+BTI,RGB5A3,1	= ./fue_b/texture.bti
+BTI,RGB5A3,1	= ./fue_pullout/texture.bti
+BTI,RGB5A3,1	= ./fue_wide/texture.bti
+BTI,RGB5A3,1	= ./futa_a_gold/texture.bti
+BTI,RGB5A3,1	= ./futa_a_silver/texture.bti
+BTI,RGB5A3,1	= ./g_futa_daisen/texture.bti
+BTI,RGB5A3,1	= ./g_futa_hirosima/texture.bti
+BTI,RGB5A3,1	= ./g_futa_hiruzen/texture.bti
+BTI,RGB5A3,1	= ./g_futa_kajiwara/texture.bti
+BTI,RGB5A3,1	= ./g_futa_kitaama/texture.bti
+BTI,RGB5A3,1	= ./g_futa_koiwai/texture.bti
+BTI,RGB5A3,1	= ./g_futa_kyodo/texture.bti
+BTI,RGB5A3,1	= ./g_futa_kyosin/texture.bti
+BTI,RGB5A3,1	= ./g_futa_kyusyu/texture.bti
+BTI,RGB5A3,1	= ./g_futa_nihonraku/texture.bti
+BTI,RGB5A3,1	= ./g_futa_sakotani/texture.bti
+BTI,RGB5A3,1	= ./g_futa_sikoku/texture.bti
+BTI,RGB5A3,1	= ./g_futa_titiyas/texture.bti
+BTI,RGB5A3,1	= ./gas/texture.bti
+BTI,RGB5A3,1	= ./gear/texture.bti
+BTI,RGB5A3,1	= ./gear_silver/texture.bti
+BTI,RGB5A3,1	= ./gold_medal/texture.bti
+BTI,RGB5A3,1	= ./gum_tape/texture.bti
+BTI,RGB5A3,1	= ./gum_tape_s/texture.bti
+BTI,RGB5A3,1	= ./halloween/texture.bti
+BTI,RGB5A3,1	= ./haniwa/texture.bti
+BTI,RGB5A3,1	= ./hotate/texture.bti
+BTI,RGB5A3,1	= ./ichigo/texture.bti
+BTI,RGB5A3,1	= ./ichigo_l/texture.bti
+BTI,RGB5A3,1	= ./j_block_blue/texture.bti
+BTI,RGB5A3,1	= ./j_block_green/texture.bti
+BTI,RGB5A3,1	= ./j_block_red/texture.bti
+BTI,IA4,1	= ./j_block_white/texture.bti
+BTI,RGB5A3,1	= ./j_block_yellow/texture.bti
+BTI,IA4,1	= ./juji_key/texture.bti
+BTI,RGB5A3,1	= ./juji_key_fc/texture.bti
+BTI,RGB5A3,1	= ./kan/texture.bti
+BTI,RGB5A3,1	= ./kan_b_gold/texture.bti
+BTI,RGB5A3,1	= ./kan_b_silver/texture.bti
+BTI,RGB5A3,1	= ./kan_imuraya/texture.bti
+BTI,RGB5A3,1	= ./kan_iwate/texture.bti
+BTI,RGB5A3,1	= ./kan_kyokuyo/texture.bti
+BTI,RGB5A3,1	= ./kan_maruha/texture.bti
+BTI,RGB5A3,1	= ./kan_meidiya/texture.bti
+BTI,RGB5A3,1	= ./kan_nichiro/texture.bti
+BTI,RGB5A3,1	= ./key/texture.bti
+BTI,RGB5A3,1	= ./kinoko/texture.bti
+BTI,RGB5A3,1	= ./kinoko_doku/texture.bti
+BTI,RGB5A3,1	= ./kinoko_tubu/texture.bti
+BTI,RGB5A3,1	= ./kouseki_suisyou/texture.bti
+BTI,RGB5A3,1	= ./kumakibori/texture.bti
+BTI,RGB5A3,1	= ./kuri/texture.bti
+BTI,RGB5A3,1	= ./leaf_kare/texture.bti
+BTI,RGB5A3,1	= ./leaf_normal/texture.bti
+BTI,RGB5A3,1	= ./leaf_yellow/texture.bti
+BTI,RGB5A3,1	= ./light_a/texture.bti
+BTI,RGB5A3,1	= ./locket/texture.bti
+BTI,RGB5A3,1	= ./loozy/texture.bti
+BTI,RGB5A3,1	= ./makigai/texture.bti
+BTI,RGB5A3,1	= ./map01/texture.bti
+BTI,RGB5A3,1	= ./map02/texture.bti
+BTI,RGB5A3,1	= ./matu_bokkuri/texture.bti
+BTI,RGB5A3,1	= ./medama_yaki/texture.bti
+BTI,RGB5A3,1	= ./milk_cap/texture.bti
+BTI,RGB5A3,1	= ./mojiban/texture.bti
+BTI,RGB5A3,1	= ./momiji_kare/texture.bti
+BTI,RGB5A3,1	= ./momiji_normal/texture.bti
+BTI,RGB5A3,1	= ./momiji_red/texture.bti
+BTI,RGB5A3,1	= ./nut/texture.bti
+BTI,RGB5A3,1	= ./nut_l/texture.bti
+BTI,RGB5A3,1	= ./otama/texture.bti
+BTI,RGB5A3,1	= ./radar_a/texture.bti
+BTI,RGB5A3,1	= ./radar_b/texture.bti
+BTI,RGB5A3,1	= ./robot_head/texture.bti
+BTI,RGB5A3,1	= ./saru_head/texture.bti
+BTI,RGB5A3,1	= ./sensya/texture.bti
+BTI,RGB5A3,1	= ./silver_medal/texture.bti
+BTI,RGB5A3,1	= ./sinjyu/texture.bti
+BTI,RGB5A3,1	= ./sinkukan/texture.bti
+BTI,RGB5A3,1	= ./sinkukan_b/texture.bti
+BTI,RGB5A3,1	= ./sinkukan_c/texture.bti
+BTI,RGB5A3,1	= ./suit_fire/texture.bti
+BTI,RGB5A3,1	= ./suit_powerup/texture.bti
+BTI,RGB5A3,1	= ./tape_blue/texture.bti
+BTI,RGB5A3,1	= ./tape_red/texture.bti
+BTI,RGB5A3,1	= ./tape_yellow/texture.bti
+BTI,RGB5A3,1	= ./tatebue/texture.bti
+BTI,RGB5A3,1	= ./teala_dia_a/texture.bti
+BTI,RGB5A3,1	= ./teala_dia_b/texture.bti
+BTI,RGB5A3,1	= ./teala_dia_c/texture.bti
+BTI,RGB5A3,1	= ./teala_dia_d/texture.bti
+BTI,RGB5A3,1	= ./teki_carcass/texture.bti
+BTI,RGB5A3,1	= ./tel_dial/texture.bti
+BTI,RGB5A3,1	= ./toy_cat/texture.bti
+BTI,RGB5A3,1	= ./toy_dog/texture.bti
+BTI,RGB5A3,1	= ./toy_gentle/texture.bti
+BTI,RGB5A3,1	= ./toy_lady/texture.bti
+BTI,RGB5A3,1	= ./toy_ring_a_blue/texture.bti
+BTI,RGB5A3,1	= ./toy_ring_a_green/texture.bti
+BTI,RGB5A3,1	= ./toy_ring_a_red/texture.bti
+BTI,RGB5A3,1	= ./toy_ring_b_blue/texture.bti
+BTI,RGB5A3,1	= ./toy_ring_b_green/texture.bti
+BTI,RGB5A3,1	= ./toy_ring_b_red/texture.bti
+BTI,RGB5A3,1	= ./toy_ring_c_blue/texture.bti
+BTI,RGB5A3,1	= ./toy_ring_c_green/texture.bti
+BTI,RGB5A3,1	= ./toy_ring_c_red/texture.bti
+BTI,RGB5A3,1	= ./toy_teala/texture.bti
+BTI,RGB5A3,1	= ./turi_uki/texture.bti
+BTI,RGB5A3,1	= ./uji_jisyaku/texture.bti
+BTI,RGB5A3,1	= ./wadou_kaichin/texture.bti
+BTI,RGB5A3,1	= ./watch/texture.bti
+BTI,RGB5A3,1	= ./water/texture.bti
+BTI,RGB5A3,1	= ./whistle/texture.bti
+BTI,RGB5A3,1	= ./xmas_item/texture.bti
+BTI,RGB5A3,1	= ./yoyo_blue/texture.bti
+BTI,RGB5A3,1	= ./yoyo_red/texture.bti
+BTI,RGB5A3,1	= ./yoyo_yellow/texture.bti
+
+#------------------------------------------------------------------------------
+
+[create]
+
+# Create (and overwrite without notice) the listed files before adding them to
+# the new archive. The source directory is searched under the same filename
+# with an appended ".d" or, if this fails, with an extension replaced by ".d".
+# If a source directory does not exist, the job is ignored silently.
+#   Example: For "my.brres" search directories "my.brres.d" or "my.d"
+# The source directory itself is set on the exclude list and will not stored
+# into the new archive. Creating can be controlled by the options:
+#   --no-recurse  : Do not create archives recursively.
+#   --no-encode   : Do not encode files before creating an archive.
+#   --encode-img  : Encode all image files (TEX,TPL,BREFT/sub), overrides --no-encode.
+#   --encode-all  : Encode all files and ignore timestamps.
+#   --pt-dir      : Set `point directory' mode.
+#   --u8          : Create an U8 archive.
+#   --brres       : Create an BRRES archive.
+#   --breff       : Create an BREFF archive.
+#   --breft       : Create an BREFT archive.
+#   --no-compress : Create an uncompressed file (U8 instead of SZS).
+#   ...
+
+
+#------------------------------------------------------------------------------
+
+[order]
+
+# This list contains all extracted files in the order of the original archive.
+# If creating archives (but not U8) this list will be used to sort the found
+# files. For archives with directory support (all but not PACK) it is very
+# important, that the directories are listed before the files that resides in
+# the directories.
+#
+# The value before the equal sign is the file offset in the original archive
+# and is ignored for sorting.
+
+		= ./ahiru/
+    0x5ea0	= ./ahiru/texture.bti
+		= ./ahiru_head/
+    0x66c0	= ./ahiru_head/texture.bti
+		= ./akagai/
+    0x6ee0	= ./akagai/texture.bti
+		= ./apple/
+    0x7700	= ./apple/texture.bti
+		= ./apple_blue/
+    0x7f20	= ./apple_blue/texture.bti
+		= ./badminton/
+    0x8740	= ./badminton/texture.bti
+		= ./bane/
+    0x8f60	= ./bane/texture.bti
+		= ./bane_blue/
+    0x9780	= ./bane_blue/texture.bti
+		= ./bane_red/
+    0x9fa0	= ./bane_red/texture.bti
+		= ./bane_yellow/
+    0xa7c0	= ./bane_yellow/texture.bti
+		= ./baum_kuchen/
+    0xafe0	= ./baum_kuchen/texture.bti
+		= ./baum_kuchen_s/
+    0xb800	= ./baum_kuchen_s/texture.bti
+		= ./bell/
+    0xc020	= ./bell/texture.bti
+		= ./bell_blue/
+    0xc840	= ./bell_blue/texture.bti
+		= ./bell_red/
+    0xd060	= ./bell_red/texture.bti
+		= ./bell_yellow/
+    0xd880	= ./bell_yellow/texture.bti
+		= ./bey_goma/
+    0xe0a0	= ./bey_goma/texture.bti
+		= ./be_dama_blue/
+    0xe8c0	= ./be_dama_blue/texture.bti
+		= ./be_dama_blue_l/
+    0xf0e0	= ./be_dama_blue_l/texture.bti
+		= ./be_dama_red/
+    0xf900	= ./be_dama_red/texture.bti
+		= ./be_dama_red_l/
+   0x10120	= ./be_dama_red_l/texture.bti
+		= ./be_dama_yellow/
+   0x10940	= ./be_dama_yellow/texture.bti
+		= ./be_dama_yellow_l/
+   0x11160	= ./be_dama_yellow_l/texture.bti
+		= ./bird_hane/
+   0x11980	= ./bird_hane/texture.bti
+		= ./bolt/
+   0x121a0	= ./bolt/texture.bti
+		= ./bolt_l/
+   0x129c0	= ./bolt_l/texture.bti
+		= ./castanets/
+   0x131e0	= ./castanets/texture.bti
+		= ./channel/
+   0x13a00	= ./channel/texture.bti
+		= ./chess_king_black/
+   0x14220	= ./chess_king_black/texture.bti
+		= ./chess_king_white/
+   0x14a40	= ./chess_king_white/texture.bti
+		= ./chess_queen_black/
+   0x15260	= ./chess_queen_black/texture.bti
+		= ./chess_queen_white/
+   0x15a80	= ./chess_queen_white/texture.bti
+		= ./chocoichigo/
+   0x162a0	= ./chocoichigo/texture.bti
+		= ./chocoichigo_l/
+   0x16ac0	= ./chocoichigo_l/texture.bti
+		= ./chocolate/
+   0x172e0	= ./chocolate/texture.bti
+		= ./chocolate_l/
+   0x17b00	= ./chocolate_l/texture.bti
+		= ./chocowhite/
+   0x18320	= ./chocowhite/texture.bti
+		= ./chocowhite_l/
+   0x18b40	= ./chocowhite_l/texture.bti
+		= ./compact/
+   0x19360	= ./compact/texture.bti
+		= ./compact_make/
+   0x19b80	= ./compact_make/texture.bti
+		= ./cookie/
+   0x1a3a0	= ./cookie/texture.bti
+		= ./cookie_m_l/
+   0x1abc0	= ./cookie_m_l/texture.bti
+		= ./cookie_s/
+   0x1b3e0	= ./cookie_s/texture.bti
+		= ./cookie_s_l/
+   0x1bc00	= ./cookie_s_l/texture.bti
+		= ./cookie_u/
+   0x1c420	= ./cookie_u/texture.bti
+		= ./cookie_u_l/
+   0x1cc40	= ./cookie_u_l/texture.bti
+		= ./creap/
+   0x1d460	= ./creap/texture.bti
+		= ./dashboots/
+   0x1dc80	= ./dashboots/texture.bti
+		= ./denchi_1_black/
+   0x1e4a0	= ./denchi_1_black/texture.bti
+		= ./denchi_1_red/
+   0x1ecc0	= ./denchi_1_red/texture.bti
+		= ./denchi_2_black/
+   0x1f4e0	= ./denchi_2_black/texture.bti
+		= ./denchi_2_red/
+   0x1fd00	= ./denchi_2_red/texture.bti
+		= ./denchi_3_black/
+   0x20520	= ./denchi_3_black/texture.bti
+		= ./denchi_3_red/
+   0x20d40	= ./denchi_3_red/texture.bti
+		= ./diamond_blue/
+   0x21560	= ./diamond_blue/texture.bti
+		= ./diamond_blue_l/
+   0x21d80	= ./diamond_blue_l/texture.bti
+		= ./diamond_green/
+   0x225a0	= ./diamond_green/texture.bti
+		= ./diamond_green_l/
+   0x22dc0	= ./diamond_green_l/texture.bti
+		= ./diamond_red/
+   0x235e0	= ./diamond_red/texture.bti
+		= ./diamond_red_l/
+   0x23e00	= ./diamond_red_l/texture.bti
+		= ./dia_a_blue/
+   0x24620	= ./dia_a_blue/texture.bti
+		= ./dia_a_green/
+   0x24e40	= ./dia_a_green/texture.bti
+		= ./dia_a_red/
+   0x25660	= ./dia_a_red/texture.bti
+		= ./dia_b_blue/
+   0x25e80	= ./dia_b_blue/texture.bti
+		= ./dia_b_green/
+   0x266a0	= ./dia_b_green/texture.bti
+		= ./dia_b_red/
+   0x26ec0	= ./dia_b_red/texture.bti
+		= ./dia_c_blue/
+   0x276e0	= ./dia_c_blue/texture.bti
+		= ./dia_c_green/
+   0x27f00	= ./dia_c_green/texture.bti
+		= ./dia_c_red/
+   0x28720	= ./dia_c_red/texture.bti
+		= ./doll/
+   0x28f40	= ./doll/texture.bti
+		= ./donguri/
+   0x29760	= ./donguri/texture.bti
+		= ./donguri_l/
+   0x29f80	= ./donguri_l/texture.bti
+		= ./donutschoco/
+   0x2a7a0	= ./donutschoco/texture.bti
+		= ./donutschoco_s/
+   0x2afc0	= ./donutschoco_s/texture.bti
+		= ./donutsichigo/
+   0x2b7e0	= ./donutsichigo/texture.bti
+		= ./donutsichigo_s/
+   0x2c000	= ./donutsichigo_s/texture.bti
+		= ./donutswhite/
+   0x2c820	= ./donutswhite/texture.bti
+		= ./donutswhite_s/
+   0x2d040	= ./donutswhite_s/texture.bti
+		= ./elec/
+   0x2d860	= ./elec/texture.bti
+		= ./fire/
+   0x2e080	= ./fire/texture.bti
+		= ./fire_helmet/
+   0x2e8a0	= ./fire_helmet/texture.bti
+		= ./flask/
+   0x2f0c0	= ./flask/texture.bti
+		= ./flower_blue/
+   0x2f8e0	= ./flower_blue/texture.bti
+		= ./flower_red/
+   0x30100	= ./flower_red/texture.bti
+		= ./fue_a/
+   0x30920	= ./fue_a/texture.bti
+		= ./fue_b/
+   0x31140	= ./fue_b/texture.bti
+		= ./fue_pullout/
+   0x31960	= ./fue_pullout/texture.bti
+		= ./fue_wide/
+   0x32180	= ./fue_wide/texture.bti
+		= ./futa_a_gold/
+   0x329a0	= ./futa_a_gold/texture.bti
+		= ./futa_a_silver/
+   0x331c0	= ./futa_a_silver/texture.bti
+		= ./gas/
+   0x339e0	= ./gas/texture.bti
+		= ./gear/
+   0x34200	= ./gear/texture.bti
+		= ./gear_silver/
+   0x34a20	= ./gear_silver/texture.bti
+		= ./gold_medal/
+   0x35240	= ./gold_medal/texture.bti
+		= ./gum_tape/
+   0x35a60	= ./gum_tape/texture.bti
+		= ./gum_tape_s/
+   0x36280	= ./gum_tape_s/texture.bti
+		= ./g_futa_daisen/
+   0x36aa0	= ./g_futa_daisen/texture.bti
+		= ./g_futa_hirosima/
+   0x372c0	= ./g_futa_hirosima/texture.bti
+		= ./g_futa_hiruzen/
+   0x37ae0	= ./g_futa_hiruzen/texture.bti
+		= ./g_futa_kajiwara/
+   0x38300	= ./g_futa_kajiwara/texture.bti
+		= ./g_futa_kitaama/
+   0x38b20	= ./g_futa_kitaama/texture.bti
+		= ./g_futa_koiwai/
+   0x39340	= ./g_futa_koiwai/texture.bti
+		= ./g_futa_kyodo/
+   0x39b60	= ./g_futa_kyodo/texture.bti
+		= ./g_futa_kyosin/
+   0x3a380	= ./g_futa_kyosin/texture.bti
+		= ./g_futa_kyusyu/
+   0x3aba0	= ./g_futa_kyusyu/texture.bti
+		= ./g_futa_nihonraku/
+   0x3b3c0	= ./g_futa_nihonraku/texture.bti
+		= ./g_futa_sakotani/
+   0x3bbe0	= ./g_futa_sakotani/texture.bti
+		= ./g_futa_sikoku/
+   0x3c400	= ./g_futa_sikoku/texture.bti
+		= ./g_futa_titiyas/
+   0x3cc20	= ./g_futa_titiyas/texture.bti
+		= ./halloween/
+   0x3d440	= ./halloween/texture.bti
+		= ./haniwa/
+   0x3dc60	= ./haniwa/texture.bti
+		= ./hotate/
+   0x3e480	= ./hotate/texture.bti
+		= ./ichigo/
+   0x3eca0	= ./ichigo/texture.bti
+		= ./ichigo_l/
+   0x3f4c0	= ./ichigo_l/texture.bti
+		= ./juji_key/
+   0x3fce0	= ./juji_key/texture.bti
+		= ./juji_key_fc/
+   0x40100	= ./juji_key_fc/texture.bti
+		= ./j_block_blue/
+   0x40920	= ./j_block_blue/texture.bti
+		= ./j_block_green/
+   0x41140	= ./j_block_green/texture.bti
+		= ./j_block_red/
+   0x41960	= ./j_block_red/texture.bti
+		= ./j_block_white/
+   0x42180	= ./j_block_white/texture.bti
+		= ./j_block_yellow/
+   0x425a0	= ./j_block_yellow/texture.bti
+		= ./kan/
+   0x42dc0	= ./kan/texture.bti
+		= ./kan_b_gold/
+   0x435e0	= ./kan_b_gold/texture.bti
+		= ./kan_b_silver/
+   0x43e00	= ./kan_b_silver/texture.bti
+		= ./kan_imuraya/
+   0x44620	= ./kan_imuraya/texture.bti
+		= ./kan_iwate/
+   0x44e40	= ./kan_iwate/texture.bti
+		= ./kan_kyokuyo/
+   0x45660	= ./kan_kyokuyo/texture.bti
+		= ./kan_maruha/
+   0x45e80	= ./kan_maruha/texture.bti
+		= ./kan_meidiya/
+   0x466a0	= ./kan_meidiya/texture.bti
+		= ./kan_nichiro/
+   0x46ec0	= ./kan_nichiro/texture.bti
+		= ./key/
+   0x476e0	= ./key/texture.bti
+		= ./kinoko/
+   0x47f00	= ./kinoko/texture.bti
+		= ./kinoko_doku/
+   0x48720	= ./kinoko_doku/texture.bti
+		= ./kinoko_tubu/
+   0x48f40	= ./kinoko_tubu/texture.bti
+		= ./kouseki_suisyou/
+   0x49760	= ./kouseki_suisyou/texture.bti
+		= ./kumakibori/
+   0x49f80	= ./kumakibori/texture.bti
+		= ./kuri/
+   0x4a7a0	= ./kuri/texture.bti
+		= ./leaf_kare/
+   0x4afc0	= ./leaf_kare/texture.bti
+		= ./leaf_normal/
+   0x4b7e0	= ./leaf_normal/texture.bti
+		= ./leaf_yellow/
+   0x4c000	= ./leaf_yellow/texture.bti
+		= ./light_a/
+   0x4c820	= ./light_a/texture.bti
+		= ./locket/
+   0x4d040	= ./locket/texture.bti
+		= ./loozy/
+   0x4d860	= ./loozy/texture.bti
+		= ./makigai/
+   0x4e080	= ./makigai/texture.bti
+		= ./map01/
+   0x4e8a0	= ./map01/texture.bti
+		= ./map02/
+   0x4f0c0	= ./map02/texture.bti
+		= ./matu_bokkuri/
+   0x4f8e0	= ./matu_bokkuri/texture.bti
+		= ./medama_yaki/
+   0x50100	= ./medama_yaki/texture.bti
+		= ./milk_cap/
+   0x50920	= ./milk_cap/texture.bti
+		= ./mojiban/
+   0x51140	= ./mojiban/texture.bti
+		= ./momiji_kare/
+   0x51960	= ./momiji_kare/texture.bti
+		= ./momiji_normal/
+   0x52180	= ./momiji_normal/texture.bti
+		= ./momiji_red/
+   0x529a0	= ./momiji_red/texture.bti
+		= ./nut/
+   0x531c0	= ./nut/texture.bti
+		= ./nut_l/
+   0x539e0	= ./nut_l/texture.bti
+		= ./otama/
+   0x54200	= ./otama/texture.bti
+		= ./radar_a/
+   0x54a20	= ./radar_a/texture.bti
+		= ./radar_b/
+   0x55240	= ./radar_b/texture.bti
+		= ./robot_head/
+   0x55a60	= ./robot_head/texture.bti
+		= ./saru_head/
+   0x56280	= ./saru_head/texture.bti
+		= ./sensya/
+   0x56aa0	= ./sensya/texture.bti
+		= ./silver_medal/
+   0x572c0	= ./silver_medal/texture.bti
+		= ./sinjyu/
+   0x57ae0	= ./sinjyu/texture.bti
+		= ./sinkukan/
+   0x58300	= ./sinkukan/texture.bti
+		= ./sinkukan_b/
+   0x58b20	= ./sinkukan_b/texture.bti
+		= ./sinkukan_c/
+   0x59340	= ./sinkukan_c/texture.bti
+		= ./suit_fire/
+   0x59b60	= ./suit_fire/texture.bti
+		= ./suit_powerup/
+   0x5a380	= ./suit_powerup/texture.bti
+		= ./tape_blue/
+   0x5aba0	= ./tape_blue/texture.bti
+		= ./tape_red/
+   0x5b3c0	= ./tape_red/texture.bti
+		= ./tape_yellow/
+   0x5bbe0	= ./tape_yellow/texture.bti
+		= ./tatebue/
+   0x5c400	= ./tatebue/texture.bti
+		= ./teala_dia_a/
+   0x5cc20	= ./teala_dia_a/texture.bti
+		= ./teala_dia_b/
+   0x5d440	= ./teala_dia_b/texture.bti
+		= ./teala_dia_c/
+   0x5dc60	= ./teala_dia_c/texture.bti
+		= ./teala_dia_d/
+   0x5e480	= ./teala_dia_d/texture.bti
+		= ./teki_carcass/
+   0x5eca0	= ./teki_carcass/texture.bti
+		= ./tel_dial/
+   0x5f4c0	= ./tel_dial/texture.bti
+		= ./toy_cat/
+   0x5fce0	= ./toy_cat/texture.bti
+		= ./toy_dog/
+   0x60500	= ./toy_dog/texture.bti
+		= ./toy_gentle/
+   0x60d20	= ./toy_gentle/texture.bti
+		= ./toy_lady/
+   0x61540	= ./toy_lady/texture.bti
+		= ./toy_ring_a_blue/
+   0x61d60	= ./toy_ring_a_blue/texture.bti
+		= ./toy_ring_a_green/
+   0x62580	= ./toy_ring_a_green/texture.bti
+		= ./toy_ring_a_red/
+   0x62da0	= ./toy_ring_a_red/texture.bti
+		= ./toy_ring_b_blue/
+   0x635c0	= ./toy_ring_b_blue/texture.bti
+		= ./toy_ring_b_green/
+   0x63de0	= ./toy_ring_b_green/texture.bti
+		= ./toy_ring_b_red/
+   0x64600	= ./toy_ring_b_red/texture.bti
+		= ./toy_ring_c_blue/
+   0x64e20	= ./toy_ring_c_blue/texture.bti
+		= ./toy_ring_c_green/
+   0x65640	= ./toy_ring_c_green/texture.bti
+		= ./toy_ring_c_red/
+   0x65e60	= ./toy_ring_c_red/texture.bti
+		= ./toy_teala/
+   0x66680	= ./toy_teala/texture.bti
+		= ./turi_uki/
+   0x66ea0	= ./turi_uki/texture.bti
+		= ./uji_jisyaku/
+   0x676c0	= ./uji_jisyaku/texture.bti
+		= ./wadou_kaichin/
+   0x67ee0	= ./wadou_kaichin/texture.bti
+		= ./watch/
+   0x68700	= ./watch/texture.bti
+		= ./water/
+   0x68f20	= ./water/texture.bti
+		= ./whistle/
+   0x69740	= ./whistle/texture.bti
+		= ./xmas_item/
+   0x69f60	= ./xmas_item/texture.bti
+		= ./yoyo_blue/
+   0x6a780	= ./yoyo_blue/texture.bti
+		= ./yoyo_red/
+   0x6afa0	= ./yoyo_red/texture.bti
+		= ./yoyo_yellow/
+   0x6b7c0	= ./yoyo_yellow/texture.bti
+
+#------------------------------------------------------------------------------
+

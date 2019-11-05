@@ -1,0 +1,350 @@
+#CaveInfo
+{
+	{c000} 4 8 	# 階層
+	{_eof} 
+}
+8 # FloorInfo
+{
+	{f000} 4 0 	# 階はじめ
+	{f001} 4 0 	# 階おわり
+	{f002} 4 20	# 敵最大数
+	{f003} 4 6 	# アイテム最大数
+	{f004} 4 0 	# ゲート最大数
+	{f014} 4 50 	# キャップ最大数
+	{f005} 4 2 	# ルーム数
+	{f006} 4 0.000000 	# ルートの割合
+	{f007} 4 0 	# 帰還噴水(1=あり)
+	{f008} -1 CH25_1_tsuchi.txt 	# 使用ユニット
+	{f009} -1 normal_light_cha.ini 	# 使用ライト
+	{f00A} -1 none	# VRBOX
+	{f010} 4 0 	# 階段を壊す岩で隠す(0=オフ 1=オン)
+	{f011} 4 0 	# α属性
+	{f012} 4 0 	# β属性
+	{f013} 4 0 	# 隠し床
+	{f015} 4 1 	# Version
+	{_eof} 
+}
+# TekiInfo
+{
+	2	# num
+	Kochappy_key 10
+	1
+	Tukushi 5
+	6
+}
+# ItemInfo
+{
+	3	# num
+	be_dama_red_l 10
+	be_dama_yellow_l 10
+	be_dama_blue_l 10
+}
+# GateInfo
+{
+	0 	# num
+}
+# CapInfo
+{
+	0 	# num
+}
+{
+	{f000} 4 1 	# 階はじめ
+	{f001} 4 1 	# 階おわり
+	{f002} 4 20	# 敵最大数
+	{f003} 4 6 	# アイテム最大数
+	{f004} 4 0 	# ゲート最大数
+	{f014} 4 50 	# キャップ最大数
+	{f005} 4 2 	# ルーム数
+	{f006} 4 0.000000 	# ルートの割合
+	{f007} 4 0 	# 帰還噴水(1=あり)
+	{f008} -1 CH25_2_snow.txt 	# 使用ユニット
+	{f009} -1 normal_light_cha.ini 	# 使用ライト
+	{f00A} -1 none	# VRBOX
+	{f010} 4 0 	# 階段を壊す岩で隠す(0=オフ 1=オン)
+	{f011} 4 0 	# α属性
+	{f012} 4 0 	# β属性
+	{f013} 4 0 	# 隠し床
+	{f015} 4 1 	# Version
+	{_eof} 
+}
+# TekiInfo
+{
+	1	# num
+	YellowChappy_key 10
+	1
+}
+# ItemInfo
+{
+	3	# num
+	toy_teala 10
+	kumakibori 10
+	denchi_1_red 10
+}
+# GateInfo
+{
+	0 	# num
+}
+# CapInfo
+{
+	0 	# num
+}
+{
+	{f000} 4 2 	# 階はじめ
+	{f001} 4 2 	# 階おわり
+	{f002} 4 20	# 敵最大数
+	{f003} 4 3 	# アイテム最大数
+	{f004} 4 0 	# ゲート最大数
+	{f014} 4 50 	# キャップ最大数
+	{f005} 4 1 	# ルーム数
+	{f006} 4 0.000000 	# ルートの割合
+	{f007} 4 0 	# 帰還噴水(1=あり)
+	{f008} -1 CH25_3_metal.txt 	# 使用ユニット
+	{f009} -1 metal_light_cha.ini 	# 使用ライト
+	{f00A} -1 test	# VRBOX
+	{f010} 4 0 	# 階段を壊す岩で隠す(0=オフ 1=オン)
+	{f011} 4 0 	# α属性
+	{f012} 4 0 	# β属性
+	{f013} 4 0 	# 隠し床
+	{f015} 4 1 	# Version
+	{_eof} 
+}
+# TekiInfo
+{
+	2	# num
+	Chappy_key 10
+	0
+	DaiodoRed 6
+	6
+}
+# ItemInfo
+{
+	3	# num
+	nut_l 10
+	bane 10
+	sinkukan 10
+}
+# GateInfo
+{
+	0 	# num
+}
+# CapInfo
+{
+	0 	# num
+}
+{
+	{f000} 4 3 	# 階はじめ
+	{f001} 4 3 	# 階おわり
+	{f002} 4 20	# 敵最大数
+	{f003} 4 3 	# アイテム最大数
+	{f004} 4 0 	# ゲート最大数
+	{f014} 4 50 	# キャップ最大数
+	{f005} 4 2 	# ルーム数
+	{f006} 4 0.000000 	# ルートの割合
+	{f007} 4 0 	# 帰還噴水(1=あり)
+	{f008} -1 CH25_4_newmetal.txt 	# 使用ユニット
+	{f009} -1 normal_light_cha.ini 	# 使用ライト
+	{f00A} -1 none	# VRBOX
+	{f010} 4 0 	# 階段を壊す岩で隠す(0=オフ 1=オン)
+	{f011} 4 0 	# α属性
+	{f012} 4 0 	# β属性
+	{f013} 4 0 	# 隠し床
+	{f015} 4 1 	# Version
+	{_eof} 
+}
+# TekiInfo
+{
+	2	# num
+	BlueChappy_key 10
+	0
+	Clover 6
+	6
+}
+# ItemInfo
+{
+	3	# num
+	can 10
+	sapper 10
+	compcube 10
+}
+# GateInfo
+{
+	0 	# num
+}
+# CapInfo
+{
+	0 	# num
+}
+{
+	{f000} 4 4 	# 階はじめ
+	{f001} 4 4 	# 階おわり
+	{f002} 4 20	# 敵最大数
+	{f003} 4 3 	# アイテム最大数
+	{f004} 4 0 	# ゲート最大数
+	{f014} 4 50 	# キャップ最大数
+	{f005} 4 2 	# ルーム数
+	{f006} 4 0.000000 	# ルートの割合
+	{f007} 4 0 	# 帰還噴水(1=あり)
+	{f008} -1 CH25_5_tile.txt 	# 使用ユニット
+	{f009} -1 normal_light_cha.ini 	# 使用ライト
+	{f00A} -1 none	# VRBOX
+	{f010} 4 0 	# 階段を壊す岩で隠す(0=オフ 1=オン)
+	{f011} 4 0 	# α属性
+	{f012} 4 0 	# β属性
+	{f013} 4 0 	# 隠し床
+	{f015} 4 1 	# Version
+	{_eof} 
+}
+# TekiInfo
+{
+	2	# num
+	FireChappy_key 10
+	0
+	Zenmai 6
+	6
+}
+# ItemInfo
+{
+	3	# num
+	toy_dog 10
+	masterball 10
+	chocoichigo 10
+}
+# GateInfo
+{
+	0 	# num
+}
+# CapInfo
+{
+	0 	# num
+}
+{
+	{f000} 4 5 	# 階はじめ
+	{f001} 4 5 	# 階おわり
+	{f002} 4 20	# 敵最大数
+	{f003} 4 3 	# アイテム最大数
+	{f004} 4 0 	# ゲート最大数
+	{f014} 4 50 	# キャップ最大数
+	{f005} 4 1	# ルーム数
+	{f006} 4 0.000000 	# ルートの割合
+	{f007} 4 0 	# 帰還噴水(1=あり)
+	{f008} -1 CH25_6_conc.txt 	# 使用ユニット
+	{f009} -1 normal_light_cha.ini 	# 使用ライト
+	{f00A} -1 none	# VRBOX
+	{f010} 4 0 	# 階段を壊す岩で隠す(0=オフ 1=オン)
+	{f011} 4 0 	# α属性
+	{f012} 4 0 	# β属性
+	{f013} 4 0 	# 隠し床
+	{f015} 4 1 	# Version
+	{_eof} 
+}
+# TekiInfo
+{
+	2	# num
+	$2BlueChappy_key 10
+	0
+	Ooinu_s 6
+	6
+}
+# ItemInfo
+{
+	3	# num
+	diamond_red 10
+	toy_cat 10
+	leaf_kare 10
+}
+# GateInfo
+{
+	0 	# num
+}
+# CapInfo
+{
+	0 	# num
+}
+{
+	{f000} 4 6 	# 階はじめ
+	{f001} 4 6 	# 階おわり
+	{f002} 4 20	# 敵最大数
+	{f003} 4 3 	# アイテム最大数
+	{f004} 4 0 	# ゲート最大数
+	{f014} 4 50 	# キャップ最大数
+	{f005} 4 2 	# ルーム数
+	{f006} 4 0.000000 	# ルートの割合
+	{f007} 4 0 	# 帰還噴水(1=あり)
+	{f008} -1 CH25_7_toy.txt 	# 使用ユニット
+	{f009} -1 toy_light_cha.ini 	# 使用ライト
+	{f00A} -1 flooring	# VRBOX
+	{f010} 4 0 	# 階段を壊す岩で隠す(0=オフ 1=オン)
+	{f011} 4 0 	# α属性
+	{f012} 4 0 	# β属性
+	{f013} 4 1 	# 隠し床
+	{f015} 4 1 	# Version
+	{_eof} 
+}
+# TekiInfo
+{
+	1	# num
+	MiniHoudai_key 10
+	0
+}
+# ItemInfo
+{
+	3	# num
+	tatebue 10
+	badminton 10
+	castanets 10
+}
+# GateInfo
+{
+	0 	# num
+}
+# CapInfo
+{
+	0 	# num
+}
+{
+	{f000} 4 7 	# 階はじめ
+	{f001} 4 7 	# 階おわり
+	{f002} 4 20	# 敵最大数
+	{f003} 4 8 	# アイテム最大数
+	{f004} 4 0 	# ゲート最大数
+	{f014} 4 50 	# キャップ最大数
+	{f005} 4 1 	# ルーム数
+	{f006} 4 0.000000 	# ルートの割合
+	{f007} 4 1	# 帰還噴水(1=あり)
+	{f008} -1 CH25_8_manh.txt 	# 使用ユニット
+	{f009} -1 normal_light_cha.ini 	# 使用ライト
+	{f00A} -1 none	# VRBOX
+	{f010} 4 0 	# 階段を壊す岩で隠す(0=オフ 1=オン)
+	{f011} 4 0 	# α属性
+	{f012} 4 0 	# β属性
+	{f013} 4 0 	# 隠し床
+	{f015} 4 1 	# Version
+	{_eof} 
+}
+# TekiInfo
+{
+	2	# num
+	$2KumaChappy_key 10
+	0
+	Wakame_s 6
+	6
+}
+# ItemInfo
+{
+	7	# num
+	doll 10
+	robot_head 10
+	halloween 10
+	radar_a 10
+	suit_fire 10
+	chungus 10
+	saru_head 10
+}
+# GateInfo
+{
+	0 	# num
+}
+# CapInfo
+{
+	0 	# num
+}

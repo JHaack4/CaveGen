@@ -1,0 +1,126 @@
+#CaveInfo
+{
+	{c000} 4 2 	# 階層
+	{_eof} 
+}
+2 # FloorInfo
+{
+	{f000} 4 0 	# 階はじめ
+	{f001} 4 0 	# 階おわり
+	{f002} 4 20	# 敵最大数
+	{f003} 4 4 	# アイテム最大数
+	{f004} 4 0 	# ゲート最大数
+	{f014} 4 50 	# キャップ最大数
+	{f005} 4 3 	# ルーム数
+	{f006} 4 0.000000 	# ルートの割合
+	{f007} 4 0 	# 帰還噴水(1=あり)
+	{f008} -1 CH5_1_sand.txt 	# 使用ユニット
+	{f009} -1 sand_light_cha.ini 	# 使用ライト
+	{f00A} -1 none	# VRBOX
+	{f010} 4 0 	# 階段を壊す岩で隠す(0=オフ 1=オン)
+	{f011} 4 0 	# α属性
+	{f012} 4 0 	# β属性
+	{f013} 4 0 	# 隠し床
+	{f015} 4 1 	# Version
+	{_eof} 
+}
+# TekiInfo
+{
+	14	# num
+	Jigumo_kan 10
+	1
+	Jigumo_kan 10
+	1
+	Jigumo_kan 10
+	0
+	Jigumo_kan 10
+	0
+	MaroFrog_key 10
+	1
+	MaroFrog_dia_b_blue 10
+	1
+	MaroFrog_dia_b_blue 10
+	1
+	Catfish_cookie 10
+	0
+	Catfish_cookie 10
+	0
+	Catfish_cookie 10
+	0
+	$Egg 40
+	1
+	$Tadpole_teala_dia_b 40
+	0
+	Wakame_s 6
+	6
+	Wakame_l 3
+	6
+}
+# ItemInfo
+{
+	3 	# num
+	tatebue 10
+	matu_bokkuri 10
+	turi_uki 10
+}
+# GateInfo
+{
+	0 	# num
+}
+# CapInfo
+{
+	0 	# num
+}
+{
+	{f000} 4 1 	# 階はじめ
+	{f001} 4 1 	# 階おわり
+	{f002} 4 20	# 敵最大数
+	{f003} 4 5 	# アイテム最大数
+	{f004} 4 0 	# ゲート最大数
+	{f014} 4 50 	# キャップ最大数
+	{f005} 4 1 	# ルーム数
+	{f006} 4 0.000000 	# ルートの割合
+	{f007} 4 1 	# 帰還噴水(1=あり)
+	{f008} -1 CH5_2_bigsand.txt 	# 使用ユニット
+	{f009} -1 sand_light_cha.ini 	# 使用ライト
+	{f00A} -1 yourmother	# VRBOX
+	{f010} 4 0 	# 階段を壊す岩で隠す(0=オフ 1=オン)
+	{f011} 4 0 	# α属性
+	{f012} 4 0 	# β属性
+	{f013} 4 0 	# 隠し床
+	{f015} 4 1 	# Version
+	{_eof} 
+}
+# TekiInfo
+{
+	5	# num
+	Frog_tape_yellow 10
+	0
+	Frog_tape_yellow 20
+	0
+	UmiMushiBlind_key 10
+	1
+	Sokkuri_dia_c_red 50
+	1
+	Zenmai 6
+	6
+}
+# ItemInfo
+{
+	4	# num
+	dia_a_blue 10
+	dia_a_green 10
+	badminton 10
+	diamond_red_l 10
+}
+# GateInfo
+{
+	0 	# num
+}
+# CapInfo
+{
+	1	# num
+	0
+	Egg 20
+	1
+}

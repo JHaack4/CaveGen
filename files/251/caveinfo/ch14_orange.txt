@@ -1,0 +1,108 @@
+#CaveInfo
+{
+	{c000} 4 2 	# 階層
+	{_eof} 
+}
+2 # FloorInfo
+{
+	{f000} 4 0 	# 階はじめ
+	{f001} 4 0 	# 階おわり
+	{f002} 4 20	# 敵最大数
+	{f003} 4 5 	# アイテム最大数
+	{f004} 4 0 	# ゲート最大数
+	{f014} 4 0 	# キャップ最大数
+	{f005} 4 3 	# ルーム数
+	{f006} 4 0.000000 	# ルートの割合
+	{f007} 4 0 	# 帰還噴水(1=あり)
+	{f008} -1 CH14_1_metal.txt 	# 使用ユニット
+	{f009} -1 metal_light_cha.ini 	# 使用ライト
+	{f00A} -1 ice	# VRBOX
+	{f010} 4 0 	# 階段を壊す岩で隠す(0=オフ 1=オン)
+	{f011} 4 4 	# α属性
+	{f012} 4 0 	# β属性
+	{f013} 4 0 	# 隠し床
+	{f015} 4 1 	# Version
+	{_eof} 
+}
+# TekiInfo
+{
+	6	# num
+	$Bomb 80
+	1
+	$BombOtakara 60
+	0
+	Bomb 80
+	1
+	BombOtakara 60
+	0
+	DaiodoGreen 6
+	6
+	DaiodoRed 3
+	6
+}
+# ItemInfo
+{
+	5	# num
+	mojiban 10
+	nut_l 10
+	gear_silver 10
+	whistle 10
+	key 10
+}
+# GateInfo
+{
+	0 	# num
+}
+# CapInfo
+{
+	0 	# num
+}
+{
+	{f000} 4 1 	# 階はじめ
+	{f001} 4 1 	# 階おわり
+	{f002} 4 50	# 敵最大数
+	{f003} 4 3 	# アイテム最大数
+	{f004} 4 0 	# ゲート最大数
+	{f014} 4 0 	# キャップ最大数
+	{f005} 4 2 	# ルーム数
+	{f006} 4 0.000000 	# ルートの割合
+	{f007} 4 0 	# 帰還噴水(1=あり)
+	{f008} -1 CH14_2_metal.txt 	# 使用ユニット
+	{f009} -1 metal_light_cha.ini 	# 使用ライト
+	{f00A} -1 test	# VRBOX
+	{f010} 4 0 	# 階段を壊す岩で隠す(0=オフ 1=オン)
+	{f011} 4 4 	# α属性
+	{f012} 4 0 	# β属性
+	{f013} 4 0 	# 隠し床
+	{f015} 4 1 	# Version
+	{_eof} 
+}
+# TekiInfo
+{
+	5	# num
+	Bomb 80
+	1
+	FminiHoudai_key 10
+	8
+	BombSarai_sinkukan_c 40
+	1
+	DaiodoGreen 6
+	6
+	DaiodoRed 3
+	6
+}
+# ItemInfo
+{
+	3	# num
+	bell_blue 10
+	nut 10
+	uji_jisyaku 10
+}
+# GateInfo
+{
+	0 	# num
+}
+# CapInfo
+{
+	0 	# num
+}

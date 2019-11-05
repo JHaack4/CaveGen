@@ -1,0 +1,18 @@
+INFO:OpenGL.acceleratesupport:No OpenGL_accelerate module loaded: No module named 'OpenGL_accelerate'
+INFO:__main__:Python version: 3.5.4 (v3.5.4:3f56838, Aug  8 2017, 02:17:05) [MSC v.1900 64 bit (AMD64)]
+INFO:__main__:NumPy version: 1.14.2
+INFO:__main__:Qt version: 5.10.1
+INFO:__main__:PyQt version: 5.10.1
+INFO:__main__:PyOpenGL version: 3.1.0
+ERROR:__main__:unexpected error
+Traceback (most recent call last):
+  File "C:\Python\Python35\lib\site-packages\cx_Freeze\initscripts\__startup__.py", line 14, in run
+  File "C:\Python\Python35\lib\site-packages\cx_Freeze\initscripts\Console.py", line 26, in run
+  File "j3dview.py", line 472, in <module>
+  File "j3dview.py", line 181, in __init__
+  File "C:\Python\Python35\lib\site-packages\PyQt5\uic\__init__.py", line 226, in loadUi
+  File "C:\Python\Python35\lib\site-packages\PyQt5\uic\Loader\loader.py", line 72, in loadUi
+  File "C:\Python\Python35\lib\site-packages\PyQt5\uic\uiparser.py", line 1013, in parse
+  File "C:\Python\Python35\lib\xml\etree\ElementTree.py", line 1195, in parse
+  File "C:\Python\Python35\lib\xml\etree\ElementTree.py", line 585, in parse
+FileNotFoundError: [Errno 2] No such file or directory: 'ui/Editor.ui'

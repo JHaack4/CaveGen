@@ -1,0 +1,56 @@
+# BaseGen file
+6      # num gens
+# basegen 0
+{
+	7     # ship spawn
+	-272.10 100.00 451.72         # pos
+	45.00     # ang
+	0.00     # radius
+	1     # min num
+	1     # max num
+}
+# basegen 1
+{
+	4     # hole/geyser
+	-262.20 100.00 769.52         # pos
+	0.00     # ang
+	0.00     # radius
+	1     # min num
+	1     # max num
+}
+# basegen 2
+{
+	8     # enemy C
+	-0.25 67.01 -549.75         # pos
+	0.00     # ang
+	0.00     # radius
+	1     # min num
+	1     # max num
+}
+# basegen 3
+{
+	6     # plants
+	-172.55 100.00 153.41         # pos
+	0.00     # ang
+	0.00     # radius
+	1     # min num
+	1     # max num
+}
+# basegen 4
+{
+	6     # plants
+	159.45 100.00 682.91         # pos
+	0.00     # ang
+	0.00     # radius
+	1     # min num
+	1     # max num
+}
+# basegen 5
+{
+	6     # plants
+	-315.05 100.00 659.91         # pos
+	0.00     # ang
+	0.00     # radius
+	1     # min num
+	1     # max num
+}

@@ -1,0 +1,26 @@
+2 	# number
+#
+# yakushima
+{
+	1 	# version
+	vs_yakushima 	# foldername
+	10 10 	# dX/dZ ; cell size
+	1 	# room type
+	0 0 	# room Flags
+	1 	# num doors
+	0 	# index
+	3 0 0 	# dir/offs/wpindex
+	0 	# door links
+}
+# room_filler
+{
+	1 	# version
+	room_filler 	# foldername
+	2 2 	# dX/dZ ; cell size
+	1 	# room type
+	0 0 	# room Flags
+	1 	# num doors
+	0 	# index
+	3 0 0 	# dir/offs/wpindex
+	0 	# door links
+}

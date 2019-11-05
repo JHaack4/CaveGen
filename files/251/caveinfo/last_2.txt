@@ -1,0 +1,848 @@
+# CaveInfo
+{
+	{c000} 4 15 	# 階層
+	{_eof} 
+}
+15 # FloorInfo
+{
+	{f000} 4 0 	# 階はじめ
+	{f001} 4 0 	# 階おわり
+	{f002} 4 52 	# 敵最大数
+	{f003} 4 1 	# アイテム最大数
+	{f004} 4 6 	# ゲート最大数
+	{f014} 4 1 	# キャップ最大数
+	{f005} 4 2 	# ルーム数
+	{f006} 4 0.000000 	# ルートの割合
+	{f007} 4 0 	# 帰還噴水(1=あり)
+	{f008} -1 HH1_kusachi.txt 	# 使用ユニット
+	{f009} -1 sniper_light_lv0.ini 	# 使用ライト
+	{f00A} -1 hiroba 	# VRBOX
+	{f010} 4 1 	# 階段を壊す岩で隠す(0=オフ 1=オン)
+	{f011} 4 4 	# α属性
+	{f012} 4 0 	# β属性
+	{f013} 4 1 	# 隠し床
+	{f015} 4 1 	# Version
+	{_eof} 
+}
+# TekiInfo
+{
+	9 	# num
+	FminiHoudai_silver_medal 10 	# weight
+	8 	# type
+	Tobi 60
+	1
+	Armor 20
+	0
+	Armor 20
+	1
+	$1BlueKoChappy 50
+	0
+	Fart 20
+	0
+	GasHiba 40
+	5
+	Magaret 5
+	6
+	Ooinu_l 4
+	6
+}
+# ItemInfo
+{
+	1 	# num
+	tel_dial 10 	# weight
+}
+# GateInfo
+{
+	0 	# num
+}
+# CapInfo
+{
+	1 	# num
+	0 	# captype
+	Egg 20 	# weight
+	1 	# type
+}
+# FloorInfo
+{
+	{f000} 4 1 	# 階はじめ
+	{f001} 4 1 	# 階おわり
+	{f002} 4 50 	# 敵最大数
+	{f003} 4 2 	# アイテム最大数
+	{f004} 4 8 	# ゲート最大数
+	{f014} 4 80 	# キャップ最大数
+	{f005} 4 4 	# ルーム数
+	{f006} 4 0.000000 	# ルートの割合
+	{f007} 4 0 	# 帰還噴水(1=あり)
+	{f008} -1 HH2_ike_kusachi.txt 	# 使用ユニット
+	{f009} -1 hiroba_snow.ini 	# 使用ライト
+	{f00A} -1 soil	# VRBOX
+	{f010} 4 0 	# 階段を壊す岩で隠す(0=オフ 1=オン)
+	{f011} 4 2 	# α属性
+	{f012} 4 0 	# β属性
+	{f013} 4 1 	# 隠し床
+	{f015} 4 1 	# Version
+	{_eof} 
+}
+# TekiInfo
+{
+	7 	# num
+	Demon 30 	# weight
+	1 	# type
+	HanaChirashi 20
+	0
+	Mar_fruity 10
+	0
+	Sarai 50
+	1
+	KareOoinu_s 6
+	6
+	YellowKochappy 80
+	1
+	YellowChappy 30
+	1
+}
+# ItemInfo
+{
+	2 	# num
+	momiji_normal 10 	# weight
+	frypan 10
+}
+# GateInfo
+{
+	1 	# num
+	gate 3000.000000 	# life
+	1 	# weight
+}
+# CapInfo
+{
+	2 	# num
+	0 	# captype
+	Egg 30 	# weight
+	1 	# type
+	0 	# captype
+	$1YellowKoChappy 20 	# weight
+	1 	# type
+}
+# FloorInfo
+{
+	{f000} 4 2 	# 階はじめ
+	{f001} 4 2 	# 階おわり
+	{f002} 4 30 	# 敵最大数
+	{f003} 4 1 	# アイテム最大数
+	{f004} 4 5 	# ゲート最大数
+	{f014} 4 100 	# キャップ最大数
+	{f005} 4 1 	# ルーム数
+	{f006} 4 0.000000 	# ルートの割合
+	{f007} 4 0 	# 帰還噴水(1=あり)
+	{f008} -1 HH3_mid_snow.txt 	# 使用ユニット
+	{f009} -1 normal_light_lv2.ini 	# 使用ライト
+	{f00A} -1 none 	# VRBOX
+	{f010} 4 1 	# 階段を壊す岩で隠す(0=オフ 1=オン)
+	{f011} 4 2 	# α属性
+	{f012} 4 0 	# β属性
+	{f013} 4 0 	# 隠し床
+	{f015} 4 1 	# Version
+	{_eof} 
+}
+# TekiInfo
+{
+	7 	# num
+	KingChappy 10
+	0
+	KingChappy_baum_kuchen 10
+	0
+	Bomb 70
+	1
+	$1Bomb 50
+	1
+	YellowKochappy 50
+	0
+	KareOoinu_l 3
+	6
+	KareOoinu_s 6
+	6
+}
+# ItemInfo
+{
+	0	# num
+}
+# GateInfo
+{
+	1 	# num
+	gate 2000.000000 	# life
+	1 	# weight
+}
+# CapInfo
+{
+	1 	# num
+	0 	# captype
+	$1BlackPom 10 	# weight
+	1 	# type
+}
+# FloorInfo
+{
+	{f000} 4 3 	# 階はじめ
+	{f001} 4 3 	# 階おわり
+	{f002} 4 20 	# 敵最大数
+	{f003} 4 0 	# アイテム最大数
+	{f004} 4 0 	# ゲート最大数
+	{f014} 4 0 	# キャップ最大数
+	{f005} 4 1 	# ルーム数
+	{f006} 4 0.000000 	# ルートの割合
+	{f007} 4 0 	# 帰還噴水(1=あり)
+	{f008} -1 HH4_sara2_toy.txt 	# 使用ユニット
+	{f009} -1 toy_light_lv3.ini 	# 使用ライト
+	{f00A} -1 flooring 	# VRBOX
+	{f010} 4 0 	# 階段を壊す岩で隠す(0=オフ 1=オン)
+	{f011} 4 2 	# α属性
+	{f012} 4 1 	# β属性
+	{f013} 4 1 	# 隠し床
+	{f015} 4 1 	# Version
+	{_eof} 
+}
+# TekiInfo
+{
+	6 	# num
+	Damagumo_chess_king_black 10 	# weight
+	1 	# type
+	$1FireOtakara 50
+	1
+	$1GasOtakara 50
+	0
+	$1WaterOtakara 50
+	0
+	$1ElecOtakara 50
+	1
+	Chiyogami 5
+	6
+}
+# ItemInfo
+{
+	0 	# num
+}
+# GateInfo
+{
+	0 	# num
+}
+# CapInfo
+{
+	2 	# num
+	0 	# captype
+	Egg 20 	# weight
+	1 	# type
+	0
+	$RandPom 10
+	1
+}
+# FloorInfo
+{
+	{f000} 4 4 	# 階はじめ
+	{f001} 4 4 	# 階おわり
+	{f002} 4 15 	# 敵最大数
+	{f003} 4 0 	# アイテム最大数
+	{f004} 4 0 	# ゲート最大数
+	{f014} 4 20	# キャップ最大数
+	{f005} 4 1 	# ルーム数
+	{f006} 4 0.000000 	# ルートの割合
+	{f007} 4 0 	# 帰還噴水(1=あり)
+	{f008} -1 HH5_sara_toy.txt 	# 使用ユニット
+	{f009} -1 toy_light_lv4.ini 	# 使用ライト
+	{f00A} -1 tatami 	# VRBOX
+	{f010} 4 0 	# 階段を壊す岩で隠す(0=オフ 1=オン)
+	{f011} 4 2 	# α属性
+	{f012} 4 0 	# β属性
+	{f013} 4 1 	# 隠し床
+	{f015} 4 1 	# Version
+	{_eof} 
+}
+# TekiInfo
+{
+	7 	# num
+	Chappy 20
+	1
+	BlueChappy 10
+	0
+	YellowChappy 10
+	0
+	FireChappy_chess_queen_white 10
+	1
+	BlueKochappy 30
+	1
+	Kochappy 30
+	1
+	YellowKochappy 30
+	1
+}
+# ItemInfo
+{
+	0	# num
+}
+# GateInfo
+{
+	0 	# num
+}
+# CapInfo
+{
+	1 	# num
+	0
+	Egg 20
+	1
+}
+# FloorInfo
+{
+	{f000} 4 5 	# 階はじめ
+	{f001} 4 5 	# 階おわり
+	{f002} 4 25 	# 敵最大数
+	{f003} 4 2 	# アイテム最大数
+	{f004} 4 0 	# ゲート最大数
+	{f014} 4 0 	# キャップ最大数
+	{f005} 4 1 	# ルーム数
+	{f006} 4 0.000000 	# ルートの割合
+	{f007} 4 0 	# 帰還噴水(1=あり)
+	{f008} -1 HH6_bigwater_snow.txt 	# 使用ユニット
+	{f009} -1 normal_light_lv4.ini 	# 使用ライト
+	{f00A} -1 none 	# VRBOX
+	{f010} 4 1 	# 階段を壊す岩で隠す(0=オフ 1=オン)
+	{f011} 4 0 	# α属性
+	{f012} 4 0 	# β属性
+	{f013} 4 0 	# 隠し床
+	{f015} 4 1 	# Version
+	{_eof} 
+}
+# TekiInfo
+{
+	5 	# num
+	MaroFrog 30 	# weight
+	1 	# type
+	Jigumo 30 	# weight
+	1 	# type
+	Catfish 50 	# weight
+	1 	# type
+	Tadpole 60 	# weight
+	0 	# type
+	Wakame_s 5 	# weight
+	6 	# type
+}
+# ItemInfo
+{
+	2 	# num
+	toy_dog 10 	# weight
+	masterball 10
+}
+# GateInfo
+{
+	0 	# num
+}
+# CapInfo
+{
+	2 	# num
+	0 	# captype
+	BluePom 10 	# weight
+	1 	# type
+	0 	# captype
+	$1Egg 10 	# weight
+	1 	# type
+}
+# FloorInfo
+{
+	{f000} 4 6 	# 階はじめ
+	{f001} 4 6 	# 階おわり
+	{f002} 4 30 	# 敵最大数
+	{f003} 4 0 	# アイテム最大数
+	{f004} 4 0 	# ゲート最大数
+	{f014} 4 0 	# キャップ最大数
+	{f005} 4 1 	# ルーム数
+	{f006} 4 0.000000 	# ルートの割合
+	{f007} 4 0 	# 帰還噴水(1=あり)
+	{f008} -1 HH7_houdai2_metal.txt 	# 使用ユニット
+	{f009} -1 metal_light_lv4.ini 	# 使用ライト
+	{f00A} -1 test 	# VRBOX
+	{f010} 4 0 	# 階段を壊す岩で隠す(0=オフ 1=オン)
+	{f011} 4 3 	# α属性
+	{f012} 4 1 	# β属性
+	{f013} 4 0 	# 隠し床
+	{f015} 4 1 	# Version
+	{_eof} 
+}
+# TekiInfo
+{
+	2 	# num
+	Houdai_j_block_red  10 	# weight
+	1 	# type
+	DaiodoGreen 5
+	6
+}
+# ItemInfo
+{
+	0 	# num
+}
+# GateInfo
+{
+	0 	# num
+}
+# CapInfo
+{
+	2 	# num
+	0
+	BluePom 10
+	1
+	0
+	$Egg 20
+	1
+}
+# FloorInfo
+{
+	{f000} 4 7 	# 階はじめ
+	{f001} 4 7 	# 階おわり
+	{f002} 4 25 	# 敵最大数
+	{f003} 4 0 	# アイテム最大数
+	{f004} 4 0 	# ゲート最大数
+	{f014} 4 0 	# キャップ最大数
+	{f005} 4 2 	# ルーム数
+	{f006} 4 0.100000 	# ルートの割合
+	{f007} 4 1 	# 帰還噴水(1=あり)
+	{f008} -1 HH8_snagret1_kusachi.txt 	# 使用ユニット
+	{f009} -1 muraon_light_lv2.ini 	# 使用ライト
+	{f00A} -1 none 	# VRBOX
+	{f010} 4 0 	# 階段を壊す岩で隠す(0=オフ 1=オン)
+	{f011} 4 2 	# α属性
+	{f012} 4 2 	# β属性
+	{f013} 4 0 	# 隠し床
+	{f015} 4 1 	# Version
+	{_eof} 
+}
+# TekiInfo
+{
+	6	# num
+	RandPom 10 	# weight
+	8 	# type
+	LeafChappy 20 	# weight
+	0 	# type
+	Kogane 10 	# weight
+	0 	# type
+	Qurione 30
+	0
+	Wakame_s 2 	# weight
+	6 	# type
+	Wakame_l 1 	# weight
+	6 	# type
+}
+# ItemInfo
+{
+	0 	# num
+}
+# GateInfo
+{
+	0 	# num
+}
+# CapInfo
+{
+	1 	# num
+	0 	# captype
+	Egg 40 	# weight
+	1 	# type
+}
+# FloorInfo
+{
+	{f000} 4 8 	# 階はじめ
+	{f001} 4 8 	# 階おわり
+	{f002} 4 20 	# 敵最大数
+	{f003} 4 2 	# アイテム最大数
+	{f004} 4 0 	# ゲート最大数
+	{f014} 4 0 	# キャップ最大数
+	{f005} 4 3 	# ルーム数
+	{f006} 4 0.000000 	# ルートの割合
+	{f007} 4 0 	# 帰還噴水(1=あり)
+	{f008} -1 HH9_sand.txt 	# 使用ユニット
+	{f009} -1 sand_light_lv0.ini 	# 使用ライト
+	{f00A} -1 none 	# VRBOX
+	{f010} 4 0 	# 階段を壊す岩で隠す(0=オフ 1=オン)
+	{f011} 4 3 	# α属性
+	{f012} 4 0 	# β属性
+	{f013} 4 0 	# 隠し床
+	{f015} 4 1 	# Version
+	{_eof} 
+}
+# TekiInfo
+{
+	11 	# num
+	Frog 10
+	1
+	Frog 20
+	0
+	Miulin 20
+	1
+	Miulin 10
+	0
+	Jigumo 20
+	1
+	Jigumo 20
+	1
+	Rock 60
+	5
+	Rock 50
+	1
+	WaterOtakara 20
+	0
+	WaterOtakara 20
+	1
+	Wakame_l 4
+	6
+	
+}
+# ItemInfo
+{
+	2 	# num
+	castanets 10
+	toy_ring_c_red 10
+}
+# GateInfo
+{
+	0	# num
+}
+# CapInfo
+{
+	0 	# num
+}
+# FloorInfo
+{
+	{f000} 4 9	# 階はじめ
+	{f001} 4 9 	# 階おわり
+	{f002} 4 7 	# 敵最大数
+	{f003} 4 2 	# アイテム最大数
+	{f004} 4 0 	# ゲート最大数
+	{f014} 4 50 	# キャップ最大数
+	{f005} 4 3 	# ルーム数
+	{f006} 4 0.100000 	# ルートの割合
+	{f007} 4 0 	# 帰還噴水(1=あり)
+	{f008} -1 HH11_toy_kusachi.txt 	# 使用ユニット
+	{f009} -1 kusachi_light_cha.ini 	# 使用ライト
+	{f00A} -1 TATAMI 	# VRBOX
+	{f010} 4 0 	# 階段を壊す岩で隠す(0=オフ 1=オン)
+	{f011} 4 0 	# α属性
+	{f012} 4 0 	# β属性
+	{f013} 4 1 	# 隠し床
+	{f015} 4 1 	# Version
+	{_eof} 
+}
+# TekiInfo
+{
+	11 	# num
+	OoPanModoki_robot_head 10
+	1
+	PanModoki 20
+	1
+	Chappy 20
+	1
+	Chappy 30
+	1
+	KoChappy 70
+	1
+	UjiB 70
+	0
+	Tank 40
+	1
+	Hiba 70
+	5
+	Magaret 3
+	6
+	Watage 3
+	6
+	NekoJarashi 6
+	6
+}
+# ItemInfo
+{
+	2 	# num
+	medama_yaki 10
+	bbdiss 10
+}
+# GateInfo
+{
+	0 	# num
+}
+# CapInfo
+{
+	2 	# num
+	0
+	RedPom 30
+	1
+	0
+	Egg 20
+	1
+}
+# FloorInfo
+{
+	{f000} 4 10 	# 階はじめ
+	{f001} 4 10 	# 階おわり
+	{f002} 4 2 	# 敵最大数
+	{f003} 4 2 	# アイテム最大数
+	{f004} 4 0 	# ゲート最大数
+	{f014} 4 50 	# キャップ最大数
+	{f005} 4 4 	# ルーム数
+	{f006} 4 0.200000 	# ルートの割合
+	{f007} 4 0 	# 帰還噴水(1=あり)
+	{f008} -1 HH13_tile.txt 	# 使用ユニット
+	{f009} -1 normal_light_lv3.ini	# 使用ライト
+	{f00A} -1 none	# VRBOX
+	{f010} 4 0 	# 階段を壊す岩で隠す(0=オフ 1=オン)
+	{f011} 4 1 	# α属性
+	{f012} 4 0 	# β属性
+	{f013} 4 0 	# 隠し床
+	{f015} 4 1 	# Version
+	{_eof} 
+}
+# TekiInfo
+{
+	7	# num
+	KumaKoChappy 90
+	0
+	KoChappy 90
+	1
+	BlueKoChappy 90
+	1
+	YellowKoChappy 90
+	0
+	MiniHoudai_j_block_blue 10
+	1
+	MiniHoudai 10
+	1
+	Zenmai 6
+	6
+}
+# ItemInfo
+{
+	2 	# num
+	teala_dia_d 10
+	teala_dia_c 10
+}
+# GateInfo
+{
+	0 	# num
+}
+# CapInfo
+{
+	1 	# num
+	0
+	egg 20
+	1
+}
+# FloorInfo
+{
+	{f000} 4 11 	# 階はじめ
+	{f001} 4 11 	# 階おわり
+	{f002} 4 9	# 敵最大数
+	{f003} 4 0	# アイテム最大数
+	{f004} 4 0	# ゲート最大数
+	{f014} 4 0	# キャップ最大数
+	{f005} 4 2 	# ルーム数
+	{f006} 4 0.100000 	# ルートの割合
+	{f007} 4 1 	# 帰還噴水(1=あり)
+	{f008} -1 HH15_rest_newmetal.txt 	# 使用ユニット
+	{f009} -1 normal_light_lv4.ini 	# 使用ライト
+	{f00A} -1 none 	# VRBOX
+	{f010} 4 0 	# 階段を壊す岩で隠す(0=オフ 1=オン)
+	{f011} 4 0 	# α属性
+	{f012} 4 2 	# β属性
+	{f013} 4 0 	# 隠し床
+	{f015} 4 1 	# Version
+	{_eof} 
+}
+# TekiInfo
+{
+	8 	# num
+	Wealthy_j_block_yellow 10 	# weight
+	1 	# type
+	Kogane 20
+	1
+	LeafChappy 10
+	0
+	$Egg 50
+	0
+	Fart 20
+	1
+	HanaChirashi 10
+	0
+	BlackPom 20
+	1
+	DaiodoGreen 2
+	6
+}
+# ItemInfo
+{
+	0 	# num
+}
+# GateInfo
+{
+	0 	# num
+}
+# CapInfo
+{
+	1 	# num
+	0 	# captype
+	Egg 20 	# weight
+	1 	# type
+}
+# FloorInfo
+{
+	{f000} 4 12 	# 階はじめ
+	{f001} 4 12	# 階おわり
+	{f002} 4 4	# 敵最大数
+	{f003} 4 2	# アイテム最大数
+	{f004} 4 7	# ゲート最大数
+	{f014} 4 0	# キャップ最大数
+	{f005} 4 4	# ルーム数
+	{f006} 4 0.000000 	# ルートの割合
+	{f007} 4 0 	# 帰還噴水(1=あり)
+	{f008} -1 HH16_conc.txt 	# 使用ユニット
+	{f009} -1 normal_light_lv2.ini 	# 使用ライト
+	{f00A} -1 none 	# VRBOX
+	{f010} 4 0 	# 階段を壊す岩で隠す(0=オフ 1=オン)
+	{f011} 4 2 	# α属性
+	{f012} 4 0 	# β属性
+	{f013} 4 0 	# 隠し床
+	{f015} 4 1 	# Version
+	{_eof} 
+}
+# TekiInfo
+{
+	7 	# num
+	OniKurage_j_block_green 10
+	1
+	OniKurage 10	# weight
+	1 	# type
+	Kurage 30
+	1
+	BombSarai 50
+	1
+	Demon 20
+	0
+	Sarai 30
+	0
+	YellowKoChappy 60
+	0
+}
+# ItemInfo
+{
+	2 	# num
+	g_futa_sakotani 10
+	toy_ring_b_blue 10
+}
+# GateInfo
+{
+	1 	# num
+	gate 1500.000000 	# life
+	1 	# weight
+}
+# CapInfo
+{
+	1 	# num
+	0 	# captype
+	Egg 10 	# weight
+	1 	# type
+}
+# FloorInfo
+{
+	{f000} 4 13 	# 階はじめ
+	{f001} 4 13 	# 階おわり
+	{f002} 4 4	# 敵最大数
+	{f003} 4 2	# アイテム最大数
+	{f004} 4 0	# ゲート最大数
+	{f014} 4 10	# キャップ最大数
+	{f005} 4 4	# ルーム数
+	{f006} 4 0.150000 	# ルートの割合
+	{f007} 4 0 	# 帰還噴水(1=あり)
+	{f008} -1 HH18_water_conc.txt 	# 使用ユニット
+	{f009} -1 normal_light_lv2.ini 	# 使用ライト
+	{f00A} -1 none 	# VRBOX
+	{f010} 4 0 	# 階段を壊す岩で隠す(0=オフ 1=オン)
+	{f011} 4 2 	# α属性
+	{f012} 4 0 	# β属性
+	{f013} 4 0 	# 隠し床
+	{f015} 4 1 	# Version
+	{_eof} 
+}
+# TekiInfo
+{
+	8 	# num
+	UmiMushiBlind_j_block_white 10
+	1
+	UmiMushiBlind 20
+	1
+	Catfish 50
+	0
+	MaroFrog 30
+	0
+	ElecHiba 60
+	5
+	ElecBug 60
+	1
+	Rock 40
+	0
+	Clover 7
+	6
+}
+# ItemInfo
+{
+	2 	# num
+	n64 10
+	block 10
+}
+# GateInfo
+{
+	0 	# num
+}
+# CapInfo
+{
+	1 	# num
+	0 	# captype
+	Egg 30 	# weight
+	1 	# type
+}
+
+# FloorInfo
+{
+	{f000} 4 14	# 階はじめ
+	{f001} 4 14	# 階おわり
+	{f002} 4 4	# 敵最大数
+	{f003} 4 0	# アイテム最大数
+	{f004} 4 1	# ゲート最大数
+	{f014} 4 0	# キャップ最大数
+	{f005} 4 2	# ルーム数
+	{f006} 4 0.000000 	# ルートの割合
+	{f007} 4 1 	# 帰還噴水(1=あり)
+	{f008} -1 HH19_boss_conc.txt 	# 使用ユニット
+	{f009} -1 normal_light_lv4.ini 	# 使用ライト
+	{f00A} -1 none 	# VRBOX
+	{f010} 4 0 	# 階段を壊す岩で隠す(0=オフ 1=オン)
+	{f011} 4 2 	# α属性
+	{f012} 4 1 	# β属性
+	{f013} 4 0 	# 隠し床
+	{f015} 4 1 	# Version
+	{_eof} 
+}
+# TekiInfo
+{
+	2 	# num
+	Queen_halloween 10 	# weight
+	8 	# type
+	KingChappy 20 	# weight
+	6 	# type
+}
+# ItemInfo
+{
+	0 	# num
+}
+# GateInfo
+{
+	1 	# num
+	gate 4000.000000 	# life
+	1 	# weight
+}
+# CapInfo
+{
+	1 	# num
+	0 	# captype
+	Egg 10 	# weight
+	1 	# type
+}

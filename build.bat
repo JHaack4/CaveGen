@@ -1,0 +1,1 @@
+javac *.java --release 8 && jar cmf manifest.mf CaveGen.jar *.class

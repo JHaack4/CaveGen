@@ -1,0 +1,13 @@
+1
+# room_north4x4j_1_conc
+{
+	1 	# version
+	room_north4x4j_1_conc 	# foldername
+	4 4 	# dX/dZ ; cell size
+	1 	# room type
+	0 1 	# room Flags
+	1 	# num doors
+	0 	# index
+	2 0 0 	# dir/offs/wpindex
+	0 	# door links
+}

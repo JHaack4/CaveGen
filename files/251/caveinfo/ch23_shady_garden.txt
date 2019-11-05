@@ -1,0 +1,68 @@
+#CaveInfo
+{
+	{c000} 4 1	# 階層
+	{_eof} 
+}
+1 # FloorInfo
+{
+	{f000} 4 0 	# 階はじめ
+	{f001} 4 0 	# 階おわり
+	{f002} 4 20	# 敵最大数
+	{f003} 4 5 	# アイテム最大数
+	{f004} 4 0 	# ゲート最大数
+	{f014} 4 20	# キャップ最大数
+	{f005} 4 3 	# ルーム数
+	{f006} 4 0.000000 	# ルートの割合
+	{f007} 4 0 	# 帰還噴水(1=あり)
+	{f008} -1 CH23_1_kusachi.txt 	# 使用ユニット
+	{f009} -1 ch23_light.ini 	# 使用ライト
+	{f00A} -1 soil	# VRBOX
+	{f010} 4 0 	# 階段を壊す岩で隠す(0=オフ 1=オン)
+	{f011} 4 3 	# α属性
+	{f012} 4 0 	# β属性
+	{f013} 4 1 	# 隠し床
+	{f015} 4 1 	# Version
+	{_eof} 
+}
+# TekiInfo
+{
+	10	# num
+	Sokkuri_bird_hane 60
+	0
+	UjiA_be_dama_blue 60
+	0
+	ShijimiChou 20
+	1
+	Qurione 50
+	1
+	Kogane_key 10
+	1
+	Kogane_chocoichigo_l 10
+	1
+	Fuefuki_donutschoco_s 10
+	1
+	Tanpopo 5
+	6
+	Magaret 3
+	6
+	Ooinu_l 5
+	6
+}
+# ItemInfo
+{
+	3	# num
+	ichigo_l 10
+	dia_a_green 10
+	matu_bokkuri 10
+}
+# GateInfo
+{
+	0 	# num
+}
+# CapInfo
+{
+	1 	# num
+	0
+	Egg 20
+	1
+}

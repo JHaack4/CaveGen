@@ -1,0 +1,75 @@
+#
+#
+#	units definition file
+#
+#
+2 	# number of units
+# item_cap_casino
+{
+	1 	# version
+	item_cap_casino 	# foldername
+	1 1 	# dX/dZ ; cell size
+	0 	# room type
+	0 0 	# room Flags
+	1 	# num doors
+	0 	# index
+	2 0 0 	# dir/offs/wpindex
+	0 	# door links
+}
+# room_large_slots_casino
+{
+	1 	# version
+	room_large_slots_casino 	# foldername
+	9 9 	# dX/dZ ; cell size
+	1 	# room type
+	0 1 	# room Flags
+	6	# num doors
+	0 	# index
+	0 1 0 	# dir/offs/wpindex
+	5 	# door links
+	951.528198 1 1 	# dist/door-id/tekiflag
+	1894.989624 2 1 	# dist/door-id/tekiflag
+	1719.712524 3 1 	# dist/door-id/tekiflag
+	948.863037 4 1 	# dist/door-id/tekiflag
+	510.030884 5 1 	# dist/door-id/tekiflag
+	1 	# index
+	0 4 1 	# dir/offs/wpindex
+	5 	# door links
+	951.528259 0 1 	# dist/door-id/tekiflag
+	2336.487061 2 1 	# dist/door-id/tekiflag
+	2161.210205 3 1 	# dist/door-id/tekiflag
+	1390.360474 4 1 	# dist/door-id/tekiflag
+	951.528259 5 1 	# dist/door-id/tekiflag
+	2 	# index
+	2 4 2 	# dir/offs/wpindex
+	5 	# door links
+	1894.989502 0 1 	# dist/door-id/tekiflag
+	2336.487061 1 1 	# dist/door-id/tekiflag
+	1047.986084 3 1 	# dist/door-id/tekiflag
+	1286.135498 4 1 	# dist/door-id/tekiflag
+	1894.989502 5 1 	# dist/door-id/tekiflag
+	3 	# index
+	3 8 3 	# dir/offs/wpindex
+	5 	# door links
+	1719.712402 0 1 	# dist/door-id/tekiflag
+	2161.209717 1 1 	# dist/door-id/tekiflag
+	1047.986084 2 1 	# dist/door-id/tekiflag
+	1110.858521 4 1 	# dist/door-id/tekiflag
+	1719.712402 5 1 	# dist/door-id/tekiflag
+	4 	# index
+	3 4 4 	# dir/offs/wpindex
+	5 	# door links
+	948.863037 0 1 	# dist/door-id/tekiflag
+	1390.360352 1 1 	# dist/door-id/tekiflag
+	1286.135620 2 1 	# dist/door-id/tekiflag
+	1110.858643 3 1 	# dist/door-id/tekiflag
+	948.863037 5 1 	# dist/door-id/tekiflag
+	5 	# index
+	3 1 5 	# dir/offs/wpindex
+	5 	# door links
+	510.030884 0 1 	# dist/door-id/tekiflag
+	951.528198 1 1 	# dist/door-id/tekiflag
+	1894.989624 2 1 	# dist/door-id/tekiflag
+	1719.712524 3 1 	# dist/door-id/tekiflag
+	948.863037 4 1 	# dist/door-id/tekiflag
+}

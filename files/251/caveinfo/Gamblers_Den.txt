@@ -1,0 +1,304 @@
+{
+	{c000} 4 6 #number of floors
+	{_eof} 
+}
+6 # number of Floors
+# FloorInfo
+{
+	{f000} 4 0 	# 階はじめ
+	{f001} 4 0 	# 階おわり
+	{f002} 4 11 # 敵最大数
+	{f003} 4 1 	# アイテム最大数
+	{f004} 4 0 	# ゲート最大数
+	{f014} 4 10 # キャップ最大数
+	{f005} 4 1 	# ルーム数
+	{f006} 4 0.000000 	# ルートの割合
+	{f007} 4 0 	# 帰還噴水(1=あり)
+	{f008} -1 CN2_slots.txt 	# 使用ユニット
+	{f009} -1 forest_2_siro_light.ini 	# 使用ライト
+	{f00A} -1 casino 	# VRBOX
+	{f010} 4 0
+	{f011} 4 4
+	{f012} 4 0
+	{f013} 4 1
+	{f015} 4 1
+	{_eof} 
+}
+# TekiInfo
+{
+	6 	# num
+	kochappy 80
+	0
+	$5Bomb 1
+	8
+	$5RandPom 1
+	8
+	$5BombOtakara 1
+	8
+	$5Egg 1
+	8
+	$5Rock 1
+	8
+}
+# ItemInfo
+{
+	1 	# num
+	g_futa_kyusyu 10
+}
+# GateInfo
+{
+	0 	# num
+}
+# CapInfo
+{
+	1 	# num
+	0 	# captype
+	WhitePom 10 	# weight
+	1 	# type
+}
+# FloorInfo
+{
+	{f000} 4 1 	# 階はじめ
+	{f001} 4 1 	# 階おわり
+	{f002} 4 26 	# 敵最大数
+	{f003} 4 1 	# アイテム最大数
+	{f004} 4 0 	# ゲート最大数
+	{f014} 4 40 	# キャップ最大数
+	{f005} 4 1 	# ルーム数
+	{f006} 4 0.0000 	# ルートの割合
+	{f007} 4 0	# 帰還噴水(1=あり)
+	{f008} -1 CN3_ashtrays.txt 	# 使用ユニット
+	{f009} -1 forest_2_siro_light.ini 	# 使用ライト
+	{f00A} -1 casino	# VRBOX
+	{f010} 4 1 	# 階段を壊す岩で隠す(0=オフ 1=オン)
+	{f011} 4 4 	# α属性
+	{f012} 4 0 	# β属性
+	{f013} 4 1	# 隠し床
+	{f015} 4 1 	# Version
+	{_eof} 
+}
+# TekiInfo
+{
+	5 	# num
+	Kabuto_g_futa_titiyas 10 	# weight
+	8 	# type
+	Rkabuto 20
+	8
+	WTank 30
+	1
+	gashiba 40
+	5
+	chiyogami 3	# weight
+	6 	# type
+}
+# ItemInfo
+{
+	1 	# num
+	g_futa_nihonraku 10
+}
+# GateInfo
+{
+	0 	# num
+}
+# CapInfo
+{
+	2 	# num
+	0 	# captype
+	Redpom 10 	# weight
+	1 	# type
+	0
+	egg 20
+	1
+}
+# FloorInfo
+{
+	{f000} 4 2	# 階はじめ
+	{f001} 4 2 	# 階おわり
+	{f002} 4 12 	# 敵最大数
+	{f003} 4 0 	# アイテム最大数
+	{f004} 4 0 	# ゲート最大数
+	{f014} 4 50 	# キャップ最大数
+	{f005} 4 1 	# ルーム数
+	{f006} 4 0.000000 	# ルートの割合
+	{f007} 4 1 	# 帰還噴水(1=あり)
+	{f008} -1 CN4_small_casino.txt 	# 使用ユニット
+	{f009} -1 forest_3_light.ini 	# 使用ライト
+	{f00A} -1 flooring 	# VRBOX
+	{f010} 4 0 	# 階段を壊す岩で隠す(0=オフ 1=オン)
+	{f011} 4 1 	# α属性
+	{f012} 4 2 	# β属性
+	{f013} 4 1 	# 隠し床
+	{f015} 4 1 	# Version
+	{_eof} 
+}
+# TekiInfo
+{
+	3 	# num
+	Egg 40 	# weight
+	0 	# type
+	Kogane 10
+	0
+	Qurione 20
+	1
+}
+# ItemInfo
+{
+	0
+}
+# GateInfo
+{
+	0 	# num
+}
+# CapInfo
+{
+	2 	# num
+	0 	# captype
+	Randpom 10
+	1 	# type
+	0
+	WhitePom 10
+	1
+}
+# FloorInfo
+{
+	{f000} 4 3 	# 階はじめ
+	{f001} 4 3	# 階おわり
+	{f002} 4 32 	# 敵最大数
+	{f003} 4 1 	# アイテム最大数
+	{f004} 4 0 	# ゲート最大数
+	{f014} 4 50 	# キャップ最大数
+	{f005} 4 2 	# ルーム数
+	{f006} 4 0.100000 	# ルートの割合
+	{f007} 4 0 	# 帰還噴水(1=あり)
+	{f008} -1 CN5_mid_casino.txt 	# 使用ユニット
+	{f009} -1 casino_light.ini 	# 使用ライト
+	{f00A} -1 casino 	# VRBOX
+	{f010} 4 0 	# 階段を壊す岩で隠す(0=オフ 1=オン)
+	{f011} 4 1 	# α属性
+	{f012} 4 0 	# β属性
+	{f013} 4 1 	# 隠し床
+	{f015} 4 1 	# Version
+	{_eof} 
+}
+# TekiInfo
+{
+	7 	# num
+	Bomb 40
+	0
+	Hiba 50
+	5
+	Tank 20
+	0
+	BombSarai 30
+	1
+	MiniHoudai_mariocap 10
+	0
+	$1BombOtakara 20
+	0
+	HikariKinoko 9 	# weight
+	6 	# type
+}
+# ItemInfo
+{
+	1 	# num
+	sapper 10 	# weight
+}
+# GateInfo
+{
+	0 	# num
+}
+# CapInfo
+{
+	1 	# num
+	0 	# captype
+	Egg 20 	# weight
+	1 	# type
+}
+
+# FloorInfo
+{
+	{f000} 4 4 # 階はじめ
+	{f001} 4 4	# 階おわり
+	{f002} 4 50 	# 敵最大数
+	{f003} 4 3 	# アイテム最大数
+	{f004} 4 0 	# ゲート最大数
+	{f014} 4 0 	# キャップ最大数
+	{f005} 4 1 	# ルーム数
+	{f006} 4 0.000000 	# ルートの割合
+	{f007} 4 0 	# 帰還噴水(1=あり)
+	{f008} -1 CN6_maze_casino.txt 	# 使用ユニット
+	{f009} -1 casino_light.ini 	# 使用ライト
+	{f00A} -1 tatami 	# VRBOX
+	{f010} 4 0 	# 階段を壊す岩で隠す(0=オフ 1=オン)
+	{f011} 4 4 	# α属性
+	{f012} 4 0 	# β属性
+	{f013} 4 1 	# 隠し床
+	{f015} 4 1 	# Version
+	{_eof} 
+}
+# TekiInfo
+{
+	4 	# num
+	ElecOtakara 30 	# weight
+	1 	# type
+	ElecBug 40 	# weight
+	0 	# type
+	Armor 20 	# weight
+	0 	# type
+	Tobi 30 	# weight
+	0 	# type
+}
+# ItemInfo
+{
+	3 	# num
+	gbasp 10
+	mojiban 10
+	ahiru_head 10
+}
+# GateInfo
+{
+	0 	# num
+}
+# CapInfo
+{
+	0 	# num
+}
+# FloorInfo
+{
+	{f000} 4 5 	# 階はじめ
+	{f001} 4 5 	# 階おわり
+	{f002} 4 40 	# 敵最大数
+	{f003} 4 3 	# アイテム最大数
+	{f004} 4 0 	# ゲート最大数
+	{f014} 4 0 	# キャップ最大数
+	{f005} 4 1 	# ルーム数
+	{f006} 4 0.000000 	# ルートの割合
+	{f007} 4 1 	# 帰還噴水(1=あり)
+	{f008} -1 CN7_boss_casino.txt 	# 使用ユニット
+	{f009} -1 casino_light.ini 	# 使用ライト
+	{f00A} -1 casino 	# VRBOX
+	{f010} 4 0 	# 階段を壊す岩で隠す(0=オフ 1=オン)
+	{f011} 4 4 	# α属性
+	{f012} 4 1 	# β属性
+	{f013} 4 1 	# 隠し床
+	{f015} 4 1 	# Version
+	{_eof} 
+}
+# TekiInfo
+{
+	1 	# num
+	Houdai_fue_a 10 	# weight
+	8 	# type
+}
+# ItemInfo
+{
+	0 	# num
+}
+# GateInfo
+{
+	0 	# num
+}
+# CapInfo
+{
+	0 	# num
+}

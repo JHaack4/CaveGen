@@ -1,0 +1,35 @@
+#
+#
+#	units definition file
+#
+#
+2 	# number of units
+# item_cap_pipe
+{
+	1 	# version
+	item_cap_pipe 	# foldername
+	1 1 	# dX/dZ ; cell size
+	0 	# room type
+	0 0 	# room Flags
+	1 	# num doors
+	0 	# index
+	2 0 0 	# dir/offs/wpindex
+	0 	# door links
+}
+# room_u_jikou1_4x4_2_tile
+{
+	1 	# version
+	room_u_jikou1_4x4_2_tile 	# foldername
+	4 4 	# dX/dZ ; cell size
+	1 	# room type
+	0 1 	# room Flags
+	2 	# num doors
+	0 	# index
+	0 0 0 	# dir/offs/wpindex
+	1 	# door links
+	920.171631 1 1 	# dist/door-id/tekiflag
+	1 	# index
+	1 2 1 	# dir/offs/wpindex
+	1 	# door links
+	920.171631 0 1 	# dist/door-id/tekiflag
+}

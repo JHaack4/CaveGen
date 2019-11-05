@@ -1,0 +1,76 @@
+# CaveInfo
+{
+	{c000} 4 1 	# 階層
+	{_eof} 
+}
+1 # FloorInfo
+{
+	{f000} 4 0 	# 階はじめ
+	{f001} 4 0 	# 階おわり
+	{f002} 4 5 	# 敵最大数
+	{f003} 4 7	# アイテム最大数
+	{f004} 4 10	# ゲート最大数
+	{f014} 4 0 	# キャップ最大数
+	{f005} 4 5 	# ルーム数
+	{f006} 4 0.100000 	# ルートの割合
+	{f007} 4 1 	# 帰還噴水(1=あり)
+	{f008} -1 CH16_1_renga.txt	# 使用ユニット
+	{f009} -1 normal_light_cha.ini 	# 使用ライト
+	{f00A} -1 none	# VRBOX
+	{f010} 4 0 	# 階段を壊す岩で隠す(0=オフ 1=オン)
+	{f011} 4 0 	# α属性
+	{f012} 4 0 	# β属性
+	{f013} 4 0 	# 隠し床
+	{f015} 4 1 	# Version
+	{_eof} 
+}
+# TekiInfo
+{
+	13	# num
+	KumaChappy_key 10 	# weight
+	0 	# type
+	KumaKochappy_denchi_3_red 70 	# weight
+	1 	# type
+	$Bomb 50 	# weight
+	5 	# type
+	Fart_donguri_l 10
+	0
+	GasHiba 50
+	5
+	Tank_bell_red 20
+	0
+	Tank_bell_red 10
+	0
+	Wtank_bane_red 20
+	0
+	Wtank_bane_red 10
+	0
+	Demon_mariocap 30
+	1
+	ElecHiba 50
+	5
+	Sarai_deku	30
+	1
+	KareOoinu_s 6
+	6
+}
+# ItemInfo
+{
+	6 	# num
+	kumakibori 10
+	patrick 10
+	matu_bokkuri 10
+	toy_ring_c_green 10
+	toy_ring_c_blue 10
+	bell_yellow 10
+}
+# GateInfo
+{
+	1 	# num
+	gate 2000
+	1
+}
+# CapInfo
+{
+	0 	# num
+}

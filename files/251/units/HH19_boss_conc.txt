@@ -1,0 +1,30 @@
+#
+#
+#	units definition file
+#
+#
+2 	# number of units
+# room_Oashi8x9_conc
+{
+	1 	# version
+	room_Oashi8x9_conc 	# foldername
+	8 9 	# dX/dZ ; cell size
+	1 	# room type
+	0 1 	# room Flags
+	1 	# num doors
+	0 	# index
+	1 4 0 	# dir/offs/wpindex
+	0 	# door links
+}
+# room_north4x4j_1_boss_conc
+{
+	1 	# version
+	room_north4x4j_1_boss_conc 	# foldername
+	4 4 	# dX/dZ ; cell size
+	1 	# room type
+	0 1 	# room Flags
+	1 	# num doors
+	0 	# index
+	2 0 0 	# dir/offs/wpindex
+	0 	# door links
+}

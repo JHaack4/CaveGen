@@ -1,0 +1,101 @@
+# BaseGen file
+11      # num gens
+# basegen 0
+{
+	7     # ship spawn
+	-587.40 100.00 552.77         # pos
+	121.00     # ang
+	0.00     # radius
+	1     # min num
+	1     # max num
+}
+# basegen 1
+{
+	8     # enemy C
+	-131.10 100.00 -207.10         # pos
+	0.00     # ang
+	0.00     # radius
+	1     # min num
+	1     # max num
+}
+# basegen 2
+{
+	8     # enemy C
+	44.90 100.00 -205.10         # pos
+	0.00     # ang
+	0.00     # radius
+	1     # min num
+	1     # max num
+}
+# basegen 3
+{
+	4     # hole/geyser
+	-35.10 100.00 -422.58         # pos
+	0.00     # ang
+	0.00     # radius
+	1     # min num
+	1     # max num
+}
+# basegen 4
+{
+	2     # treasure
+	521.20 100.00 490.10         # pos
+	181.00     # ang
+	0.00     # radius
+	1     # min num
+	1     # max num
+}
+# basegen 5
+{
+	0     # enemy A
+	-207.65 0.10 185.95         # pos
+	45.00     # ang
+	0.00     # radius
+	1     # min num
+	1     # max num
+}
+# basegen 6
+{
+	0     # enemy A
+	-297.65 0.10 392.95         # pos
+	235.00     # ang
+	0.00     # radius
+	1     # min num
+	1     # max num
+}
+# basegen 7
+{
+	0     # enemy A
+	-54.65 100.00 351.95         # pos
+	301.00     # ang
+	0.00     # radius
+	1     # min num
+	1     # max num
+}
+# basegen 8
+{
+	0     # enemy A
+	71.35 100.00 226.95         # pos
+	0.00     # ang
+	0.00     # radius
+	1     # min num
+	1     # max num
+}
+# basegen 9
+{
+	1     # enemy B
+	510.25 100.00 378.52         # pos
+	0.00     # ang
+	0.00     # radius
+	1     # min num
+	1     # max num
+}
+# basegen 10
+{
+	1     # enemy B
+	559.95 100.00 381.32         # pos
+	0.00     # ang
+	0.00     # radius
+	1     # min num
+	1     # max num
+}

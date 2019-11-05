@@ -1,0 +1,54 @@
+# CaveInfo
+{
+	{c000} 4 1 	# 階層
+	{_eof} 
+}
+1 # FloorInfo
+{
+	{f000} 4 0 	# 階はじめ
+	{f001} 4 0 	# 階おわり
+	{f002} 4 40 	# 敵最大数
+	{f003} 4 0 	# アイテム最大数
+	{f004} 4 0 	# ゲート最大数
+	{f014} 4 80 	# キャップ最大数
+	{f005} 4 2 	# ルーム数
+	{f006} 4 0.000000 	# ルートの割合
+	{f007} 4 0 	# 帰還噴水(1=あり)
+	{f008} -1 vs_tutorial.txt 	# 使用ユニット
+	{f009} -1 vs_7_light.ini 	# 使用ライト
+	{f00A} -1 none 	# VRBOX
+	{f010} 4 0 	# 階段を壊す岩で隠す(0=オフ 1=オン)
+	{f011} 4 5 	# α属性
+	{f012} 4 0 	# β属性
+	{f013} 4 0 	# 隠し床
+	{f015} 4 1 	# Version
+	{_eof} 
+}
+# TekiInfo
+{
+	6 	# num
+	Rkabuto_j_block_yellow 30 	# weight
+	1 	# type
+	Pelplant 100 	# weight
+	8 	# type
+	Armor 40 	# weight
+	0 	# type
+	YellowKochappy 80 	# weight
+	0 	# type
+	Kochappy 80 	# weight
+	0 	# type
+	KareOoinu_l 4 	# weight
+	6 	# type
+}
+# ItemInfo
+{ 
+	0 	# num
+}
+# GateInfo
+{
+	0 	# num
+}
+# CapInfo
+{
+	0 	# num
+}

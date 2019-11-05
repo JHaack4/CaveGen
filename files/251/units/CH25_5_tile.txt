@@ -1,0 +1,18 @@
+#
+#
+#	units definition file
+#
+#
+1	# number of units
+# room_north2x2_1_tile
+{
+	1 	# version
+	room_north2x2_1_tile 	# foldername
+	2 2 	# dX/dZ ; cell size
+	1 	# room type
+	0 0 	# room Flags
+	1 	# num doors
+	0 	# index
+	3 0 0 	# dir/offs/wpindex
+	0 	# door links
+}

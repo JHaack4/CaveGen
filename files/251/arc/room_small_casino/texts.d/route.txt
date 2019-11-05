@@ -1,0 +1,149 @@
+20 # waypoint count 
+{
+	0 # index 
+	1 # numLinks 
+	5 # link 0 
+	170.0 0.0 -255.0 60.0 
+}
+{
+	1 # index 
+	1 # numLinks 
+	6 # link 0 
+	255.0 0.0 170.0 60.0 
+}
+{
+	2 # index 
+	1 # numLinks 
+	6 # link 0 
+	170.0 0.0 255.0 60.0 
+}
+{
+	3 # index 
+	1 # numLinks 
+	7 # link 0 
+	-255.0 0.0 170.0 60.0 
+}
+{
+	4 # index 
+	1 # numLinks 
+	8 # link 0 
+	-255.0 0.0 -170.0 60.0 
+}
+{
+	5 # index 
+	4 # numLinks 
+	0 # link 0 
+	9 # link 1 
+	12 # link 2 
+	13 # link 3 
+	170.0 0.0 -170.0 30.0 
+}
+{
+	6 # index 
+	4 # numLinks 
+	1 # link 0 
+	2 # link 1 
+	9 # link 2 
+	12 # link 3 
+	170.0 0.0 127.71997471554994 30.0 
+}
+{
+	7 # index 
+	3 # numLinks 
+	3 # link 0 
+	9 # link 1 
+	11 # link 2 
+	-120.0 0.0 170.0 30.0 
+}
+{
+	8 # index 
+	4 # numLinks 
+	4 # link 0 
+	9 # link 1 
+	11 # link 2 
+	13 # link 3 
+	-120.0 0.0 -170.0 30.0 
+}
+{
+	9 # index 
+	6 # numLinks 
+	8 # link 0 
+	5 # link 1 
+	6 # link 2 
+	7 # link 3 
+	11 # link 4 
+	12 # link 5 
+	0.0 0.0 0.0 85.0 
+}
+{
+	10 # index 
+	2 # numLinks 
+	6 # link 0 
+	15 # link 1 
+	59.20000000000016 31.737499237060547 163.68166877370408 30.0 
+}
+{
+	11 # index 
+	3 # numLinks 
+	8 # link 0 
+	7 # link 1 
+	9 # link 2 
+	-120.0 100.0 0.0 30.0 
+}
+{
+	12 # index 
+	3 # numLinks 
+	6 # link 0 
+	5 # link 1 
+	9 # link 2 
+	170.0 100.0 0.0 30.0 
+}
+{
+	13 # index 
+	2 # numLinks 
+	8 # link 0 
+	5 # link 1 
+	0.0 100.0 -170.0 30.0 
+}
+{
+	14 # index 
+	2 # numLinks 
+	8 # link 0 
+	11 # link 1 
+	-161.6 100 -84.16245259165612 5.0 
+}
+{
+	15 # index 
+	2 # numLinks 
+	7 # link 0 
+	9 # link 1 
+	-9.399999999999977 100 164.9462705436157 5.0 
+}
+{
+	16 # index 
+	2 # numLinks 
+	9 # link 0 
+	6 # link 1 
+	86.0 100 113.30278128950695 5.0 
+}
+{
+	17 # index 
+	2 # numLinks 
+	5 # link 0 
+	12 # link 1 
+	218.1 100 -95.88621997471557 5.0 
+}
+{
+	18 # index 
+	2 # numLinks 
+	8 # link 0 
+	13 # link 1 
+	-55.80000000000001 100 -219.36346396965865 5.0 
+}
+{
+	19 # index 
+	2 # numLinks 
+	13 # link 0 
+	5 # link 1 
+	71.80000000000004 100 -216.33565107458912 5.0 
+}

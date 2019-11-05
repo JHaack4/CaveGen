@@ -1,0 +1,152 @@
+# CaveInfo
+{
+	{c000} 4 3	# 階層
+	{_eof} 
+}
+3 # FloorInfo
+{
+	{f000} 4 0 	# 階はじめ
+	{f001} 4 0 	# 階おわり
+	{f002} 4 7 	# 敵最大数
+	{f003} 4 3	# アイテム最大数
+	{f004} 4 0	# ゲート最大数
+	{f014} 4 0	# キャップ最大数
+	{f005} 4 1 	# ルーム数
+	{f006} 4 0.000000 	# ルートの割合
+	{f007} 4 0 	# 帰還噴水(1=あり)
+	{f008} -1 CH21_1_slots.txt	# 使用ユニット
+	{f009} -1 toy_light_cha.ini 	# 使用ライト
+	{f00A} -1 casino # VRBOX
+	{f010} 4 0 	# 階段を壊す岩で隠す(0=オフ 1=オン)
+	{f011} 4 4 	# α属性
+	{f012} 4 0 	# β属性
+	{f013} 4 1 	# 隠し床
+	{f015} 4 1 	# Version
+	{_eof} 
+}
+# TekiInfo
+{
+	10	 # num
+	Chappy_turret 10
+	1
+	Chappy_compcube 10
+	1
+	Chappy_key 10
+	1
+	$5Egg 1
+	8
+	$5Rock 1
+	8
+	$5Kabuto 1
+	8
+	$5BombOtakara 1
+	8
+	$5RandPom 1
+	8
+	$5Chappy 1
+	8
+	$5Frog 1
+	8
+}
+# ItemInfo
+{
+	3	# num
+	flask 10
+	dia_c_red 10
+	patrick 10
+	
+}
+# GateInfo
+{
+	0 	# num
+}
+# CapInfo
+{
+	0 	# num
+}
+{
+	{f000} 4 1 	# 階はじめ
+	{f001} 4 1 	# 階おわり
+	{f002} 4 10	# 敵最大数
+	{f003} 4 3	# アイテム最大数
+	{f004} 4 0	# ゲート最大数
+	{f014} 4 0 	# キャップ最大数
+	{f005} 4 3 	# ルーム数
+	{f006} 4 0.000000 	# ルートの割合
+	{f007} 4 0 	# 帰還噴水(1=あり)
+	{f008} -1 CH21_2_casino.txt	# 使用ユニット
+	{f009} -1 toy_light_cha.ini 	# 使用ライト
+	{f00A} -1 casino	# VRBOX
+	{f010} 4 0 	# 階段を壊す岩で隠す(0=オフ 1=オン)
+	{f011} 4 0	# α属性
+	{f012} 4 0 	# β属性
+	{f013} 4 1 	# 隠し床
+	{f015} 4 1 	# Version
+	{_eof} 
+}
+# TekiInfo
+{
+	4	# num
+	Kabuto_fire_helmet 30
+	1
+	Armor_donguri_l 30
+	1
+	Kochappy_dia_b_red 60
+	0
+	PanModoki_baum_kuchen_s 10
+	0
+}
+# ItemInfo
+{
+	4	# num
+	key 10
+	tatebue 10
+	sensya 10
+	dia_b_blue 10
+}
+# GateInfo
+{
+	0 	# num
+}
+# CapInfo
+{
+	0	# num
+}
+{
+	{f000} 4 2 	# 階はじめ
+	{f001} 4 2 	# 階おわり
+	{f002} 4 1	# 敵最大数
+	{f003} 4 0	# アイテム最大数
+	{f004} 4 0	# ゲート最大数
+	{f014} 4 0 	# キャップ最大数
+	{f005} 4 1 	# ルーム数
+	{f006} 4 0.000000 	# ルートの割合
+	{f007} 4 1 	# 帰還噴水(1=あり)
+	{f008} -1 CH21_3_boss.txt	# 使用ユニット
+	{f009} -1 toy_light_cha.ini 	# 使用ライト
+	{f00A} -1 casino # VRBOX
+	{f010} 4 0 	# 階段を壊す岩で隠す(0=オフ 1=オン)
+	{f011} 4 0	# α属性
+	{f012} 4 0 	# β属性
+	{f013} 4 1 	# 隠し床
+	{f015} 4 1 	# Version
+	{_eof} 
+}
+# TekiInfo
+{
+	1	# num
+	Damagumo_key 10
+	8
+}
+# ItemInfo
+{
+	0	# num
+}
+# GateInfo
+{
+	0 	# num
+}
+# CapInfo
+{
+	0	# num
+}
