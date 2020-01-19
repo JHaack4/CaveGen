@@ -54,7 +54,7 @@ drawNoPlants - doesn't draw any plant icons
 drawNoFallType - doesn't draw the falltype indicators
 drawNoGateLife - doesn't draw the gate's life
 drawNoObjects - doesn't draw any objects
-
+findGoodLayouts 0.01 - runs a heuristic to only output images for the best 1% of layouts
 
 EXAMPLES:
 java -jar CaveGen.jar seed story -seed 0x12345678 -drawSpawnPoints
