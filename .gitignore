@@ -10,5 +10,7 @@
 *.tar.gz
 *.rar
 
-*.png
+output/*/*.png
+output/*
 !reports/*.txt
+*.png
