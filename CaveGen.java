@@ -14,7 +14,8 @@ public class CaveGen {
         drawNoPlants = false, drawNoFallType = false, drawWaterBox = true,
         drawDoorLinks = false, drawDoorIds = false, drawSpawnOrder = false, drawNoObjects = false,
         drawNoGateLife = false, drawHoleProbs = false, p251 = false,
-        drawEnemyScores = false, drawUnitHoleScores = false, drawUnitItemScores = false;
+        drawEnemyScores = false, drawUnitHoleScores = false, drawUnitItemScores = false,
+        findGoodLayouts = false;
 
     static Drawer drawer;
     static Stats stats;
@@ -145,6 +146,8 @@ public class CaveGen {
                     drawNoGateLife = true;
                 else if (s.equalsIgnoreCase("-drawHoleProbs"))
                     drawHoleProbs = true;
+                else if (s.equalsIgnoreCase("-findGoodLayouts"))
+                    findGoodLayouts = true;
                 else {
                     System.out.println("Bad argument: " + s);
                     throw new Exception();
@@ -255,17 +258,17 @@ public class CaveGen {
 
             createRandomMap();
 
-            if (images) {
+            if (showStats) {
                 try {
-                    drawer.draw(this, false);
+                    stats.analyze(this);
                 } catch (Exception e) {
                     e.printStackTrace();
                     System.exit(0);
                 }
             }
-            if (showStats) {
+            if (images) {
                 try {
-                    stats.analyze(this);
+                    drawer.draw(this, false);
                 } catch (Exception e) {
                     e.printStackTrace();
                     System.exit(0);

@@ -1,0 +1,102 @@
+﻿0,0x00,Pellet Posy,Pelplant,0
+1,0x01,Dwarf Red Bulborb,Kochappy,10
+2,0x02,Red Bulborb,Chappy,50
+3,0x03,Lapis Lazuli Candypop Bud,BluePom,0
+4,0x04,Crimson Candypop Bud,RedPom,0
+5,0x05,Golden Candypop Bud,YellowPom,0
+6,0x06,Violet Candypop Bud,BlackPom,0
+7,0x07,Ivory Candypop Bud,WhitePom,0
+8,0x08,Queen Candypop Bud,RandPom,0
+9,0x09,Iridescent Flint Beetle,Kogane,0
+10,0x0A,Iridescent Glint Beetle,Wealthy,0
+11,0x0B,Doodlebug,Fart,40
+12,0x0C,Female Sheargrub,UjiA,-1
+13,0x0D,Male Sheargrub,UjiB,-2
+14,0x0E,Shearwig,Tobi,-2
+15,0x0F,Cloaking Burrow-nit,Armor,20
+16,0x10,Honeywisp,Qurione,0
+17,0x11,Yellow Wollywog,Frog,30
+18,0x12,Wollywog,MaroFrog,50
+19,0x13,Falling boulder,Rock,10
+20,0x14,Fire geyser,Hiba,30
+21,0x15,Gas pipe,GasHiba,50
+22,0x16,Electrical wire,ElecHiba,50
+23,0x17,Swooping Snitchbug,Sarai,20
+24,0x18,Fiery Blowhog,Tank,40
+25,0x19,Watery Blowhog,Wtank,40
+26,0x1A,Water Dumple,Catfish,20
+27,0x1B,Wogpole,Tadpole,1
+28,0x1C,Anode Beetle,ElecBug,30
+29,0x1D,Puffy Blowhog,Mar,50
+30,0x1E,Empress Bulblax,Queen,100
+31,0x1F,Bulborb Larva,Baby,10
+32,0x20,Bumbling Snitchbug,Demon,20
+33,0x21,Fiery Bulblax,FireChappy,100
+34,0x22,Burrowing Snagret,SnakeCrow,100
+35,0x23,Spotty Bulbear,KumaChappy,100
+36,0x24,Bomb rock,Bomb,15
+37,0x25,Egg,Egg,0
+38,0x26,Breadbug (with its home),PanModoki,5
+39,0x27,Crashes,-,0
+40,0x28,Giant Breadbug and base,OoPanModoki,100
+41,0x29,Antenna Beetle,Fuefuki,50
+42,0x2A,Orange Bulborb,BlueChappy,70
+43,0x2B,Hairy Bulborb,YellowChappy,30
+44,0x2C,Dwarf Orange Bulborb,BlueKochappy,10
+45,0x2D,Snow Bulborb,YellowKochappy,10
+46,0x2E,Dandelion,Tanpopo,0
+47,0x2F,Clover,Clover,0
+48,0x30,Common Glowcap,HikariKinoko,0
+49,0x31,Figwort (red small),Ooinu_s,0
+50,0x32,Figwort (red large),Ooinu_l,0
+51,0x33,Shoot (shorter),Wakame_s,0
+52,0x34,Shoot (taller),Wakame_l,0
+53,0x35,Emperor Bulblax,KingChappy,100
+54,0x36,Mamuta,Miulin,40
+55,0x37,Withering Blowhog,Hanachirashi,30
+56,0x38,Beady Long Legs,Damagumo,100
+57,0x39,Lesser Spotted Jellyfloat,Kurage,50
+58,0x3A,Careening Dirigibug,BombSarai,20
+59,0x3B,Fiery Dweevil,FireOtakara,25
+60,0x3C,Caustic Dweevil,WaterOtakara,25
+61,0x3D,Munge Dweevil,GasOtakara,35
+62,0x3E,Anode Dweevil,ElecOtakara,30
+63,0x3F,Hermit Crawmad,Jigumo,30
+64,0x40,unused,-,0
+65,0x41,Ravenous Whiskerpillar,Imomushi,0
+66,0x42,Man-at-Legs,Houdai,100
+67,0x43,Bulbmin,LeafChappy,40
+68,0x44,Mitite,TamagoMushi,10
+69,0x45,Raging Long Legs,BigFoot,100
+70,0x46,Pileated Snagret,SnakeWhole,100
+71,0x47,Ranging Bloyster,UmiMushi,100
+72,0x48,Greater Spotted Jellyfloat,OniKurage,100
+73,0x49,Titan Dweevil,BigTreasure,100
+74,0x4A,Rock,Stone,0
+75,0x4B,Armored Cannon Beetle Larva,Kabuto,50
+76,0x4C,Dwarf Bulbear,KumaKochappy,15
+77,0x4D,Group of 9 Unmarked Spectralids,ShijimiChou,0
+78,0x4E,Gatling Groink,MiniHoudai,100
+79,0x4F,Skitter Leaf,Sokkuri,5
+80,0x50,Horsetail,Tukushi,0
+81,0x51,Seeding Dandelion,Watage,0
+82,0x52,Candypop Bud?[unsure] Crashes unused,Pom,0
+83,0x53,Breadbug's Home?[unsure],PanHouse,0
+84,0x54,Creeping Chrysanthemum,Hana,25
+85,0x55,Glowstem (red),DaiodoRed,0
+86,0x56,Glowstem (green),DaiodoGreen,0
+87,0x57,Margaret,Magaret,0
+88,0x58,Foxtail,Nekojarashi,0
+89,0x59,Chigoyami paper,Chiyogami,0
+90,0x5A,Fiddlehead,Zenmai,0
+91,0x5B,Figwort (brown small),KareOoinu_s,0
+92,0x5C,Figwort (brown large),KareOoinu_l,0
+93,0x5D,Volatile Dweevil,BombOtakara,35
+94,0x5E,Segmented Crawbster,DangoMushi,100
+95,0x5F,Decorated Cannon Beetle,Rkabuto,50
+96,0x60,Armored Cannon Beetle Larva (burrowed),Fkabuto,60
+97,0x61,Gatling Groink (pedestal),FminiHoudai,100
+98,0x62,Waterwraith rollers,Tyre,100
+99,0x63,Waterwraith,BlackMan,100
+100,0x64,Crashes unused,UmiMushiBase,0
+101,0x65,Toady Bloyster,UmiMushiBlind,60

@@ -451,4 +451,26 @@ class Parser {
         return;
     }
 
+    static HashMap<String, Integer> tekiDifficultyMap = new HashMap<String, Integer>();
+
+    static void readEnemyFile() {
+        try {
+            BufferedReader br = new BufferedReader(new FileReader("Enemy.csv"));
+            String line;
+            while ((line = br.readLine()) != null) {
+                Scanner sc = new Scanner(line);
+                sc.useDelimiter(",");
+                String id = sc.next();
+                String hexId = sc.next();
+                String commonName = sc.next();
+                String internalName = sc.next();
+                int difficulty = Integer.parseInt(sc.next());
+                tekiDifficultyMap.put(internalName.toLowerCase(), difficulty);
+                sc.close();
+            }
+            br.close();
+        } catch(Exception e) {
+            e.printStackTrace();
+        }
+    }
 }

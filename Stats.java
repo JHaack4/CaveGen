@@ -14,6 +14,9 @@ class Stats {
 
     // this function gets called once at the start of the process
     public Stats(String args[]) {
+        if (CaveGen.findGoodLayouts) {
+            Parser.readEnemyFile();
+        }
         try {
             startTime = System.currentTimeMillis();
             DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd-HH-mm-ss");
@@ -40,6 +43,7 @@ class Stats {
     int minSumTreasureScore = INF;
     int minSumTreasureScoreSeed = -1;
     int missingTreasureCount = 0;
+    ArrayList<Integer> allScores = new ArrayList<Integer>();
 
     // this function gets called once for every sublevel g that generates
     void analyze(CaveGen g) {
@@ -99,9 +103,85 @@ class Stats {
         int expectedMissingTreasures = 0;
         if ("CH29 1".equals(g.specialCaveInfoName + " " + g.sublevel))
             expectedMissingTreasures = 1; // This level is always missing a treasure
-        if (actualTreasure + expectedMissingTreasures < minTreasure) {
+        boolean missingUnexpectedTreasure = actualTreasure + expectedMissingTreasures < minTreasure;
+        if (missingUnexpectedTreasure) {
             out.println("Missing treasure: " + g.specialCaveInfoName + " " + g.sublevel + " " + Drawer.seedToString(g.initialSeed));
             missingTreasureCount += 1;
+        }
+
+        if (CaveGen.findGoodLayouts && !missingUnexpectedTreasure) {
+            int numGoodLayoutsToGiveImagesFor = 200;
+            boolean giveWorstLayoutsInstead = false;
+
+            ArrayList<Teki> placedTekisWithItems = new ArrayList<Teki>();
+            for (Teki t: g.placedTekis) {
+                if (t.itemInside != null)
+                placedTekisWithItems.add(t);
+            }
+
+            // Compute the waypoints on the shortest paths
+            ArrayList<WayPoint> wpOnShortPath = new ArrayList<WayPoint>();
+            for (Item t: g.placedItems) {
+                if ("g_futa_kyodo,flower_blue,tape_blue,kinoko_doku,flower_red,futa_a_silver,cookie_m_l".contains(t.itemName.toLowerCase())) continue;
+                WayPoint wp = g.closestWayPoint(t.spawnPoint);
+                while (!wp.isStart) {
+                    if (!wpOnShortPath.contains(wp)) wpOnShortPath.add(wp);
+                    wp = wp.backWp;
+                }
+            }
+            for (Teki t: placedTekisWithItems) {
+                if ("chocolate".contains(t.itemInside)) continue;
+                WayPoint wp = g.closestWayPoint(t.spawnPoint);
+                while (!wp.isStart) {
+                    if (!wpOnShortPath.contains(wp)) wpOnShortPath.add(wp);
+                    wp = wp.backWp;
+                }
+            }
+
+            // add up distance penalty for score
+            int score = 0;
+            for (WayPoint wp: wpOnShortPath) {
+                score += wp.distToStart - wp.backWp.distToStart;
+            }    
+            // add up enemy penalties for score
+            for (Teki t: g.placedTekis) {
+                WayPoint wp = g.closestWayPoint(t.spawnPoint);
+                if (wpOnShortPath.contains(wp)) {
+                    score += Parser.tekiDifficultyMap.get(t.tekiName.toLowerCase());
+                }
+            }
+            // add up gate penalties for score
+            for (Gate t: g.placedGates) {
+                WayPoint wp = g.closestWayPoint(t.spawnPoint);
+                if (g.placedHole.mapUnit.type == 0 && g.placedHole.mapUnit.doors.get(0).spawnPoint == t.spawnPoint)
+                    score += t.life / 3; // covers hole
+                if (wpOnShortPath.contains(wp))
+                    score += t.life / 3; // covers path back to ship
+            }
+
+            if (giveWorstLayoutsInstead) score *= -1;
+
+            // keep a sorted list of the scores
+            for (int i = 0; i <= allScores.size(); i++) {
+                if (i == allScores.size()) {
+                    allScores.add(score);
+                }
+                if (score < allScores.get(i)) {
+                    allScores.add(i, score);
+                }
+            }
+
+            // only print good ones
+            if (caveGenCount > CaveGen.numToGenerate/10 && 
+                score <= allScores.get((int)(allScores.size()*numGoodLayoutsToGiveImagesFor/CaveGen.numToGenerate)) 
+                || score == allScores.get(0) && caveGenCount > CaveGen.numToGenerate/40) {
+                CaveGen.images = true;
+                out.println("GoodLayoutScore: " + Drawer.seedToString(g.initialSeed) + " -> " + score);
+            }
+            else {
+                CaveGen.images = false;
+            }
+
         }
     }
 
