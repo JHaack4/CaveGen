@@ -110,8 +110,8 @@ class Stats {
         }
 
         if (CaveGen.findGoodLayouts && !missingUnexpectedTreasure) {
-            int numGoodLayoutsToGiveImagesFor = 200;
-            boolean giveWorstLayoutsInstead = false;
+            int numGoodLayoutsToGiveImagesFor = Math.abs((int)(CaveGen.findGoodLayoutsRatio*CaveGen.numToGenerate));
+            boolean giveWorstLayoutsInstead = CaveGen.findGoodLayoutsRatio < 0;
 
             ArrayList<Teki> placedTekisWithItems = new ArrayList<Teki>();
             for (Teki t: g.placedTekis) {

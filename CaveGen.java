@@ -16,6 +16,7 @@ public class CaveGen {
         drawNoGateLife = false, drawHoleProbs = false, p251 = false,
         drawEnemyScores = false, drawUnitHoleScores = false, drawUnitItemScores = false,
         findGoodLayouts = false;
+    static double findGoodLayoutsRatio = 0.01;
 
     static Drawer drawer;
     static Stats stats;
@@ -146,8 +147,10 @@ public class CaveGen {
                     drawNoGateLife = true;
                 else if (s.equalsIgnoreCase("-drawHoleProbs"))
                     drawHoleProbs = true;
-                else if (s.equalsIgnoreCase("-findGoodLayouts"))
+                else if (s.equalsIgnoreCase("-findGoodLayouts")) {
                     findGoodLayouts = true;
+                    findGoodLayoutsRatio = Double.parseDouble(args[++i]);
+                }
                 else {
                     System.out.println("Bad argument: " + s);
                     throw new Exception();
@@ -168,7 +171,7 @@ public class CaveGen {
             System.out.println("  -drawWayPoints -drawWPVertexDists -drawWPEdgeDists -drawAllWayPoints");
             System.out.println("  -drawScores -drawDoorLinks -drawEnemyScores -drawUnitHoleScores -drawUnitItemScores -drawAllScores");
             System.out.println("  -drawNoWaterBox -drawNoPlants -drawNoFallType -drawNoGateLife -drawNoObjects");
-            System.out.println("  -findGoodLayouts");
+            System.out.println("  -findGoodLayouts 0.01 (this keeps the top 1% of layouts by jhawk's heuristic)");
             System.out.println("\nExample: CaveGen.jar seed story -seed 0x12345678 -drawSpawnPoints");
             System.out.println("  This generates images of all levels in story mode with that seed.");
             System.out.println("Example: CaveGen.jar cave BK 4 -num 100 -seed 0 -consecutiveSeeds");
