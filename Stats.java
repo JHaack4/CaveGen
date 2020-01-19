@@ -165,9 +165,11 @@ class Stats {
             for (int i = 0; i <= allScores.size(); i++) {
                 if (i == allScores.size()) {
                     allScores.add(score);
+                    break;
                 }
                 if (score < allScores.get(i)) {
                     allScores.add(i, score);
+                    break;
                 }
             }
 

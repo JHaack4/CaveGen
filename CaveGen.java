@@ -168,6 +168,7 @@ public class CaveGen {
             System.out.println("  -drawWayPoints -drawWPVertexDists -drawWPEdgeDists -drawAllWayPoints");
             System.out.println("  -drawScores -drawDoorLinks -drawEnemyScores -drawUnitHoleScores -drawUnitItemScores -drawAllScores");
             System.out.println("  -drawNoWaterBox -drawNoPlants -drawNoFallType -drawNoGateLife -drawNoObjects");
+            System.out.println("  -findGoodLayouts");
             System.out.println("\nExample: CaveGen.jar seed story -seed 0x12345678 -drawSpawnPoints");
             System.out.println("  This generates images of all levels in story mode with that seed.");
             System.out.println("Example: CaveGen.jar cave BK 4 -num 100 -seed 0 -consecutiveSeeds");
