@@ -120,22 +120,34 @@ class Stats {
                 placedTekisWithItems.add(t);
             }
 
+            String ignoreItems = "g_futa_kyodo,flower_blue,tape_blue,kinoko_doku,flower_red,futa_a_silver,cookie_m_l,chocolate";
+            String findTekis = ""; //"whitepom,blackpom";
+
             // Compute the waypoints on the shortest paths
             ArrayList<WayPoint> wpOnShortPath = new ArrayList<WayPoint>();
-            for (Item t: g.placedItems) {
-                if ("g_futa_kyodo,flower_blue,tape_blue,kinoko_doku,flower_red,futa_a_silver,cookie_m_l".contains(t.itemName.toLowerCase())) continue;
+            for (Item t: g.placedItems) { // Treasures
+                if (ignoreItems.contains(t.itemName.toLowerCase())) continue;
                 WayPoint wp = g.closestWayPoint(t.spawnPoint);
                 while (!wp.isStart) {
                     if (!wpOnShortPath.contains(wp)) wpOnShortPath.add(wp);
                     wp = wp.backWp;
                 }
             }
-            for (Teki t: placedTekisWithItems) {
-                if ("chocolate".contains(t.itemInside)) continue;
+            for (Teki t: placedTekisWithItems) { // Treasures inside enemies
+                if (ignoreItems.contains(t.itemInside.toLowerCase())) continue;
                 WayPoint wp = g.closestWayPoint(t.spawnPoint);
                 while (!wp.isStart) {
                     if (!wpOnShortPath.contains(wp)) wpOnShortPath.add(wp);
                     wp = wp.backWp;
+                }
+            }
+            for (Teki t: g.placedTekis) { // Other tekis
+                if (findTekis.contains(t.tekiName.toLowerCase())) {
+                    WayPoint wp = g.closestWayPoint(t.spawnPoint);
+                    while (!wp.isStart) {
+                        if (!wpOnShortPath.contains(wp)) wpOnShortPath.add(wp);
+                        wp = wp.backWp;
+                    }
                 }
             }
 
