@@ -343,12 +343,25 @@ public class Drawer {
             for (MapUnit m: g.placedMapUnits) {
                 for (SpawnPoint sp: m.spawnPoints) {
                     if (m.type == 2 && sp.type == 9) continue;
+                    float distToStart = CaveGen.spawnPointDist(g.placedStart, sp);
+                    float distToHole = g.placedHole == null ? CaveGen.INF : CaveGen.spawnPointDist(g.placedHole, sp);
+                    float distToGeyser = g.placedGeyser == null ? CaveGen.INF : CaveGen.spawnPointDist(g.placedGeyser, sp);
                     G.setColor(colorsSP[sp.type]);
                     //G.drawString(sp.type+"", (int)(pos[0]/M*N), (int)(pos[1]/M*N));
                     int rad = 10;
                     if (sp.type == 0) rad = (int)(sp.radius/M*N) + 6;
                     if (sp.type == 4 || sp.type == 7 || sp.type == 2 || sp.type == 9)
                         rad += 6;
+                    if ((sp.type == 0 && distToStart < 300) 
+                        || (sp.type == 1 && (distToStart < 300 || distToHole < 200 || distToGeyser < 200))
+                        || (sp.type == 4 && distToStart < 150)
+                        || (sp.type == 8 && distToStart < 300 || distToHole < 150 || distToGeyser < 150)) {
+                            rad = 3;
+                            int x = (int)(sp.posX/M*N - rad/2);
+                            int z = (int)(sp.posZ/M*N - rad/2);
+                            //G.fillOval(x,z,rad,rad);
+                            continue;
+                    }
                     int x = (int)(sp.posX/M*N - rad/2);
                     int z = (int)(sp.posZ/M*N - rad/2);
                     if (sp.type != 0) G.fillOval(x,z,rad,rad);

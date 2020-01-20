@@ -111,7 +111,6 @@ class Stats {
         }
 
         if (CaveGen.findGoodLayouts && !missingUnexpectedTreasure) {
-            int numGoodLayoutsToGiveImagesFor = Math.abs((int)(CaveGen.findGoodLayoutsRatio*CaveGen.numToGenerate));
             boolean giveWorstLayoutsInstead = CaveGen.findGoodLayoutsRatio < 0;
 
             ArrayList<Teki> placedTekisWithItems = new ArrayList<Teki>();
@@ -187,9 +186,9 @@ class Stats {
             }
 
             // only print good ones
-            if (caveGenCount > CaveGen.numToGenerate/10 && 
-                score <= allScores.get((int)(allScores.size()*numGoodLayoutsToGiveImagesFor/CaveGen.numToGenerate)) 
-                || score == allScores.get(0) && caveGenCount > CaveGen.numToGenerate/40) {
+            if (CaveGen.indexBeingGenerated > CaveGen.numToGenerate/10 && 
+                score <= allScores.get((int)(allScores.size()*CaveGen.findGoodLayoutsRatio)) 
+                || score == allScores.get(0) && CaveGen.indexBeingGenerated > CaveGen.numToGenerate/40) {
                 CaveGen.images = true;
                 out.println("GoodLayoutScore: " + Drawer.seedToString(g.initialSeed) + " -> " + score);
             }

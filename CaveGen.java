@@ -4,7 +4,7 @@ public class CaveGen {
 
     // Tool parameters
     static String caveInfoName, specialCaveInfoName, region = "us", fileSystem = "gc";
-    static int sublevel, firstGenSeed = 0, numToGenerate = 1;
+    static int sublevel, firstGenSeed = 0, numToGenerate = 1, indexBeingGenerated = 0;
     static boolean challengeMode = false, images = true, prints = true, showStats = true, seedOrder = false,
         folderSeed = true, folderCave = true, showCaveInfo = false, drawSpawnPoints = false,
         drawWayPoints = false, drawWayPointVertDists = false, drawWayPointEdgeDists = false,
@@ -239,6 +239,7 @@ public class CaveGen {
         if (isFinalFloor && isHardMode()) holeClogged = false; // final floor geysers aren't clogged in story mode
 
         for (int i = 0; i < numToGenerate; i++) {
+            indexBeingGenerated = i;
             if (seedOrder) {
                 seed = firstSeed;
                 for (int j = 0; j < i; j++)
