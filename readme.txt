@@ -55,6 +55,10 @@ drawNoFallType - doesn't draw the falltype indicators
 drawNoGateLife - doesn't draw the gate's life
 drawNoObjects - doesn't draw any objects
 findGoodLayouts 0.01 - runs a heuristic to only output images for the best 1% of layouts
+requiredMapUnits unitType,rot,idFrom,doorFrom,doorTo;... - only outputs maps such that
+	for the ith entry in this semicolon separated list, the ith map unit generated
+	has this unit type and rotation, and is attached at the door with id doorTo 
+	to the map unit with id idFrom at the door with id doorFrom
 
 EXAMPLES:
 java -jar CaveGen.jar seed story -seed 0x12345678 -drawSpawnPoints
