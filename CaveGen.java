@@ -504,7 +504,7 @@ public class CaveGen {
             shuffleMapPriority();
         }
         if (requireMapUnits) {
-            stats.checkForShortCircuit(this);
+            shortCircuitMap = stats.checkForShortCircuit(this);
         }
     }
 
