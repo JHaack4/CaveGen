@@ -236,6 +236,40 @@ class Stats {
             if (o.doors.indexOf(d.adjacentDoor) != Parser.scDoorsFrom[i])
                 return true;
         }
+        else {
+            if (Parser.scDoorsTo[i] != -1) {
+                Door d = m.doors.get(Parser.scDoorsTo[i]);
+                if (d.adjacentDoor == null || d.adjacentDoor.mapUnit == null)
+                    return true;
+            }
+            if (Parser.scUnitIdsFrom[i] != -1 
+                    && Parser.scDoorsFrom[i] != -1) {
+                boolean isGood = false;
+                for (Door d: m.doors) {
+                    if (d.adjacentDoor == null || d.adjacentDoor.mapUnit == null)
+                        continue;
+                    MapUnit o = d.adjacentDoor.mapUnit;
+                    if (g.placedMapUnits.indexOf(o) != Parser.scUnitIdsFrom[i])
+                        continue;
+                    if (o.doors.indexOf(d.adjacentDoor) != Parser.scDoorsFrom[i])
+                        continue;
+                    isGood = true;
+                }
+                if (!isGood) return true;
+            }
+            else if (Parser.scUnitIdsFrom[i] != -1) {
+                boolean isGood = false;
+                for (Door d: m.doors) {
+                    if (d.adjacentDoor == null || d.adjacentDoor.mapUnit == null)
+                        continue;
+                    MapUnit o = d.adjacentDoor.mapUnit;
+                    if (g.placedMapUnits.indexOf(o) != Parser.scUnitIdsFrom[i])
+                        continue;
+                    isGood = true;
+                }
+                if (!isGood) return true;
+            }
+        }
         return false;
     }
 }
