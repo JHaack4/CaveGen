@@ -756,23 +756,9 @@ public class Drawer {
         g.mapMaxX = Math.max(g.mapMaxX, (int)(1+(180+g.spawnItem.size()*45.0)/N));
         g.mapMaxX = Math.max(g.mapMaxX, (int)(1+(180+g.spawnGate.size()*2*45.0)/N));
         
-        for (MapUnit m: g.spawnMaps) {
+        for (MapUnit m: CaveGen.spawnMapUnitsSorted) {
             for (int i = 0; i < 1; i++)
                 g.queueMapUnits.add(m.rotate(i));
-        }
-
-        for (int i = 0; i < g.queueMapUnits.size(); i++) {
-            for (int j = i+1; j < g.queueMapUnits.size(); j++) {
-                MapUnit m1 = g.queueMapUnits.get(i);
-                MapUnit m2 = g.queueMapUnits.get(j);
-                int sz1 = m1.dX * m1.dZ;
-                int sz2 = m2.dX * m2.dZ;
-                if (sz1 > sz2 || (sz1 == sz2 && m1.numDoors > m2.numDoors)) {
-                    g.queueMapUnits.add(g.queueMapUnits.remove(i));
-                    i--;
-                    break;
-                }
-            }
         }
 
         for (MapUnit m: g.queueMapUnits) {

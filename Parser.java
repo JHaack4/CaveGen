@@ -447,6 +447,10 @@ class Parser {
             g.spawnMaps.add(m);
         }
 
+        CaveGen.spawnMapUnitsSorted = new ArrayList<MapUnit>();
+        for (MapUnit m: g.spawnMaps)
+            CaveGen.spawnMapUnitsSorted.add(m);
+        g.sortBySizeAndDoors(CaveGen.spawnMapUnitsSorted);
 
         return;
     }
@@ -471,6 +475,30 @@ class Parser {
             br.close();
         } catch(Exception e) {
             e.printStackTrace();
+        }
+    }
+
+    static int[] scUnitTypes;
+    static int[] scRots;
+    static int[] scUnitIdsFrom;
+    static int[] scDoorsFrom;
+    static int[] scDoorsTo;
+
+    static void parseShortCircuitString() {
+        String[] tok1 = CaveGen.requireMapUnitsConfig.split(";");
+        int N = tok1.length;
+        scUnitTypes = new int[N];
+        scRots = new int[N];
+        scUnitIdsFrom = new int[N];
+        scDoorsFrom = new int[N];
+        scDoorsTo = new int[N];
+        for (int i = 0; i < N; i++) {
+            String[] tok2 = tok1[i].split(",");
+            scUnitTypes[i]      = tok2[0].equals("_") ? -1 : Integer.parseInt(tok2[0]);
+            scRots[i]           = tok2[1].equals("_") ? -1 : Integer.parseInt(tok2[1]);
+            scUnitIdsFrom[i]    = tok2[2].equals("_") ? -1 : Integer.parseInt(tok2[2]);
+            scDoorsFrom[i]      = tok2[3].equals("_") ? -1 : Integer.parseInt(tok2[3]);
+            scDoorsTo[i]        = tok2[4].equals("_") ? -1 : Integer.parseInt(tok2[4]);
         }
     }
 }

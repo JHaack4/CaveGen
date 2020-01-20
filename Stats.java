@@ -14,6 +14,7 @@ class Stats {
 
     // this function gets called once at the start of the process
     public Stats(String args[]) {
+        if (!CaveGen.showStats) return;
         if (CaveGen.findGoodLayouts) {
             Parser.readEnemyFile();
         }
@@ -206,5 +207,35 @@ class Stats {
         out.println("Best seed: " + Drawer.seedToString(minSumTreasureScoreSeed));
 
         out.close();
+    }
+
+
+    // Check for a short circuit (returns true to short circuit)
+    boolean checkForShortCircuit(CaveGen g) {
+        int i = g.placedMapUnits.size() - 1;
+        MapUnit m = g.placedMapUnits.get(i);
+        if (i >= Parser.scUnitTypes.length) return false;
+        if (Parser.scUnitTypes[i] != -1) {
+            String targetName = CaveGen.spawnMapUnitsSorted.get(Parser.scUnitTypes[i]).name;
+            if (!targetName.equals(m.name))
+                return true;
+        } 
+        if (Parser.scRots[i] != -1) {
+            if (m.rotation != Parser.scRots[i])
+                return true;
+        } 
+        if (Parser.scUnitIdsFrom[i] != -1 
+                && Parser.scDoorsFrom[i] != -1
+                && Parser.scDoorsTo[i] != -1) {
+            Door d = m.doors.get(Parser.scDoorsTo[i]);
+            if (d.adjacentDoor == null || d.adjacentDoor.mapUnit == null)
+                return true;
+            MapUnit o = d.adjacentDoor.mapUnit;
+            if (g.placedMapUnits.indexOf(o) != Parser.scUnitIdsFrom[i])
+                return true;
+            if (o.doors.indexOf(d.adjacentDoor) != Parser.scDoorsFrom[i])
+                return true;
+        }
+        return false;
     }
 }

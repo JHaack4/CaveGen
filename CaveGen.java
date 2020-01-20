@@ -1,5 +1,3 @@
-import java.io.*;
-import java.nio.file.FileStore;
 import java.util.*;
 
 public class CaveGen {
@@ -15,8 +13,11 @@ public class CaveGen {
         drawDoorLinks = false, drawDoorIds = false, drawSpawnOrder = false, drawNoObjects = false,
         drawNoGateLife = false, drawHoleProbs = false, p251 = false,
         drawEnemyScores = false, drawUnitHoleScores = false, drawUnitItemScores = false,
-        findGoodLayouts = false;
+        findGoodLayouts = false, requireMapUnits = false;
     static double findGoodLayoutsRatio = 0.01;
+    static String requireMapUnitsConfig = "";
+    static boolean shortCircuitMap;
+    static ArrayList<MapUnit> spawnMapUnitsSorted;
 
     static Drawer drawer;
     static Stats stats;
@@ -151,6 +152,11 @@ public class CaveGen {
                     findGoodLayouts = true;
                     findGoodLayoutsRatio = Double.parseDouble(args[++i]);
                 }
+                else if (s.equalsIgnoreCase("-requireMapUnits")) {
+                    requireMapUnits = true;
+                    requireMapUnitsConfig = args[++i];
+                    Parser.parseShortCircuitString();
+                }
                 else {
                     System.out.println("Bad argument: " + s);
                     throw new Exception();
@@ -172,6 +178,7 @@ public class CaveGen {
             System.out.println("  -drawScores -drawDoorLinks -drawEnemyScores -drawUnitHoleScores -drawUnitItemScores -drawAllScores");
             System.out.println("  -drawNoWaterBox -drawNoPlants -drawNoFallType -drawNoGateLife -drawNoObjects");
             System.out.println("  -findGoodLayouts 0.01 (this keeps the top 1% of layouts by jhawk's heuristic)");
+            System.out.println("  -requireMapUnits unitType,rot,idFrom,doorFrom,doorTo;...");
             System.out.println("\nExample: CaveGen.jar seed story -seed 0x12345678 -drawSpawnPoints");
             System.out.println("  This generates images of all levels in story mode with that seed.");
             System.out.println("Example: CaveGen.jar cave BK 4 -num 100 -seed 0 -consecutiveSeeds");
@@ -259,10 +266,11 @@ public class CaveGen {
             mapHasDiameter36 = false;
             markedOpenDoorsAsCaps = false;
             mapMaxX = mapMaxZ = 0;
+            shortCircuitMap = false;
 
             createRandomMap();
 
-            if (showStats) {
+            if (showStats && !shortCircuitMap) {
                 try {
                     stats.analyze(this);
                 } catch (Exception e) {
@@ -270,7 +278,7 @@ public class CaveGen {
                     System.exit(0);
                 }
             }
-            if (images) {
+            if (images && !shortCircuitMap) {
                 try {
                     drawer.draw(this, false);
                 } catch (Exception e) {
@@ -354,6 +362,7 @@ public class CaveGen {
         if (countOpenDoors() > 0) {
             int numLoops = 0;
             while (++numLoops <= 10000) {
+                if (shortCircuitMap) return;
                 MapUnit m = null;
                 if (countPlacedType(1) < maxRoom) {
                     m = getNormalRandMapUnit();
@@ -408,6 +417,22 @@ public class CaveGen {
                 queueMapUnits.add(m.rotate(i));
         }
 
+        sortBySizeAndDoors(queueMapUnits);
+
+        for (MapUnit m: queueMapUnits) {
+            switch(m.type) {
+            case 0: queueCap.add(m); break;
+            case 1: queueRoom.add(m); break;
+            case 2: queueCorridor.add(m); break;
+            }
+        }
+
+        randBacks(queueCap);
+        randBacks(queueRoom);
+        randBacks(queueCorridor);
+    }
+
+    void sortBySizeAndDoors(List<MapUnit> queueMapUnits) {
         // sort by smallest unit size, ties by least num doors
         // Note, this is not a stable sort!
         for (int i = 0; i < queueMapUnits.size(); i++) {
@@ -423,18 +448,6 @@ public class CaveGen {
                 }
             }
         }
-
-        for (MapUnit m: queueMapUnits) {
-            switch(m.type) {
-            case 0: queueCap.add(m); break;
-            case 1: queueRoom.add(m); break;
-            case 2: queueCorridor.add(m); break;
-            }
-        }
-
-        randBacks(queueCap);
-        randBacks(queueRoom);
-        randBacks(queueCorridor);
     }
 
     void allocateEnemySlots() {
@@ -489,6 +502,9 @@ public class CaveGen {
             closeDoorCheck();
             moveCenterOffset();
             shuffleMapPriority();
+        }
+        if (requireMapUnits) {
+            stats.checkForShortCircuit(this);
         }
     }
 
