@@ -355,7 +355,7 @@ public class Drawer {
                     if ((sp.type == 0 && distToStart < 300) 
                         || (sp.type == 1 && (distToStart < 300 || distToHole < 200 || distToGeyser < 200))
                         || (sp.type == 4 && distToStart < 150)
-                        || (sp.type == 8 && distToStart < 300 || distToHole < 150 || distToGeyser < 150)) {
+                        || (sp.type == 8 && (distToStart < 300 || distToHole < 150 || distToGeyser < 150))) {
                             rad = 3;
                             int x = (int)(sp.posX/M*N - rad/2);
                             int z = (int)(sp.posZ/M*N - rad/2);
