@@ -149,6 +149,20 @@ class Stats {
                     }
                 }
             }
+            /*if (g.placedHole != null) {
+                WayPoint wp = g.closestWayPoint(g.placedHole);
+                while (!wp.isStart) {
+                    if (!wpOnShortPath.contains(wp)) wpOnShortPath.add(wp);
+                    wp = wp.backWp;
+                }
+            }
+            if (g.placedGeyser != null) {
+                WayPoint wp = g.closestWayPoint(g.placedGeyser);
+                while (!wp.isStart) {
+                    if (!wpOnShortPath.contains(wp)) wpOnShortPath.add(wp);
+                    wp = wp.backWp;
+                }
+            }*/
 
             // add up distance penalty for score
             int score = 0;
@@ -165,8 +179,10 @@ class Stats {
             // add up gate penalties for score
             for (Gate t: g.placedGates) {
                 WayPoint wp = g.closestWayPoint(t.spawnPoint);
-                if (g.placedHole.mapUnit.type == 0 && g.placedHole.mapUnit.doors.get(0).spawnPoint == t.spawnPoint)
+                if (g.placedHole != null && g.placedHole.mapUnit.type == 0 && g.placedHole.mapUnit.doors.get(0).spawnPoint == t.spawnPoint)
                     score += t.life / 3; // covers hole
+                // if (g.placedGeyser != null && g.placedGeyser.mapUnit.type == 0 && g.placedGeyser.mapUnit.doors.get(0).spawnPoint == t.spawnPoint)
+                //    score += t.life / 3; // covers geyser
                 if (wpOnShortPath.contains(wp))
                     score += t.life / 3; // covers path back to ship
             }
