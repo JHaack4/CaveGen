@@ -203,7 +203,7 @@ class Stats {
 
             // only print good ones
             if (CaveGen.indexBeingGenerated > CaveGen.numToGenerate/10 && 
-                score <= allScores.get((int)(allScores.size()*CaveGen.findGoodLayoutsRatio)) 
+                score <= allScores.get((int)(allScores.size()*Math.abs(CaveGen.findGoodLayoutsRatio))) 
                 || score == allScores.get(0) && CaveGen.indexBeingGenerated > CaveGen.numToGenerate/40) {
                 CaveGen.images = true;
                 out.println("GoodLayoutScore: " + Drawer.seedToString(g.initialSeed) + " -> " + score);
