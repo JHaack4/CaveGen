@@ -72,24 +72,36 @@ java -jar CaveGen.jar caveinfo.txt 0
 
 
 SPAWNPOINT KEY:
-0 Pink = easy enemy (size = radius, num rings = max spawn count)
-1 Red = hard enemy
-2 Orange = treasure
-4 Green = hole spot
-5 Grey = door
+0 Pink        = easy enemy (size = radius, num rings = max spawn count)
+1 Red         = hard enemy
+2 Orange      = treasure
+4 Green       = hole spot
+5 Grey        = door
 6 Light green = plant
-7 Teal = starting spot
-8 Purple = special enemy
-9 Blue = alcove
+7 Teal        = starting spot
+8 Purple      = special enemy
+9 Blue        = alcove
 
 
 FALLING KEY:
 0 nothing = not falling
-1 purple = fall if anything near
-2 red = only fall if pikmin near
-3 blue = only fall if leader near
-4 orange = only fall if pikmin carrying near
-5 green = only fall if a purple earthquake is nearby
+1 purple  = fall if anything near
+2 red     = only fall if pikmin near
+3 blue    = only fall if leader near
+4 orange  = only fall if pikmin carrying near
+5 green   = only fall if a purple earthquake is nearby
+
+
+TREASURE GAUGE KEY:
+0.5 ticks = cyan
+1 tick    = yellow
+2 ticks   = light blue
+3 ticks   = red
+4 ticks   = purple
+5 ticks   = orange
+6 ticks   = green
+7 ticks   = brown
+8 ticks   = blue
 
 
 UNIT TYPE KEY:

@@ -50,6 +50,20 @@ public class Drawer {
     Color spc = new Color(80,140,220);
     Color spc2 = new Color(0,0,0);
 
+    float[] gaugeTicks = new float[] {0.5f,1,2,3,4,5,6,7,8};
+    Color[] gaugeColors = new Color[] {
+        new Color(160,255,255), //0
+        new Color(255,255,160),
+        new Color(180,180,255),
+        new Color(255,180,180),
+        new Color(220,160,255),
+        new Color(255,220,140),// 5
+        new Color(160,210,150),
+        new Color(190,150,120),
+        new Color(0,0,255),
+        //new Color(0,0,0) //9
+    };
+
     Drawer() {
         missing.put("fminihoudai", "minihoudai");
         missing.put("fkabuto","kabuto");
@@ -306,13 +320,22 @@ public class Drawer {
                     zs.add((int)(t.posZ/M*N));
                 }
             }
-            for (int i = 0; i < xs.size(); i++) {
+            /*for (int i = 0; i < xs.size(); i++) {
                 for (int j = 1; j < 11; j++) {
                     if (j%2 == 1) continue;
                     if (j < 3 || j == 6)
                         G.setColor(new Color(20*j,20*j,255));
                     else G.setColor(new Color(255,255,20*j));
                     int rad = (int)(900.0f*N*j/10/M);
+                    G.drawOval(xs.get(i)-rad/2, zs.get(i)-rad/2, rad, rad);
+                }
+            }*/
+            for (int i = 0; i < xs.size(); i++) {
+                for (int j = 0; j < gaugeTicks.length; j++) {
+                    float tick = gaugeTicks[j];
+                    G.setColor(gaugeColors[j]);
+                    float distForTick = (1 - (float)Math.sqrt((tick - 0.5) / 9.5)) * 900f;
+                    int rad = (int)(distForTick * 2 * N/M);
                     G.drawOval(xs.get(i)-rad/2, zs.get(i)-rad/2, rad, rad);
                 }
             }
