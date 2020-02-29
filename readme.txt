@@ -50,7 +50,6 @@ drawUnitHoleScores - draws the unitscores and doorscores for the hole phase
 drawUnitItemScores - draws the unitscores and doorscores for the item phase
 drawAllScores - does all five of the preceeding calls
 drawNoWaterBox - doesn't draw the blue waterboxes
-drawNoPlants - doesn't draw any plant icons
 drawNoFallType - doesn't draw the falltype indicators
 drawNoGateLife - doesn't draw the gate's life
 drawNoObjects - doesn't draw any objects

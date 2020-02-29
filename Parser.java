@@ -141,7 +141,8 @@ class Parser {
         }
 
         try {
-            g.println("File read: " + fileName);
+            if (CaveGen.prints) 
+                System.out.println("File read: " + fileName);
             Scanner s = new Scanner(sb2.toString());
             StringBuilder sb = new StringBuilder();
             while (s.hasNextLine()){
@@ -445,12 +446,18 @@ class Parser {
             }
 
             g.spawnMaps.add(m);
+
+            sc2.close();
+            sc3.close();
+            sc4.close();
         }
 
         CaveGen.spawnMapUnitsSorted = new ArrayList<MapUnit>();
         for (MapUnit m: g.spawnMaps)
             CaveGen.spawnMapUnitsSorted.add(m);
         g.sortBySizeAndDoors(CaveGen.spawnMapUnitsSorted);
+
+        sc.close();
 
         return;
     }

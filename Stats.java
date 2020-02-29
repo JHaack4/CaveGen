@@ -299,4 +299,63 @@ class Stats {
         }
         return false;
     }
+
+    // The purpose of these functions is to compare the output from the currect run
+    // with the "expected_output.txt" file, and see if they are the same.
+    // This is helpful to see if debugging has unexpectedly produced changes to the tool.
+    ArrayList<String> output = new ArrayList<String>();
+    
+    void setupExpectTests() {
+        output = new ArrayList<String>();
+
+        CaveGen.caveInfoName = "both";
+        CaveGen.numToGenerate = 100;
+        CaveGen.firstGenSeed = 0;
+        CaveGen.prints = false;
+        CaveGen.images = false;
+        CaveGen.folderSeed = false;
+        CaveGen.folderCave = false;
+        CaveGen.region = "us";
+        CaveGen.fileSystem = "gc";
+    }
+
+    void expect(String s) {
+        if (CaveGen.expectTest)
+            output.add(s);
+    }
+
+    void checkExpectation() {
+        if (!CaveGen.expectTest) return;
+        try {
+            BufferedWriter wr = new BufferedWriter(new FileWriter("expected_output_this.txt"));
+            for (String s: output) wr.write(s + "\n");
+            wr.close();
+
+            Scanner sc = new Scanner(new FileReader("expected_output.txt"));
+            for (int i = 0; i < output.size(); i++) {
+                if (sc.hasNextLine()) {
+                    String s = sc.nextLine();
+                    if (!s.equals(output.get(i))) {
+                        System.out.println("Expectation test failed on line " + (i+1));
+                        System.out.println("Expected: " + s);
+                        System.out.println("Got:      " + output.get(i));
+                        return;
+                    }
+                } else {
+                    System.out.println("Expectation test failed (output too long");
+                    return;
+                }
+            }
+            if (sc.hasNext()) {
+                System.out.println("Expectation test failed (output too short)");
+                return;
+            }
+            
+            sc.close();
+            System.out.println("Expectation test passed!");
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("Expectation test failed");
+        } 
+    }
 }

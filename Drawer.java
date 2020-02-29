@@ -22,7 +22,7 @@ public class Drawer {
     HashMap<String, Image> IMG = new HashMap<String, Image>();
     HashMap<String, String> missing = new HashMap<String, String>();
     HashMap<String, String> special = new HashMap<String, String>();
-    String plantNames = "";
+    String plantNames = "", buriedItems;
     String purple20 = "", white20 = "";
 
     Color[] colorsFT = new Color[] {
@@ -90,6 +90,8 @@ public class Drawer {
         white20 = ",WFG3,BK1,SH2,SR1,";
         plantNames = ",ooinu_s,ooinu_l,wakame_s,wakame_l,kareooinu_s,kareooinu_l,daiodored,"
             + "daiodogreen,clover,hikarikinoko,tanpopo,zenmai,nekojarashi,tukushi,magaret,watage";
+        buriedItems = ",leaf_yellow,teala_dia_a,teala_dia_c,xmas_item,yoyo_red,akagai,toy_ring_a_green,"
+            + "sinjyu,makigai,momiji_kare,bane_yellow,toy_ring_a_red,diamond_blue,donutswhite_s,gum_tape,toy_ring_b_blue,";
 
         if (CaveGen.drawSpawnPoints
              || CaveGen.drawAngles) {
@@ -416,7 +418,7 @@ public class Drawer {
                     drawAngle(G, g.placedStart.posX, g.placedStart.posZ, g.placedStart.ang);
                 //G.drawString("S", (int)(pos[0]/M*N), (int)(pos[1]/M*N));
             }
-            if (g.placedHole != null) {
+            if (g.placedHole != null && !g.drawNoHoles) {
                 Image im = getSpecial("hole");
                 int x = (int)(g.placedHole.posX/M*N - im.getWidth(null)/2);
                 int z = (int)(g.placedHole.posZ/M*N - im.getHeight(null)/2);
@@ -427,7 +429,7 @@ public class Drawer {
                 }
                 //G.drawString("H", (int)(pos[0]/M*N), (int)(pos[1]/M*N));
             }
-            if (g.placedGeyser != null) {
+            if (g.placedGeyser != null && !g.drawNoHoles) {
                 Image im = getSpecial("geyser");
                 int x = (int)(g.placedGeyser.posX/M*N - im.getWidth(null)/2);
                 int z = (int)(g.placedGeyser.posZ/M*N - im.getHeight(null)/2);
@@ -438,80 +440,88 @@ public class Drawer {
                 }
                 //G.drawString("G", (int)(pos[0]/M*N), (int)(pos[1]/M*N));
             }
-
-            for (Teki t: g.placedTekis) {
-                if (g.drawNoPlants && plantNames.contains("," + t.tekiName.toLowerCase() +",")) continue;
-                int yaddn = t.spawnPoint.type == 9 && t.fallType > 0 ? -12: 0;
-                try {
-                    Image im = getTeki(t);
-                    int x = (int)(t.posX/M*N - im.getWidth(null)/2);
-                    int z = (int)(t.posZ/M*N + yaddn - im.getHeight(null)/2); 
-                    G.drawImage(im, x, z, null);
-                    if (g.drawAngles)
-                        drawAngle(G, t.posX, t.posZ, t.ang);
-                    if (t.fallType != 0 && !g.drawNoFallType) {
-                        G.setColor(colorsFT[t.fallType]);
-                        G.drawLine(x+5,z+5,x-10,z-10);
-                        G.drawLine(x+9,z+1,x-6,z-14);
-                        G.drawLine(x+1,z+9,x-14,z-6);
+            
+            if (!g.drawNoTeki) {
+                for (Teki t: g.placedTekis) {
+                    if (g.drawNoPlants && plantNames.contains("," + t.tekiName.toLowerCase() +",")) continue;
+                    int yaddn = t.spawnPoint.type == 9 && t.fallType > 0 ? -12: 0;
+                    try {
+                        Image im = getTeki(t);
+                        int x = (int)(t.posX/M*N - im.getWidth(null)/2);
+                        int z = (int)(t.posZ/M*N + yaddn - im.getHeight(null)/2); 
+                        G.drawImage(im, x, z, null);
+                        if (g.drawAngles)
+                            drawAngle(G, t.posX, t.posZ, t.ang);
+                        if (t.fallType != 0 && !g.drawNoFallType) {
+                            G.setColor(colorsFT[t.fallType]);
+                            G.drawLine(x+5,z+5,x-10,z-10);
+                            G.drawLine(x+9,z+1,x-6,z-14);
+                            G.drawLine(x+1,z+9,x-14,z-6);
+                        }
+                        if (t.tekiName.equalsIgnoreCase("blackpom")) {
+                            String sls = g.specialCaveInfoName + g.sublevel;
+                            if (purple20.indexOf(","+sls+",") >= 0) {
+                                drawTextOutline(G, "<20", x+2, z+5, spc, spc2);
+                            }
+                        }
+                        if (t.tekiName.equalsIgnoreCase("whitepom")) {
+                            String sls = g.specialCaveInfoName + g.sublevel;
+                            if (white20.indexOf(","+sls+",") >= 0) {
+                                drawTextOutline(G, "<20", x+2, z+5, spc, spc2);
+                            }
+                        }
+                        if (t.tekiName.equalsIgnoreCase("blackman")) {
+                            String bmt = g.waterwraithTimer + "";
+                            drawTextOutline(G, "t"+bmt, x+2, z+5, spc, spc2);
+                        }
+                    } catch(Exception e) {
+                        System.out.println("Failed Img: " + t.tekiName);
+                        String st = String.format("T%4.4s", t.tekiName);
+                        G.drawString(st, (int)(t.posX/M*N), (int)(t.posZ/M*N + yaddn));
                     }
-                    if (t.tekiName.equalsIgnoreCase("blackpom")) {
-                        String sls = g.specialCaveInfoName + g.sublevel;
-                        if (purple20.indexOf(","+sls+",") >= 0) {
-                            drawTextOutline(G, "<20", x+2, z+5, spc, spc2);
+                }
+                for (Teki t: g.placedTekis) {
+                    int yaddn = t.spawnPoint.type == 9 && t.fallType > 0 ? -12: 0;
+                    if (t.itemInside != null) {
+                        try {
+                            Image im = getItem(null, t.itemInside, g.region);
+                            int x = (int)(t.posX/M*N - im.getWidth(null)/2 + 5);
+                            int z = (int)(t.posZ/M*N + yaddn - im.getHeight(null)/2 + 5);
+                            G.drawImage(im, x, z, null);
+                        } catch (Exception e) {
+                            System.out.println("Failed Img: " + t.itemInside);
+                            G.drawString("IN" + t.itemInside, (int)(t.posX/M*N), (int)(t.posZ/M*N));
                         }
                     }
-                    if (t.tekiName.equalsIgnoreCase("whitepom")) {
-                        String sls = g.specialCaveInfoName + g.sublevel;
-                        if (white20.indexOf(","+sls+",") >= 0) {
-                            drawTextOutline(G, "<20", x+2, z+5, spc, spc2);
-                        }
-                    }
-                    if (t.tekiName.equalsIgnoreCase("blackman")) {
-                        String bmt = g.waterwraithTimer + "";
-                        drawTextOutline(G, "t"+bmt, x+2, z+5, spc, spc2);
-                    }
-                } catch(Exception e) {
-                    g.println("Failed Img: " + t.tekiName);
-                    String st = String.format("T%4.4s", t.tekiName);
-                    G.drawString(st, (int)(t.posX/M*N), (int)(t.posZ/M*N + yaddn));
                 }
             }
-            for (Teki t: g.placedTekis) {
-                int yaddn = t.spawnPoint.type == 9 && t.fallType > 0 ? -12: 0;
-                if (t.itemInside != null) {
+            if (!g.drawNoItems) {
+                for (Item t: g.placedItems) {
+                    if (g.drawNoBuriedItems && buriedItems.contains(t.itemName))
+                        continue;
                     try {
-                        Image im = getItem(null, t.itemInside, g.region);
-                        int x = (int)(t.posX/M*N - im.getWidth(null)/2 + 5);
-                        int z = (int)(t.posZ/M*N + yaddn - im.getHeight(null)/2 + 5);
+                        Image im = getItem(t, "", g.region);
+                        int x = (int)(t.posX/M*N - im.getWidth(null)/2);
+                        int z = (int)(t.posZ/M*N - im.getHeight(null)/2);
                         G.drawImage(im, x, z, null);
                     } catch (Exception e) {
-                        g.println("Failed Img: " + t.itemInside);
-                        G.drawString("IN" + t.itemInside, (int)(t.posX/M*N), (int)(t.posZ/M*N));
+                        System.out.println("Failed Img: " + t.itemName);
+                        String st = String.format("I%4.4s", t.itemName);
+                        G.drawString(st, (int)(t.posX/M*N), (int)(t.posZ/M*N));
                     }
-                }
+                } 
             }
-            for (Item t: g.placedItems) {
-                try {
-                    Image im = getItem(t, "", g.region);
+            if (!g.drawNoGates) {
+                for (Gate t: g.placedGates) {
+                    Image im = getSpecial("gate", (int)(t.ang/1.57f));
                     int x = (int)(t.posX/M*N - im.getWidth(null)/2);
                     int z = (int)(t.posZ/M*N - im.getHeight(null)/2);
                     G.drawImage(im, x, z, null);
-                } catch (Exception e) {
-                    g.println("Failed Img: " + t.itemName);
-                    String st = String.format("I%4.4s", t.itemName);
-                    G.drawString(st, (int)(t.posX/M*N), (int)(t.posZ/M*N));
+                    G.setColor(spc);
+                    String st = "" + (int)t.life;
+                    if (!g.drawNoGateLife) drawTextOutline(G,st,x+39-3*st.length(),z+45,spc,spc2);//G.drawString(st,x+39-3*st.length(),z+45);
+                    //G.drawString(st, (int)(t.posX/M*N), (int)(t.posZ/M*N));
                 }
-            } 
-            for (Gate t: g.placedGates) {
-                Image im = getSpecial("gate", (int)(t.ang/1.57f));
-                int x = (int)(t.posX/M*N - im.getWidth(null)/2);
-                int z = (int)(t.posZ/M*N - im.getHeight(null)/2);
-                G.drawImage(im, x, z, null);
-                G.setColor(spc);
-                String st = "" + (int)t.life;
-                if (!g.drawNoGateLife) drawTextOutline(G,st,x+39-3*st.length(),z+45,spc,spc2);//G.drawString(st,x+39-3*st.length(),z+45);
-                //G.drawString(st, (int)(t.posX/M*N), (int)(t.posZ/M*N));
             }
         }
 

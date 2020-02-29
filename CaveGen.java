@@ -11,9 +11,10 @@ public class CaveGen {
         drawScores = false, drawAngles = false, drawTreasureGauge = false,
         drawNoPlants = false, drawNoFallType = false, drawWaterBox = true,
         drawDoorLinks = false, drawDoorIds = false, drawSpawnOrder = false, drawNoObjects = false,
-        drawNoGateLife = false, drawHoleProbs = false, p251 = false,
+        drawNoBuriedItems = false, drawNoItems = false, drawNoTeki = false, drawNoGates = false,
+        drawNoGateLife = false, drawNoHoles = false, drawHoleProbs = false, p251 = false,
         drawEnemyScores = false, drawUnitHoleScores = false, drawUnitItemScores = false,
-        findGoodLayouts = false, requireMapUnits = false;
+        findGoodLayouts = false, requireMapUnits = false, expectTest = false;
     static double findGoodLayoutsRatio = 0.01;
     static String requireMapUnitsConfig = "";
     static boolean shortCircuitMap;
@@ -29,142 +30,156 @@ public class CaveGen {
     static void run(String args[]) {
         boolean allStoryMode = false, allChallengeMode = false;
         try {
-            if (args[0].equalsIgnoreCase("seed")) {
-                folderCave = false;
-            } else if (args[0].equalsIgnoreCase("cave")) {
-                folderSeed = false;
-            } else if (args[0].equalsIgnoreCase("both")) {
-                // pass
-            } else if (args[0].equalsIgnoreCase("none")) {
-                prints = false;
-                images = false;
-                folderSeed = false;
-                folderCave = false;
-            } else {
-                System.out.println("Bad argument: " + args[0]);
-                throw new Exception();
+            if (args[0].equalsIgnoreCase("-expectTest")) {
+                expectTest = true;
             }
-
-            if (args[1].length() >= 3 && args[1].length() <= 4
-                && args[1].substring(0,2).toLowerCase().equals("ch"))
-                challengeMode = true;
-            if (args[1].length() >= 2 && args[1].substring(0,2).equals("ch"))
-                challengeMode = true;
-            if (args[1].equals("cmal") || args[1].equals("chall")
-                || args[1].equals("chal") || args[1].equals("cmat")) {
-                challengeMode = true;
-                allChallengeMode = true;
-            }
-            if (args[1].equals("all") || args[1].equals("small")
-                || args[1].equals("pod") || args[1].equals("at")
-                || args[1].equals("story")) {
-                allStoryMode = true;
-                challengeMode = false;
-            }
-            if (args[1].equals("both")) {
-                allStoryMode = true;
-                allChallengeMode = true;
-                challengeMode = false;
-            }
-
-            sublevel = allChallengeMode || allStoryMode ? 1 : Integer.parseInt(args[2]);
-            int startParse = allChallengeMode || allStoryMode ? 2 : 3;
-
-            for (int i = startParse; i < args.length; i++) {
-                String s = args[i];
-                if (s.equalsIgnoreCase("-num"))
-                    numToGenerate = Integer.parseInt(args[++i]);
-                else if (s.equalsIgnoreCase("0"))
-                    continue;
-                else if (s.equalsIgnoreCase("-seed"))
-                    firstGenSeed = (int)(Long.decode(args[++i]).longValue());
-                else if (s.equalsIgnoreCase("-region"))
-                    region = args[++i];
-                else if (s.equalsIgnoreCase("-251")) {
-                    p251 = true;
-                    fileSystem = "251";
-                }
-                else if (s.equalsIgnoreCase("-challengeMode"))
-                    challengeMode = false;
-                else if (s.equalsIgnoreCase("-storyMode"))
-                    challengeMode = false;
-                else if (s.equalsIgnoreCase("-noImages"))
-                    images = false;
-                else if (s.equalsIgnoreCase("-noPrint"))
+            else {
+                if (args[0].equalsIgnoreCase("seed")) {
+                    folderCave = false;
+                } else if (args[0].equalsIgnoreCase("cave")) {
+                    folderSeed = false;
+                } else if (args[0].equalsIgnoreCase("both")) {
+                    // pass
+                } else if (args[0].equalsIgnoreCase("none")) {
                     prints = false;
-                else if (s.equalsIgnoreCase("-noStats"))
-                    showStats = false;
-                else if (s.equalsIgnoreCase("-drawSpawnPoints"))
-                    drawSpawnPoints = true;
-                else if (s.equalsIgnoreCase("-drawScores"))
-                    drawScores = true;
-                else if (s.equalsIgnoreCase("-drawEnemyScores"))
-                    drawEnemyScores = true;
-                else if (s.equalsIgnoreCase("-drawUnitHoleScores"))
-                    drawUnitHoleScores = true;
-                else if (s.equalsIgnoreCase("-drawUnitItemScores"))
-                    drawUnitItemScores = true;
-                else if (s.equalsIgnoreCase("-drawDoorLinks"))
-                    drawDoorLinks = true;
-                else if (s.equalsIgnoreCase("-drawAllScores")) {
-                    drawScores = true;
-                    drawEnemyScores = true;
-                    drawUnitHoleScores = true;
-                    drawDoorLinks = true;
-                    drawUnitItemScores = true;
-                }
-                else if (s.equalsIgnoreCase("-drawDoorIds"))
-                    drawDoorIds = true;
-                else if (s.equalsIgnoreCase("-drawWayPoints"))
-                    drawWayPoints = true;
-                else if (s.equalsIgnoreCase("-drawWPVertexDists"))
-                    drawWayPointVertDists = true;
-                else if (s.equalsIgnoreCase("-drawWPEdgeDists"))
-                    drawWayPointEdgeDists = true;
-                else if (s.equalsIgnoreCase("-drawAllWayPoints")) {
-                    drawWayPoints = true;
-                    drawWayPointVertDists = true;
-                    drawWayPointEdgeDists = true;
-                }
-                else if (s.equalsIgnoreCase("-drawAngles"))
-                    drawAngles = true;
-                else if (s.equalsIgnoreCase("-consecutiveSeeds"))
-                    seedOrder = true;
-                else if (s.equalsIgnoreCase("-drawTreasureGauge"))
-                    drawTreasureGauge = true;
-                else if (s.equalsIgnoreCase("-drawNoPlants"))
-                    drawNoPlants = true;
-                else if (s.equalsIgnoreCase("-drawSpawnOrder"))
-                    drawSpawnOrder = true;
-                else if (s.equalsIgnoreCase("-drawNoFallType"))
-                    drawNoFallType = true;
-                else if (s.equalsIgnoreCase("-drawNoObjects"))
-                    drawNoObjects = true;
-                else if (s.equalsIgnoreCase("-drawNoWaterBox"))
-                    drawWaterBox = false;
-                else if (s.equalsIgnoreCase("-caveInfoReport"))
-                    showCaveInfo = true;
-                else if (s.equalsIgnoreCase("-drawNoGateLife"))
-                    drawNoGateLife = true;
-                else if (s.equalsIgnoreCase("-drawHoleProbs"))
-                    drawHoleProbs = true;
-                else if (s.equalsIgnoreCase("-findGoodLayouts")) {
-                    findGoodLayouts = true;
-                    findGoodLayoutsRatio = Double.parseDouble(args[++i]);
-                }
-                else if (s.equalsIgnoreCase("-requireMapUnits")) {
-                    requireMapUnits = true;
-                    requireMapUnitsConfig = args[++i];
-                    Parser.parseShortCircuitString();
-                }
-                else {
-                    System.out.println("Bad argument: " + s);
+                    images = false;
+                    folderSeed = false;
+                    folderCave = false;
+                } else {
+                    System.out.println("Bad argument: " + args[0]);
                     throw new Exception();
                 }
+
+                if (args[1].length() >= 3 && args[1].length() <= 4
+                    && args[1].substring(0,2).toLowerCase().equals("ch"))
+                    challengeMode = true;
+                if (args[1].length() >= 2 && args[1].substring(0,2).equals("ch"))
+                    challengeMode = true;
+                if (args[1].equals("cmal") || args[1].equals("chall")
+                    || args[1].equals("chal") || args[1].equals("cmat")) {
+                    challengeMode = true;
+                    allChallengeMode = true;
+                }
+                if (args[1].equals("all") || args[1].equals("small")
+                    || args[1].equals("pod") || args[1].equals("at")
+                    || args[1].equals("story")) {
+                    allStoryMode = true;
+                    challengeMode = false;
+                }
+                if (args[1].equals("both")) {
+                    allStoryMode = true;
+                    allChallengeMode = true;
+                    challengeMode = false;
+                }
+
+                sublevel = allChallengeMode || allStoryMode ? 1 : Integer.parseInt(args[2]);
+                int startParse = allChallengeMode || allStoryMode ? 2 : 3;
+
+                for (int i = startParse; i < args.length; i++) {
+                    String s = args[i];
+                    if (s.equalsIgnoreCase("-num"))
+                        numToGenerate = Integer.parseInt(args[++i]);
+                    else if (s.equalsIgnoreCase("0"))
+                        continue;
+                    else if (s.equalsIgnoreCase("-seed"))
+                        firstGenSeed = (int)(Long.decode(args[++i]).longValue());
+                    else if (s.equalsIgnoreCase("-region"))
+                        region = args[++i];
+                    else if (s.equalsIgnoreCase("-251")) {
+                        p251 = true;
+                        fileSystem = "251";
+                    }
+                    else if (s.equalsIgnoreCase("-challengeMode"))
+                        challengeMode = false;
+                    else if (s.equalsIgnoreCase("-storyMode"))
+                        challengeMode = false;
+                    else if (s.equalsIgnoreCase("-noImages"))
+                        images = false;
+                    else if (s.equalsIgnoreCase("-noPrint"))
+                        prints = false;
+                    else if (s.equalsIgnoreCase("-noStats"))
+                        showStats = false;
+                    else if (s.equalsIgnoreCase("-drawSpawnPoints"))
+                        drawSpawnPoints = true;
+                    else if (s.equalsIgnoreCase("-drawScores"))
+                        drawScores = true;
+                    else if (s.equalsIgnoreCase("-drawEnemyScores"))
+                        drawEnemyScores = true;
+                    else if (s.equalsIgnoreCase("-drawUnitHoleScores"))
+                        drawUnitHoleScores = true;
+                    else if (s.equalsIgnoreCase("-drawUnitItemScores"))
+                        drawUnitItemScores = true;
+                    else if (s.equalsIgnoreCase("-drawDoorLinks"))
+                        drawDoorLinks = true;
+                    else if (s.equalsIgnoreCase("-drawAllScores")) {
+                        drawScores = true;
+                        drawEnemyScores = true;
+                        drawUnitHoleScores = true;
+                        drawDoorLinks = true;
+                        drawUnitItemScores = true;
+                    }
+                    else if (s.equalsIgnoreCase("-drawDoorIds"))
+                        drawDoorIds = true;
+                    else if (s.equalsIgnoreCase("-drawWayPoints"))
+                        drawWayPoints = true;
+                    else if (s.equalsIgnoreCase("-drawWPVertexDists"))
+                        drawWayPointVertDists = true;
+                    else if (s.equalsIgnoreCase("-drawWPEdgeDists"))
+                        drawWayPointEdgeDists = true;
+                    else if (s.equalsIgnoreCase("-drawAllWayPoints")) {
+                        drawWayPoints = true;
+                        drawWayPointVertDists = true;
+                        drawWayPointEdgeDists = true;
+                    }
+                    else if (s.equalsIgnoreCase("-drawAngles"))
+                        drawAngles = true;
+                    else if (s.equalsIgnoreCase("-consecutiveSeeds"))
+                        seedOrder = true;
+                    else if (s.equalsIgnoreCase("-drawTreasureGauge"))
+                        drawTreasureGauge = true;
+                    else if (s.equalsIgnoreCase("-drawNoPlants"))
+                        drawNoPlants = true;
+                    else if (s.equalsIgnoreCase("-drawSpawnOrder"))
+                        drawSpawnOrder = true;
+                    else if (s.equalsIgnoreCase("-drawNoFallType"))
+                        drawNoFallType = true;
+                    else if (s.equalsIgnoreCase("-drawNoObjects"))
+                        drawNoObjects = true;
+                    else if (s.equalsIgnoreCase("-drawNoWaterBox"))
+                        drawWaterBox = false;
+                    else if (s.equalsIgnoreCase("-drawNoBuriedItems"))
+                        drawNoBuriedItems = true;
+                    else if (s.equalsIgnoreCase("-drawNoItems"))
+                        drawNoItems = true;
+                    else if (s.equalsIgnoreCase("-drawNoTekis"))
+                        drawNoTeki = true;
+                    else if (s.equalsIgnoreCase("-drawNoGates"))
+                        drawNoGates = true;
+                    else if (s.equalsIgnoreCase("-drawNoHoles"))
+                        drawNoHoles = true;
+                    else if (s.equalsIgnoreCase("-caveInfoReport"))
+                        showCaveInfo = true;
+                    else if (s.equalsIgnoreCase("-drawNoGateLife"))
+                        drawNoGateLife = true;
+                    else if (s.equalsIgnoreCase("-drawHoleProbs"))
+                        drawHoleProbs = true;
+                    else if (s.equalsIgnoreCase("-findGoodLayouts")) {
+                        findGoodLayouts = true;
+                        findGoodLayoutsRatio = Double.parseDouble(args[++i]);
+                    }
+                    else if (s.equalsIgnoreCase("-requireMapUnits")) {
+                        requireMapUnits = true;
+                        requireMapUnitsConfig = args[++i];
+                        Parser.parseShortCircuitString();
+                    }
+                    else {
+                        System.out.println("Bad argument: " + s);
+                        throw new Exception();
+                    }
+                }
+
+                caveInfoName = Parser.fromSpecial(args[1]);
             }
-
-            caveInfoName = Parser.fromSpecial(args[1]);
-
         } catch (Exception e) {
             e.printStackTrace();
             System.out.println("\nUsage: CaveGen.jar [Output] [Cave] [sublevelNum] ");
@@ -176,7 +191,8 @@ public class CaveGen {
             System.out.println("  -drawSpawnPoints -drawSpawnOrder -drawAngles -drawDoorIds -drawTreasureGauge -drawHoleProbs");
             System.out.println("  -drawWayPoints -drawWPVertexDists -drawWPEdgeDists -drawAllWayPoints");
             System.out.println("  -drawScores -drawDoorLinks -drawEnemyScores -drawUnitHoleScores -drawUnitItemScores -drawAllScores");
-            System.out.println("  -drawNoWaterBox -drawNoPlants -drawNoFallType -drawNoGateLife -drawNoObjects");
+            System.out.println("  -drawNoWaterBox -drawNoFallType -drawNoGateLife -drawNoObjects -drawNoPlants");
+            System.out.println("  -drawNoBuriedItems -drawNoItems -drawNoTekis -drawNoGates -drawNoHoles");
             System.out.println("  -findGoodLayouts 0.01 (this keeps the top 1% of layouts by jhawk's heuristic)");
             System.out.println("  -requireMapUnits unitType,rot,idFrom,doorFrom,doorTo;...");
             System.out.println("\nExample: CaveGen.jar seed story -seed 0x12345678 -drawSpawnPoints");
@@ -192,6 +208,14 @@ public class CaveGen {
 
         drawer = new Drawer();
         stats = new Stats(args);
+
+        if (expectTest) {
+            stats.setupExpectTests();
+            allStoryMode = true;
+            allChallengeMode = true;
+            challengeMode = false;
+            args = new String[] {"both", "both"};
+        }
 
         int maxStory = p251 ? 16 : 14;
         if (allStoryMode) {
@@ -231,6 +255,9 @@ public class CaveGen {
         if (showStats) {
             stats.createReport();
         }
+        if (expectTest) {
+            stats.checkExpectation();
+        }
     }
 
     public CaveGen(int firstSeed, int numToGenerate) {
@@ -249,6 +276,12 @@ public class CaveGen {
             else {
                 initialSeed = firstSeed + i;
                 seed = initialSeed;
+            }
+
+            if (expectTest || prints) {
+                String s = "Generating " + specialCaveInfoName + " " + sublevel + " on seed " + Drawer.seedToString(initialSeed);
+                stats.expect(s);
+                System.out.println(s);
             }
 
             // reset parameters
@@ -494,7 +527,7 @@ public class CaveGen {
     }
 
     void addMapUnit(MapUnit m, boolean doChecks) {
-        println("Placed: " + m.name + " " + m.rotation + " " + m.offsetX + "," + m.offsetZ);
+        if (expectTest) stats.expect("Placed: " + m.name + " " + m.rotation + " " + m.offsetX + "," + m.offsetZ);
         MapUnit mPlaced = m.copy();
         mPlaced.offsetX = m.offsetX;
         mPlaced.offsetZ = m.offsetZ;
@@ -1320,7 +1353,7 @@ public class CaveGen {
             setSpawnTekiPos(spawn, spot, false);
             spot.filled = true;
             placedTekis.add(spawn);
-            println("Spawned: " + spawn.tekiName + " 5 " + spawn.posX + "," + spawn.posZ);
+            if (expectTest) stats.expect("Spawned: " + spawn.tekiName + " 5 " + spawn.posX + "," + spawn.posZ);
         }
     }
 
@@ -1357,7 +1390,7 @@ public class CaveGen {
             setSpawnTekiPos(spawn, spot, false);
             spot.filled = true;
             placedTekis.add(spawn);
-            println("Spawned: " + spawn.tekiName + " 8 " + spawn.posX + "," + spawn.posZ);
+            if (expectTest) stats.expect("Spawned: " + spawn.tekiName + " 8 " + spawn.posX + "," + spawn.posZ);
         }
     }
 
@@ -1394,7 +1427,7 @@ public class CaveGen {
             setSpawnTekiPos(spawn, spot, false);
             spot.filled = true;
             placedTekis.add(spawn);
-            println("Spawned: " + spawn.tekiName + " 1 " + spawn.posX + "," + spawn.posZ);
+            if (expectTest) stats.expect("Spawned: " + spawn.tekiName + " 1 " + spawn.posX + "," + spawn.posZ);
         }
     }
 
@@ -1459,7 +1492,7 @@ public class CaveGen {
                 placedTekis.add(spawn);
                 justSpawned.add(spawn);
                 numSpawned += 1;
-                println("Spawned: " + spawn.tekiName + " 0 " + spawn.posX + "," + spawn.posZ);
+                if (expectTest) stats.expect("Spawned: " + spawn.tekiName + " 0 " + spawn.posX + "," + spawn.posZ);
             }
 
             // push the enemies away from each other
@@ -1521,7 +1554,7 @@ public class CaveGen {
             setSpawnTekiPos(spawn, spot, false);
             spot.filled = true;
             placedTekis.add(spawn);
-            println("Spawned: " + spawn.tekiName + " 6 " + spawn.posX + "," + spawn.posZ);
+            if (expectTest) stats.expect("Spawned: " + spawn.tekiName + " 6 " + spawn.posX + "," + spawn.posZ);
         }
     }
 
@@ -1603,7 +1636,7 @@ public class CaveGen {
             setSpawnItemPos(spawn, spot);
             spot.filled = true;
             placedItems.add(spawn);
-            println("Spawned: " + spawn.itemName + " 2 " + spawn.posX + "," + spawn.posZ);
+            if (expectTest) stats.expect("Spawned: " + spawn.itemName + " 2 " + spawn.posX + "," + spawn.posZ);
         }
     }
 
@@ -1645,7 +1678,7 @@ public class CaveGen {
                     }
                     placedTekis.add(spawn);
                     numSpawned++;
-                    println("Spawned: " + spawn.tekiName + " 9 " + spawn.posX + "," + spawn.posZ);
+                    if (expectTest) stats.expect("Spawned: " + spawn.tekiName + " 9 " + spawn.posX + "," + spawn.posZ);
                 }
             }
         }
@@ -1674,7 +1707,7 @@ public class CaveGen {
                     spot.filledFalling = true;
                     placedTekis.add(spawn);
                     numSpawned++;
-                    println("Spawned: " + spawn.tekiName + " 9f " + spawn.posX + "," + spawn.posZ);
+                    if (expectTest) stats.expect("Spawned: " + spawn.tekiName + " 9f " + spawn.posX + "," + spawn.posZ);
                 }
             }
         }
@@ -1707,7 +1740,7 @@ public class CaveGen {
             spawn.ang = spot.ang;
             spot.filled = true;
             placedGates.add(spawn);
-            println("Spawned: gate" + spawn.life + " 5g " + spawn.posX + "," + spawn.posZ);
+            if (expectTest) stats.expect("Spawned: gate" + spawn.life + " 5g " + spawn.posX + "," + spawn.posZ);
         }
     }
 
@@ -2166,32 +2199,6 @@ public class CaveGen {
             a.set(i, a.get(r));
             a.set(r, temp);
         }
-    }
-
-
-    void print(String s) {
-        if (!prints) return;
-        System.out.print(s);
-    }
-    void print(int i) {
-        if (!prints) return;
-        System.out.print(i);
-    }
-    void print(float f) {
-        if (!prints) return;
-        System.out.print(f);
-    }
-    void println(String s) {
-        if (!prints) return;
-        System.out.println(s);
-    }
-    void println(int i) {
-        if (!prints) return;
-        System.out.println(i);
-    }
-    void println(float f) {
-        if (!prints) return;
-        System.out.println(f);
     }
     
     public static float sqrt(float x) {
