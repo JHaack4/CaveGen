@@ -1449,20 +1449,22 @@ public class CaveGen {
     }
 
     void setEnemy0() {
+        // find potential spawnpoints
+        ArrayList<SpawnPoint> sps = new ArrayList<SpawnPoint>();
+        for (MapUnit m: placedMapUnits) {
+            for (SpawnPoint sp: m.spawnPoints) {
+                if (sp.type != 0) continue;
+                if (m.type != 1 || sp.filled) continue;
+                if (spawnPointDist(placedStart, sp) < 300) continue;
+
+                sps.add(sp);
+            }
+        }
+
         // Type 0 are easy enemies
         // These work differently as they can spawn in groups.
         for (int numSpawned = 0; numSpawned < maxTeki0; ) {
             // choose a uniform random spawnpoint of type 0 that is far enough from holes/start
-            ArrayList<SpawnPoint> sps = new ArrayList<SpawnPoint>();
-            for (MapUnit m: placedMapUnits) {
-                for (SpawnPoint sp: m.spawnPoints) {
-                    if (sp.type != 0) continue;
-                    if (m.type != 1 || sp.filled) continue;
-                    if (spawnPointDist(placedStart, sp) < 300) continue;
-
-                    sps.add(sp);
-                }
-            }
             int minNum = 0, maxNum = 0, numToSpawn = 0, room = 0;
             SpawnPoint spot = null;
             if (sps.size() > 0) {
@@ -1499,6 +1501,7 @@ public class CaveGen {
             // or there are no valid spots or enemies to place
             if (spot == null || toSpawn == null || numToSpawn == 0)
                 break;
+            sps.remove(spot);
 
             // spawn the enemy
             ArrayList<Teki> justSpawned = new ArrayList<Teki>();
@@ -2003,8 +2006,7 @@ public class CaveGen {
 
         // compute shortest path + distance to the start from each waypoint
         // using a bfs
-        LinkedList<WayPoint> frontier = new LinkedList<WayPoint>();
-        HashSet<WayPoint> visited = new HashSet<WayPoint>();
+        ArrayList<WayPoint> frontier = new ArrayList<WayPoint>();
         frontier.add(start);
         while (frontier.size() > 0) {
             WayPoint w = null;
@@ -2015,11 +2017,11 @@ public class CaveGen {
                     w = f;
                 }
             }
-            visited.add(w);
+            w.visited = true;
             frontier.remove(w);
 
             for (WayPoint inv: w.inverts) {
-                if (visited.contains(inv)) continue;
+                if (inv.visited) continue;
                 if (inv.distToStart == INF) frontier.add(inv);
                 float dist = wayPointDist(w, inv);
                 if (dist + w.distToStart < inv.distToStart) {

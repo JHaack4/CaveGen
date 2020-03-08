@@ -15,6 +15,8 @@ class WayPoint {
     float distToStart = Integer.MAX_VALUE;
     float posX, posY, posZ; // global position in the sublevel
 
+    boolean visited = false; // for BFS
+
     WayPoint copy() {
         WayPoint wp = new WayPoint();
         wp.idx = idx;
