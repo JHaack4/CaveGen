@@ -247,6 +247,7 @@ class Parser {
 
         g.spawnMapUnits = new ArrayList<MapUnit>();
         g.spawnMapUnitsSorted = new ArrayList<MapUnit>();
+        g.spawnMapUnitsSortedAndRotated = new ArrayList<MapUnit>();
         g.spawnMainTeki = new ArrayList<Teki>();
         g.spawnItem = new ArrayList<Item>();
         g.spawnGate = new ArrayList<Gate>();

@@ -14,3 +14,7 @@ output/*/*.png
 output/*
 !reports/*.txt
 *.png
+
+*~
+expected_output_this.txt
+

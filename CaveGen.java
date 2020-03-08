@@ -14,7 +14,7 @@ public class CaveGen {
         drawNoBuriedItems = false, drawNoItems = false, drawNoTeki = false, drawNoGates = false,
         drawNoGateLife = false, drawNoHoles = false, drawHoleProbs = false, p251 = false,
         drawEnemyScores = false, drawUnitHoleScores = false, drawUnitItemScores = false,
-        findGoodLayouts = false, requireMapUnits = false, expectTest = false;
+        findGoodLayouts = false, requireMapUnits = false, expectTest = false, noWayPointGraph = false;
     static double findGoodLayoutsRatio = 0.01;
     static String requireMapUnitsConfig = "";
     static boolean shortCircuitMap;
@@ -171,6 +171,9 @@ public class CaveGen {
                         requireMapUnitsConfig = args[++i];
                         Parser.parseShortCircuitString();
                     }
+                    else if (s.equalsIgnoreCase("-noWayPointGraph")) {
+                        noWayPointGraph = true;
+                    }
                     else {
                         System.out.println("Bad argument: " + s);
                         throw new Exception();
@@ -188,7 +191,7 @@ public class CaveGen {
             System.out.println("\nOptional: -seed 0x12345678 -num 100 -consecutiveSeeds -challengeMode -storyMode");
             System.out.println("  -noImages -noPrint -noStats -region [us|jpn|pal] -251 -caveInfoReport");
             System.out.println("  -drawSpawnPoints -drawSpawnOrder -drawAngles -drawDoorIds -drawTreasureGauge -drawHoleProbs");
-            System.out.println("  -drawWayPoints -drawWPVertexDists -drawWPEdgeDists -drawAllWayPoints");
+            System.out.println("  -drawWayPoints -drawWPVertexDists -drawWPEdgeDists -drawAllWayPoints -noWayPointGraph");
             System.out.println("  -drawScores -drawDoorLinks -drawEnemyScores -drawUnitHoleScores -drawUnitItemScores -drawAllScores");
             System.out.println("  -drawNoWaterBox -drawNoFallType -drawNoGateLife -drawNoObjects -drawNoPlants");
             System.out.println("  -drawNoBuriedItems -drawNoItems -drawNoTekis -drawNoGates -drawNoHoles");
@@ -282,7 +285,6 @@ public class CaveGen {
             }
 
             // reset parameters
-            queueMapUnits = new LinkedList<MapUnit>();
             queueCap = new LinkedList<MapUnit>();
             queueRoom = new LinkedList<MapUnit>();
             queueCorridor = new LinkedList<MapUnit>();
@@ -361,6 +363,7 @@ public class CaveGen {
     // Lists to spawn from (comes from units file, TekiInfo, ItemInfo, GateInfo, CapInfo)
     ArrayList<MapUnit> spawnMapUnits;
     ArrayList<MapUnit> spawnMapUnitsSorted;
+    ArrayList<MapUnit> spawnMapUnitsSortedAndRotated;
     ArrayList<Teki> spawnMainTeki; // enemies in rooms and doors
     ArrayList<Item> spawnItem;
     ArrayList<Gate> spawnGate;
@@ -368,7 +371,6 @@ public class CaveGen {
     ArrayList<Teki> spawnCapFallingTeki;
 
     // Queues of map units
-    LinkedList<MapUnit> queueMapUnits;
     LinkedList<MapUnit> queueCap;
     LinkedList<MapUnit> queueRoom;
     LinkedList<MapUnit> queueCorridor;
@@ -394,28 +396,25 @@ public class CaveGen {
 
         // Main logic for generating the map units
         setFirstMapUnit();
-        if (countOpenDoors() > 0) {
+        if (openDoors.size() > 0) {
             int numLoops = 0;
             while (++numLoops <= 10000) {
                 if (shortCircuitMap) return;
-                MapUnit m = null;
+                boolean placed = false;
                 if (countPlacedType(1) < maxRoom) {
-                    m = getNormalRandMapUnit();
+                    placed = getNormalRandMapUnit();
                 } else {
                     markOpenDoorsAsCaps();
-                    m = getHallwayRandMapUnit();
-                    if (m == null) {
-                        m = getCapRandMapUnit();
+                    placed = getHallwayRandMapUnit();
+                    if (!placed) {
+                        placed = getCapRandMapUnit();
                     }
                 }
 
-                if (m != null) addMapUnit(m, true);
-                if (countOpenDoors() > 0) continue;
+                if (openDoors.size() > 0) continue;
+                changeCapToHallMapUnit();
 
-                m = changeCapToHallMapUnit();
-                if (m != null) addMapUnit(m, true);
-                if (countOpenDoors() > 0) continue;
-
+                if (openDoors.size() > 0) continue;
                 changeTwoToOneMapUnit();
                 break;
             }
@@ -441,7 +440,9 @@ public class CaveGen {
         setScore(); // pretty sure this call doesn't actually change any scores
         setGate();
 
-        buildWayPointGraph();
+        if (!noWayPointGraph) {
+            buildWayPointGraph();
+        }
     }
     
     // Generate Map Units ---------------------------------------------------------------------
@@ -451,14 +452,14 @@ public class CaveGen {
             for (MapUnit m: spawnMapUnits)
                 spawnMapUnitsSorted.add(m);
             sortBySizeAndDoors(spawnMapUnitsSorted);
+            for (MapUnit m: spawnMapUnitsSorted) {
+                for (int i = 0; i < 4; i++) {
+                    spawnMapUnitsSortedAndRotated.add(m.rotate(i));
+                }
+            }
         }
 
-        for (MapUnit m: spawnMapUnitsSorted) {
-            for (int i = 0; i < 4; i++)
-                queueMapUnits.add(m.rotate(i));
-        }
-
-        for (MapUnit m: queueMapUnits) {
+        for (MapUnit m: spawnMapUnitsSortedAndRotated) {
             switch(m.type) {
             case 0: queueCap.add(m); break;
             case 1: queueRoom.add(m); break;
@@ -549,7 +550,7 @@ public class CaveGen {
     void closeDoorCheck(MapUnit m1) {
         // "close" doors that are facing each other.
         for (Door d1: m1.doors) {
-            for (Door d2: openDoors()) {
+            for (Door d2: openDoors) {
                 MapUnit m2 = d2.mapUnit;
                 m1.doorOffset(d1);
                 m2.doorOffset(d2);
@@ -560,6 +561,7 @@ public class CaveGen {
                 }
             }
         }
+        recomputeOpenDoors();
     }
 
     void recomputeMapSize(MapUnit mostRecent) {
@@ -676,7 +678,7 @@ public class CaveGen {
         for (Door d: m.doors) {
             boolean matchingDoor = false;
             d.doorOffset();
-            for (Door de: openDoors()) {
+            for (Door de: openDoors) {
                 de.doorOffset();
                 if (d.offsetX == de.offsetX && d.offsetZ == de.offsetZ && Door.doorDirsMatch(d,de))
                     matchingDoor = true;
@@ -693,7 +695,7 @@ public class CaveGen {
         }
         // existing open doors either match with a new door,
         // or have open space in front of them
-        for (Door de: openDoors()) {
+        for (Door de: openDoors) {
             boolean matchingDoor = false;
             de.doorOffset();
             for (Door d: m.doors) {
@@ -719,14 +721,14 @@ public class CaveGen {
         return fitsOnCurrentMap(m);
     }
 
-    MapUnit getNormalRandMapUnit() {
+    boolean getNormalRandMapUnit() {
         // During this phase, the game tries to build out the map
         // using rooms and branching corridors
 
         // Choose a uniform random open door to expand from
-        int openDoorCount = countOpenDoors();
+        int openDoorCount = openDoors.size();
         int expandDoorIdx = randInt(openDoorCount);
-        Door expandDoor = openDoors().get(expandDoorIdx);
+        Door expandDoor = openDoors.get(expandDoorIdx);
         MapUnit expandMapUnit = expandDoor.mapUnit;
 
         // choose the priority order to try spawning units
@@ -760,13 +762,15 @@ public class CaveGen {
                 for (int doorIdx: doorPriority) {
                     Door d = m.doors.get(doorIdx);
 
-                    if (tryAddMapUnit(expandDoor, m, d))
-                        return m;
+                    if (tryAddMapUnit(expandDoor, m, d)) {
+                        addMapUnit(m, true);
+                        return true;
+                    }
                 }
             }
         }
 
-        return null;
+        return false;
     }
   
     void shuffleCorridorPriority() {
@@ -774,7 +778,7 @@ public class CaveGen {
         // the "Normal" phase.
 
         int M = maxNumDoorsSingleUnit;
-        int openDoorCount = countOpenDoors();
+        int openDoorCount = openDoors.size();
         ArrayList<Integer> corridorPriority = new ArrayList<Integer>();
         
         // If there are only a few open doors, prioritize corridors
@@ -820,7 +824,7 @@ public class CaveGen {
 
         int numMarked = 0;
         int maxNumMarked = 16; // only mark 16 max
-        for (Door d: openDoors()) {
+        for (Door d: openDoors) {
             if (randFloat() < capProb) { // use "capProb"
                 d.markedAsCap = true;
                 numMarked++;
@@ -829,7 +833,7 @@ public class CaveGen {
         }
     }
 
-    MapUnit getHallwayRandMapUnit() {
+    boolean getHallwayRandMapUnit() {
         // During this phase of the algorithm, the game tries to spawn
         // hallways to connect nearby open doors.
 
@@ -841,14 +845,14 @@ public class CaveGen {
         }
         randSwaps(queueHallway);
 
-        for (Door d: openDoors()) {
+        for (Door d: openDoors) {
             if (d.markedAsCap) continue;
 
             // find the closest linkable door to this door
             Door cl = null;
             int clDist = INF;
             d.doorOffset();
-            for (Door od: openDoors()) {
+            for (Door od: openDoors) {
                 // Note, the game that it doesn't check
                 // that the receiving door is marked as cap
 
@@ -926,24 +930,28 @@ public class CaveGen {
                     int dir0 = h.doors.get(0).dirSide;
                     int dir1 = h.doors.get(1).dirSide;
                     if (dir0 == dirHallway0 && dir1 == dirHallway1) {
-                        if (tryAddMapUnit(d, h, h.doors.get(0)))
-                            return h;
+                        if (tryAddMapUnit(d, h, h.doors.get(0))) {
+                            addMapUnit(h, true);
+                            return true;
+                        }
                     } else if (dir0 == dirHallway1 && dir1 == dirHallway0) {
-                        if (tryAddMapUnit(d, h, h.doors.get(1)))
-                            return h;
+                        if (tryAddMapUnit(d, h, h.doors.get(1))) {
+                            addMapUnit(h, true);
+                            return true;
+                        }
                     }
                 }
             }
         }
-        return null;
+        return false;
     }
 
-    MapUnit getCapRandMapUnit() {
+    boolean getCapRandMapUnit() {
         // During this phase, we try to close off open doors.
         // for each open door, try to spawn first an alcove,
         // then a corridor, then a room until one fits.
         // For all intents and purposes, a cap or corridor should always spawn.
-        for (Door expandDoor: openDoors()) {
+        for (Door expandDoor: openDoors) {
             for (int type: new int[] {0, 2, 1}) {
                 LinkedList<MapUnit> queue = type == 0 ? queueCap
                     : (type == 1 ? queueRoom : queueCorridor);
@@ -958,17 +966,19 @@ public class CaveGen {
 
                         for (int doorIdx: doorPriority) {
                             Door d = m.doors.get(doorIdx);
-                            if (tryAddMapUnit(expandDoor, m, d))
-                                return m;
+                            if (tryAddMapUnit(expandDoor, m, d)) {
+                                addMapUnit(m, true);
+                                return true;
+                            }
                         }
                     }
                 }
             }
         }
-        return null;
+        return false;
     }
 
-    MapUnit changeCapToHallMapUnit() {
+    boolean changeCapToHallMapUnit() {
         // During this phase, we change all alcoves with a corridor directly
         // behind it to a straight hallway.
 
@@ -979,7 +989,7 @@ public class CaveGen {
                 && m.doors.get(0).dirSide == 0 && m.doors.get(1).dirSide == 2)
                 hallwayNames.add(m.name);
         }
-        if (hallwayNames.size() == 0) return null;
+        if (hallwayNames.size() == 0) return false;
 
         for (int i = 0; i < placedMapUnits.size(); i++) {
             MapUnit m = placedMapUnits.get(i);
@@ -1012,6 +1022,7 @@ public class CaveGen {
                 dd.adjacentDoor.adjacentDoor = null;
             placedMapUnits.remove(m);
             placedMapUnits.remove(corridorBehind);
+            recomputeOpenDoors();
 
             // add a hallway where the alcove was
             String nameChosen = hallwayNames.get(randInt(hallwayNames.size()));
@@ -1019,16 +1030,18 @@ public class CaveGen {
                 Door cd = c.doors.get(0);
                 if (c.name.equals(nameChosen) && cd.dirSide == md.dirSide) {
                     Door expandDoor = md.adjacentDoor;
-                    if (tryAddMapUnit(expandDoor, c, cd))
-                        return c;
+                    if (tryAddMapUnit(expandDoor, c, cd)) {
+                        addMapUnit(c, true);
+                        return true;
+                    }
                 }
             }
             assert false;
         }
-        return null;
+        return false;
     }
 
-    void changeTwoToOneMapUnit() {
+    boolean changeTwoToOneMapUnit() {
         // During this phase, we change two consecutive 1x1 hallways
         // to a single 2x1 hallway for all such instances
 
@@ -1039,7 +1052,7 @@ public class CaveGen {
                 && m.doors.get(0).dirSide == 0 && m.doors.get(1).dirSide == 2)
                 hallwayNames1.add(m.name);
         }
-        if (hallwayNames1.size() == 0) return;
+        if (hallwayNames1.size() == 0) return false;
 
         // create a list of 1x2 straight hallway names
         ArrayList<String> hallwayNames2 = new ArrayList<String>();
@@ -1048,8 +1061,9 @@ public class CaveGen {
                 && m.doors.get(0).dirSide == 0 && m.doors.get(1).dirSide == 2)
                 hallwayNames2.add(m.name);
         }
-        if (hallwayNames2.size() == 0) return;
+        if (hallwayNames2.size() == 0) return false;
 
+        boolean placed = false;
         for (int i = 0; i < placedMapUnits.size(); i++) {
             MapUnit m = placedMapUnits.get(i);
             if (!hallwayNames1.contains(m.name)) continue;
@@ -1085,6 +1099,7 @@ public class CaveGen {
                     dd.adjacentDoor.adjacentDoor = null;
             placedMapUnits.remove(m);
             placedMapUnits.remove(o);
+            recomputeOpenDoors();
 
             // add a 2x1 hallway
             String nameChosen = hallwayNames2.get(randInt(hallwayNames2.size()));
@@ -1094,6 +1109,7 @@ public class CaveGen {
                 if (c.name.equals(nameChosen) && cd.dirSide == desiredDir) {
                     if (tryAddMapUnit(expandDoor, c, cd)) {
                         addMapUnit(c, true);
+                        placed = true;
                         i = -1;
                         break;
                     }
@@ -1101,6 +1117,7 @@ public class CaveGen {
             }
             assert i == -1;
         }
+        return placed;
     }
 
     void addSpawnPoints() {
@@ -2027,26 +2044,15 @@ public class CaveGen {
         return s.contains(","+t.tekiName.toLowerCase()+",");
     }
 
-    ArrayList<Door> openDoors() {
-        ArrayList<Door> ret = new ArrayList<Door>();
+    ArrayList<Door> openDoors = new ArrayList<Door>();
+    void recomputeOpenDoors() {
+        openDoors.clear();
         for (MapUnit m: placedMapUnits) {
             for (Door d: m.doors) {
                 if (Door.isDoorOpen(d))
-                    ret.add(d);
+                    openDoors.add(d);
             }
         }
-        return ret;
-    }
-
-    int countOpenDoors() {
-        int count = 0;
-        for (MapUnit m: placedMapUnits) {
-            for (Door d: m.doors) {
-                if (Door.isDoorOpen(d))
-                    count += 1;
-            }
-        }
-        return count;
     }
 
     int countPlacedType(int type) {
@@ -2204,29 +2210,28 @@ public class CaveGen {
     // This function implements the frsqrte instruction of power pc.
     // The intent is to quickly approximate 1/sqrt(val) to within 1/32 precision.
     // How it works is black magic bit hacking
+    static int expected_base[] = {
+        0x3ffa000, 0x3c29000, 0x38aa000, 0x3572000,
+        0x3279000, 0x2fb7000, 0x2d26000, 0x2ac0000,
+        0x2881000, 0x2665000, 0x2468000, 0x2287000,
+        0x20c1000, 0x1f12000, 0x1d79000, 0x1bf4000,
+        0x1a7e800, 0x17cb800, 0x1552800, 0x130c000,
+        0x10f2000, 0x0eff000, 0x0d2e000, 0x0b7c000,
+        0x09e5000, 0x0867000, 0x06ff000, 0x05ab800,
+        0x046a000, 0x0339800, 0x0218800, 0x0105800,
+    };
+    static int expected_dec[] = {
+        0x7a4, 0x700, 0x670, 0x5f2,
+        0x584, 0x524, 0x4cc, 0x47e,
+        0x43a, 0x3fa, 0x3c2, 0x38e,
+        0x35e, 0x332, 0x30a, 0x2e6,
+        0x568, 0x4f3, 0x48d, 0x435,
+        0x3e7, 0x3a2, 0x365, 0x32e,
+        0x2fc, 0x2d0, 0x2a8, 0x283,
+        0x261, 0x243, 0x226, 0x20b,
+    };
     static double ApproximateReciprocalSquareRoot(double val)
     {
-        int expected_base[] = {
-            0x3ffa000, 0x3c29000, 0x38aa000, 0x3572000,
-            0x3279000, 0x2fb7000, 0x2d26000, 0x2ac0000,
-            0x2881000, 0x2665000, 0x2468000, 0x2287000,
-            0x20c1000, 0x1f12000, 0x1d79000, 0x1bf4000,
-            0x1a7e800, 0x17cb800, 0x1552800, 0x130c000,
-            0x10f2000, 0x0eff000, 0x0d2e000, 0x0b7c000,
-            0x09e5000, 0x0867000, 0x06ff000, 0x05ab800,
-            0x046a000, 0x0339800, 0x0218800, 0x0105800,
-        };
-        int expected_dec[] = {
-            0x7a4, 0x700, 0x670, 0x5f2,
-            0x584, 0x524, 0x4cc, 0x47e,
-            0x43a, 0x3fa, 0x3c2, 0x38e,
-            0x35e, 0x332, 0x30a, 0x2e6,
-            0x568, 0x4f3, 0x48d, 0x435,
-            0x3e7, 0x3a2, 0x365, 0x32e,
-            0x2fc, 0x2d0, 0x2a8, 0x283,
-            0x261, 0x243, 0x226, 0x20b,
-        };
-
         double valf = val;
         long vali = Double.doubleToRawLongBits(valf);
 		

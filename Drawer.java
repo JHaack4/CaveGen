@@ -784,7 +784,6 @@ public class Drawer {
     public void drawCaveInfo(CaveGen g) throws Exception {
         int maxZ = 16;
         // reset parameters
-        g.queueMapUnits = new LinkedList<MapUnit>();
         g.queueCap = new LinkedList<MapUnit>();
         g.queueRoom = new LinkedList<MapUnit>();
         g.queueCorridor = new LinkedList<MapUnit>();
@@ -802,12 +801,7 @@ public class Drawer {
         g.mapMaxX = Math.max(g.mapMaxX, (int)(1+(180+g.spawnItem.size()*45.0)/N));
         g.mapMaxX = Math.max(g.mapMaxX, (int)(1+(180+g.spawnGate.size()*2*45.0)/N));
         
-        for (MapUnit m: g.spawnMapUnitsSorted) {
-            for (int i = 0; i < 1; i++)
-                g.queueMapUnits.add(m.rotate(i));
-        }
-
-        for (MapUnit m: g.queueMapUnits) {
+        for (MapUnit m: g.spawnMapUnitsSortedAndRotated) {
             switch(m.type) {
             case 0: g.queueCap.add(m); break;
             case 1: g.queueRoom.add(m); break;
