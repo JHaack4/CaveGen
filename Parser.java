@@ -245,7 +245,8 @@ class Parser {
             
         }
 
-        g.spawnMaps = new ArrayList<MapUnit>();
+        g.spawnMapUnits = new ArrayList<MapUnit>();
+        g.spawnMapUnitsSorted = new ArrayList<MapUnit>();
         g.spawnMainTeki = new ArrayList<Teki>();
         g.spawnItem = new ArrayList<Item>();
         g.spawnGate = new ArrayList<Gate>();
@@ -445,17 +446,12 @@ class Parser {
                 m.wayPoints.add(wp);
             }
 
-            g.spawnMaps.add(m);
+            g.spawnMapUnits.add(m);
 
             sc2.close();
             sc3.close();
             sc4.close();
         }
-
-        CaveGen.spawnMapUnitsSorted = new ArrayList<MapUnit>();
-        for (MapUnit m: g.spawnMaps)
-            CaveGen.spawnMapUnitsSorted.add(m);
-        g.sortBySizeAndDoors(CaveGen.spawnMapUnitsSorted);
 
         sc.close();
 

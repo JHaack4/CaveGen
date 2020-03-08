@@ -18,7 +18,6 @@ public class CaveGen {
     static double findGoodLayoutsRatio = 0.01;
     static String requireMapUnitsConfig = "";
     static boolean shortCircuitMap;
-    static ArrayList<MapUnit> spawnMapUnitsSorted;
 
     static Drawer drawer;
     static Stats stats;
@@ -263,7 +262,7 @@ public class CaveGen {
     public CaveGen(int firstSeed, int numToGenerate) {
         new Parser(this); // Parse everything
         specialCaveInfoName = Parser.toSpecial(caveInfoName);
-        if (isFinalFloor && isHardMode()) holeClogged = false; // final floor geysers aren't clogged in story mode
+        if (isFinalFloor) holeClogged = !isHardMode(); // final floor geysers aren't clogged in story mode
 
         for (int i = 0; i < numToGenerate; i++) {
             indexBeingGenerated = i;
@@ -278,10 +277,8 @@ public class CaveGen {
                 seed = initialSeed;
             }
 
-            if (expectTest || prints) {
-                String s = "Generating " + specialCaveInfoName + " " + sublevel + " on seed " + Drawer.seedToString(initialSeed);
-                stats.expect(s);
-                System.out.println(s);
+            if (prints) {
+                System.out.println("Generating " + specialCaveInfoName + " " + sublevel + " on seed " + Drawer.seedToString(initialSeed));
             }
 
             // reset parameters
@@ -299,7 +296,7 @@ public class CaveGen {
             maxTeki0 = minTeki0 = maxTeki1 = maxTeki5 = maxTeki8 = 0;
             mapHasDiameter36 = false;
             markedOpenDoorsAsCaps = false;
-            mapMaxX = mapMaxZ = 0;
+            mapMaxX = mapMaxZ = mapMinX = mapMinZ = 0;
             shortCircuitMap = false;
 
             createRandomMap();
@@ -319,6 +316,9 @@ public class CaveGen {
                     e.printStackTrace();
                     System.exit(0);
                 }
+            }
+            if (expectTest) {
+                stats.outputSublevelForExpect(this);
             }
         }
         if (showCaveInfo && images) {
@@ -359,7 +359,8 @@ public class CaveGen {
     int maxNumDoorsSingleUnit;
 
     // Lists to spawn from (comes from units file, TekiInfo, ItemInfo, GateInfo, CapInfo)
-    ArrayList<MapUnit> spawnMaps;
+    ArrayList<MapUnit> spawnMapUnits;
+    ArrayList<MapUnit> spawnMapUnitsSorted;
     ArrayList<Teki> spawnMainTeki; // enemies in rooms and doors
     ArrayList<Item> spawnItem;
     ArrayList<Gate> spawnGate;
@@ -384,7 +385,7 @@ public class CaveGen {
     // Other helper variables
     int maxTeki0, minTeki0, maxTeki1, maxTeki5, maxTeki8;
     boolean mapHasDiameter36;
-    int mapMaxX, mapMaxZ;
+    int mapMaxX, mapMaxZ, mapMinX, mapMinZ;
     boolean markedOpenDoorsAsCaps;
 
     void createRandomMap() {
@@ -446,12 +447,16 @@ public class CaveGen {
     // Generate Map Units ---------------------------------------------------------------------
 
     void mapUnitsInitialSorting() {
-        for (MapUnit m: spawnMaps) {
+        if (spawnMapUnitsSorted.size() < spawnMapUnits.size()) {
+            for (MapUnit m: spawnMapUnits)
+                spawnMapUnitsSorted.add(m);
+            sortBySizeAndDoors(spawnMapUnitsSorted);
+        }
+
+        for (MapUnit m: spawnMapUnitsSorted) {
             for (int i = 0; i < 4; i++)
                 queueMapUnits.add(m.rotate(i));
         }
-
-        sortBySizeAndDoors(queueMapUnits);
 
         for (MapUnit m: queueMapUnits) {
             switch(m.type) {
@@ -485,30 +490,30 @@ public class CaveGen {
     }
 
     void allocateEnemySlots() {
-        int[] allocatedSlots0158 = new int[4];
-        int[] weightSum0158 = new int[4];
+        int[] allocatedSlots0158 = new int[10];
+        int[] weightSum0158 = new int[10];
         int numSlotsUsedForMin = 0;
         for (Teki t: spawnMainTeki) {
-            if ("0158".contains(t.type + "")) {
-                int idx = "0158".indexOf(t.type + "");
-                allocatedSlots0158[idx] += t.min;
+            if (t.type == 0 || t.type == 1 || t.type == 5 || t.type == 8) {
+                allocatedSlots0158[t.type] += t.min;
                 numSlotsUsedForMin += t.min;
-                weightSum0158[idx] += t.weight;
+                weightSum0158[t.type] += t.weight;
             }
         }
         minTeki0 = allocatedSlots0158[0];
         // extra main teki slots are allocated randomly between types 0 1 5 8
+        ArrayList<Integer> weights = new ArrayList<Integer>();
+        for (int w: weightSum0158) 
+            weights.add(w);
         for (int i = 0; i < maxMainTeki - numSlotsUsedForMin; i++) {
-            ArrayList<Integer> weights = new ArrayList<Integer>();
-            for (int w: weightSum0158) weights.add(w);
             int idx = randIndexWeight(weights);
             if (idx == -1) continue; // No Teki with weight
             allocatedSlots0158[idx] += 1;
         }
         maxTeki0 = allocatedSlots0158[0];
         maxTeki1 = allocatedSlots0158[1];
-        maxTeki5 = allocatedSlots0158[2];
-        maxTeki8 = allocatedSlots0158[3];
+        maxTeki5 = allocatedSlots0158[5];
+        maxTeki8 = allocatedSlots0158[8];
     }
     
     void setFirstMapUnit() {
@@ -527,45 +532,47 @@ public class CaveGen {
     }
 
     void addMapUnit(MapUnit m, boolean doChecks) {
-        if (expectTest) stats.expect("Placed: " + m.name + " " + m.rotation + " " + m.offsetX + "," + m.offsetZ);
         MapUnit mPlaced = m.copy();
         mPlaced.offsetX = m.offsetX;
         mPlaced.offsetZ = m.offsetZ;
         placedMapUnits.add(mPlaced);
         if (doChecks) {
-            closeDoorCheck();
-            moveCenterOffset();
-            shuffleMapPriority();
+            closeDoorCheck(mPlaced);
+            recomputeMapSize(mPlaced);
+            shuffleMapPriority(mPlaced);
         }
         if (requireMapUnits) {
             shortCircuitMap = stats.checkForShortCircuit(this);
         }
     }
 
-    void closeDoorCheck() {
+    void closeDoorCheck(MapUnit m1) {
         // "close" doors that are facing each other.
-        for (MapUnit m1: placedMapUnits) {
-            for (Door d1: m1.doors) {
-                for (MapUnit m2: placedMapUnits) {
-                    for (Door d2: m2.doors) {
-                        m1.doorOffset(d1);
-                        m2.doorOffset(d2);
-                        if (Door.doorDirsMatch(d1,d2) && d1.offsetX == d2.offsetX &&
-                            d1.offsetZ == d2.offsetZ) {
-                            assert Door.isDoorOpen(d1) || d1.adjacentDoor == d2;
-                            assert Door.isDoorOpen(d2) || d2.adjacentDoor == d1;
-                            d1.adjacentDoor = d2;
-                            d2.adjacentDoor = d1;
-                        }
-                    }
+        for (Door d1: m1.doors) {
+            for (Door d2: openDoors()) {
+                MapUnit m2 = d2.mapUnit;
+                m1.doorOffset(d1);
+                m2.doorOffset(d2);
+                if (Door.doorDirsMatch(d1,d2) && d1.offsetX == d2.offsetX &&
+                    d1.offsetZ == d2.offsetZ) {
+                    d1.adjacentDoor = d2;
+                    d2.adjacentDoor = d1;
                 }
             }
         }
     }
 
-    void moveCenterOffset() {
+    void recomputeMapSize(MapUnit mostRecent) {
+        mapMinX = Math.min(mapMinX, mostRecent.offsetX);
+        mapMinZ = Math.min(mapMinZ, mostRecent.offsetZ);
+        mapMaxX = Math.max(mapMaxX, mostRecent.offsetX + mostRecent.dX);
+        mapMaxZ = Math.max(mapMaxZ, mostRecent.offsetZ + mostRecent.dZ);
+        mapHasDiameter36 = mapMaxX-mapMinX >= 36 || mapMaxZ-mapMinZ >= 36;
+    }
+
+    void recomputeOffset() {
         // recenter the map such that all offsets are >= 0
-        int minX = 100000, minZ = 100000, maxX = -100000, maxZ = -100000;
+        int minX = INF, minZ = INF, maxX = -INF, maxZ = -INF;
         for (MapUnit m: placedMapUnits) {
             minX = Math.min(minX, m.offsetX);
             minZ = Math.min(minZ, m.offsetZ);
@@ -576,13 +583,13 @@ public class CaveGen {
             m.offsetX = m.offsetX - minX;
             m.offsetZ = m.offsetZ - minZ;
         }
+        mapMinX = mapMinZ = 0;
         mapMaxX = maxX-minX;
         mapMaxZ = maxZ-minZ;
         mapHasDiameter36 = maxX-minX >= 36 || maxZ-minZ >= 36;
     }
 
-    void shuffleMapPriority() {
-        MapUnit mostRecentlyPlaced = placedMapUnits.get(placedMapUnits.size() - 1);
+    void shuffleMapPriority(MapUnit mostRecentlyPlaced) {
         if (mostRecentlyPlaced.type == 0) {
             randBacks(queueCap);
             return;
@@ -635,7 +642,6 @@ public class CaveGen {
                 }
             }
 
-            assert ms.size() == 4;
             randBacks(ms);
 
             for (MapUnit m: ms) {
@@ -710,10 +716,7 @@ public class CaveGen {
         // test if this mapunit can be added at expandDoor
         if (!Door.doorDirsMatch(expandDoor, d)) return false;
         setMapUnitOffset(expandDoor, m, d);
-        if (fitsOnCurrentMap(m)) {
-            return true;
-        }
-        return false;
+        return fitsOnCurrentMap(m);
     }
 
     MapUnit getNormalRandMapUnit() {
@@ -1138,8 +1141,8 @@ public class CaveGen {
         }
 
         // compute global positions for all spawnpoints, waypoints, and doors
-        // which are fixed from this point on. Previously, these moved
-        // as mapunits are shifted around
+        // which are fixed from this point on. 
+        recomputeOffset();
         for (MapUnit m: placedMapUnits)
             m.recomputePos();
     }
@@ -1353,7 +1356,6 @@ public class CaveGen {
             setSpawnTekiPos(spawn, spot, false);
             spot.filled = true;
             placedTekis.add(spawn);
-            if (expectTest) stats.expect("Spawned: " + spawn.tekiName + " 5 " + spawn.posX + "," + spawn.posZ);
         }
     }
 
@@ -1390,7 +1392,6 @@ public class CaveGen {
             setSpawnTekiPos(spawn, spot, false);
             spot.filled = true;
             placedTekis.add(spawn);
-            if (expectTest) stats.expect("Spawned: " + spawn.tekiName + " 8 " + spawn.posX + "," + spawn.posZ);
         }
     }
 
@@ -1427,7 +1428,6 @@ public class CaveGen {
             setSpawnTekiPos(spawn, spot, false);
             spot.filled = true;
             placedTekis.add(spawn);
-            if (expectTest) stats.expect("Spawned: " + spawn.tekiName + " 1 " + spawn.posX + "," + spawn.posZ);
         }
     }
 
@@ -1492,7 +1492,6 @@ public class CaveGen {
                 placedTekis.add(spawn);
                 justSpawned.add(spawn);
                 numSpawned += 1;
-                if (expectTest) stats.expect("Spawned: " + spawn.tekiName + " 0 " + spawn.posX + "," + spawn.posZ);
             }
 
             // push the enemies away from each other
@@ -1554,7 +1553,6 @@ public class CaveGen {
             setSpawnTekiPos(spawn, spot, false);
             spot.filled = true;
             placedTekis.add(spawn);
-            if (expectTest) stats.expect("Spawned: " + spawn.tekiName + " 6 " + spawn.posX + "," + spawn.posZ);
         }
     }
 
@@ -1636,7 +1634,6 @@ public class CaveGen {
             setSpawnItemPos(spawn, spot);
             spot.filled = true;
             placedItems.add(spawn);
-            if (expectTest) stats.expect("Spawned: " + spawn.itemName + " 2 " + spawn.posX + "," + spawn.posZ);
         }
     }
 
@@ -1678,7 +1675,6 @@ public class CaveGen {
                     }
                     placedTekis.add(spawn);
                     numSpawned++;
-                    if (expectTest) stats.expect("Spawned: " + spawn.tekiName + " 9 " + spawn.posX + "," + spawn.posZ);
                 }
             }
         }
@@ -1707,7 +1703,6 @@ public class CaveGen {
                     spot.filledFalling = true;
                     placedTekis.add(spawn);
                     numSpawned++;
-                    if (expectTest) stats.expect("Spawned: " + spawn.tekiName + " 9f " + spawn.posX + "," + spawn.posZ);
                 }
             }
         }
@@ -1740,7 +1735,6 @@ public class CaveGen {
             spawn.ang = spot.ang;
             spot.filled = true;
             placedGates.add(spawn);
-            if (expectTest) stats.expect("Spawned: gate" + spawn.life + " 5g " + spawn.posX + "," + spawn.posZ);
         }
     }
 

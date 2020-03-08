@@ -243,7 +243,7 @@ class Stats {
         MapUnit m = g.placedMapUnits.get(i);
         if (i >= Parser.scUnitTypes.length) return false;
         if (Parser.scUnitTypes[i] != -1) {
-            String targetName = CaveGen.spawnMapUnitsSorted.get(Parser.scUnitTypes[i]).name;
+            String targetName = g.spawnMapUnitsSorted.get(Parser.scUnitTypes[i]).name;
             if (!targetName.equals(m.name))
                 return true;
         } 
@@ -303,10 +303,10 @@ class Stats {
     // The purpose of these functions is to compare the output from the currect run
     // with the "expected_output.txt" file, and see if they are the same.
     // This is helpful to see if debugging has unexpectedly produced changes to the tool.
-    ArrayList<String> output = new ArrayList<String>();
+    ArrayList<String> expect = new ArrayList<String>();
     
     void setupExpectTests() {
-        output = new ArrayList<String>();
+        expect = new ArrayList<String>();
 
         CaveGen.caveInfoName = "both";
         CaveGen.numToGenerate = 100;
@@ -319,26 +319,39 @@ class Stats {
         CaveGen.fileSystem = "gc";
     }
 
-    void expect(String s) {
-        if (CaveGen.expectTest)
-            output.add(s);
+    void outputSublevelForExpect(CaveGen g) {
+        String s = CaveGen.specialCaveInfoName + " " + CaveGen.sublevel + " on seed " + Drawer.seedToString(g.initialSeed);
+        System.out.println("Checking: " + s);
+        expect.add("Generating " + s);
+        for (MapUnit m: g.placedMapUnits) {
+            expect.add("Placed: " + m.name + " " + m.rotation + " " + m.offsetX + "," + m.offsetZ);
+        }
+        for (Teki t: g.placedTekis) {
+            expect.add("Spawned: " + t.tekiName + " " + t.type + (t.fallType == 0 ? "" : "f") + " " + t.posX + "," + t.posZ); 
+        }
+        for (Item t: g.placedItems) {
+            expect.add("Spawned: " + t.itemName + " " + "2" + " " + t.posX + "," + t.posZ); 
+        }
+        for (Gate t: g.placedGates) {
+            expect.add("Spawned: " + "gate" + t.life + " " + "5g" + " " + t.posX + "," + t.posZ); 
+        }
     }
 
     void checkExpectation() {
         if (!CaveGen.expectTest) return;
         try {
             BufferedWriter wr = new BufferedWriter(new FileWriter("expected_output_this.txt"));
-            for (String s: output) wr.write(s + "\n");
+            for (String s: expect) wr.write(s + "\n");
             wr.close();
 
             Scanner sc = new Scanner(new FileReader("expected_output.txt"));
-            for (int i = 0; i < output.size(); i++) {
+            for (int i = 0; i < expect.size(); i++) {
                 if (sc.hasNextLine()) {
                     String s = sc.nextLine();
-                    if (!s.equals(output.get(i))) {
+                    if (!s.equals(expect.get(i))) {
                         System.out.println("Expectation test failed on line " + (i+1));
                         System.out.println("Expected: " + s);
-                        System.out.println("Got:      " + output.get(i));
+                        System.out.println("Got:      " + expect.get(i));
                         return;
                     }
                 } else {
