@@ -295,6 +295,7 @@ public class CaveGen {
             placedStart = null;
             placedHole = null;
             placedGeyser = null;
+            openDoors = new ArrayList<Door>();
             maxTeki0 = minTeki0 = maxTeki1 = maxTeki5 = maxTeki8 = 0;
             mapHasDiameter36 = false;
             markedOpenDoorsAsCaps = false;
@@ -385,6 +386,7 @@ public class CaveGen {
     SpawnPoint placedGeyser;
 
     // Other helper variables
+    ArrayList<Door> openDoors;
     int maxTeki0, minTeki0, maxTeki1, maxTeki5, maxTeki8;
     boolean mapHasDiameter36;
     int mapMaxX, mapMaxZ, mapMinX, mapMinZ;
@@ -1377,21 +1379,23 @@ public class CaveGen {
     }
 
     void setEnemy8() {
+        // find the possible spots
+        ArrayList<SpawnPoint> sps = new ArrayList<SpawnPoint>();
+        for (MapUnit m: placedMapUnits) {
+            for (SpawnPoint sp: m.spawnPoints) {
+                if (sp.type != 8) continue;
+                if (m.type != 1 || sp.filled) continue;
+                if (spawnPointDist(placedStart, sp) < 300) continue;
+                if (placedHole != null && spawnPointDist(placedHole, sp) < 150) continue;
+                if (placedGeyser != null && spawnPointDist(placedGeyser, sp) < 150) continue;
+
+                sps.add(sp);
+            }
+        }
+
         // Type 8 are special enemies
         for (int numSpawned = 0; numSpawned < maxTeki8; numSpawned++) {
             // choose a uniform random spawnpoint of type 8 that is far enough from holes/start
-            ArrayList<SpawnPoint> sps = new ArrayList<SpawnPoint>();
-            for (MapUnit m: placedMapUnits) {
-                for (SpawnPoint sp: m.spawnPoints) {
-                    if (sp.type != 8) continue;
-                    if (m.type != 1 || sp.filled) continue;
-                    if (spawnPointDist(placedStart, sp) < 300) continue;
-                    if (placedHole != null && spawnPointDist(placedHole, sp) < 150) continue;
-                    if (placedGeyser != null && spawnPointDist(placedGeyser, sp) < 150) continue;
-
-                    sps.add(sp);
-                }
-            }
             SpawnPoint spot = null;
             if (sps.size() > 0)
                 spot = sps.get(randInt(sps.size()));
@@ -1403,6 +1407,7 @@ public class CaveGen {
             // or there are no valid spots or enemies to place
             if (spot == null || toSpawn == null)
                 break;
+            sps.remove(spot);
 
             // spawn the enemy
             Teki spawn = toSpawn.spawn(spot.mapUnit, spot);
@@ -1413,21 +1418,23 @@ public class CaveGen {
     }
 
     void setEnemy1() {
+        // find the possible spawnpoints
+        ArrayList<SpawnPoint> sps = new ArrayList<SpawnPoint>();
+        for (MapUnit m: placedMapUnits) {
+            for (SpawnPoint sp: m.spawnPoints) {
+                if (sp.type != 1) continue;
+                if (m.type != 1 || sp.filled) continue;
+                if (spawnPointDist(placedStart, sp) < 300) continue;
+                if (placedHole != null && spawnPointDist(placedHole, sp) < 200) continue;
+                if (placedGeyser != null && spawnPointDist(placedGeyser, sp) < 200) continue;
+
+                sps.add(sp);
+            }
+        }
+
         // Type 1 are hard enemeies
         for (int numSpawned = 0; numSpawned < maxTeki1; numSpawned++) {
             // choose a uniform random spawnpoint of type 1 that is far enough from holes/start
-            ArrayList<SpawnPoint> sps = new ArrayList<SpawnPoint>();
-            for (MapUnit m: placedMapUnits) {
-                for (SpawnPoint sp: m.spawnPoints) {
-                    if (sp.type != 1) continue;
-                    if (m.type != 1 || sp.filled) continue;
-                    if (spawnPointDist(placedStart, sp) < 300) continue;
-                    if (placedHole != null && spawnPointDist(placedHole, sp) < 200) continue;
-                    if (placedGeyser != null && spawnPointDist(placedGeyser, sp) < 200) continue;
-
-                    sps.add(sp);
-                }
-            }
             SpawnPoint spot = null;
             if (sps.size() > 0)
                 spot = sps.get(randInt(sps.size()));
@@ -1439,6 +1446,7 @@ public class CaveGen {
             // or there are no valid spots or enemies to place
             if (spot == null || toSpawn == null)
                 break;
+            sps.remove(spot);
 
             // spawn the enemy
             Teki spawn = toSpawn.spawn(spot.mapUnit, spot);
@@ -1539,7 +1547,17 @@ public class CaveGen {
     }
 
     void setPlant() {
-        // type 6 are plants. Note, sometimes real enemies are listed as type 6,
+        // find the possible spawnpoints
+        ArrayList<SpawnPoint> sps = new ArrayList<SpawnPoint>();
+        for (MapUnit m: placedMapUnits) {
+            for (SpawnPoint sp: m.spawnPoints) {
+                if (sp.type != 6) continue;
+                if (sp.filled) continue;
+                sps.add(sp);
+            }
+        }
+
+        // type 6 are usually plants. Note, sometimes real enemies are listed as type 6,
         // and sometimes actual plants are listed as a different type than 6.
         int minSum = 0; // plants only spawn under the min condition
         for (Teki t: spawnMainTeki) {
@@ -1548,14 +1566,6 @@ public class CaveGen {
         }
         for (int numSpawned = 0; numSpawned < minSum; numSpawned++) {
             // choose a uniform random spawnpoint of type 6
-            ArrayList<SpawnPoint> sps = new ArrayList<SpawnPoint>();
-            for (MapUnit m: placedMapUnits) {
-                for (SpawnPoint sp: m.spawnPoints) {
-                    if (sp.type != 6) continue;
-                    if (sp.filled) continue;
-                    sps.add(sp);
-                }
-            }
             SpawnPoint spot = null;
             if (sps.size() > 0)
                 spot = sps.get(randInt(sps.size()));
@@ -1567,6 +1577,7 @@ public class CaveGen {
             // or there are no valid spots or enemies to place
             if (spot == null || toSpawn == null)
                 break;
+            sps.remove(spot);
 
             // spawn the enemy
             Teki spawn = toSpawn.spawn(spot.mapUnit, spot);
@@ -2006,7 +2017,7 @@ public class CaveGen {
 
         // compute shortest path + distance to the start from each waypoint
         // using a bfs
-        ArrayList<WayPoint> frontier = new ArrayList<WayPoint>();
+        LinkedList<WayPoint> frontier = new LinkedList<WayPoint>();
         frontier.add(start);
         while (frontier.size() > 0) {
             WayPoint w = null;
@@ -2046,7 +2057,6 @@ public class CaveGen {
         return s.contains(","+t.tekiName.toLowerCase()+",");
     }
 
-    ArrayList<Door> openDoors = new ArrayList<Door>();
     void recomputeOpenDoors() {
         openDoors.clear();
         for (MapUnit m: placedMapUnits) {
