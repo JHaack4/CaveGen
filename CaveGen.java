@@ -321,7 +321,7 @@ public class CaveGen {
                 stats.writeMemo(this);
             }
         }
-        if (showCaveInfo && images) {
+        if (showCaveInfo) {
             try {
                 drawer.drawCaveInfo(this);
             } catch (Exception e) {

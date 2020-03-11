@@ -179,9 +179,9 @@ public class Drawer {
 
         if (drawAsReport) {
             bgt = new Color(0,0,0,0);
-            G.setColor(new Color(225,225,225));
             alpha1 = 0.82f;
             alpha2 = 0.91f;
+            G.setColor(new Color(225,225,225));
             G.fillRect(0, 0, g.mapMaxX*N, 5*N-45);
             for (MapUnit m: g.placedMapUnits) {
                 int x = (int)(m.offsetX*N);
@@ -376,7 +376,7 @@ public class Drawer {
             for (MapUnit m: g.placedMapUnits) {
                 for (SpawnPoint sp: m.spawnPoints) {
                     if (m.type == 2 && sp.type == 9) continue;
-                    float distToStart = CaveGen.spawnPointDist(g.placedStart, sp);
+                    float distToStart = g.placedStart == null ? CaveGen.INF : CaveGen.spawnPointDist(g.placedStart, sp);
                     float distToHole = g.placedHole == null ? CaveGen.INF : CaveGen.spawnPointDist(g.placedHole, sp);
                     float distToGeyser = g.placedGeyser == null ? CaveGen.INF : CaveGen.spawnPointDist(g.placedGeyser, sp);
                     G.setColor(colorsSP[sp.type]);
