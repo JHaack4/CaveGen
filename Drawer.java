@@ -93,14 +93,6 @@ public class Drawer {
         buriedItems = ",leaf_yellow,teala_dia_a,teala_dia_c,xmas_item,yoyo_red,akagai,toy_ring_a_green,"
             + "sinjyu,makigai,momiji_kare,bane_yellow,toy_ring_a_red,diamond_blue,donutswhite_s,gum_tape,toy_ring_b_blue,";
 
-        if (CaveGen.drawSpawnPoints
-             || CaveGen.drawAngles) {
-            alpha1 = 0.65f;
-            alpha2 = 0.75f;
-        } else if (CaveGen.drawScores || CaveGen.drawDoorLinks || CaveGen.drawWayPoints) {
-            alpha1 = 0.7f;
-            alpha2 = 0.8f;
-        }
     }
 
     Image getMapUnit(MapUnit m) throws Exception {
@@ -188,6 +180,8 @@ public class Drawer {
         if (drawAsReport) {
             bgt = new Color(0,0,0,0);
             G.setColor(new Color(225,225,225));
+            alpha1 = 0.82f;
+            alpha2 = 0.91f;
             G.fillRect(0, 0, g.mapMaxX*N, 5*N-45);
             for (MapUnit m: g.placedMapUnits) {
                 int x = (int)(m.offsetX*N);
@@ -240,7 +234,9 @@ public class Drawer {
             xx = 170;
             int[] types = new int[] {5,8,1,0,6};
             for (int type: types) {
-                for (Teki t: g.spawnMainTeki) {
+                ArrayList<Teki> li = type == 0 ? g.spawnTeki0 : type == 1 ? g.spawnTeki1 : 
+                    type == 5 ? g.spawnTeki5 : type == 8 ? g.spawnTeki8 : type == 6 ? g.spawnTeki6 : null;
+                for (Teki t: li) {
                     if (t.type == type) {
                         drawTeki(G,g,t,xx,z-40);
                         if (type == 6)
@@ -292,6 +288,18 @@ public class Drawer {
                 xx += spa*2;
             }
             bgt = new Color(0,0,0);
+        }
+
+        if (CaveGen.drawSpawnPoints
+             || CaveGen.drawAngles) {
+            alpha1 = 0.65f;
+            alpha2 = 0.75f;
+        } else if (CaveGen.drawScores || CaveGen.drawDoorLinks || CaveGen.drawWayPoints) {
+            alpha1 = 0.7f;
+            alpha2 = 0.8f;
+        } else {
+            alpha1 = 0.82f;
+            alpha2 = 0.91f;
         }
 
         if (g.drawWaterBox) {
@@ -601,9 +609,9 @@ public class Drawer {
             G.setColor(new Color(255,0,0));
             G.setFont(new Font("Serif", Font.BOLD, 16));
             for (Teki t: g.placedTekis) {
-                if (t.type == 0 && t.mapUnit.type == 1)
+                if (t.type == 0 && t.spawnPoint.mapUnit.type == 1)
                     drawTextOutline(G, "2", (int)(t.posX/M*N+3), (int)(t.posZ/M*N-3), new Color(255,0,0), bgt);
-                if (t.type == 1 && t.mapUnit.type == 1)
+                if (t.type == 1 && t.spawnPoint.mapUnit.type == 1)
                     drawTextOutline(G, "10", (int)(t.posX/M*N+3), (int)(t.posZ/M*N-3), new Color(255,0,0), bgt);
                 if (t.type == 5)
                     drawTextOutline(G, "5", (int)(t.posX/M*N+3), (int)(t.posZ/M*N-3), new Color(255,0,0), bgt);
@@ -632,7 +640,7 @@ public class Drawer {
                     drawTextOutline(G, ""+(i++), (int)(g.placedGeyser.posX/M*N-15), (int)(g.placedGeyser.posZ/M*N+15), new Color(0,255,255), bgt);
                 }
                 for (Teki t: g.placedTekis) {
-                    if ((t.type == 0 || t.type == 1) && t.mapUnit.type == 0) continue;
+                    if ((t.type == 0 || t.type == 1) && t.spawnPoint.mapUnit.type == 0) continue;
                     drawTextOutline(G, ""+(i++), (int)(t.posX/M*N-15), (int)(t.posZ/M*N+15), new Color(0,255,255), bgt);
                 }
                 for (Item t: g.placedItems) {
@@ -640,7 +648,7 @@ public class Drawer {
                 }
                 for (Teki t: g.placedTekis) {
                     int yaddn = t.fallType > 0 ? -14: 0;
-                    if ((t.type == 0 || t.type == 1) && t.mapUnit.type == 0)
+                    if ((t.type == 0 || t.type == 1) && t.spawnPoint.mapUnit.type == 0)
                         drawTextOutline(G, ""+(i++), (int)(t.posX/M*N-15), (int)(t.posZ/M*N+15+yaddn), new Color(0,255,255), bgt);
                 }
                 for (Gate t: g.placedGates) {
@@ -796,12 +804,13 @@ public class Drawer {
         g.placedGeyser = null;
         g.mapMaxX = maxZ;
         g.mapMaxZ = 0;
-        g.mapMaxX = Math.max(g.mapMaxX, (int)(1+(180+g.spawnMainTeki.size()*45.0)/N));
+        int ns = g.spawnTeki0.size() + g.spawnTeki1.size() + g.spawnTeki5.size() + g.spawnTeki8.size() + g.spawnTeki6.size();
+        g.mapMaxX = Math.max(g.mapMaxX, (int)(1+(180+ns*45.0)/N));
         g.mapMaxX = Math.max(g.mapMaxX, (int)(1+(180+(g.spawnCapFallingTeki.size()+g.spawnCapTeki.size())*45.0)/N));
         g.mapMaxX = Math.max(g.mapMaxX, (int)(1+(180+g.spawnItem.size()*45.0)/N));
         g.mapMaxX = Math.max(g.mapMaxX, (int)(1+(180+g.spawnGate.size()*2*45.0)/N));
         
-        for (MapUnit m: g.spawnMapUnitsSortedAndRotated) {
+        for (MapUnit m: g.spawnMapUnitsSorted) {
             switch(m.type) {
             case 0: g.queueCap.add(m); break;
             case 1: g.queueRoom.add(m); break;

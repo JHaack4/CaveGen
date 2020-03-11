@@ -14,7 +14,8 @@ public class CaveGen {
         drawNoBuriedItems = false, drawNoItems = false, drawNoTeki = false, drawNoGates = false,
         drawNoGateLife = false, drawNoHoles = false, drawHoleProbs = false, p251 = false,
         drawEnemyScores = false, drawUnitHoleScores = false, drawUnitItemScores = false,
-        findGoodLayouts = false, requireMapUnits = false, expectTest = false, noWayPointGraph = false;
+        findGoodLayouts = false, requireMapUnits = false, expectTest = false, noWayPointGraph = false,
+        memo = false, readMemo = false;
     static double findGoodLayoutsRatio = 0.01;
     static String requireMapUnitsConfig = "";
     static boolean shortCircuitMap;
@@ -171,8 +172,13 @@ public class CaveGen {
                         requireMapUnitsConfig = args[++i];
                         Parser.parseShortCircuitString();
                     }
-                    else if (s.equalsIgnoreCase("-noWayPointGraph")) {
+                    else if (s.equalsIgnoreCase("-noWayPointGraph"))
                         noWayPointGraph = true;
+                    else if (s.equalsIgnoreCase("-memo"))
+                        memo = true;
+                    else if (s.equalsIgnoreCase("-readMemo")) {
+                        readMemo = true;
+                        memo = false;
                     }
                     else {
                         System.out.println("Bad argument: " + s);
@@ -284,25 +290,13 @@ public class CaveGen {
                 System.out.println("Generating " + specialCaveInfoName + " " + sublevel + " on seed " + Drawer.seedToString(initialSeed));
             }
 
-            // reset parameters
-            queueCap = new LinkedList<MapUnit>();
-            queueRoom = new LinkedList<MapUnit>();
-            queueCorridor = new LinkedList<MapUnit>();
-            placedMapUnits = new ArrayList<MapUnit>();
-            placedTekis = new ArrayList<Teki>();
-            placedItems = new ArrayList<Item>();
-            placedGates = new ArrayList<Gate>();
-            placedStart = null;
-            placedHole = null;
-            placedGeyser = null;
-            openDoors = new ArrayList<Door>();
-            maxTeki0 = minTeki0 = maxTeki1 = maxTeki5 = maxTeki8 = 0;
-            mapHasDiameter36 = false;
-            markedOpenDoorsAsCaps = false;
-            mapMaxX = mapMaxZ = mapMinX = mapMinZ = 0;
-            shortCircuitMap = false;
+            reset();
 
-            createRandomMap();
+            if (readMemo) {
+                stats.readMemo(this);
+            } else {
+                createRandomMap();
+            }
 
             if (showStats && !shortCircuitMap) {
                 try {
@@ -323,6 +317,9 @@ public class CaveGen {
             if (expectTest) {
                 stats.outputSublevelForExpect(this);
             }
+            if (memo) {
+                stats.writeMemo(this);
+            }
         }
         if (showCaveInfo && images) {
             try {
@@ -332,6 +329,26 @@ public class CaveGen {
                 System.exit(0);
             }
         }
+    }
+
+    void reset() {
+        // reset parameters
+        queueCap = new LinkedList<MapUnit>();
+        queueRoom = new LinkedList<MapUnit>();
+        queueCorridor = new LinkedList<MapUnit>();
+        placedMapUnits = new ArrayList<MapUnit>();
+        placedTekis = new ArrayList<Teki>();
+        placedItems = new ArrayList<Item>();
+        placedGates = new ArrayList<Gate>();
+        placedStart = null;
+        placedHole = null;
+        placedGeyser = null;
+        openDoors = new ArrayList<Door>();
+        maxTeki0 = minTeki0 = maxTeki1 = maxTeki5 = maxTeki8 = 0;
+        mapHasDiameter36 = false;
+        markedOpenDoorsAsCaps = false;
+        mapMaxX = mapMaxZ = mapMinX = mapMinZ = 0;
+        shortCircuitMap = false;
     }
 
     // ---------------------------------------------------------------------------
@@ -365,7 +382,11 @@ public class CaveGen {
     ArrayList<MapUnit> spawnMapUnits;
     ArrayList<MapUnit> spawnMapUnitsSorted;
     ArrayList<MapUnit> spawnMapUnitsSortedAndRotated;
-    ArrayList<Teki> spawnMainTeki; // enemies in rooms and doors
+    ArrayList<Teki> spawnTeki0;
+    ArrayList<Teki> spawnTeki1;
+    ArrayList<Teki> spawnTeki5;
+    ArrayList<Teki> spawnTeki8; 
+    ArrayList<Teki> spawnTeki6; 
     ArrayList<Item> spawnItem;
     ArrayList<Gate> spawnGate;
     ArrayList<Teki> spawnCapTeki;
@@ -425,6 +446,7 @@ public class CaveGen {
         // add spawnpoints for doors (type 5), item alcoves (type 9)
         // and corridors (type 9)
         addSpawnPoints(); 
+        recomputeOffset();
 
         // logic for spawning teki, gate, and item objects
         setStart();
@@ -450,16 +472,7 @@ public class CaveGen {
     // Generate Map Units ---------------------------------------------------------------------
 
     void mapUnitsInitialSorting() {
-        if (spawnMapUnitsSorted.size() < spawnMapUnits.size()) {
-            for (MapUnit m: spawnMapUnits)
-                spawnMapUnitsSorted.add(m);
-            sortBySizeAndDoors(spawnMapUnitsSorted);
-            for (MapUnit m: spawnMapUnitsSorted) {
-                for (int i = 0; i < 4; i++) {
-                    spawnMapUnitsSortedAndRotated.add(m.rotate(i));
-                }
-            }
-        }
+        sortAndRotateMapUnits();
 
         for (MapUnit m: spawnMapUnitsSortedAndRotated) {
             switch(m.type) {
@@ -472,6 +485,21 @@ public class CaveGen {
         randBacks(queueCap);
         randBacks(queueRoom);
         randBacks(queueCorridor);
+    }
+
+    void sortAndRotateMapUnits() {
+        if (spawnMapUnitsSorted.size() < spawnMapUnits.size()) {
+            for (MapUnit m: spawnMapUnits)
+                spawnMapUnitsSorted.add(m);
+            sortBySizeAndDoors(spawnMapUnitsSorted);
+            for (int i = 0; i < spawnMapUnitsSorted.size(); i++)
+                spawnMapUnitsSorted.get(i).spawnListIdx = i;
+            for (MapUnit m: spawnMapUnitsSorted) {
+                for (int i = 0; i < 4; i++) {
+                    spawnMapUnitsSortedAndRotated.add(m.rotate(i));
+                }
+            }
+        }
     }
 
     void sortBySizeAndDoors(List<MapUnit> queueMapUnits) {
@@ -496,12 +524,25 @@ public class CaveGen {
         int[] allocatedSlots0158 = new int[10];
         int[] weightSum0158 = new int[10];
         int numSlotsUsedForMin = 0;
-        for (Teki t: spawnMainTeki) {
-            if (t.type == 0 || t.type == 1 || t.type == 5 || t.type == 8) {
-                allocatedSlots0158[t.type] += t.min;
-                numSlotsUsedForMin += t.min;
-                weightSum0158[t.type] += t.weight;
-            }
+        for (Teki t: spawnTeki0) {
+            allocatedSlots0158[t.type] += t.min;
+            numSlotsUsedForMin += t.min;
+            weightSum0158[t.type] += t.weight;
+        }
+        for (Teki t: spawnTeki1) {
+            allocatedSlots0158[t.type] += t.min;
+            numSlotsUsedForMin += t.min;
+            weightSum0158[t.type] += t.weight;
+        }
+        for (Teki t: spawnTeki5) {
+            allocatedSlots0158[t.type] += t.min;
+            numSlotsUsedForMin += t.min;
+            weightSum0158[t.type] += t.weight;
+        }
+        for (Teki t: spawnTeki8) {
+            allocatedSlots0158[t.type] += t.min;
+            numSlotsUsedForMin += t.min;
+            weightSum0158[t.type] += t.weight;
         }
         minTeki0 = allocatedSlots0158[0];
         // extra main teki slots are allocated randomly between types 0 1 5 8
@@ -591,6 +632,8 @@ public class CaveGen {
         mapMaxX = maxX-minX;
         mapMaxZ = maxZ-minZ;
         mapHasDiameter36 = maxX-minX >= 36 || maxZ-minZ >= 36;
+        for (int i = 0; i < placedMapUnits.size(); i++)
+            placedMapUnits.get(i).placedListIdx = i;
     }
 
     void shuffleMapPriority(MapUnit mostRecentlyPlaced) {
@@ -1155,13 +1198,14 @@ public class CaveGen {
                 sp.minNum = 1;
                 sp.maxNum = 1;
                 sp.mapUnit = m;
+                sp.spawnListIdx = m.spawnPoints.size();
                 m.spawnPoints.add(sp);
             }
         }
 
         // compute global positions for all spawnpoints, waypoints, and doors
         // which are fixed from this point on. 
-        recomputeOffset();
+        
         for (MapUnit m: placedMapUnits)
             m.recomputePos();
     }
@@ -1270,7 +1314,7 @@ public class CaveGen {
         // depends on the spawnpoint type, which depends on the sublevel
         int ret = 0;
         for (Teki t: placedTekis) {
-            if (t.mapUnit == m) {
+            if (t.spawnPoint.mapUnit == m) {
                 if (t.spawnPoint.type == 0) { 
                     ret += 2;
                 } else if (t.spawnPoint.type == 1) {
@@ -1363,7 +1407,7 @@ public class CaveGen {
                 spot = sps.get(randIndexWeight(weights));
 
             // choose an enemy of type 5
-            Teki toSpawn = getRandTeki(5, numSpawned);
+            Teki toSpawn = getRandTeki(spawnTeki5, numSpawned);
 
             // quit if we reach the enemy limit for this type,
             // or there are no valid spots or enemies to place
@@ -1401,7 +1445,7 @@ public class CaveGen {
                 spot = sps.get(randInt(sps.size()));
 
             // choose an enemy of type 8
-            Teki toSpawn = getRandTeki(8, numSpawned);
+            Teki toSpawn = getRandTeki(spawnTeki8, numSpawned);
 
             // quit if we reach the enemy cap for this type,
             // or there are no valid spots or enemies to place
@@ -1440,7 +1484,7 @@ public class CaveGen {
                 spot = sps.get(randInt(sps.size()));
 
             // choose an enemy of type 1
-            Teki toSpawn = getRandTeki(1, numSpawned);
+            Teki toSpawn = getRandTeki(spawnTeki1, numSpawned);
 
             // quit if we reach the enemy cap for this type,
             // or there are no valid spots or enemies to place
@@ -1482,14 +1526,13 @@ public class CaveGen {
             }
 
             // choose an enemy of type 0
-            Teki toSpawn = getRandTeki(0, numSpawned);
+            Teki toSpawn = getRandTeki(spawnTeki0, numSpawned);
             // randomly chose the number to spawn
             // there is some logic to avoid spawning more enemies than
             // are allocated to spawn.
             if (numSpawned < minTeki0) { // we just spawned under min condition
                 int cumMin = 0;
-                for (Teki t: spawnMainTeki) {
-                    if (t.type != 0) continue;
+                for (Teki t: spawnTeki0) {
                     cumMin += t.min;
                     if (cumMin > numSpawned)
                         break;
@@ -1560,7 +1603,7 @@ public class CaveGen {
         // type 6 are usually plants. Note, sometimes real enemies are listed as type 6,
         // and sometimes actual plants are listed as a different type than 6.
         int minSum = 0; // plants only spawn under the min condition
-        for (Teki t: spawnMainTeki) {
+        for (Teki t: spawnTeki6) {
             if (t.type == 6)
                 minSum += t.min;
         }
@@ -1571,7 +1614,7 @@ public class CaveGen {
                 spot = sps.get(randInt(sps.size()));
 
             // choose an enemy of type 6
-            Teki toSpawn = getRandTeki(6, numSpawned);
+            Teki toSpawn = getRandTeki(spawnTeki6, numSpawned);
 
             // quit if we reach the enemy cap for this type,
             // or there are no valid spots or enemies to place
@@ -1760,10 +1803,7 @@ public class CaveGen {
             // spawn the gate
             if (spot == null || toSpawn == null) break;
             Gate spawn = toSpawn.spawn(null, spot);
-            spawn.posX = spot.posX;
-            spawn.posZ = spot.posZ;
-            spawn.posY = spot.posY;
-            spawn.ang = spot.ang;
+            setSpawnGatePos(spawn, spot);
             spot.filled = true;
             placedGates.add(spawn);
         }
@@ -1891,23 +1931,28 @@ public class CaveGen {
         t.ang = sp.ang;
     }
 
-    Teki getRandTeki(int type, int numSpawned) {
+    void setSpawnGatePos(Gate t, SpawnPoint sp) {
+        t.posX = sp.posX;
+        t.posZ = sp.posZ;
+        t.posY = sp.posY;
+        t.ang = sp.ang;
+    }
+
+    Teki getRandTeki(ArrayList<Teki> spawnTeki, int numSpawned) {
         // choose an enemy. First, we use the min condition to
         // spawn that many teki, in order that they appear in the file.
         // After we have done all of the mins, we choose randomly by weight.
         ArrayList<Teki> tekis = new ArrayList<Teki>();
         ArrayList<Integer> weights = new ArrayList<Integer>();
         int cumMins = 0;
-        for (Teki t: spawnMainTeki) {
-            if (t.type == type) {
-                cumMins += t.min;
-                if (numSpawned < cumMins) {
-                    return t;
-                }
-                if (t.weight > 0) {
-                    tekis.add(t);
-                    weights.add(t.weight);
-                }
+        for (Teki t: spawnTeki) {
+            cumMins += t.min;
+            if (numSpawned < cumMins) {
+                return t;
+            }
+            if (t.weight > 0) {
+                tekis.add(t);
+                weights.add(t.weight);
             }
         }
         if (tekis.size() > 0) {

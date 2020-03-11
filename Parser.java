@@ -248,7 +248,11 @@ class Parser {
         g.spawnMapUnits = new ArrayList<MapUnit>();
         g.spawnMapUnitsSorted = new ArrayList<MapUnit>();
         g.spawnMapUnitsSortedAndRotated = new ArrayList<MapUnit>();
-        g.spawnMainTeki = new ArrayList<Teki>();
+        g.spawnTeki0 = new ArrayList<Teki>();
+        g.spawnTeki1 = new ArrayList<Teki>();
+        g.spawnTeki5 = new ArrayList<Teki>();
+        g.spawnTeki8 = new ArrayList<Teki>();
+        g.spawnTeki6 = new ArrayList<Teki>();
         g.spawnItem = new ArrayList<Item>();
         g.spawnGate = new ArrayList<Gate>();
         g.spawnCapTeki = new ArrayList<Teki>();
@@ -289,7 +293,16 @@ class Parser {
                 t.tekiName = rawTekiName.substring(0,i_);
                 t.itemInside = rawTekiName.substring(i_+1);
             } else t.tekiName = rawTekiName;
-            g.spawnMainTeki.add(t);
+            if (t.type == 0)
+                g.spawnTeki0.add(t);
+            if (t.type == 1)
+                g.spawnTeki1.add(t);
+            if (t.type == 5)
+                g.spawnTeki5.add(t);
+            if (t.type == 8)
+                g.spawnTeki8.add(t);
+            if (t.type == 6)
+                g.spawnTeki6.add(t);
         }
 
         nextBrace(sc);
@@ -411,6 +424,7 @@ class Parser {
                 sp.radius = nextFloat(sc2);
                 sp.minNum = nextInt(sc2);
                 sp.maxNum = nextInt(sc2);
+                sp.spawnListIdx = m.spawnPoints.size();
                 m.spawnPoints.add(sp);
                 sp.mapUnit = m;
             }
@@ -455,6 +469,25 @@ class Parser {
         }
 
         sc.close();
+
+        for (int i = 0; i < g.spawnTeki0.size(); i++)
+            g.spawnTeki0.get(i).spawnListIdx = i;
+        for (int i = 0; i < g.spawnTeki1.size(); i++)
+            g.spawnTeki1.get(i).spawnListIdx = i;
+        for (int i = 0; i < g.spawnTeki5.size(); i++)
+            g.spawnTeki5.get(i).spawnListIdx = i;
+        for (int i = 0; i < g.spawnTeki8.size(); i++)
+            g.spawnTeki8.get(i).spawnListIdx = i;
+        for (int i = 0; i < g.spawnTeki6.size(); i++)
+            g.spawnTeki6.get(i).spawnListIdx = i;
+        for (int i = 0; i < g.spawnItem.size(); i++)
+            g.spawnItem.get(i).spawnListIdx = i;
+        for (int i = 0; i < g.spawnGate.size(); i++)
+            g.spawnGate.get(i).spawnListIdx = i;
+        for (int i = 0; i < g.spawnCapTeki.size(); i++)
+            g.spawnCapTeki.get(i).spawnListIdx = i;
+        for (int i = 0; i < g.spawnCapFallingTeki.size(); i++)
+            g.spawnCapFallingTeki.get(i).spawnListIdx = i;
 
         return;
     }

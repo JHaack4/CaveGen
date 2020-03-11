@@ -15,6 +15,8 @@ class SpawnPoint {
     float probVisuallyEmpty = 1.0f;
     float posX, posZ, posY, ang; // these are "global positions" relative to the sublevel
 
+    int spawnListIdx = -1;
+
     SpawnPoint copy() {
         SpawnPoint sp = new SpawnPoint();
         sp.spawnPointIdx = spawnPointIdx;
@@ -26,6 +28,7 @@ class SpawnPoint {
         sp.radius = radius;
         sp.minNum = minNum;
         sp.maxNum = maxNum;
+        sp.spawnListIdx = spawnListIdx;
         return sp;
     }
 

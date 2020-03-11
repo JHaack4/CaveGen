@@ -4,17 +4,18 @@ class Gate {
     float life;
     int weight;
 
-    MapUnit mapUnit = null;
     SpawnPoint spawnPoint = null;
     float posX, posY, posZ, ang;
+
+    int spawnListIdx = -1;
 
     Gate spawn(MapUnit m, SpawnPoint sp) {
         Gate g = new Gate();
         g.gateName = gateName;
         g.life = life;
         g.weight = weight;
-        g.mapUnit = m;
         g.spawnPoint = sp;
+        g.spawnListIdx = spawnListIdx;
         return g;
     }
 }

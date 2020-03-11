@@ -8,11 +8,12 @@ class Teki {
     int type;
     int capType;
 
-    MapUnit mapUnit = null;
     SpawnPoint spawnPoint = null;
     float posX, posY, posZ, ang;
 
     int numToSpawn = 1; // used only as a return value for getRandCapTeki
+
+    int spawnListIdx = -1;
 
     Teki spawn(MapUnit m, SpawnPoint sp) {
         Teki t = new Teki();
@@ -23,8 +24,8 @@ class Teki {
         t.weight = weight;
         t.type = type;
         t.capType = type;
-        t.mapUnit = m;
         t.spawnPoint = sp;
+        t.spawnListIdx = spawnListIdx;
         return t;
     }
 
