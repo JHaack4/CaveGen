@@ -9,6 +9,8 @@ class Item {
 
     int spawnListIdx = -1;
 
+    Item itemInfoSpawnedFrom = null;
+
     Item spawn(MapUnit m, SpawnPoint sp) {
         Item i = new Item();
         i.itemName = itemName;
@@ -16,6 +18,7 @@ class Item {
         i.weight = weight;
         i.spawnPoint = sp;
         i.spawnListIdx = spawnListIdx;
+        i.itemInfoSpawnedFrom = this;
         return i;
     }
 }

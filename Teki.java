@@ -15,6 +15,8 @@ class Teki {
 
     int spawnListIdx = -1;
 
+    Teki tekiInfoSpawnedFrom = null;
+
     Teki spawn(MapUnit m, SpawnPoint sp) {
         Teki t = new Teki();
         t.tekiName = tekiName;
@@ -26,6 +28,7 @@ class Teki {
         t.capType = type;
         t.spawnPoint = sp;
         t.spawnListIdx = spawnListIdx;
+        t.tekiInfoSpawnedFrom = this;
         return t;
     }
 

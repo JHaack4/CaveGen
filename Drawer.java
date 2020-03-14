@@ -109,29 +109,35 @@ public class Drawer {
     }
 
     Image getTeki(Teki t) throws Exception {
+        return getTeki(t, 1f);
+    }
+    Image getSpecial(String t) throws Exception {
+        return getSpecial(t, 0, 1f);
+    }
+    Image getItem(Item t, String inside, String region) throws Exception {
+        return getItem(t, inside, region, 1.0f);
+    }
+
+    Image getTeki(Teki t, float scale) throws Exception {
         String name = t.tekiName.toLowerCase();
         if (missing.containsKey(name)) name = missing.get(name);
-        if (special.containsKey(name)) return getSpecial(name);
+        if (special.containsKey(name)) return getSpecial(name, 0, scale);
         String loc = "files/" + CaveGen.fileSystem + "/" + "enemytex/arc.d/" + name + "/texture.bti.png";
-        String hash = loc + t.type;
+        String hash = loc + t.type + scale;
         if (IMG.containsKey(hash)) return IMG.get(hash);
 
         BufferedImage im = ImageIO.read(new File(loc));
         modAlpha(im, alpha1);
         //int Tsize = t.type == 6 ? this.Tsize / 2 : this.Tsize;
-        Image im2 = im.getScaledInstance(Tsize, Tsize, Image.SCALE_DEFAULT);
+        Image im2 = im.getScaledInstance((int)(Tsize * scale),(int)(Tsize * scale), Image.SCALE_DEFAULT);
 
         IMG.put(hash, im2);
         return im2;
     }
 
-    Image getSpecial(String s) throws Exception {
-        return getSpecial(s, 0);
-    }
-
-    Image getSpecial(String s, int rotation) throws Exception {
+    Image getSpecial(String s, int rotation, float scale) throws Exception {
         String loc = "files/" + CaveGen.fileSystem + "/" + "enemytex/special/" + special.get(s) + ".png";
-        String hash = loc + rotation;
+        String hash = loc + rotation + scale;
         if (IMG.containsKey(hash)) return IMG.get(hash);
 
         BufferedImage im = ImageIO.read(new File(loc));
@@ -141,29 +147,33 @@ public class Drawer {
         if (s.equals("gate")) Tsize = 80;
         if (s.equals("egg")) Tsize = Tsize * 3 / 5;
         if (s.equals("bomb")) Tsize = Tsize * 3 / 5;
-        Image im2 = im.getScaledInstance(Tsize, Tsize, Image.SCALE_DEFAULT);
+        Image im2 = im.getScaledInstance((int)(Tsize * scale),(int)(Tsize * scale), Image.SCALE_DEFAULT);
 
         IMG.put(hash, im2);
         return im2;
     }
 
-    Image getItem(Item t, String inside, String region) throws Exception {
+    Image getItem(Item t, String inside, String region, float scale) throws Exception {
         String name = t != null ? t.itemName : inside;
         String loc = "files/" + CaveGen.fileSystem + "/" + "resulttex/" + region + "/arc.d/" + name.toLowerCase() + "/texture.bti.png";
         if (CaveGen.p251) loc =  "files/" + CaveGen.fileSystem + "/" + "resulttex/" + region + "/arc.d/" + name.toLowerCase() + ".bti.png";
-        String hash = loc + inside;
+        String hash = loc + inside + scale;
         if (IMG.containsKey(hash)) return IMG.get(hash);
 
         BufferedImage im = ImageIO.read(new File(loc));
         modAlpha(im,alpha2);
         int Isize = t != null ? this.Isize : this.Isize*3/4;
-        Image im2 = im.getScaledInstance(Isize, Isize, Image.SCALE_DEFAULT);
+        Image im2 = im.getScaledInstance((int)(Isize * scale),(int)(Isize * scale), Image.SCALE_DEFAULT);
 
         IMG.put(hash, im2);
         return im2;
     }
 
-    void draw(CaveGen g, boolean drawAsReport) throws Exception {
+    void draw(CaveGen g) throws Exception {
+        draw(g,false,null);
+    }
+
+    void draw(CaveGen g, boolean drawAsReport, Aggregator aggregator) throws Exception {
 
         BufferedImage img = new BufferedImage(N*g.mapMaxX, N*g.mapMaxZ,
                                                         BufferedImage.TYPE_INT_RGB);
@@ -279,7 +289,7 @@ public class Drawer {
             G.setFont(new Font("Serif", Font.BOLD, 16));
             xx = 170;
             for (Gate t: g.spawnGate) {
-                Image im = getSpecial("gate", 0);
+                Image im = getSpecial("gate", 0, 1.0f);
                 G.drawImage(im, xx, z-52, null);
                 G.setColor(spc);
                 String st = "" + (int)t.life;
@@ -521,7 +531,7 @@ public class Drawer {
             }
             if (!g.drawNoGates) {
                 for (Gate t: g.placedGates) {
-                    Image im = getSpecial("gate", (int)(t.ang/1.57f));
+                    Image im = getSpecial("gate", (int)(t.ang/1.57f), 1.0f);
                     int x = (int)(t.posX/M*N - im.getWidth(null)/2);
                     int z = (int)(t.posZ/M*N - im.getHeight(null)/2);
                     G.drawImage(im, x, z, null);
@@ -529,6 +539,108 @@ public class Drawer {
                     String st = "" + (int)t.life;
                     if (!g.drawNoGateLife) drawTextOutline(G,st,x+39-3*st.length(),z+45,spc,spc2);//G.drawString(st,x+39-3*st.length(),z+45);
                     //G.drawString(st, (int)(t.posX/M*N), (int)(t.posZ/M*N));
+                }
+            }
+        }
+
+        if (aggregator != null) {
+            for (Aggregator.Loc loc: aggregator.locsList()) {
+                ArrayList<Aggregator.Placed> placements = aggregator.toPlacedList(loc);
+                //System.out.println("loc" + loc.x + " " + loc.z);
+
+                int numToPlace = 0;
+                float sumScale = 0;
+                for (int i = placements.size()-1; i >= 0; i--) {
+                    Aggregator.Placed p = placements.get(i);
+                    boolean wp = false;
+                    if (p.start) 
+                        wp = true;
+                    if (p.hole && !g.drawNoHoles) 
+                        wp = true;
+                    if (p.geyser && !g.drawNoHoles) 
+                        wp = true;
+                    if (p.teki != null && (!g.drawNoTeki || ((g.isPomGroup(p.teki) || p.teki.itemInside != null) && !(g.drawNoTeki && g.drawNoItems)) ) ) 
+                        wp = true;
+                    if (p.item != null) 
+                        wp = true;
+                    if (p.gate != null) 
+                        wp = true;
+                    if (wp) {
+                        numToPlace++;
+                        float prob = p.count * 1.0f / aggregator.numInstances;
+                        float scale = prob * 0.5f + 0.5f;
+                        sumScale += scale;
+                    }
+                    else {
+                        placements.remove(p);
+                    }
+                }
+                sumScale /= 2;
+
+                for (int i = placements.size()-1; i >= 0; i--) {
+                    Aggregator.Placed p = placements.get(i);
+
+                    float prob = p.count * 1.0f / aggregator.numInstances;
+                    /*String ps = prob >= 0.0995 ? Math.round(prob*100) + "" 
+                            : prob >= 0.00995 ? Math.round(prob*1000)/10 + ""
+                            : Math.round(prob * 10000)/100 + "";*/
+                    String ps = Math.round(prob*100) + "";
+
+                    float scale = prob * 0.5f + 0.5f;
+                    sumScale -= scale/2;
+                    int x = (int)((loc.x + g.placedMapUnits.get(0).offsetX * 170.0f) * N/M); // TODO might have to infer these
+                    int z = (int)((loc.z + g.placedMapUnits.get(0).offsetZ * 170.0f) * N/M + sumScale*25);
+                    sumScale -= scale/2;
+                    //System.out.println("p:" + p.count + "," + p.start + p.hole + p.geyser + p.teki + p.item + p.gate + " " + x + "," + z);
+
+                    if (p.start) {
+                        Image im = getSpecial("pod",0,scale);
+                        G.drawImage(im, x - im.getWidth(null)/2, z - im.getHeight(null)/2, null);
+                    }
+                    if (p.hole && !g.drawNoHoles) {
+                        Image im = getSpecial("hole",0,scale);
+                        G.drawImage(im, x- im.getWidth(null)/2, z - im.getWidth(null)/2, null);
+                        if (g.holeClogged) {
+                            Image im2 = getSpecial("clog",0,scale);
+                            G.drawImage(im2,x - im.getWidth(null)/2,z - im.getWidth(null)/2,null);
+                        }
+                    }
+                    if (p.geyser && !g.drawNoHoles) {
+                        Image im = getSpecial("geyser",0,scale);
+                        G.drawImage(im, x - im.getWidth(null)/2, z - im.getWidth(null)/2, null);
+                        if (g.holeClogged) {
+                            Image im2 = getSpecial("clog",0,scale);
+                            G.drawImage(im2,x - im.getWidth(null)/2,z - im.getWidth(null)/2,null);
+                        }
+                    }
+                    if (p.teki != null) {
+                        Teki t = p.teki;
+                        if (g.drawNoPlants && plantNames.contains("," + t.tekiName.toLowerCase() +",")) continue;
+                        Image im = getTeki(t,scale);
+                        G.drawImage(im, x - im.getWidth(null)/2, z - im.getWidth(null)/2, null);
+                        if (t.fallType != 0 && !g.drawNoFallType) {
+                            G.setColor(colorsFT[t.fallType]);
+                            int d = 6 + (int)(8 * scale);
+                            G.drawLine(x+5-d,z+5-d,x-10-d,z-10-d);
+                            G.drawLine(x+9-d,z+1-d,x-6-d,z-14-d);
+                            G.drawLine(x+1-d,z+9-d,x-14-d,z-6-d);
+                        }
+                        if (t.itemInside != null) {
+                            Image im2 = getItem(null, t.itemInside, g.region, scale);
+                            G.drawImage(im2, x - im2.getWidth(null)/2 + (int)(7*scale), z - im2.getWidth(null)/2 + (int)(7*scale), null);
+                        } 
+                    }
+                    if (p.item != null) {
+                        Image im = getItem(p.item, "", g.region,scale);
+                        G.drawImage(im, x - im.getWidth(null)/2, z - im.getWidth(null)/2, null);
+                    }
+                    if (p.gate != null) {
+                        Image im = getSpecial("gate", 0, scale * 0.4f);
+                        G.drawImage(im, x - im.getWidth(null)/2, z - im.getWidth(null)/2, null);
+                    }
+
+                    G.setFont(new Font("Serif", Font.BOLD, 12));
+                    drawTextOutline(G, ps, x-12, z + (int)(16*scale), new Color(254,187,196), new Color(0,0,0));
                 }
             }
         }
@@ -765,6 +877,19 @@ public class Drawer {
         String output = g.p251 ? "output251/" : "output/";
         File outputDir0 = new File(output);
         outputDir0.mkdir();
+        if (aggregator != null) {
+            String as = CaveGen.aggFirst ? "!aggFirst" : CaveGen.aggRooms ? "!aggRooms" : CaveGen.aggHalls ? "!aggHalls" : "!agg";
+            String idxs = String.format("%04d", aggregator.idx);
+            String pcts = ""+(Math.round(aggregator.numInstances * 10000.0f / Aggregator.numLayoutsAggregated)/100.0);
+            File outputDir3 = new File(output + as + "/");
+            outputDir3.mkdir();
+            File outputDir4 = new File(output + as + "/" + caveN + "-" + g.sublevel + "/");
+            outputDir4.mkdir();
+            File outputFile3 = new File(output + as + "/"
+                                        + caveN + "-" + g.sublevel + "/" + idxs + "-" + pcts + ".png"); 
+            ImageIO.write(img, "png", outputFile3);
+            return;
+        }
         if (drawAsReport) {
             File outputDir3 = new File(output + "!caveinfo/");
             outputDir3.mkdir();
@@ -888,7 +1013,102 @@ public class Drawer {
             }
         }
 
-        draw(g, true);
+        draw(g, true, null);
+    }
+
+    public void drawAggregator(CaveGen g) throws Exception {
+        ArrayList<Aggregator> aggs = new ArrayList<>();
+        for (String hash: Aggregator.aggs.keySet()) {
+            aggs.add(Aggregator.aggs.get(hash));
+        }
+        Collections.sort(aggs, new Comparator<Aggregator>() {
+            public int compare(Aggregator a1, Aggregator a2) {
+                return a2.numInstances - a1.numInstances;
+            }
+        });
+        for (int j = 0; j < aggs.size() && j < 200; j++) {
+            Aggregator agg = aggs.get(j);
+            agg.idx = j;
+            g.reset();
+
+            g.sortAndRotateMapUnits();
+            //System.out.println(agg.hash);
+            String[] ms = agg.hash.split("[|]");
+            for (int i = 1; i < ms.length; i++) {
+                String[] m = ms[i].split("[rxz]");
+                int type = Integer.parseInt(m[0]);
+                int r = Integer.parseInt(m[1]);
+                int x = Integer.parseInt(m[2]);
+                int z = Integer.parseInt(m[3]);
+                MapUnit mPlaced = g.spawnMapUnitsSortedAndRotated.get(type * 4 + r).copy();
+                mPlaced.offsetX = x;
+                mPlaced.offsetZ = z;
+                g.placedMapUnits.add(mPlaced);
+                g.closeDoorCheck(mPlaced);
+            }
+            g.recomputeOffset();
+
+            if (CaveGen.aggFirst || CaveGen.aggHalls || CaveGen.aggRooms) {
+                MapUnit first = g.placedMapUnits.get(0);
+                int addX = g.mapMaxX - first.offsetX, addZ = g.mapMaxZ - first.offsetZ, minX = first.offsetX, minZ = first.offsetZ;
+                //System.out.println(agg.hash);
+                for (Aggregator.Loc loc: agg.locsList()) {
+                    //System.out.println(loc.x + " " + loc.z);
+                    if (loc.x/170 >= addX) addX = loc.x / 170 + 1;
+                    if (loc.z/170 >= addZ) addZ = loc.z / 170 + 1;
+                    if (-loc.x/170 >= minX) minX = (-loc.x)/170 + 1;
+                    if (-loc.z/170 >= minZ) minZ = (-loc.z)/170 + 1;
+                }
+                //System.out.println(addX + " " + addZ + " " + minX + " " + minZ + " " + first.dX + " " + first.dZ);
+                int diffX = minX - first.offsetX;
+                int diffZ = minZ - first.offsetZ;
+                for (MapUnit m: g.placedMapUnits) {
+                    m.offsetX += diffX;
+                    m.offsetZ += diffZ;
+                }
+                g.mapMaxX = addX + minX;
+                g.mapMaxZ = addZ + minZ;
+                for (MapUnit m: g.placedMapUnits) {
+                    for (Door d: m.doors) {
+                        if (d.spawnPoint == null) {
+                            SpawnPoint sp = new SpawnPoint();
+                            sp.type = 5;
+                            sp.x = 0;
+                            sp.y = 0;
+                            sp.z = 0;
+                            sp.angle = 0;
+                            sp.radius = 0;
+                            sp.minNum = 1;
+                            sp.maxNum = 1;
+                            sp.door = d;
+                            d.spawnPoint = sp;
+                            if (d.adjacentDoor != null) d.adjacentDoor.spawnPoint = sp;
+                        }
+                    }
+                    if ((m.type == 0 && g.itemInName(m.name)) || m.type == 2) {
+                        SpawnPoint sp = new SpawnPoint();
+                        sp.type = 9;
+                        sp.x = 0;
+                        sp.y = 0;
+                        sp.z = 0;
+                        sp.angle = 0;
+                        sp.radius = 0;
+                        sp.minNum = 1;
+                        sp.maxNum = 1;
+                        sp.mapUnit = m;
+                        sp.spawnListIdx = m.spawnPoints.size();
+                        m.spawnPoints.add(sp);
+                    }
+                }
+                for (MapUnit m: g.placedMapUnits)
+                    m.recomputePos();
+            } else {
+                g.addSpawnPoints();
+            }
+
+
+            draw(g, false, agg);
+        }
     }
 
     public static String seedToString(int seedIn) {

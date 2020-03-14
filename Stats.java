@@ -474,6 +474,7 @@ class Stats {
             MapUnit mPlaced = g.spawnMapUnitsSortedAndRotated.get(type * 4 + r).copy();
             mPlaced.offsetX = x;
             mPlaced.offsetZ = z;
+            mPlaced.placedListIdx = g.placedMapUnits.size();
             g.placedMapUnits.add(mPlaced);
             g.closeDoorCheck(mPlaced);
         }

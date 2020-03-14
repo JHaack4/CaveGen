@@ -9,6 +9,8 @@ class Gate {
 
     int spawnListIdx = -1;
 
+    Gate gateInfoSpawnedFrom = null;
+
     Gate spawn(MapUnit m, SpawnPoint sp) {
         Gate g = new Gate();
         g.gateName = gateName;
@@ -16,6 +18,7 @@ class Gate {
         g.weight = weight;
         g.spawnPoint = sp;
         g.spawnListIdx = spawnListIdx;
+        g.gateInfoSpawnedFrom = this;
         return g;
     }
 }

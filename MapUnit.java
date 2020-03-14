@@ -23,6 +23,8 @@ class MapUnit {
     int placedListIdx = -1;
     int spawnListIdx = -1;
 
+    MapUnit mapUnitInfoSpawnedFrom = null;
+
     MapUnit copy() {
         MapUnit m = new MapUnit();
         m.version = version;
@@ -55,6 +57,7 @@ class MapUnit {
                 m.waterBoxes[i][j] = waterBoxes[i][j];
         m.placedListIdx = placedListIdx;
         m.spawnListIdx = spawnListIdx;
+        m.mapUnitInfoSpawnedFrom = this;
         return m;
     }
 

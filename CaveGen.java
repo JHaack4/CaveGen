@@ -15,7 +15,7 @@ public class CaveGen {
         drawNoGateLife = false, drawNoHoles = false, drawHoleProbs = false, p251 = false,
         drawEnemyScores = false, drawUnitHoleScores = false, drawUnitItemScores = false,
         findGoodLayouts = false, requireMapUnits = false, expectTest = false, noWayPointGraph = false,
-        memo = false, readMemo = false;
+        memo = false, readMemo = false, aggregator = false, aggFirst = false, aggRooms = false, aggHalls = false;
     static double findGoodLayoutsRatio = 0.01;
     static String requireMapUnitsConfig = "";
     static boolean shortCircuitMap;
@@ -180,6 +180,21 @@ public class CaveGen {
                         readMemo = true;
                         memo = false;
                     }
+                    else if (s.equalsIgnoreCase("-agg") || s.equalsIgnoreCase("-aggregator")) {
+                        aggregator = true;
+                    }
+                    else if (s.equalsIgnoreCase("-aggFirst")) {
+                        aggFirst = true;
+                        aggregator = true;
+                    }
+                    else if (s.equalsIgnoreCase("-aggRooms")) {
+                        aggRooms = true;
+                        aggregator = true;
+                    }
+                    else if (s.equalsIgnoreCase("-aggHalls")) {
+                        aggHalls = true;
+                        aggregator = true;
+                    }
                     else {
                         System.out.println("Bad argument: " + s);
                         throw new Exception();
@@ -270,6 +285,7 @@ public class CaveGen {
 
     public CaveGen(int firstSeed, int numToGenerate) {
         new Parser(this); // Parse everything
+        Aggregator.reset();
         specialCaveInfoName = Parser.toSpecial(caveInfoName);
         if (isFinalFloor) holeClogged = !isHardMode(); // final floor geysers aren't clogged in story mode
 
@@ -308,7 +324,7 @@ public class CaveGen {
             }
             if (images && !shortCircuitMap) {
                 try {
-                    drawer.draw(this, false);
+                    drawer.draw(this);
                 } catch (Exception e) {
                     e.printStackTrace();
                     System.exit(0);
@@ -320,10 +336,21 @@ public class CaveGen {
             if (memo) {
                 stats.writeMemo(this);
             }
+            if (aggregator) {
+                Aggregator.process(this);
+            }
         }
         if (showCaveInfo) {
             try {
                 drawer.drawCaveInfo(this);
+            } catch (Exception e) {
+                e.printStackTrace();
+                System.exit(0);
+            }
+        }
+        if (aggregator) {
+            try {
+                drawer.drawAggregator(this);
             } catch (Exception e) {
                 e.printStackTrace();
                 System.exit(0);
@@ -445,8 +472,8 @@ public class CaveGen {
 
         // add spawnpoints for doors (type 5), item alcoves (type 9)
         // and corridors (type 9)
-        addSpawnPoints(); 
         recomputeOffset();
+        addSpawnPoints(); 
 
         // logic for spawning teki, gate, and item objects
         setStart();
