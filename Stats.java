@@ -59,7 +59,7 @@ class Stats {
         
         // report about missing holes / geysers
         boolean missingHole = false, missingGeyser = false;
-        if (g.placedHole == null)
+        if (!g.isFinalFloor && g.placedHole == null)
             missingHole = true;
         if ((g.hasGeyser || g.isFinalFloor) && g.placedGeyser == null)
             missingGeyser = true;
@@ -248,9 +248,9 @@ class Stats {
         
         // report about missing treasures
         out.println("\nSeeds with any missing treasure: " + missingTreasureCount);
-        out.println("   1 missing treasure: " + missingTreasure1);
-        out.println("   2 missing treasures: " + missingTreasure2);
-        out.println("   3+ missing treasures: " + missingTreasure3);
+        out.println("1 missing treasure: " + missingTreasure1);
+        out.println("2 missing treasures: " + missingTreasure2);
+        out.println("3+ missing treasures: " + missingTreasure3);
         out.println("Total missing treasure count: " + missingTreasureTotal);
         
         // report about purple flowers
