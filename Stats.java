@@ -45,11 +45,35 @@ class Stats {
     int minSumTreasureScore = INF;
     int minSumTreasureScoreSeed = -1;
     int missingTreasureCount = 0;
+    int missingTreasureTotal = 0;
+    int missingTreasure1 = 0;
+    int missingTreasure2 = 0;
+    int missingTreasure3 = 0;
+    int missingHoleCount = 0;
+    int missingGeyserCount = 0;
     ArrayList<Integer> allScores = new ArrayList<Integer>();
 
     // this function gets called once for every sublevel g that generates
     void analyze(CaveGen g) {
         caveGenCount += 1; 
+        
+        // report about missing holes / geysers
+        boolean missingHole = false, missingGeyser = false;
+        if (g.placedHole == null)
+            missingHole = true;
+        if ((g.hasGeyser || g.isFinalFloor) && g.placedGeyser == null)
+            missingGeyser = true;
+        if (missingHole) {
+            out.println("Missing hole: " + g.specialCaveInfoName + " " + g.sublevel + " " + Drawer.seedToString(g.initialSeed));
+            missingHoleCount += 1;
+        }
+        if (missingGeyser) {
+            out.println("Missing geyser: " + g.specialCaveInfoName + " " + g.sublevel + " " + Drawer.seedToString(g.initialSeed));
+            if (g.isFinalFloor)
+                missingHoleCount += 1;
+            else
+                missingGeyserCount += 1;
+        }
 
         // count the number of purple flowers
         int num = 0;
@@ -98,13 +122,17 @@ class Stats {
         int expectedMissingTreasures = 0;
         if ("CH29 1".equals(g.specialCaveInfoName + " " + g.sublevel))
             expectedMissingTreasures = 1; // This level is always missing a treasure
-        boolean missingUnexpectedTreasure = actualTreasure + expectedMissingTreasures < minTreasure;
-        if (missingUnexpectedTreasure) {
-            out.println("Missing treasure: " + g.specialCaveInfoName + " " + g.sublevel + " " + Drawer.seedToString(g.initialSeed));
+        int missingUnexpectedTreasure = minTreasure - actualTreasure + expectedMissingTreasures;
+        if (missingUnexpectedTreasure > 0) {
+            out.println(missingUnexpectedTreasure + " missing treasures: " + g.specialCaveInfoName + " " + g.sublevel + " " + Drawer.seedToString(g.initialSeed));
             missingTreasureCount += 1;
+            missingTreasureTotal += missingUnexpectedTreasure;
         }
+        if (missingUnexpectedTreasure == 1) missingTreasure1 += 1;
+        else if (missingUnexpectedTreasure == 2) missingTreasure2 += 1;
+        else if (missingUnexpectedTreasure >= 3) missingTreasure3 += 1;
 
-        if (CaveGen.findGoodLayouts && !missingUnexpectedTreasure) {
+        if (CaveGen.findGoodLayouts && missingUnexpectedTreasure == 0) {
             boolean giveWorstLayoutsInstead = CaveGen.findGoodLayoutsRatio < 0;
 
             ArrayList<Teki> placedTekisWithItems = new ArrayList<Teki>();
@@ -214,8 +242,16 @@ class Stats {
         out.println("\nGenerated " + caveGenCount + " sublevels.");
         out.println("Total run time: " + (System.currentTimeMillis()-startTime)/1000.0 + "s");
         
+        // report about missing holes / geysers
+        out.println("\nMissing hole and/or final floor geyser count: " + missingHoleCount);
+        out.println("Missing rest floor geyser count: " + missingGeyserCount);
+        
         // report about missing treasures
-        out.println("Missing treasure count: " + missingTreasureCount);
+        out.println("\nSeeds with any missing treasure: " + missingTreasureCount);
+        out.println("   1 missing treasure: " + missingTreasure1);
+        out.println("   2 missing treasures: " + missingTreasure2);
+        out.println("   3+ missing treasures: " + missingTreasure3);
+        out.println("Total missing treasure count: " + missingTreasureTotal);
         
         // report about purple flowers
         out.println("\nPurple flower distribution: ");
