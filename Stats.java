@@ -120,9 +120,20 @@ class Stats {
                 actualTreasure += 1;
         }
         int expectedMissingTreasures = 0;
-        if ("CH29 1".equals(g.specialCaveInfoName + " " + g.sublevel))
+        String sublevel = g.specialCaveInfoName + " " + g.sublevel;
+        if ("CH29 1".equals(sublevel) && !g.p251)
             expectedMissingTreasures = 1; // This level is always missing a treasure
-        int missingUnexpectedTreasure = minTreasure - actualTreasure + expectedMissingTreasures;
+        else if (("CH8 1".equals(sublevel) || "CH21 2".equals(sublevel) || "CH24 1".equals(sublevel)) && g.p251)
+            expectedMissingTreasures = 1;
+        else if (("CH27 1".equals(sublevel) || "CH30 10".equals(sublevel)) && g.p251)
+            expectedMissingTreasures = 2;
+        else if ("CH11 1".equals(sublevel) && g.p251)
+            expectedMissingTreasures = 3;
+        else if ("CH9 1".equals(sublevel) && g.p251)
+            expectedMissingTreasures = 5;
+        else if ("SS 7".equals(sublevel) && g.p251)
+            expectedMissingTreasures = 9;
+        int missingUnexpectedTreasure = minTreasure - actualTreasure - expectedMissingTreasures;
         if (missingUnexpectedTreasure > 0) {
             out.println(missingUnexpectedTreasure + " missing treasures: " + g.specialCaveInfoName + " " + g.sublevel + " " + Drawer.seedToString(g.initialSeed));
             missingTreasureCount += 1;
