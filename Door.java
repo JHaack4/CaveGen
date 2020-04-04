@@ -13,6 +13,7 @@ class Door {
     Door adjacentDoor = null;
     boolean markedAsCap = false;
     int doorScore = -1;
+    int gateScore = -1;
     SpawnPoint spawnPoint = null;
     ArrayList<Integer> doorScoreByPhase = new ArrayList<Integer>();
     int offsetX, offsetZ;

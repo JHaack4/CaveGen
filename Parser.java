@@ -257,6 +257,7 @@ class Parser {
         g.spawnGate = new ArrayList<Gate>();
         g.spawnCapTeki = new ArrayList<Teki>();
         g.spawnCapFallingTeki = new ArrayList<Teki>();
+        g.spawnTekiConsolidated = new ArrayList<Teki>();
 
         int n;
         nextBrace(sc);
@@ -303,6 +304,7 @@ class Parser {
                 g.spawnTeki8.add(t);
             if (t.type == 6)
                 g.spawnTeki6.add(t);
+            g.spawnTekiConsolidated.add(t);
         }
 
         nextBrace(sc);
@@ -368,6 +370,7 @@ class Parser {
 
             if (t.fallType == 0 || g.isPomGroup(t)) g.spawnCapTeki.add(t);
             else g.spawnCapFallingTeki.add(t);
+            g.spawnTekiConsolidated.add(t);
         }
 
         sc = read("files/" + g.fileSystem + "/" + "units/" + g.caveUnitFile);
@@ -492,11 +495,18 @@ class Parser {
         return;
     }
 
-    static HashMap<String, Integer> tekiDifficultyMap = new HashMap<String, Integer>();
+    static HashMap<String, Integer> tekiDifficulty = new HashMap<String, Integer>();
+    static HashMap<String, Integer> minCarry = new HashMap<String, Integer>();
+    static HashMap<String, Integer> maxCarry = new HashMap<String, Integer>();
+    static HashMap<String, Integer> pokos = new HashMap<String, Integer>();
+    static HashMap<String, Integer> seeds = new HashMap<String, Integer>();
+    static HashMap<String, Integer> seedsMin = new HashMap<String, Integer>();
+    static HashMap<String, Integer> depth = new HashMap<String, Integer>();
 
-    static void readEnemyFile() {
+
+    static void readConfigFiles() {
         try {
-            BufferedReader br = new BufferedReader(new FileReader("Enemy.csv"));
+            BufferedReader br = new BufferedReader(new FileReader("files/" + CaveGen.fileSystem + "/config/teki_difficulty.csv"));
             String line;
             while ((line = br.readLine()) != null) {
                 Scanner sc = new Scanner(line);
@@ -506,7 +516,26 @@ class Parser {
                 String commonName = sc.next();
                 String internalName = sc.next();
                 int difficulty = Integer.parseInt(sc.next());
-                tekiDifficultyMap.put(internalName.toLowerCase(), difficulty);
+                tekiDifficulty.put(internalName.toLowerCase(), difficulty);
+                sc.close();
+            }
+            br.close();
+        } catch(Exception e) {
+            e.printStackTrace();
+        }
+        try {
+            BufferedReader br = new BufferedReader(new FileReader("files/" + CaveGen.fileSystem + "/config/config_" + CaveGen.region + ".txt"));
+            String line;
+            while ((line = br.readLine()) != null) {
+                Scanner sc = new Scanner(line);
+                sc.useDelimiter(",");
+                String internalName = sc.next();
+                minCarry.put(internalName.toLowerCase(), Integer.parseInt(sc.next()));
+                maxCarry.put(internalName.toLowerCase(), Integer.parseInt(sc.next()));
+                seeds.put(internalName.toLowerCase(), Integer.parseInt(sc.next()));
+                seedsMin.put(internalName.toLowerCase(), Integer.parseInt(sc.next()));
+                pokos.put(internalName.toLowerCase(), Integer.parseInt(sc.next()));
+                depth.put(internalName.toLowerCase(), (int)Double.parseDouble(sc.next()));
                 sc.close();
             }
             br.close();

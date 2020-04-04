@@ -399,9 +399,9 @@ public class Drawer {
                         || (sp.type == 1 && (distToStart < 300 || distToHole < 200 || distToGeyser < 200))
                         || (sp.type == 4 && distToStart < 150)
                         || (sp.type == 8 && (distToStart < 300 || distToHole < 150 || distToGeyser < 150))) {
-                            rad = 3;
-                            int x = (int)(sp.posX/M*N - rad/2);
-                            int z = (int)(sp.posZ/M*N - rad/2);
+                            //rad = 3;
+                            //int x = (int)(sp.posX/M*N - rad/2);
+                            //int z = (int)(sp.posZ/M*N - rad/2);
                             //G.fillOval(x,z,rad,rad);
                             continue;
                     }
@@ -414,6 +414,9 @@ public class Drawer {
                             x += 2;
                             z += 2;
                             if (rad < 1) rad = 1;
+                            if (i < sp.minNum)
+                                G.setColor(new Color(215,90,180));
+                            else G.setColor(new Color(255,130,220));
                             G.drawOval(x,z,rad,rad);
                         }
                     }
@@ -548,26 +551,24 @@ public class Drawer {
                 ArrayList<Aggregator.Placed> placements = aggregator.toPlacedList(loc);
                 //System.out.println("loc" + loc.x + " " + loc.z);
 
-                int numToPlace = 0;
                 float sumScale = 0;
                 for (int i = placements.size()-1; i >= 0; i--) {
                     Aggregator.Placed p = placements.get(i);
                     boolean wp = false;
+                    float prob = p.count * 1.0f / aggregator.numInstances;
                     if (p.start) 
                         wp = true;
                     if (p.hole && !g.drawNoHoles) 
                         wp = true;
                     if (p.geyser && !g.drawNoHoles) 
                         wp = true;
-                    if (p.teki != null && (!g.drawNoTeki || ((g.isPomGroup(p.teki) || p.teki.itemInside != null) && !(g.drawNoTeki && g.drawNoItems)) ) ) 
+                    if (p.teki != null && (!g.drawNoTeki || ((p.teki.tekiName.equalsIgnoreCase("blackpom") || p.teki.tekiName.equalsIgnoreCase("whitepom") || p.teki.itemInside != null) && !(g.drawNoTeki && g.drawNoItems)) ) ) 
                         wp = true;
                     if (p.item != null) 
                         wp = true;
                     if (p.gate != null) 
                         wp = true;
-                    if (wp) {
-                        numToPlace++;
-                        float prob = p.count * 1.0f / aggregator.numInstances;
+                    if (wp && prob >= 0.005) {
                         float scale = prob * 0.5f + 0.5f;
                         sumScale += scale;
                     }

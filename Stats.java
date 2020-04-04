@@ -17,7 +17,7 @@ class Stats {
     public Stats(String args[]) {
         if (!CaveGen.showStats) return;
         if (CaveGen.findGoodLayouts) {
-            Parser.readEnemyFile();
+            Parser.readConfigFiles();
         }
         try {
             startTime = System.currentTimeMillis();
@@ -42,10 +42,8 @@ class Stats {
 
     int caveGenCount = 0;
     int numPurpleFlowers[] = new int[11];
-    int minSumTreasureScore = INF;
-    int minSumTreasureScoreSeed = -1;
     int missingTreasureCount = 0;
-    ArrayList<Integer> allScores = new ArrayList<Integer>();
+    SortedList<Integer> allScores = new SortedList<Integer>(Comparator.naturalOrder());
 
     // this function gets called once for every sublevel g that generates
     void analyze(CaveGen g) {
@@ -60,36 +58,11 @@ class Stats {
         if (num > 10) num = 10;
         numPurpleFlowers[num] += 1;
 
-        // find the sum of treasure scores
-        // you probably want to use a different metric.
-        int sumTreasureScore = 0;
-        for (Item t: g.placedItems) {
-            sumTreasureScore += t.spawnPoint.scoreItem;
-        }
-        for (Teki t: g.placedTekis) {
-            if (t.itemInside != null) {
-                if (t.type != 5)
-                    sumTreasureScore += t.spawnPoint.mapUnit.unitScore;
-                else
-                    sumTreasureScore += t.spawnPoint.door.doorScore;
-            }
-        }
-        if (sumTreasureScore < minSumTreasureScore) {
-            minSumTreasureScore = sumTreasureScore;
-            minSumTreasureScoreSeed = g.initialSeed;
-        }
-
         // report about missing treasures
         // print the seed everytime we see a missing treasure
         int minTreasure = 0, actualTreasure = 0;
         for (Item t: g.spawnItem) { minTreasure += t.min; }
-        for (Teki t: g.spawnTeki0) { if (t.itemInside != null) minTreasure += t.min; }
-        for (Teki t: g.spawnTeki1) { if (t.itemInside != null) minTreasure += t.min; }
-        for (Teki t: g.spawnTeki5) { if (t.itemInside != null) minTreasure += t.min; }
-        for (Teki t: g.spawnTeki8) { if (t.itemInside != null) minTreasure += t.min; }
-        for (Teki t: g.spawnTeki6) { if (t.itemInside != null) minTreasure += t.min; }
-        for (Teki t: g.spawnCapTeki) { if (t.itemInside != null) minTreasure += t.min; }
-        for (Teki t: g.spawnCapFallingTeki) { if (t.itemInside != null) minTreasure += t.min; }
+        for (Teki t: g.spawnTekiConsolidated) { if (t.itemInside != null) minTreasure += t.min; }
         actualTreasure += g.placedItems.size();
         for (Teki t: g.placedTekis) {
             if (t.itemInside != null)
@@ -104,7 +77,8 @@ class Stats {
             missingTreasureCount += 1;
         }
 
-        if (CaveGen.findGoodLayouts && !missingUnexpectedTreasure) {
+        // Good layout finder (story mode)
+        if (CaveGen.findGoodLayouts && !CaveGen.challengeMode && !missingUnexpectedTreasure) {
             boolean giveWorstLayoutsInstead = CaveGen.findGoodLayoutsRatio < 0;
 
             ArrayList<Teki> placedTekisWithItems = new ArrayList<Teki>();
@@ -167,7 +141,7 @@ class Stats {
             for (Teki t: g.placedTekis) {
                 WayPoint wp = g.closestWayPoint(t.spawnPoint);
                 if (wpOnShortPath.contains(wp)) {
-                    score += Parser.tekiDifficultyMap.get(t.tekiName.toLowerCase());
+                    score += Parser.tekiDifficulty.get(t.tekiName.toLowerCase());
                 }
             }
             // add up gate penalties for score
@@ -184,16 +158,7 @@ class Stats {
             if (giveWorstLayoutsInstead) score *= -1;
 
             // keep a sorted list of the scores
-            for (int i = 0; i <= allScores.size(); i++) {
-                if (i == allScores.size()) {
-                    allScores.add(score);
-                    break;
-                }
-                if (score < allScores.get(i)) {
-                    allScores.add(i, score);
-                    break;
-                }
-            }
+            allScores.add(score);
 
             // only print good ones
             if (CaveGen.indexBeingGenerated > CaveGen.numToGenerate/10 && 
@@ -207,6 +172,84 @@ class Stats {
             }
 
         }
+
+        // good layout finder (challenge mode)
+        if (CaveGen.findGoodLayouts && CaveGen.challengeMode) {
+            boolean giveWorstLayoutsInstead = CaveGen.findGoodLayoutsRatio < 0;
+
+            // compute the number of pokos availible
+            int pokosAvailible = 0;
+            for (Teki t: g.placedTekis) {
+                String name = t.tekiName.toLowerCase();
+                if (plantNames.contains("," + name + ",")) continue;
+                if (hazardNames.contains("," + name + ",")) continue;
+                if (name.equalsIgnoreCase("egg"))
+                    pokosAvailible += 10; // mitites
+                else if (!noCarcassNames.contains("," + name + ",") && !name.contains("pom"))
+                    pokosAvailible += Parser.pokos.get(t.tekiName.toLowerCase());
+                if (t.itemInside != null)
+                    pokosAvailible += Parser.pokos.get(t.itemInside.toLowerCase());
+            }
+            for (Item t: g.placedItems)
+                pokosAvailible += Parser.pokos.get(t.itemName.toLowerCase());
+
+            // compute the number of pikmin*seconds required to complete the level
+            float pikminSeconds = 0;
+            for (Teki t: g.placedTekis) {
+                if (plantNames.contains("," + t.tekiName.toLowerCase() + ",")) continue;
+                if (hazardNames.contains("," + t.tekiName.toLowerCase() + ",")) continue;
+                pikminSeconds += workFunction(g, t.tekiName, t.spawnPoint);
+                if (t.itemInside != null)
+                    pikminSeconds += workFunction(g, t.itemInside, t.spawnPoint);
+            }
+            for (Item t: g.placedItems) {
+                pikminSeconds += workFunction(g, t.itemName, t.spawnPoint);
+            }
+            pikminSeconds += workFunction(g, "hole", g.placedHole);
+            pikminSeconds += workFunction(g, "geyser", g.placedGeyser);
+            // gates??
+            // hazards??
+            
+            int score = -pokosAvailible * 1000 + (int)(pikminSeconds/2);
+            if (giveWorstLayoutsInstead) score *= -1;
+
+            // keep a sorted list of the scores
+            allScores.add(score);
+
+            // only print good ones
+            if (CaveGen.indexBeingGenerated > CaveGen.numToGenerate/10 && 
+                score <= allScores.get((int)(allScores.size()*Math.abs(CaveGen.findGoodLayoutsRatio))) 
+                || score == allScores.get(0) && CaveGen.indexBeingGenerated > CaveGen.numToGenerate/40) {
+                CaveGen.images = true;
+                out.println("GoodLayoutScore: " + Drawer.seedToString(g.initialSeed) + " -> " + score);
+            }
+            else {
+                CaveGen.images = false;
+            }
+        }
+    }
+
+    static String plantNames = ",ooinu_s,ooinu_l,wakame_s,wakame_l,kareooinu_s,kareooinu_l,daiodored,"
+            + "daiodogreen,clover,hikarikinoko,tanpopo,zenmai,nekojarashi,tukushi,magaret,watage,chiyogami,";     
+    static String hazardNames = ",gashiba,hiba,elechiba,rock,";
+    static String noCarcassNames = ",wealthy,fart,kogane,mar,hanachirashi,damagumo,bigfoot,bigtreasure,qurione,baby,bomb,egg,kurage,onikurage,bombotakara,blackman,tyre,";
+
+    private float workFunction(CaveGen g, String name, SpawnPoint sp) {
+        if (sp == null) return 0;
+        name = name.toLowerCase();
+        if (name.equals("hole"))
+            return g.closestWayPoint(sp).distToStart / 170.0f * 4;
+        if (name.equals("geyser"))
+            return g.closestWayPoint(sp).distToStart / 170.0f * 20;
+        if (name.equals("egg"))
+            return 7 * 10 * g.closestWayPoint(sp).distToStart / 580.0f;
+        if (name.contains("pom"))
+            return g.closestWayPoint(sp).distToStart / 170.0f * 10;
+        if (noCarcassNames.contains(","+name+",")) return 0;
+        int minCarry = Parser.minCarry.get(name);
+        int maxCarry = Parser.maxCarry.get(name);
+        return 7 * minCarry * g.closestWayPoint(sp).distToStart
+                    / (220.0f + 180.0f * (2 * minCarry - minCarry + 1) / maxCarry);
     }
 
     // this function gets called once at the end of the process
@@ -222,10 +265,6 @@ class Stats {
         for (int i = 0; i < 11; i++) {
             out.println(i + (i==10?"+":"") + ": " + numPurpleFlowers[i]);
         }
-
-        // report about treasure scores
-        out.println("\nBest sum of treasure score: " + minSumTreasureScore);
-        out.println("Best seed: " + Drawer.seedToString(minSumTreasureScoreSeed));
 
         out.close();
     }

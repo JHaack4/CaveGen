@@ -78,7 +78,7 @@ public class CaveGen {
                 for (int i = startParse; i < args.length; i++) {
                     String s = args[i];
                     if (s.equalsIgnoreCase("-num"))
-                        numToGenerate = Integer.parseInt(args[++i]);
+                        numToGenerate = (int)(Long.decode(args[++i]).longValue());
                     else if (s.equalsIgnoreCase("0"))
                         continue;
                     else if (s.equalsIgnoreCase("-seed"))
@@ -302,7 +302,7 @@ public class CaveGen {
                 seed = initialSeed;
             }
 
-            if (prints) {
+            if (prints && (numToGenerate < 4096 || initialSeed % 4096 == 0)) {
                 System.out.println("Generating " + specialCaveInfoName + " " + sublevel + " on seed " + Drawer.seedToString(initialSeed));
             }
 
@@ -418,6 +418,7 @@ public class CaveGen {
     ArrayList<Gate> spawnGate;
     ArrayList<Teki> spawnCapTeki;
     ArrayList<Teki> spawnCapFallingTeki;
+    ArrayList<Teki> spawnTekiConsolidated;
 
     // Queues of map units
     LinkedList<MapUnit> queueCap;
@@ -488,7 +489,7 @@ public class CaveGen {
         setPlant();
         setItem();
         setCapEnemy();
-        setScore(); // pretty sure this call doesn't actually change any scores
+        //setScore(); // pretty sure this call doesn't actually change any scores
         setGate();
 
         if (!noWayPointGraph) {
@@ -1265,14 +1266,18 @@ public class CaveGen {
         // This is a very IMPORTANT function. It effectively determines the
         // set of locations where the holes, treasures, and gates can spawn on hard mode.
 
-        // set enemy scores, reset unit score to infinity, reset door score to inf
+        // reset unit score to infinity, reset door score to inf
         for (MapUnit m: placedMapUnits) {
-            m.enemyScore = getEnemyScore(m);
+            m.enemyScore = 0;
             m.unitScore = INF;
             for (Door d: m.doors) {
                 d.doorScore = INF;
+                d.gateScore = 0;
             }
         }
+
+        // set enemy scores
+        setEnemyScores();
 
         // set score for the start map unit, and all adjacent map units.
         // For the start map unit, we see that the score is just the enemy score
@@ -1280,7 +1285,7 @@ public class CaveGen {
         MapUnit first = placedStart.mapUnit;
         first.unitScore = first.enemyScore;
         for (Door d: first.doors) {
-            d.doorScore = first.unitScore + 1 + getGateScore(d);
+            d.doorScore = first.unitScore + 1 + d.gateScore;
             d.adjacentDoor.doorScore = d.doorScore;
             MapUnit adj = d.adjacentDoor.mapUnit;
             adj.unitScore = Math.min(d.doorScore + adj.enemyScore, adj.unitScore);
@@ -1298,20 +1303,20 @@ public class CaveGen {
             // and find the smallest one.
             for (MapUnit m: placedMapUnits) {
                 for (Door d1: m.doors) {
+                    if (d1.doorScore == INF) continue;
                     for (DoorLink link: d1.doorLinks) {
                         Door d2 = m.doors.get(link.otherIdx);
-                        if (d1.doorScore < INF && d2.doorScore == INF) {
-                            // Score is a function of distance, enemy score, and gate score
-                            // Score is additive as you move away from the start
-                            int distScore = (int)link.dist / 10;
-                            int enemyScore = (int)m.enemyScore;
-                            int gateScore = getGateScore(d2);
-                            int tentativeScore = distScore + enemyScore * link.tekiFlag
-                                + gateScore + d1.doorScore;
-                            if (tentativeScore < selectedScore) {
-                                selectedScore = tentativeScore;
-                                selectedDoor = d2;
-                            }
+                        if (d2.doorScore < INF) continue;
+                        // Score is a function of distance, enemy score, and gate score
+                        // Score is additive as you move away from the start
+                        int distScore = (int)link.dist / 10;
+                        int enemyScore = (int)m.enemyScore;
+                        int gateScore = d2.gateScore;
+                        int tentativeScore = distScore + enemyScore * link.tekiFlag
+                            + gateScore + d1.doorScore;
+                        if (tentativeScore < selectedScore) {
+                            selectedScore = tentativeScore;
+                            selectedDoor = d2;
                         }
                     }
                 }
@@ -1335,35 +1340,30 @@ public class CaveGen {
         }
     }
 
-    int getEnemyScore(MapUnit m) {
+    void setEnemyScores() {
         // The enemy score for a map unit is 2 * #easy-enemies + 10 * #hard-enemies
         // Special enemies are not counted. What counts as an easy or hard enemy
         // depends on the spawnpoint type, which depends on the sublevel
-        int ret = 0;
         for (Teki t: placedTekis) {
-            if (t.spawnPoint.mapUnit == m) {
-                if (t.spawnPoint.type == 0) { 
-                    ret += 2;
-                } else if (t.spawnPoint.type == 1) {
-                    ret += 10;
-                }
+            if (t.spawnPoint.type == 0) { 
+                t.spawnPoint.mapUnit.enemyScore += 2;
+            } else if (t.spawnPoint.type == 1) {
+                t.spawnPoint.mapUnit.enemyScore += 10;
             }
         }
-        return ret;
-    }
-
-    int getGateScore(Door d) {
-        // The gate score for a map unit is 5 if there is a hazard, and 0 otherwise
-        int ret = 0;
+        // The gate score for a door is 5 if there is an enemy on it.
         for (Gate t: placedGates) { // there are never any gates placed when this is called.
-            if (t.spawnPoint == d.spawnPoint)
-                ret += t.life;
+            if (t.spawnPoint.door != null) {
+                t.spawnPoint.door.gateScore += t.life;
+                t.spawnPoint.door.adjacentDoor.gateScore += t.life;
+            } 
         }
         for (Teki t: placedTekis) {
-            if (t.spawnPoint == d.spawnPoint)
-                ret += 5;
+            if (t.spawnPoint.door != null) {
+                t.spawnPoint.door.gateScore += 5;
+                t.spawnPoint.door.adjacentDoor.gateScore += 5;
+            } 
         }
-        return ret;
     }
 
     SpawnPoint setHole() {
