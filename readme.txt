@@ -86,8 +86,8 @@ SPAWNPOINT KEY:
 FALLING KEY:
 0 nothing = not falling
 1 purple  = fall if anything near
-2 red     = only fall if pikmin near
-3 blue    = only fall if leader near
+2 blue    = only fall if pikmin near
+3 red     = only fall if leader near
 4 orange  = only fall if pikmin carrying near
 5 green   = only fall if a purple earthquake is nearby
 
