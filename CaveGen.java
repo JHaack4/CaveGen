@@ -2123,10 +2123,10 @@ public class CaveGen {
         return !challengeMode;
     }
 
+    String pomString = ",bluepom,redpom,yellowpom,blackpom,whitepom,randpom,pom,";
     boolean isPomGroup(Teki t) {
         // aka isCandypopBud
-        String s = ",bluepom,redpom,yellowpom,blackpom,whitepom,randpom,pom,";
-        return s.contains(","+t.tekiName.toLowerCase()+",");
+        return pomString.contains(","+t.tekiName.toLowerCase()+",");
     }
 
     void recomputeOpenDoors() {

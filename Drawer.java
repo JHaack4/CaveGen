@@ -123,7 +123,7 @@ public class Drawer {
         if (missing.containsKey(name)) name = missing.get(name);
         if (special.containsKey(name)) return getSpecial(name, 0, scale);
         String loc = "files/" + CaveGen.fileSystem + "/" + "enemytex/arc.d/" + name + "/texture.bti.png";
-        String hash = loc + t.type + scale;
+        String hash = loc + t.type + scale + alpha1;
         if (IMG.containsKey(hash)) return IMG.get(hash);
 
         BufferedImage im = ImageIO.read(new File(loc));
@@ -137,7 +137,7 @@ public class Drawer {
 
     Image getSpecial(String s, int rotation, float scale) throws Exception {
         String loc = "files/" + CaveGen.fileSystem + "/" + "enemytex/special/" + special.get(s) + ".png";
-        String hash = loc + rotation + scale;
+        String hash = loc + rotation + scale + alpha1;
         if (IMG.containsKey(hash)) return IMG.get(hash);
 
         BufferedImage im = ImageIO.read(new File(loc));
@@ -157,7 +157,7 @@ public class Drawer {
         String name = t != null ? t.itemName : inside;
         String loc = "files/" + CaveGen.fileSystem + "/" + "resulttex/" + region + "/arc.d/" + name.toLowerCase() + "/texture.bti.png";
         if (CaveGen.p251) loc =  "files/" + CaveGen.fileSystem + "/" + "resulttex/" + region + "/arc.d/" + name.toLowerCase() + ".bti.png";
-        String hash = loc + inside + scale;
+        String hash = loc + inside + scale + alpha2;
         if (IMG.containsKey(hash)) return IMG.get(hash);
 
         BufferedImage im = ImageIO.read(new File(loc));

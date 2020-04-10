@@ -1,6 +1,7 @@
 Feel free to use/modify this tool as you see fit
 If you have questions, ping the Pikmin Speedrunning or Hocotate Hacker Discord
 This tool needs to be run from the command line
+The images output from the tool are sent to the "output" folder
 
 
 COMPILE:
@@ -37,7 +38,7 @@ drawSpawnPoints - draws locations where things can spawn
 drawSpawnOrder - draws order objects spawned in
 drawAngles - draws angles that things are facing
 drawDoorIds - draws door ids
-drawTreasureGauge - draws 5 rings to help you determine treasure gauge reads
+drawTreasureGauge - draws rings to help you determine treasure gauge reads
 drawHoleProbs - estimates contiditonal probabilities for the hole location in challenge mode
 drawWayPoints - draws the waypoint graph
 drawWPVertexDists - draws the distance from each waypoint to the pod
