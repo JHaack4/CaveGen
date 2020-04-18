@@ -98,6 +98,7 @@ public class CaveViewer {
                     jComboBox.setEditable(s[++i].equals("editable"));
                     jComboBox.setBounds(x+10, y, 100, 18);
                     jComboBox.addKeyListener(keyListener2);
+                    jComboBox.getEditor().getEditorComponent().addKeyListener(keyListener2);
                     jfr.add(jComboBox);
                 }
             }
@@ -259,6 +260,7 @@ public class CaveViewer {
                         viewPanel.setImage(img);
                         int w = img.getWidth();
                         int h = img.getHeight();
+                        System.out.println(w + " " + h);
                         float scale = 900.0f / Math.max(Math.max(900, w), h);
                         jfrView.setSize((int)(w * scale) + 14, (int)(h * scale) + 37);
                         jfrView.setVisible(true);
