@@ -18,3 +18,4 @@ output/*
 *~
 expected_output_this.txt
 
+.vscode*

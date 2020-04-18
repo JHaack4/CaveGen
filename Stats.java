@@ -13,6 +13,16 @@ class Stats {
     long startTime;
     final int INF = Integer.MAX_VALUE;
 
+    void print(String s) {
+        out.print(s);
+        if (CaveViewer.active) {
+            CaveViewer.caveViewer.reportBuffer.append(s);
+        }
+    }
+    void println(String s) {
+        print(s + "\n");
+    }
+
     // this function gets called once at the start of the process
     public Stats(String args[]) {
         if (!CaveGen.showStats) return;
@@ -29,11 +39,11 @@ class Stats {
             new File(output + "/!reports/").mkdir();
             String outputFileName = output + "/!reports/report-" + dateString + ".txt";
             out = new PrintWriter(new BufferedWriter(new FileWriter(outputFileName)));
-            out.print("CaveGen ");
+            print("CaveGen ");
             for (String s: args) {
-                out.print(s + " ");
+                print(s + " ");
             }
-            out.println("\n");
+            println("\n");
         } catch (Exception e) {
             e.printStackTrace();
             System.exit(0);
@@ -41,7 +51,7 @@ class Stats {
     }
 
     int caveGenCount = 0;
-    int numPurpleFlowers[] = new int[11];
+    int numPurpleFlowers[] = new int[6];
     int missingTreasureCount = 0;
     SortedList<Integer> allScores = new SortedList<Integer>(Comparator.naturalOrder());
 
@@ -55,7 +65,7 @@ class Stats {
             if (t.tekiName.equalsIgnoreCase("blackpom"))
                 num += 1;
         }
-        if (num > 10) num = 10;
+        if (num > 5) num = 5;
         numPurpleFlowers[num] += 1;
 
         // report about missing treasures
@@ -73,7 +83,7 @@ class Stats {
             expectedMissingTreasures = 1; // This level is always missing a treasure
         boolean missingUnexpectedTreasure = actualTreasure + expectedMissingTreasures < minTreasure;
         if (missingUnexpectedTreasure) {
-            out.println("Missing treasure: " + g.specialCaveInfoName + " " + g.sublevel + " " + Drawer.seedToString(g.initialSeed));
+            println("Missing treasure: " + g.specialCaveInfoName + " " + g.sublevel + " " + Drawer.seedToString(g.initialSeed));
             missingTreasureCount += 1;
         }
 
@@ -165,7 +175,7 @@ class Stats {
                 score <= allScores.get((int)(allScores.size()*Math.abs(CaveGen.findGoodLayoutsRatio))) 
                 || score == allScores.get(0) && CaveGen.indexBeingGenerated > CaveGen.numToGenerate/40) {
                 CaveGen.images = true;
-                out.println("GoodLayoutScore: " + Drawer.seedToString(g.initialSeed) + " -> " + score);
+                println("GoodLayoutScore: " + Drawer.seedToString(g.initialSeed) + " -> " + score);
             }
             else {
                 CaveGen.images = false;
@@ -221,7 +231,7 @@ class Stats {
                 score <= allScores.get((int)(allScores.size()*Math.abs(CaveGen.findGoodLayoutsRatio))) 
                 || score == allScores.get(0) && CaveGen.indexBeingGenerated > CaveGen.numToGenerate/40) {
                 CaveGen.images = true;
-                out.println("GoodLayoutScore: " + Drawer.seedToString(g.initialSeed) + " -> " + score);
+                println("GoodLayoutScore: " + Drawer.seedToString(g.initialSeed) + " -> " + score);
             }
             else {
                 CaveGen.images = false;
@@ -254,17 +264,17 @@ class Stats {
 
     // this function gets called once at the end of the process
     void createReport() {
-        out.println("\nGenerated " + caveGenCount + " sublevels.");
-        out.println("Total run time: " + (System.currentTimeMillis()-startTime)/1000.0 + "s");
-        
-        // report about missing treasures
-        out.println("Missing treasure count: " + missingTreasureCount);
-        
+
         // report about purple flowers
-        out.println("\nPurple flower distribution: ");
-        for (int i = 0; i < 11; i++) {
-            out.println(i + (i==10?"+":"") + ": " + numPurpleFlowers[i]);
+        println("\nPurple flower distribution: ");
+        for (int i = 0; i < 6; i++) {
+            println(i + (i==5?"+":"") + ": " + numPurpleFlowers[i]);
         }
+        // report about missing treasures
+        println("Missing treasure count: " + missingTreasureCount);
+
+        println("\nGenerated " + caveGenCount + " sublevels.");
+        println("Total run time: " + (System.currentTimeMillis()-startTime)/1000.0 + "s");
 
         out.close();
     }
@@ -401,9 +411,11 @@ class Stats {
             
             sc.close();
             System.out.println("Expectation test passed!");
+            println("Expectation test passed!");
         } catch (Exception e) {
             e.printStackTrace();
             System.out.println("Expectation test failed");
+            println("Expectation test failed");
         } 
     }
 

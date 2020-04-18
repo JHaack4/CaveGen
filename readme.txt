@@ -1,7 +1,12 @@
 Feel free to use/modify this tool as you see fit
 If you have questions, ping the Pikmin Speedrunning or Hocotate Hacker Discord
-This tool needs to be run from the command line
-The images output from the tool are sent to the "output" folder
+
+
+DOWNLOAD:
+Requires Java version 8 or later.
+https://github.com/JHaack4/CaveGen
+Click "Clone or Download" and download ZIP. Unzip it.
+Run the tool by double clicking CaveViewer.jar, or run from the command line as below.
 
 
 COMPILE:

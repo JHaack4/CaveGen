@@ -1,23 +1,24 @@
 import java.util.*;
+import java.io.*;
 
 public class CaveGen {
 
     // Tool parameters
-    static String caveInfoName, specialCaveInfoName, region = "us", fileSystem = "gc";
-    static int sublevel, firstGenSeed = 0, numToGenerate = 1, indexBeingGenerated = 0;
-    static boolean challengeMode = false, images = true, prints = true, showStats = true, seedOrder = false,
-        folderSeed = true, folderCave = true, showCaveInfo = false, drawSpawnPoints = false,
-        drawWayPoints = false, drawWayPointVertDists = false, drawWayPointEdgeDists = false,
-        drawScores = false, drawAngles = false, drawTreasureGauge = false,
-        drawNoPlants = false, drawNoFallType = false, drawWaterBox = true,
-        drawDoorLinks = false, drawDoorIds = false, drawSpawnOrder = false, drawNoObjects = false,
-        drawNoBuriedItems = false, drawNoItems = false, drawNoTeki = false, drawNoGates = false,
-        drawNoGateLife = false, drawNoHoles = false, drawHoleProbs = false, p251 = false,
-        drawEnemyScores = false, drawUnitHoleScores = false, drawUnitItemScores = false,
-        findGoodLayouts = false, requireMapUnits = false, expectTest = false, noWayPointGraph = false,
-        memo = false, readMemo = false, aggregator = false, aggFirst = false, aggRooms = false, aggHalls = false;
-    static double findGoodLayoutsRatio = 0.01;
-    static String requireMapUnitsConfig = "";
+    static String caveInfoName, specialCaveInfoName, region, fileSystem;
+    static int sublevel, firstGenSeed, numToGenerate, indexBeingGenerated;
+    static boolean challengeMode, images, prints, showStats, seedOrder,
+        folderSeed, folderCave, showCaveInfo, drawSpawnPoints,
+        drawWayPoints, drawWayPointVertDists, drawWayPointEdgeDists,
+        drawScores, drawAngles, drawTreasureGauge,
+        drawNoPlants, drawNoFallType, drawWaterBox,
+        drawDoorLinks, drawDoorIds, drawSpawnOrder, drawNoObjects,
+        drawNoBuriedItems, drawNoItems, drawNoTeki, drawNoGates,
+        drawNoGateLife, drawNoHoles, drawHoleProbs, p251,
+        drawEnemyScores, drawUnitHoleScores, drawUnitItemScores,
+        findGoodLayouts, requireMapUnits, expectTest, noWayPointGraph,
+        memo, readMemo, aggregator, aggFirst, aggRooms, aggHalls;
+    static double findGoodLayoutsRatio;
+    static String requireMapUnitsConfig;
     static boolean shortCircuitMap;
 
     static Drawer drawer;
@@ -28,6 +29,22 @@ public class CaveGen {
     }
 
     static void run(String args[]) {
+        region = "us"; fileSystem = "gc";
+        challengeMode = false; images = true; prints = true; showStats = true; seedOrder = false;
+        folderSeed = true; folderCave = true; showCaveInfo = false; drawSpawnPoints = false;
+        drawWayPoints = false; drawWayPointVertDists = false; drawWayPointEdgeDists = false;
+        drawScores = false; drawAngles = false; drawTreasureGauge = false;
+        drawNoPlants = false; drawNoFallType = false; drawWaterBox = true;
+        drawDoorLinks = false; drawDoorIds = false; drawSpawnOrder = false; drawNoObjects = false;
+        drawNoBuriedItems = false; drawNoItems = false; drawNoTeki = false; drawNoGates = false;
+        drawNoGateLife = false; drawNoHoles = false; drawHoleProbs = false; p251 = false;
+        drawEnemyScores = false; drawUnitHoleScores = false; drawUnitItemScores = false;
+        findGoodLayouts = false; requireMapUnits = false; expectTest = false; noWayPointGraph = false;
+        memo = false; readMemo = false; aggregator = false; aggFirst = false; aggRooms = false; aggHalls = false;
+        findGoodLayoutsRatio = 0.01;
+        requireMapUnitsConfig = "";
+        firstGenSeed = 0; numToGenerate = 1; indexBeingGenerated = 0;
+
         boolean allStoryMode = false, allChallengeMode = false;
         try {
             if (args[0].equalsIgnoreCase("-expectTest")) {
@@ -60,13 +77,13 @@ public class CaveGen {
                     challengeMode = true;
                     allChallengeMode = true;
                 }
-                if (args[1].equals("all") || args[1].equals("small")
+                if (args[1].equals("small")
                     || args[1].equals("pod") || args[1].equals("at")
                     || args[1].equals("story")) {
                     allStoryMode = true;
                     challengeMode = false;
                 }
-                if (args[1].equals("both")) {
+                if (args[1].equals("both") || args[1].equals("all")) {
                     allStoryMode = true;
                     allChallengeMode = true;
                     challengeMode = false;
@@ -95,7 +112,7 @@ public class CaveGen {
                         challengeMode = false;
                     else if (s.equalsIgnoreCase("-noImages"))
                         images = false;
-                    else if (s.equalsIgnoreCase("-noPrint"))
+                    else if (s.equalsIgnoreCase("-noPrint") || s.equalsIgnoreCase("-noPrints"))
                         prints = false;
                     else if (s.equalsIgnoreCase("-noStats"))
                         showStats = false;
@@ -174,7 +191,7 @@ public class CaveGen {
                     }
                     else if (s.equalsIgnoreCase("-noWayPointGraph"))
                         noWayPointGraph = true;
-                    else if (s.equalsIgnoreCase("-memo"))
+                    else if (s.equalsIgnoreCase("-memo") || s.equalsIgnoreCase("-writeMemo"))
                         memo = true;
                     else if (s.equalsIgnoreCase("-readMemo")) {
                         readMemo = true;
@@ -195,6 +212,9 @@ public class CaveGen {
                         aggHalls = true;
                         aggregator = true;
                     }
+                    else if (i == 2) {
+                        continue;
+                    }
                     else {
                         System.out.println("Bad argument: " + s);
                         throw new Exception();
@@ -205,28 +225,20 @@ public class CaveGen {
             }
         } catch (Exception e) {
             e.printStackTrace();
-            System.out.println("\nUsage: CaveGen.jar [Output] [Cave] [sublevelNum] ");
-            System.out.println("  Output: seed|cave|both|none is which folder the output is sent to.");
-            System.out.println("  Cave: tutorial1.txt|cmal|story|both|BK|SCx|CH1|CH2|...");
-            System.out.println("  Sublevel: 1|2|3|4|... or use 0 for the entire cave.");
-            System.out.println("\nOptional: -seed 0x12345678 -num 100 -consecutiveSeeds -challengeMode -storyMode");
-            System.out.println("  -noImages -noPrint -noStats -region [us|jpn|pal] -251 -caveInfoReport");
-            System.out.println("  -drawSpawnPoints -drawSpawnOrder -drawAngles -drawDoorIds -drawTreasureGauge -drawHoleProbs");
-            System.out.println("  -drawWayPoints -drawWPVertexDists -drawWPEdgeDists -drawAllWayPoints -noWayPointGraph");
-            System.out.println("  -drawScores -drawDoorLinks -drawEnemyScores -drawUnitHoleScores -drawUnitItemScores -drawAllScores");
-            System.out.println("  -drawNoWaterBox -drawNoFallType -drawNoGateLife -drawNoObjects -drawNoPlants");
-            System.out.println("  -drawNoBuriedItems -drawNoItems -drawNoTekis -drawNoGates -drawNoHoles");
-            System.out.println("  -findGoodLayouts 0.01 (this keeps the top 1% of layouts by jhawk's heuristic)");
-            System.out.println("  -requireMapUnits unitType,rot,idFrom,doorFrom,doorTo;...");
-            System.out.println("\nExample: CaveGen.jar seed story -seed 0x12345678 -drawSpawnPoints");
-            System.out.println("  This generates images of all levels in story mode with that seed.");
-            System.out.println("Example: CaveGen.jar cave BK 4 -num 100 -seed 0 -consecutiveSeeds");
-            System.out.println("  This generates images for 100 instances of BK4, checking seeds following 0.");
-            System.out.println("Example: CaveGen.jar none CH12 0 -num 10000");
-            System.out.println("  This generates stats for 10000 instances of concrete maze, no images.");
-            System.out.println("Example: CaveGen.jar caveinfo.txt 0");
-            System.out.println("  This generates the whole caveinfo.txt cave");
-            System.exit(0);
+            Parser.helpText();
+
+            for (String s: Parser.helpText)
+                System.out.println(s);
+            
+            if (CaveViewer.active) {
+                StringWriter errors = new StringWriter();
+                e.printStackTrace(new PrintWriter(errors));
+                CaveViewer.caveViewer.reportBuffer.append(errors.toString());
+                CaveViewer.caveViewer.update();
+                return;
+            } else {
+                System.exit(0);
+            }
         }
 
         drawer = new Drawer();
@@ -281,6 +293,9 @@ public class CaveGen {
         if (expectTest) {
             stats.checkExpectation();
         }
+        if (CaveViewer.active) {
+            CaveViewer.caveViewer.update();
+        }
     }
 
     public CaveGen(int firstSeed, int numToGenerate) {
@@ -304,6 +319,9 @@ public class CaveGen {
 
             if (prints && (numToGenerate < 4096 || initialSeed % 4096 == 0)) {
                 System.out.println("Generating " + specialCaveInfoName + " " + sublevel + " on seed " + Drawer.seedToString(initialSeed));
+                if (CaveViewer.active) {
+                    CaveViewer.caveViewer.reportBuffer.append("Generating " + specialCaveInfoName + " " + sublevel + " on seed " + Drawer.seedToString(initialSeed) + "\n");
+                }
             }
 
             reset();
@@ -338,6 +356,9 @@ public class CaveGen {
             }
             if (aggregator) {
                 Aggregator.process(this);
+            }
+            if (CaveViewer.active) {
+                CaveViewer.caveViewer.update();
             }
         }
         if (showCaveInfo) {
@@ -930,7 +951,7 @@ public class CaveGen {
                 // that the receiving door is marked as cap
 
                 // check if od is linkable with d
-                // meaning it's in a 20x10 rectangle in front of door d.
+                // meaning it's in a 19x10 rectangle in front of door d.
                 if (od.mapUnit == d.mapUnit) continue;
                 od.doorOffset();
                 int dx = od.offsetX - d.offsetX;

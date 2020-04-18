@@ -872,9 +872,29 @@ public class Drawer {
                 }
             }
         }
-        
+
         String seedN = seedToString(g.initialSeed);
         String caveN = g.specialCaveInfoName;
+
+        if (CaveViewer.active) {
+            String name = "";
+            if (drawAsReport) name = caveN + "-" + g.sublevel;
+            else if (aggregator != null) {
+                String idxs = String.format("%04d", aggregator.idx);
+                String pcts = ""+(Math.round(aggregator.numInstances * 10000.0f / Aggregator.numLayoutsAggregated)/100.0);
+                name = caveN + "-" + g.sublevel + ": " + idxs + "-" + pcts;
+            }
+            else {
+                name = caveN + "-" + g.sublevel + " " + seedN;
+            }
+            CaveViewer.caveViewer.nameBuffer.add(name);
+            CaveViewer.caveViewer.imageBuffer.add(img);
+            if (drawAsReport || aggregator != null)
+                CaveViewer.caveViewer.update();
+            if (CaveViewer.guiOnly)
+                return;
+        }
+
         String output = g.p251 ? "output251/" : "output/";
         File outputDir0 = new File(output);
         outputDir0.mkdir();

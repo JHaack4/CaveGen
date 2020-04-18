@@ -206,6 +206,10 @@ class Parser {
         nextBrace(sc);
 
         assert g.sublevel <= numSublevels && g.sublevel > 0;
+        if (g.sublevel > numSublevels || g.sublevel <= 0) {
+            CaveViewer.caveViewer.reportBuffer.append("Error: Bad sublevel number");
+            CaveViewer.caveViewer.update();
+        }
         g.isFinalFloor = g.sublevel == numSublevels;
         //System.out.println(numSublevels); 
 
@@ -566,5 +570,32 @@ class Parser {
             scDoorsFrom[i]      = tok2[3].equals("_") ? -1 : Integer.parseInt(tok2[3]);
             scDoorsTo[i]        = tok2[4].equals("_") ? -1 : Integer.parseInt(tok2[4]);
         }
+    }
+
+    static ArrayList<String> helpText = new ArrayList<String>();
+
+    static void helpText() {
+        if (helpText.size() > 0) return;
+        helpText.add("\nUsage: CaveGen.jar [Output] [Cave] [sublevelNum] ");
+        helpText.add("  Output: seed|cave|both|none is which folder the output is sent to.");
+        helpText.add("  Cave: tutorial1.txt|cmal|story|both|BK|SCx|CH1|CH2|...");
+        helpText.add("  Sublevel: 1|2|3|4|... or use 0 for the entire cave.");
+        helpText.add("\nOptional: -seed 0x12345678 -num 100 -consecutiveSeeds -challengeMode -storyMode");
+        helpText.add("  -noImages -noPrint -noStats -region [us|jpn|pal] -251 -caveInfoReport");
+        helpText.add("  -drawSpawnPoints -drawSpawnOrder -drawAngles -drawDoorIds -drawTreasureGauge -drawHoleProbs");
+        helpText.add("  -drawWayPoints -drawWPVertexDists -drawWPEdgeDists -drawAllWayPoints -noWayPointGraph");
+        helpText.add("  -drawScores -drawDoorLinks -drawEnemyScores -drawUnitHoleScores -drawUnitItemScores -drawAllScores");
+        helpText.add("  -drawNoWaterBox -drawNoFallType -drawNoGateLife -drawNoObjects -drawNoPlants");
+        helpText.add("  -drawNoBuriedItems -drawNoItems -drawNoTekis -drawNoGates -drawNoHoles");
+        helpText.add("  -findGoodLayouts 0.01 (this keeps the top 1% of layouts by jhawk's heuristic)");
+        helpText.add("  -requireMapUnits unitType,rot,idFrom,doorFrom,doorTo;...");
+        helpText.add("\nExample: CaveGen.jar seed story -seed 0x12345678 -drawSpawnPoints");
+        helpText.add("  This generates images of all levels in story mode with that seed.");
+        helpText.add("Example: CaveGen.jar cave BK 4 -num 100 -seed 0 -consecutiveSeeds");
+        helpText.add("  This generates images for 100 instances of BK4, checking seeds following 0.");
+        helpText.add("Example: CaveGen.jar none CH12 0 -num 10000");
+        helpText.add("  This generates stats for 10000 instances of concrete maze, no images.");
+        helpText.add("Example: CaveGen.jar caveinfo.txt 0");
+        helpText.add("  This generates the whole caveinfo.txt cave");
     }
 }
