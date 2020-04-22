@@ -27,19 +27,19 @@
 # TekiInfo
 {
 	10	# num
-	Sokkuri_bird_hane 60
+	Sokkuri_be_dama_red 50
 	0
-	UjiA_be_dama_blue 60
+	UjiA_be_dama_blue 50
 	0
 	ShijimiChou 20
 	1
-	Qurione 50
+	Qurione 40
 	1
-	Kogane_key 10
+	Kogane_gold_medal 10
 	1
-	Kogane_chocoichigo_l 10
+	Kogane_silver_medal 10
 	1
-	Fuefuki_donutschoco_s 10
+	Fuefuki_key 10
 	1
 	Tanpopo 5
 	6

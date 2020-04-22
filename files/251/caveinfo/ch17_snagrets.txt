@@ -79,11 +79,21 @@
 }
 # TekiInfo
 {
-	2	# num
-	SnakeWhole_key 10
-	0
-	Clover 6
-	6
+	7 	# num
+	SnakeWhole_key 10 	# weight
+	1 	# type
+	KareOoinu_l 10 	# weight
+	0 	# type
+	KareOoinu_l 10 	# weight
+	0 	# type
+	KareOoinu_s 10 	# weight
+	0 	# type
+	KareOoinu_s 10 	# weight
+	0 	# type
+	KareOoinu_l 10 	# weight
+	0 	# type
+	KareOoinu_l 10 	# weight
+	0 	# type
 }
 # ItemInfo
 {

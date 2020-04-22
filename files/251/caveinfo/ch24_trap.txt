@@ -20,28 +20,28 @@
 	{f011} 4 0 # Unknown
 	{f012} 4 0 # MusicType
 	{f013} 4 0 # SolidPlane
-    {f014} 4 20 # caps
+    {f014} 4 0 # caps
 	{f015} 4 1 # Version(0=IgnoreCapInfo)
 	{_eof} 
 }
 # TekiInfo
 {
 	8 # num
-	$2BlueChappy_diamond_blue_l 20
+	$2BlueChappy_diamond_blue_l 10
 	1
 	$2KumaChappy_key 10
 	1
-	$2BlueKochappy_momiji_normal 60
+	$2BlueKochappy_momiji_normal 50
 	0
-	$2BombOtakara 40
+	$2BombOtakara 30
 	0
-	$4BombOtakara 30
+	$4BombOtakara 20
 	0
-	$4ElecOtakara 40
+	$4ElecOtakara 20
 	1
-	$2Bomb 80
+	$2Bomb 70
 	1
-	Rock 80
+	Rock 60
 	1
 }
 # ItemInfo

@@ -27,13 +27,13 @@
 # TekiInfo
 {
 	5	# num
-	YellowKochappy_flower_red 80
+	YellowKochappy_flower_red 70
 	0
-	YellowKochappy_flower_red 80
+	YellowKochappy_flower_blue 70
 	0
-	YellowKochappy_flower_red 80
+	YellowKochappy_momiji_normal 70
 	0
-	YellowKochappy_flower_red 80
+	YellowKochappy_flower_blue 70
 	1
 	MiniHoudai_key 10
 	1

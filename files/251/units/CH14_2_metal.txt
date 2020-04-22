@@ -3,19 +3,7 @@
 #	units definition file
 #
 #
-4	# number of units
-# cap_metal
-{
-	1 	# version
-	cap_metal 	# foldername
-	1 1 	# dX/dZ ; cell size
-	0 	# room type
-	0 0 	# room Flags
-	1 	# num doors
-	0 	# index
-	2 0 0 	# dir/offs/wpindex
-	0 	# door links
-}
+3	# number of units
 # item_cap_metal
 {
 	1 	# version

@@ -8,9 +8,9 @@
 	{f000} 4 0 	# 階はじめ
 	{f001} 4 0 	# 階おわり
 	{f002} 4 20	# 敵最大数
-	{f003} 4 5 	# アイテム最大数
+	{f003} 4 2 	# アイテム最大数
 	{f004} 4 0 	# ゲート最大数
-	{f014} 4 20	# キャップ最大数
+	{f014} 4 100	# キャップ最大数
 	{f005} 4 1 	# ルーム数
 	{f006} 4 0.000000 	# ルートの割合
 	{f007} 4 0 	# 帰還噴水(1=あり)
@@ -18,7 +18,7 @@
 	{f009} -1 kusachi_light_cha.ini 	# 使用ライト
 	{f00A} -1 hiroba	# VRBOX
 	{f010} 4 0 	# 階段を壊す岩で隠す(0=オフ 1=オン)
-	{f011} 4 3 	# α属性
+	{f011} 4 4 	# α属性
 	{f012} 4 0 	# β属性
 	{f013} 4 1 	# 隠し床
 	{f015} 4 1 	# Version
@@ -26,32 +26,25 @@
 }
 # TekiInfo
 {
-	9	# num
-	RandPom 10
-	0
-	RandPom 10
-	0
-	RandPom 10
-	0
-	RandPom 10
-	0
-	RandPom 10
-	0
-	RandPom 10
-	0
+	6	# num
+	RandPom 20
+	8
 	UjiB_bird_hane 40
 	1
-	Tanpopo 5
-	6
-	Magaret 3
-	6
+	Tanpopo 20 	# weight
+	6 	# type
+	Magaret 60 	# weight
+	6 	# type
+	Clover 80 	# weight
+	1 	# type
+	Ooinu_s 80 	# weight
+	1 	# type
 }
 # ItemInfo
 {
-	3	# num
+	2	# num
 	ichigo_l 10
 	key 10
-	momiji_kare 10
 }
 # GateInfo
 {
@@ -59,7 +52,10 @@
 }
 # CapInfo
 {
-	0 	# num
+	1 	# num
+	0
+	RandPom 30
+	1
 }
 {
 	{f000} 4 1 	# 階はじめ
@@ -67,7 +63,7 @@
 	{f002} 4 10	# 敵最大数
 	{f003} 4 4 	# アイテム最大数
 	{f004} 4 4 	# ゲート最大数
-	{f014} 4 20	# キャップ最大数
+	{f014} 4 100# キャップ最大数
 	{f005} 4 1 	# ルーム数
 	{f006} 4 0.000000 	# ルートの割合
 	{f007} 4 0 	# 帰還噴水(1=あり)
@@ -137,13 +133,17 @@
 }
 # TekiInfo
 {
-	4	# num
+	6	# num
 	Armor_creap 30
 	1
-	RandPom 20
+	RandPom 10
 	0
-	RandPom 20
+	RandPom 10
+	1
+	RandPom 10
 	0
+	RandPom 10
+	1
 	Zenmai 5
 	6
 }

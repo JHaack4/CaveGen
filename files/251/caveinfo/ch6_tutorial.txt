@@ -44,7 +44,7 @@
 	kumakibori 10
 	toy_teala 10
 	denchi_1_red 10
-	donutswhite_s 10
+	watch 10
 }
 # GateInfo
 {

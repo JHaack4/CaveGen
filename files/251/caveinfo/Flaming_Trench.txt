@@ -86,7 +86,7 @@
 	0
 	sokkuri 50
 	1
-	FireChappy_locket 10
+	FireChappy_denchi_3_black 10
 	0
 	Zenmai 6 	# weight
 	6 	# type
@@ -95,7 +95,7 @@
 {
 	2	# num
 	toy_cat 10
-	denchi_3_black 10
+	locket 10
 }
 # GateInfo
 {

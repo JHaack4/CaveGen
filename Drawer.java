@@ -100,7 +100,16 @@ public class Drawer {
         String hash = loc + m.rotation;
         if (IMG.containsKey(hash)) return IMG.get(hash);
 
-        BufferedImage im = ImageIO.read(new File(loc));
+        BufferedImage im;
+        try {
+            im = ImageIO.read(new File(loc));
+        } catch (Exception e) {
+            System.out.println(loc);
+            e.printStackTrace();
+            im = new BufferedImage(m.dX*N, m.dZ*N, BufferedImage.TYPE_INT_RGB);
+            im.getGraphics().setColor(new Color(255,0,144));
+            im.getGraphics().drawRect(0,0,m.dX*N, m.dZ*N);
+        }
         im = rotateImage(im, m.rotation * 90);
         Image im2 = im.getScaledInstance(m.dX*N, m.dZ*N, Image.SCALE_DEFAULT);
             
@@ -126,7 +135,16 @@ public class Drawer {
         String hash = loc + t.type + scale + alpha1;
         if (IMG.containsKey(hash)) return IMG.get(hash);
 
-        BufferedImage im = ImageIO.read(new File(loc));
+        BufferedImage im;
+        try {
+            im = ImageIO.read(new File(loc));
+        } catch (Exception e) {
+            System.out.println(loc);
+            e.printStackTrace();
+            im = new BufferedImage(1, 1, BufferedImage.TYPE_INT_RGB);
+            im.getGraphics().setColor(new Color(255,0,144));
+            im.getGraphics().drawRect(0,0,1,1);
+        }
         modAlpha(im, alpha1);
         //int Tsize = t.type == 6 ? this.Tsize / 2 : this.Tsize;
         Image im2 = im.getScaledInstance((int)(Tsize * scale),(int)(Tsize * scale), Image.SCALE_DEFAULT);
@@ -140,7 +158,16 @@ public class Drawer {
         String hash = loc + rotation + scale + alpha1;
         if (IMG.containsKey(hash)) return IMG.get(hash);
 
-        BufferedImage im = ImageIO.read(new File(loc));
+        BufferedImage im;
+        try {
+            im = ImageIO.read(new File(loc));
+        } catch (Exception e) {
+            System.out.println(loc);
+            e.printStackTrace();
+            im = new BufferedImage(1, 1, BufferedImage.TYPE_INT_RGB);
+            im.getGraphics().setColor(new Color(255,0,144));
+            im.getGraphics().drawRect(0,0,1,1);
+        }
         modAlpha(im, alpha1);
         im = rotateImage(im, rotation * 90);
         int Tsize = this.Tsize;
@@ -160,7 +187,16 @@ public class Drawer {
         String hash = loc + inside + scale + alpha2;
         if (IMG.containsKey(hash)) return IMG.get(hash);
 
-        BufferedImage im = ImageIO.read(new File(loc));
+        BufferedImage im;
+        try {
+            im = ImageIO.read(new File(loc));
+        } catch (Exception e) {
+            System.out.println(loc);
+            e.printStackTrace();
+            im = new BufferedImage(1, 1, BufferedImage.TYPE_INT_RGB);
+            im.getGraphics().setColor(new Color(255,0,144));
+            im.getGraphics().drawRect(0,0,1,1);
+        }
         modAlpha(im,alpha2);
         int Isize = t != null ? this.Isize : this.Isize*3/4;
         Image im2 = im.getScaledInstance((int)(Isize * scale),(int)(Isize * scale), Image.SCALE_DEFAULT);
@@ -697,6 +733,7 @@ public class Drawer {
                     G.setFont(new Font("Serif", Font.BOLD, 16));
                     if (g.drawDoorIds)
                         drawTextOutline(G, ""+i, dx-7, dz+7, new Color(155,100,255), bgt);
+                    if (!drawAsReport && m.placedListIdx == 0) continue;
                     for (int j = 0; j < d.doorLinks.size(); j++) {
                         DoorLink l = d.doorLinks.get(j);
                         Door o = m.doors.get(l.otherIdx);
@@ -707,7 +744,8 @@ public class Drawer {
                         if (o.dirSide == 2) oz -= 10;
                         if (o.dirSide == 3) ox += 10;
                         G.setColor(new Color(255,0,255,40));
-                        G.drawLine(dx,dz,ox,oz);
+                        if (g.drawDoorLinks)
+                            G.drawLine(dx,dz,ox,oz);
                         G.setFont(new Font("Serif", Font.BOLD, 12));
                         if (g.drawDoorLinks)
                             drawTextOutline(G, ((int)(l.dist/10)) + "",

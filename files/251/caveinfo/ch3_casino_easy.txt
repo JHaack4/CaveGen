@@ -10,7 +10,7 @@
 	{f002} 4 8 	# maximum enemies (only relevant if using weighted spawns)
 	{f003} 4 2  # maximum treasures (not counting ones in enemies)
 	{f004} 4 0 	# number of gates (requires data in GateInfo)
-	{f014} 4 100 # number of dead ends
+	{f014} 4 100 # ratio of dead ends
 	{f005} 4 3 	# number of rooms
 	{f006} 4 0.000000 	# ratio of rooms to corridors
 	{f007} 4 0	# 1=geyser 0= no geyser
@@ -57,7 +57,7 @@
 	{f002} 4 8
 	{f003} 4 6
 	{f004} 4 0
-	{f014} 4 20
+	{f014} 4 50
 	{f005} 4 2
 	{f006} 4 0.0
 	{f007} 4 1

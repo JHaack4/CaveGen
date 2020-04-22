@@ -1,0 +1,54 @@
+# CaveInfo
+{
+	{c000} 4 1
+	{_eof} 
+}
+1 # FloorInfo
+{
+	{f000} 4 0
+	{f001} 4 0
+	{f002} 4 27
+	{f003} 4 1
+	{f004} 4 2
+	{f014} 4 0
+	{f005} 4 5
+	{f006} 4 0.100000
+	{f007} 4 0
+	{f008} -1 all_units.txt
+	{f009} -1 tutorial_1_light.ini
+	{f00A} -1 none
+	{f010} 4 0
+	{f011} 4 0
+	{f012} 4 0
+	{f013} 4 0
+	{f015} 4 1
+	{_eof} 
+}
+# TekiInfo
+{
+	3 	# num
+	YellowKochappy 90
+	0
+	Kurage 90
+	8
+	Chappy 90
+	1
+}
+# ItemInfo
+{
+	1 	# num
+	tape_yellow 10 	# weight
+}
+# GateInfo
+{
+	1	# num
+	gate 600
+	1
+}
+# CapInfo
+{
+	1 	# num
+	0
+	Egg 11
+	1
+}

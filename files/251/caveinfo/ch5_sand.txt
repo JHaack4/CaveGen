@@ -10,8 +10,8 @@
 	{f002} 4 20	# 敵最大数
 	{f003} 4 4 	# アイテム最大数
 	{f004} 4 0 	# ゲート最大数
-	{f014} 4 50 	# キャップ最大数
-	{f005} 4 3 	# ルーム数
+	{f014} 4 100# キャップ最大数
+	{f005} 4 2 	# ルーム数
 	{f006} 4 0.000000 	# ルートの割合
 	{f007} 4 0 	# 帰還噴水(1=あり)
 	{f008} -1 CH5_1_sand.txt 	# 使用ユニット
@@ -26,30 +26,22 @@
 }
 # TekiInfo
 {
-	14	# num
+	10	# num
 	Jigumo_kan 10
 	1
-	Jigumo_kan 10
-	1
-	Jigumo_kan 10
-	0
 	Jigumo_kan 10
 	0
 	MaroFrog_key 10
 	1
 	MaroFrog_dia_b_blue 10
 	1
-	MaroFrog_dia_b_blue 10
+	Catfish_cookie 10
+	0
+	Catfish_cookie 10
+	0
+	$Egg 30
 	1
-	Catfish_cookie 10
-	0
-	Catfish_cookie 10
-	0
-	Catfish_cookie 10
-	0
-	$Egg 40
-	1
-	$Tadpole_teala_dia_b 40
+	$Tadpole_teala_dia_b 30
 	0
 	Wakame_s 6
 	6
@@ -59,7 +51,7 @@
 # ItemInfo
 {
 	3 	# num
-	tatebue 10
+	g_futa_kyosin 10
 	matu_bokkuri 10
 	turi_uki 10
 }

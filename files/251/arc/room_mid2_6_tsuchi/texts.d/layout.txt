@@ -1,5 +1,14 @@
 # BaseGen file
-16 	 # num gens
+17 	 # num gens
+# basegen 1
+{
+	2 	# type [Treasure]
+	-156.000000 0.000000 -415.000000 	# pos
+	135.000000 	# ang
+	0.000000 	# radius
+	1 	# min num
+	1 	# max num
+}
 # basegen 1
 {
 	7 	# type [Start]
@@ -12,8 +21,8 @@
 # basegen 2
 {
 	4 	# type [Hole]
-	430.000000 0.000000 180.000000 	# pos
-	45.000000 	# ang
+	-170.000000 0.000000 0.000000 	# pos
+	0.000000 	# ang
 	0.000000 	# radius
 	1 	# min num
 	1 	# max num

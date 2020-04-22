@@ -144,7 +144,7 @@
 	1
 	Sarai_be_dama_blue 10
 	1
-	Demon 20
+	Demon 10
 	0
 	ElecBug 40
 	0

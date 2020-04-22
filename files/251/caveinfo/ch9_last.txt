@@ -41,7 +41,7 @@
 	8
 	Hana_ichigo_l 50
 	8
-	Hanachirashi_yoyo_yellow 50
+	Hanachirashi 50
 	6
 }
 # ItemInfo

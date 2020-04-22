@@ -1,21 +1,7 @@
 #
 #
 #	units definition file
-#
-#
-8
-# cap_toy
-{
-	1 	# version
-	cap_toy 	# foldername
-	1 1 	# dX/dZ ; cell size
-	0 	# room type
-	0 0 	# room Flags
-	1 	# num doors
-	0 	# index
-	2 0 0 	# dir/offs/wpindex
-	0 	# door links
-}
+7
 # item_cap_toy
 {
 	1 	# version

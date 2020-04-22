@@ -26,17 +26,15 @@
 }
 # TekiInfo
 {
-	7	# num
+	6	# num
 	$Kabuto_key 10
-	0
+	5
 	$Bomb 40
 	1
 	$Kabuto_be_dama_blue_l 10
-	0
+	5
 	$Kabuto_be_dama_blue_l 10
-	0
-	$Kabuto_be_dama_blue_l 10
-	0
+	5
 	BlueKochappy_be_dama_blue 60
 	0
 	DaiodoGreen 6

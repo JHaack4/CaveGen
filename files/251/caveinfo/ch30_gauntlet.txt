@@ -1,9 +1,9 @@
 #CaveInfo
 {
-	{c000} 4 25 	# number of floors
+	{c000} 4 20 	# number of floors
 	{_eof} 
 }
-25 # FloorInfo
+20 # FloorInfo
 {
 	{f000} 4 0 	# 階はじめ
 	{f001} 4 0 	# 階おわり
@@ -29,8 +29,8 @@
 	5	# num
 	UjiA_bird_hane 70
 	0
-	UjiB_flower_blue 50
-	0
+	UjiB_flower_blue 40
+	1
 	Clover 4
 	6
 	Ooinu_s 2
@@ -102,54 +102,9 @@
 	{f000} 4 2 	# 階はじめ
 	{f001} 4 2	# 階おわり
 	{f002} 4 20	# 敵最大数
-	{f003} 4 1 	# アイテム最大数
-	{f004} 4 0 	# ゲート最大数
-	{f014} 4 0 	# キャップ最大数
-	{f005} 4 2 	# ルーム数
-	{f006} 4 0.000000 	# ルートの割合
-	{f007} 4 0 	# 帰還噴水(1=あり)
-	{f008} -1 CH30_3_c_conc.txt 	# 使用ユニット
-	{f009} -1 normal_light_cha.ini 	# 使用ライト
-	{f00A} -1 none	# VRBOX
-	{f010} 4 0 	# 階段を壊す岩で隠す(0=オフ 1=オン)
-	{f011} 4 0 	# α属性
-	{f012} 4 0 	# β属性
-	{f013} 4 0 	# 隠し床
-	{f015} 4 1 	# Version
-	{_eof} 
-}
-# TekiInfo
-{
-	4	# num
-	YellowKochappy_be_dama_yellow 40
-	0
-	BlueKochappy_be_dama_blue 40
-	0
-	BlueKochappy_key 10
-	1
-	Zenmai 5
-	6
-}
-# ItemInfo
-{
-	1	# num
-	hammer 10
-}
-# GateInfo
-{
-	0 	# num
-}
-# CapInfo
-{
-	0 	# num
-}
-{
-	{f000} 4 3 	# 階はじめ
-	{f001} 4 3	# 階おわり
-	{f002} 4 20	# 敵最大数
 	{f003} 4 2 	# アイテム最大数
 	{f004} 4 0 	# ゲート最大数
-	{f014} 4 0 	# キャップ最大数
+	{f014} 4 80 # キャップ最大数
 	{f005} 4 2 	# ルーム数
 	{f006} 4 0.000000 	# ルートの割合
 	{f007} 4 0 	# 帰還噴水(1=あり)
@@ -166,11 +121,11 @@
 # TekiInfo
 {
 	4	# num
-	Kochappy_be_dama_yellow 40
+	Kochappy_be_dama_yellow 30
 	0
-	KumaKochappy_be_dama_blue 40
+	KumaKochappy_be_dama_blue 30
 	0
-	YellowKochappy_be_dama_yellow 30
+	YellowKochappy_be_dama_yellow 20
 	0
 	Wakame_l 4
 	6
@@ -190,57 +145,8 @@
 	0 	# num
 }
 {
-	{f000} 4 4 	# 階はじめ
-	{f001} 4 4	# 階おわり
-	{f002} 4 20	# 敵最大数
-	{f003} 4 1 	# アイテム最大数
-	{f004} 4 0 	# ゲート最大数
-	{f014} 4 0 	# キャップ最大数
-	{f005} 4 2 	# ルーム数
-	{f006} 4 0.000000 	# ルートの割合
-	{f007} 4 0 	# 帰還噴水(1=あり)
-	{f008} -1 CH30_5_spiral_conc.txt 	# 使用ユニット
-	{f009} -1 normal_light_cha.ini 	# 使用ライト
-	{f00A} -1 none	# VRBOX
-	{f010} 4 0 	# 階段を壊す岩で隠す(0=オフ 1=オン)
-	{f011} 4 0 	# α属性
-	{f012} 4 0 	# β属性
-	{f013} 4 0 	# 隠し床
-	{f015} 4 1 	# Version
-	{_eof} 
-}
-# TekiInfo
-{
-	6	# num
-	Sarai_dia_b_blue 20
-	0
-	Sokkuri_diamond_blue_l 20
-	0
-	UjiA_be_dama_yellow 40
-	0
-	Sarai_key 10
-	1
-	Hiba 40
-	5
-	Wakame_l 4
-	6
-}
-# ItemInfo
-{
-	1	# num
-	dia_a_green 10
-}
-# GateInfo
-{
-	0 	# num
-}
-# CapInfo
-{
-	0 	# num
-}
-{
-	{f000} 4 5 	# 階はじめ
-	{f001} 4 5	# 階おわり
+	{f000} 4 3 	# 階はじめ
+	{f001} 4 3	# 階おわり
 	{f002} 4 20	# 敵最大数
 	{f003} 4 2 	# アイテム最大数
 	{f004} 4 0 	# ゲート最大数
@@ -260,14 +166,16 @@
 }
 # TekiInfo
 {
-	5	# num
-	Miulin_dia_b_blue 20
+	6	# num
+	Miulin_dia_b_blue 10
+	0
+	Miulin_dia_b_blue 10
 	0
 	Sarai_diamond_blue_l 20
 	0
 	Tobi_be_dama_yellow 20
 	0
-	Hiba 30
+	Hiba 50
 	5
 	Wakame_l 4
 	6
@@ -287,8 +195,8 @@
 	0 	# num
 }
 {
-	{f000} 4 6 	# 階はじめ
-	{f001} 4 6	# 階おわり
+	{f000} 4 4 	# 階はじめ
+	{f001} 4 4	# 階おわり
 	{f002} 4 20	# 敵最大数
 	{f003} 4 1 	# アイテム最大数
 	{f004} 4 0 	# ゲート最大数
@@ -308,15 +216,13 @@
 }
 # TekiInfo
 {
-	5	# num
-	Frog_dia_b_blue 20
-	0
+	4	# num
 	Frog_key 10
 	1
-	Tadpole_be_dama_blue 40
+	Frog_dia_b_blue 10
+	1
+	Tadpole_be_dama_blue 50
 	0
-	ElecHiba 30
-	5
 	Wakame_l 4
 	6
 }
@@ -334,8 +240,8 @@
 	0 	# num
 }
 {
-	{f000} 4 7 	# 階はじめ
-	{f001} 4 7	# 階おわり
+	{f000} 4 5 	# 階はじめ
+	{f001} 4 5	# 階おわり
 	{f002} 4 20	# 敵最大数
 	{f003} 4 2 	# アイテム最大数
 	{f004} 4 0 	# ゲート最大数
@@ -379,53 +285,8 @@
 	0 	# num
 }
 {
-	{f000} 4 8 	# 階はじめ
-	{f001} 4 8	# 階おわり
-	{f002} 4 20	# 敵最大数
-	{f003} 4 2 	# アイテム最大数
-	{f004} 4 4 	# ゲート最大数
-	{f014} 4 0 	# キャップ最大数
-	{f005} 4 1 	# ルーム数
-	{f006} 4 0.000000 	# ルートの割合
-	{f007} 4 0 	# 帰還噴水(1=あり)
-	{f008} -1 CH30_9_a_tile.txt 	# 使用ユニット
-	{f009} -1 normal_light_cha.ini 	# 使用ライト
-	{f00A} -1 none	# VRBOX
-	{f010} 4 0 	# 階段を壊す岩で隠す(0=オフ 1=オン)
-	{f011} 4 0 	# α属性
-	{f012} 4 0 	# β属性
-	{f013} 4 0 	# 隠し床
-	{f015} 4 1 	# Version
-	{_eof} 
-}
-# TekiInfo
-{
-	3	# num
-	Mar_key 10
-	0
-	Hanachirashi_flower_blue 20
-	1
-	Ooinu_s 4
-	6
-}
-# ItemInfo
-{
-	1	# num
-	toy_lady 10
-}
-# GateInfo
-{
-	1 	# num
-	gate 1000
-	1
-}
-# CapInfo
-{
-	0 	# num
-}
-{
-	{f000} 4 9 	# 階はじめ
-	{f001} 4 9	# 階おわり
+	{f000} 4 6 	# 階はじめ
+	{f001} 4 6	# 階おわり
 	{f002} 4 20	# 敵最大数
 	{f003} 4 0 	# アイテム最大数
 	{f004} 4 0 	# ゲート最大数
@@ -470,8 +331,8 @@
 	0 	# num
 }
 {
-	{f000} 4 10	# 階はじめ
-	{f001} 4 10	# 階おわり
+	{f000} 4 7	# 階はじめ
+	{f001} 4 7	# 階おわり
 	{f002} 4 20	# 敵最大数
 	{f003} 4 2 	# アイテム最大数
 	{f004} 4 0 	# ゲート最大数
@@ -491,13 +352,11 @@
 }
 # TekiInfo
 {
-	5	# num
+	4	# num
 	Demon_key 10
 	1
 	ElecBug_flower_red 40
 	0
-	Catfish_flower_blue 20
-	1
 	ElecHiba 10
 	5
 	Zenmai 4
@@ -517,8 +376,8 @@
 	0 	# num
 }
 {
-	{f000} 4 11	# 階はじめ
-	{f001} 4 11	# 階おわり
+	{f000} 4 8	# 階はじめ
+	{f001} 4 8	# 階おわり
 	{f002} 4 20	# 敵最大数
 	{f003} 4 2 	# アイテム最大数
 	{f004} 4 0 	# ゲート最大数
@@ -541,9 +400,9 @@
 	5	# num
 	YellowChappy_key 10
 	1
-	YellowKochappy_be_dama_yellow 50
+	YellowKochappy_be_dama_yellow 40
 	1
-	Hiba 40
+	Hiba 30
 	5
 	KareOoinu_l 3
 	6
@@ -565,8 +424,8 @@
 	0 	# num
 }
 {
-	{f000} 4 12	# 階はじめ
-	{f001} 4 12	# 階おわり
+	{f000} 4 9	# 階はじめ
+	{f001} 4 9	# 階おわり
 	{f002} 4 20	# 敵最大数
 	{f003} 4 2 	# アイテム最大数
 	{f004} 4 0 	# ゲート最大数
@@ -589,9 +448,9 @@
 	5	# num
 	Chappy_key 10
 	1
-	Kochappy_be_dama_red 50
+	Kochappy_be_dama_red 40
 	1
-	ElecHiba 40
+	GasHiba 30
 	5
 	Ooinu_l 3
 	6
@@ -602,7 +461,7 @@
 {
 	2	# num
 	haniwa 10
-	bell_red 10
+	kuri 10
 }
 # GateInfo
 {
@@ -613,12 +472,12 @@
 	0 	# num
 }
 {
-	{f000} 4 13	# 階はじめ
-	{f001} 4 13	# 階おわり
+	{f000} 4 10	# 階はじめ
+	{f001} 4 10	# 階おわり
 	{f002} 4 20	# 敵最大数
 	{f003} 4 2 	# アイテム最大数
 	{f004} 4 0 	# ゲート最大数
-	{f014} 4 0 	# キャップ最大数
+	{f014} 4 100	# キャップ最大数
 	{f005} 4 1 	# ルーム数
 	{f006} 4 0.000000 	# ルートの割合
 	{f007} 4 0 	# 帰還噴水(1=あり)
@@ -637,9 +496,9 @@
 	5	# num
 	BlueChappy_key 10
 	1
-	BlueKochappy_be_dama_blue 40
+	BlueKochappy_be_dama_blue 30
 	1
-	GasHiba 40
+	GasHiba 30
 	5
 	Tukushi 3
 	6
@@ -661,8 +520,8 @@
 	0 	# num
 }
 {
-	{f000} 4 14	# 階はじめ
-	{f001} 4 14	# 階おわり
+	{f000} 4 11	# 階はじめ
+	{f001} 4 11	# 階おわり
 	{f002} 4 20	# 敵最大数
 	{f003} 4 2 	# アイテム最大数
 	{f004} 4 0 	# ゲート最大数
@@ -683,13 +542,13 @@
 # TekiInfo
 {
 	6	# num
-	Tank_diamond_blue_l 30
+	Tank_diamond_blue_l 20
 	1
 	Kochappy_be_dama_red 50
 	1
-	Bomb 40
+	Bomb 30
 	0
-	Hiba 40
+	Hiba 30
 	5
 	DaiodoGreen 3
 	6
@@ -714,8 +573,8 @@
 	1
 }
 {
-	{f000} 4 15	# 階はじめ
-	{f001} 4 15	# 階おわり
+	{f000} 4 12	# 階はじめ
+	{f001} 4 12	# 階おわり
 	{f002} 4 20	# 敵最大数
 	{f003} 4 1 	# アイテム最大数
 	{f004} 4 0 	# ゲート最大数
@@ -760,57 +619,8 @@
 	0 	# num
 }
 {
-	{f000} 4 16	# 階はじめ
-	{f001} 4 16	# 階おわり
-	{f002} 4 20	# 敵最大数
-	{f003} 4 3 	# アイテム最大数
-	{f004} 4 0 	# ゲート最大数
-	{f014} 4 0 	# キャップ最大数
-	{f005} 4 1 	# ルーム数
-	{f006} 4 0.000000 	# ルートの割合
-	{f007} 4 0 	# 帰還噴水(1=あり)
-	{f008} -1 CH30_17_manh_conc.txt 	# 使用ユニット
-	{f009} -1 normal_light_cha.ini 	# 使用ライト
-	{f00A} -1 none	# VRBOX
-	{f010} 4 0 	# 階段を壊す岩で隠す(0=オフ 1=オン)
-	{f011} 4 0 	# α属性
-	{f012} 4 0 	# β属性
-	{f013} 4 0 	# 隠し床
-	{f015} 4 1 	# Version
-	{_eof} 
-}
-# TekiInfo
-{
-	5	# num
-	FireOtakara_flower_red 30
-	0
-	GasOtakara_bird_hane 30
-	0
-	WaterOtakara_flower_blue 30
-	1
-	ElecOtakara_be_dama_yellow 30
-	1
-	Zenmai 5
-	6
-}
-# ItemInfo
-{
-	3	# num
-	saru_head 10
-	denchi_2_black 10
-	key 10
-}
-# GateInfo
-{
-	0 	# num
-}
-# CapInfo
-{
-	0 	# num
-}
-{
-	{f000} 4 17	# 階はじめ
-	{f001} 4 17	# 階おわり
+	{f000} 4 13	# 階はじめ
+	{f001} 4 13	# 階おわり
 	{f002} 4 20	# 敵最大数
 	{f003} 4 2 	# アイテム最大数
 	{f004} 4 0 	# ゲート最大数
@@ -835,9 +645,9 @@
 	1
 	BombSarai_key 10
 	1
-	Bomb 60
+	Bomb 50
 	0
-	$BombOtakara 30
+	BombOtakara 20
 	1
 	DaiodoGreen 5
 	6
@@ -860,8 +670,8 @@
 	1
 }
 {
-	{f000} 4 18	# 階はじめ
-	{f001} 4 18	# 階おわり
+	{f000} 4 14	# 階はじめ
+	{f001} 4 14	# 階おわり
 	{f002} 4 20	# 敵最大数
 	{f003} 4 2 	# アイテム最大数
 	{f004} 4 0 	# ゲート最大数
@@ -884,7 +694,7 @@
 	3	# num
 	FminiHoudai_key 10
 	8
-	Bomb 60
+	Bomb 50
 	0
 	DaiodoRed 5
 	6
@@ -903,51 +713,8 @@
 	0	# num
 }
 {
-	{f000} 4 19 # 階はじめ
-	{f001} 4 19 # 階おわり
-	{f002} 4 20	# 敵最大数
-	{f003} 4 2 	# アイテム最大数
-	{f004} 4 0 	# ゲート最大数
-	{f014} 4 10	# キャップ最大数
-	{f005} 4 1 	# ルーム数
-	{f006} 4 0.000000 	# ルートの割合
-	{f007} 4 0 	# 帰還噴水(1=あり)
-	{f008} -1 CH30_20_plates.txt 	# 使用ユニット
-	{f009} -1 toy_light_cha.ini 	# 使用ライト
-	{f00A} -1 tatami	# VRBOX
-	{f010} 4 0 	# 階段を壊す岩で隠す(0=オフ 1=オン)
-	{f011} 4 0 	# α属性
-	{f012} 4 0 	# β属性
-	{f013} 4 1 	# 隠し床
-	{f015} 4 1 	# Version
-	{_eof} 
-}
-# TekiInfo
-{
-	3	# num
-	Rkabuto_key 10
-	8
-	Fkabuto_castanets 30
-	8
-	BlueKochappy_bird_hane 60
-	0
-}
-# ItemInfo
-{
-	1	# num
-	bell_blue 10
-}
-# GateInfo
-{
-	0 	# num
-}
-# CapInfo
-{
-	0	# num
-}
-{
-	{f000} 4 20 # 階はじめ
-	{f001} 4 20 # 階おわり
+	{f000} 4 15 # 階はじめ
+	{f001} 4 15 # 階おわり
 	{f002} 4 10	# 敵最大数
 	{f003} 4 2 	# アイテム最大数
 	{f004} 4 0 	# ゲート最大数
@@ -972,7 +739,7 @@
 	1
 	Fuefuki_dia_b_blue 20
 	0
-	BlueKochappy_be_dama_blue 50
+	BlueKochappy_be_dama_blue 40
 	1
 }
 # ItemInfo
@@ -990,8 +757,8 @@
 	0	# num
 }
 {
-	{f000} 4 21 # 階はじめ
-	{f001} 4 21 # 階おわり
+	{f000} 4 16 # 階はじめ
+	{f001} 4 16 # 階おわり
 	{f002} 4 10	# 敵最大数
 	{f003} 4 2 	# アイテム最大数
 	{f004} 4 2 	# ゲート最大数
@@ -1014,7 +781,7 @@
 	3	# num
 	OniKurage_key 10
 	1
-	Kurage_futa_a_gold 30
+	Kurage_futa_a_gold 20
 	0
 	Zenmai 5
 	6
@@ -1036,8 +803,8 @@
 	0	# num
 }
 {
-	{f000} 4 22 # 階はじめ
-	{f001} 4 22 # 階おわり
+	{f000} 4 17 # 階はじめ
+	{f001} 4 17 # 階おわり
 	{f002} 4 2	# 敵最大数
 	{f003} 4 2 	# アイテム最大数
 	{f004} 4 0 	# ゲート最大数
@@ -1060,9 +827,9 @@
 	4	# num
 	UmiMushiBlind_key 10
 	1
-	Catfish_dia_c_blue 30
+	Catfish_mariocap 20
 	0
-	Frog_baum_kuchen_s 30
+	Frog_kan 20
 	1
 	Wakame_l 5
 	6
@@ -1070,7 +837,7 @@
 # ItemInfo
 {
 	1	# num
-	bell_blue 10
+	n64 10
 }
 # GateInfo
 {
@@ -1081,8 +848,8 @@
 	0	# num
 }
 {
-	{f000} 4 23 # 階はじめ
-	{f001} 4 23 # 階おわり
+	{f000} 4 18 # 階はじめ
+	{f001} 4 18 # 階おわり
 	{f002} 4 20	# 敵最大数
 	{f003} 4 2 	# アイテム最大数
 	{f004} 4 0 	# ゲート最大数
@@ -1107,11 +874,11 @@
 	1
 	Hana_donguri_l 20
 	1
-	Demon_diamond_blue_l 30
+	Demon_diamond_blue_l 20
 	0
 	GasHiba 40
 	5
-	Wtank_deku 30
+	Wtank_deku 20
 	1
 	Magaret 6
 	6
@@ -1139,8 +906,8 @@
 	0	# num
 }
 {
-	{f000} 4 24 # 階はじめ
-	{f001} 4 24 # 階おわり
+	{f000} 4 19 # 階はじめ
+	{f001} 4 19 # 階おわり
 	{f002} 4 20	# 敵最大数
 	{f003} 4 2 	# アイテム最大数
 	{f004} 4 1 	# ゲート最大数
@@ -1167,7 +934,7 @@
 	1
 	BlueChappy_kan 10
 	1
-	YellowChappy_compcube 20
+	YellowChappy_compcube 10
 	1
 	FireChappy_key 10
 	0

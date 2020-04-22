@@ -101,7 +101,7 @@ public class CaveGen {
                     else if (s.equalsIgnoreCase("-seed"))
                         firstGenSeed = (int)(Long.decode(args[++i]).longValue());
                     else if (s.equalsIgnoreCase("-region"))
-                        region = args[++i];
+                        region = args[++i].toLowerCase();
                     else if (s.equalsIgnoreCase("-251")) {
                         p251 = true;
                         fileSystem = "251";
@@ -222,6 +222,7 @@ public class CaveGen {
                 }
 
                 caveInfoName = Parser.fromSpecial(args[1]);
+                fileSystem = fileSystem.toLowerCase();
             }
         } catch (Exception e) {
             e.printStackTrace();

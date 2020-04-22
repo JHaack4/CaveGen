@@ -199,7 +199,8 @@ class Parser {
     }
 
     void parseAll() {
-        Scanner sc = read("files/" + g.fileSystem + "/" + "caveinfo/" + g.caveInfoName);
+        String jpn = (CaveGen.fileSystem.equals("gc") && CaveGen.region.equals("jpn")) ? "-jpn" : "";
+        Scanner sc = read("files/" + g.fileSystem + "/" + "caveinfo" + jpn + "/" + g.caveInfoName);
 
         nextCloseBrace(sc);
         int numSublevels = nextInt(sc);

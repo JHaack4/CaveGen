@@ -1,23 +1,11 @@
 #	units definition file
 #
 #
-8 	# number of units
+7	# number of units
 # item_cap_tsuchi
 {
 	1 	# version
 	item_cap_tsuchi 	# foldername
-	1 1 	# dX/dZ ; cell size
-	0 	# room type
-	0 0 	# room Flags
-	1 	# num doors
-	0 	# index
-	2 0 0 	# dir/offs/wpindex
-	0 	# door links
-}
-# cap_tsuchi
-{
-	1 	# version
-	cap_tsuchi 	# foldername
 	1 1 	# dX/dZ ; cell size
 	0 	# room type
 	0 0 	# room Flags

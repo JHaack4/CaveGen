@@ -1,0 +1,15 @@
+#
+#
+#	units definition file
+#
+#
+1 	# number of units
+# room_pumpkin
+{
+	1 	# version
+	room_pumpkin1	# foldername
+	15 15 	# dX/dZ ; cell size
+	1 	# room type
+	0 0 	# room Flags
+	0 	# num doors
+}

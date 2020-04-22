@@ -29,7 +29,7 @@
 	9	# num
 	Kochappy_be_dama_blue 90
 	0
-	Hana_be_dama_blue_l 50
+	Hana_be_dama_blue_l 40
 	1
 	Armor_leaf_kare 50
 	1
@@ -39,7 +39,7 @@
 	0
 	SnakeCrow_key 10
 	8
-	SnakeCrow_futa_a_silver 40
+	SnakeCrow_futa_a_silver 30
 	8
 	Magaret 6
 	6
@@ -48,10 +48,9 @@
 }
 # ItemInfo
 {
-	5	# num
+	4	# num
 	donutschoco_s 10
 	g_futa_hiruzen 10
-	badminton 10
 	bane_yellow 10
 	ichigo_l 10
 }

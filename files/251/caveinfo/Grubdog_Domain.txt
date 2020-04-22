@@ -345,7 +345,7 @@
 # TekiInfo
 {
 	9 	# num
-	MiniHoudai_ocarina 10 	# weight
+	FireChappy_ocarina 10 	# weight
 	1 	# type
 	YellowKochappy 60 	# weight
 	0 	# type
