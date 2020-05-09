@@ -4,7 +4,7 @@ import java.io.*;
 public class CaveGen {
 
     // Tool parameters
-    static String caveInfoName, specialCaveInfoName, region, fileSystem;
+    static String caveInfoName, specialCaveInfoName, region, fileSystem, countObject;
     static int sublevel, firstGenSeed, numToGenerate, indexBeingGenerated;
     static boolean challengeMode, images, prints, showStats, seedOrder,
         folderSeed, folderCave, showCaveInfo, drawSpawnPoints,
@@ -29,7 +29,7 @@ public class CaveGen {
     }
 
     static void run(String args[]) {
-        region = "us"; fileSystem = "gc";
+        region = "us"; fileSystem = "gc"; countObject = "";
         challengeMode = false; images = true; prints = true; showStats = true; seedOrder = false;
         folderSeed = true; folderCave = true; showCaveInfo = false; drawSpawnPoints = false;
         drawWayPoints = false; drawWayPointVertDists = false; drawWayPointEdgeDists = false;
@@ -211,6 +211,9 @@ public class CaveGen {
                     else if (s.equalsIgnoreCase("-aggHalls")) {
                         aggHalls = true;
                         aggregator = true;
+                    }
+                    else if (s.equalsIgnoreCase("-count")) {
+                        countObject = args[++i].toLowerCase();
                     }
                     else if (i == 2) {
                         continue;

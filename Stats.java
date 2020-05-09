@@ -51,7 +51,9 @@ class Stats {
     }
 
     int caveGenCount = 0;
-    int numPurpleFlowers[] = new int[6];
+    int maxCountObj = 16;
+    int observedMax = 0;
+    int countObj[] = new int[maxCountObj];
     int missingTreasureCount = 0;
     SortedList<Integer> allScores = new SortedList<Integer>(Comparator.naturalOrder());
 
@@ -60,13 +62,19 @@ class Stats {
         caveGenCount += 1; 
 
         // count the number of purple flowers
-        int num = 0;
-        for (Teki t: g.placedTekis) {
-            if (t.tekiName.equalsIgnoreCase("blackpom"))
-                num += 1;
+        if (CaveGen.countObject.length() > 0) {
+            int num = 0;
+            for (Teki t: g.placedTekis) {
+                if (t.tekiName.equalsIgnoreCase(CaveGen.countObject))
+                    num += 1;
+            }
+            if (num >= observedMax && CaveGen.countObject.equalsIgnoreCase("egg")) {
+                observedMax = num;
+                println("Max objects: " + num + " in " + g.specialCaveInfoName + " " + g.sublevel + " " + Drawer.seedToString(g.initialSeed));
+            }
+            if (num >= maxCountObj) num = maxCountObj-1;
+            countObj[num] += 1;
         }
-        if (num > 5) num = 5;
-        numPurpleFlowers[num] += 1;
 
         // report about missing treasures
         // print the seed everytime we see a missing treasure
@@ -266,10 +274,13 @@ class Stats {
     void createReport() {
 
         // report about purple flowers
-        println("\nPurple flower distribution: ");
-        for (int i = 0; i < 6; i++) {
-            println(i + (i==5?"+":"") + ": " + numPurpleFlowers[i]);
+        if (CaveGen.countObject.length() > 0) {
+            println("\n" + CaveGen.countObject + " distribution: ");
+            for (int i = 0; i < maxCountObj; i++) {
+                println(i + (i==maxCountObj-1?"+":"") + ": " + countObj[i]);
+            }
         }
+        
         // report about missing treasures
         println("Missing treasure count: " + missingTreasureCount);
 

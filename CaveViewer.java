@@ -35,10 +35,11 @@ public class CaveViewer {
     int currentImage = 0;
     boolean firstImageDisplayedYet = false;
     static boolean guiOnly = false;
+    boolean autoLaunch = false;
 
     public static void main(String args[]) {
         caveViewer = new CaveViewer();
-        caveViewer.run();
+        caveViewer.run(args);
     }
 
     final JFrame jfr = new JFrame("CaveViewer");
@@ -112,7 +113,7 @@ public class CaveViewer {
     ArrayList<Arg> args = new ArrayList<Arg>();
     HashMap<String,Arg> argMap = new HashMap<String,Arg>();
 
-    void run() {
+    void run(String commandArgs[]) {
 
         active = true;
 
@@ -128,6 +129,9 @@ public class CaveViewer {
 				}
 				if (e.getKeyCode() == KeyEvent.VK_MINUS) {
 
+                }
+                if (e.getKeyCode() == KeyEvent.VK_C && e.isControlDown()) {
+                    System.exit(0);
                 }
                 if (e.getKeyCode() == KeyEvent.VK_W) {
 
@@ -232,6 +236,59 @@ public class CaveViewer {
             }
         }
 
+        for (int i = 0; i < commandArgs.length; i++) {
+            String a = commandArgs[i].toLowerCase();
+            if (a.equals("run") || a.equals("-run")) {
+                autoLaunch = true;
+                continue;
+            }
+            if (i == 0) {
+                argMap.get("output").jComboBox.setSelectedIndex(
+                    a.equalsIgnoreCase("gui") ? 0 :
+                    a.equalsIgnoreCase("none") ? 1 :
+                    a.equalsIgnoreCase("cave") ? 2 :
+                    a.equalsIgnoreCase("seed") ? 3 :
+                    a.equalsIgnoreCase("both") ? 4 : 0
+                );
+            } else if (i == 1) {
+                argMap.get("cave").jComboBox.setSelectedItem(a);
+            } else {
+                if (i == 2) {
+                    try {
+                        int in = Integer.parseInt(a);
+                        argMap.get("sublevel").jComboBox.setSelectedItem(in==0?"all":in+"");
+                        continue;
+                    } catch (Exception e) {
+                        // pass
+                    }
+                }
+                if (!argMap.containsKey(a) && !argMap.containsKey(a.substring(1))) {
+                    argMap.get("additionalargs").jTextField.setText(argMap.get("additionalargs").jTextField.getText() + " " + a);
+                    continue;
+                }
+                if (a.charAt(0) == '-') a = a.substring(1);
+                Arg arg = argMap.get(a);
+                if (arg.jCheckBox != null) arg.jCheckBox.setSelected(true);
+                if (arg.jTextField != null) arg.jTextField.setText(commandArgs[++i]);
+                if (arg.jComboBox != null) {
+                    String trg = commandArgs[++i];
+                    boolean set = false;
+                    for (int j = 0; j < arg.jComboBox.getItemCount(); j++) {
+                        if ( arg.jComboBox.getItemAt(j).equalsIgnoreCase(trg)) {
+                            arg.jComboBox.setSelectedIndex(j);
+                            set = true;
+                        }
+                    }
+                    if (!set)
+                        arg.jComboBox.setSelectedItem(trg);
+                }
+            }
+        }
+
+        if (autoLaunch) {
+            runCaveGen();
+        }
+
         jfr.revalidate();
 		jfr.repaint();
 		jfr.setVisible(true);
@@ -260,8 +317,8 @@ public class CaveViewer {
                         viewPanel.setImage(img);
                         int w = img.getWidth();
                         int h = img.getHeight();
-                        System.out.println(w + " " + h);
-                        float scale = 900.0f / Math.max(Math.max(900, w), h);
+                        //System.out.println(w + " " + h);
+                        float scale = Math.min(790.0f / h, Math.min(1590.0f / w, 1));
                         jfrView.setSize((int)(w * scale) + 14, (int)(h * scale) + 37);
                         jfrView.setVisible(true);
                         jfrView.setTitle(nameBuffer.get(currentImage) + " (" + (currentImage+1) + "/" + nameBuffer.size() + ")");

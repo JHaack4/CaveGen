@@ -590,6 +590,7 @@ class Parser {
         helpText.add("  -drawNoBuriedItems -drawNoItems -drawNoTekis -drawNoGates -drawNoHoles");
         helpText.add("  -findGoodLayouts 0.01 (this keeps the top 1% of layouts by jhawk's heuristic)");
         helpText.add("  -requireMapUnits unitType,rot,idFrom,doorFrom,doorTo;...");
+        helpText.add("  -count object (finds distribition of teki with this internal name)");
         helpText.add("\nExample: CaveGen.jar seed story -seed 0x12345678 -drawSpawnPoints");
         helpText.add("  This generates images of all levels in story mode with that seed.");
         helpText.add("Example: CaveGen.jar cave BK 4 -num 100 -seed 0 -consecutiveSeeds");
