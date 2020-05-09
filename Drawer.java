@@ -287,6 +287,10 @@ public class Drawer {
                         drawTeki(G,g,t,xx,z-40);
                         if (type == 6)
                             drawTextOutline(G, "  m" + t.min, xx, z+8+ext, new Color(0,150,0), bgt);
+                        else if (t.weight == 0)
+                            drawTextOutline(G, "  m" + t.min, xx, z+8+ext, colorsSP[type], bgt);
+                        else if (t.min == 0)
+                            drawTextOutline(G, "  w" + t.weight, xx, z+8+ext, colorsSP[type], bgt);
                         else
                             drawTextOutline(G, "m" + t.min + "w" + t.weight, xx, z+8+ext, colorsSP[type], bgt);
                         xx += spa;
@@ -301,7 +305,12 @@ public class Drawer {
             for (Item t: g.spawnItem) {
                 Image im = getItem(t, "", CaveGen.region);
                 G.drawImage(im, xx, z-40, null);
-                drawTextOutline(G, "m" + t.min + "w" + t.weight, xx, z+8+ext, colorsSP[2], bgt);
+                if (t.weight == 0)
+                    drawTextOutline(G, "  m" + t.min, xx, z+8+ext, colorsSP[2], bgt);
+                else if (t.min == 0)
+                    drawTextOutline(G, "  w" + t.weight, xx, z+8+ext, colorsSP[2], bgt);
+                else 
+                    drawTextOutline(G, "m" + t.min + "w" + t.weight, xx, z+8+ext, colorsSP[2], bgt);
                 xx += spa;
             }
             z += zz + zzd;
@@ -311,12 +320,22 @@ public class Drawer {
             xx = 170;
             for (Teki t: g.spawnCapTeki) {
                 drawTeki(G,g,t,xx,z-40);
-                drawTextOutline(G, "m" + t.min + "w" + t.weight, xx, z+8+ext, colorsSP[t.type==0?0:9], bgt);
+                if (t.weight == 0)
+                    drawTextOutline(G,"  m" + t.min, xx, z+8+ext, colorsSP[t.type==0?0:9], bgt);
+                else if (t.min == 0)
+                    drawTextOutline(G,"  w" + t.weight, xx, z+8+ext, colorsSP[t.type==0?0:9], bgt);
+                else
+                    drawTextOutline(G,"m" + t.min + "w" + t.weight, xx, z+8+ext, colorsSP[t.type==0?0:9], bgt);
                 xx += spa;
             }
             for (Teki t: g.spawnCapFallingTeki) {
                 drawTeki(G,g,t,xx,z-40);
-                drawTextOutline(G, "m" + t.min + "w" + t.weight, xx, z+8+ext, colorsSP[t.type==0?0:9], bgt);
+                if (t.weight == 0)
+                    drawTextOutline(G,"  m" + t.min, xx, z+8+ext, colorsSP[t.type==0?0:9], bgt);
+                else if (t.min == 0)
+                    drawTextOutline(G,"  w" + t.weight, xx, z+8+ext, colorsSP[t.type==0?0:9], bgt);
+                else
+                    drawTextOutline(G,"m" + t.min + "w" + t.weight, xx, z+8+ext, colorsSP[t.type==0?0:9], bgt);
                 xx += spa;
             }
             z += zz + zzd;
