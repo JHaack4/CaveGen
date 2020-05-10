@@ -18,18 +18,18 @@ public class Seed {
             if (args.length == 0) {
                 System.out.println(helpString);
             } else if (args[0].equalsIgnoreCase("nth") && args.length >= 2) {
-                System.out.println(Long.toHexString(nth(Long.parseLong(args[1]))));
+                System.out.println(seedToString(nth(Long.parseLong(args[1]))));
             } else if (args[0].equalsIgnoreCase("nthinv") && args.length >= 2) {
                 System.out.println(nth_inv(Long.decode(args[1])));
             } else if (args[0].equalsIgnoreCase("dist") && args.length >= 3) {
                 System.out.println(dist(Long.decode(args[1]), Long.decode(args[2])));
             } else if (args[0].equalsIgnoreCase("next") && args.length >= 3) {
-                System.out.println(Long.toHexString(next_seed(Long.decode(args[1]), Long.decode(args[2]))));
+                System.out.println(seedToString(next_seed(Long.decode(args[1]), Long.decode(args[2]))));
             } else if (args[0].equalsIgnoreCase("next") && args.length >= 2) {
-                System.out.println(Long.toHexString(next_seed(Long.decode(args[1]))));
+                System.out.println(seedToString(next_seed(Long.decode(args[1]))));
             } else if (args[0].equalsIgnoreCase("seq2seed") && args.length >= 2) {
                 ArrayList<Integer> r = sequence_to_seed(args[1]);
-                for (Integer i: r) System.out.println(Long.toHexString(i));
+                for (Integer i: r) System.out.println(seedToString(i));
             }  else if (args[0].equalsIgnoreCase("seed2seq") && args.length >= 3) {
                 System.out.println(seed_to_sequence(Long.decode(args[1]), Integer.parseInt(args[2])));
             } else if (args[0].equalsIgnoreCase("seed2seq") && args.length >= 2) {
@@ -46,7 +46,7 @@ public class Seed {
                 runTests();
             } 
             else if (args[0].equalsIgnoreCase("chresult")) {
-                
+
             } 
             else if (args[0].equalsIgnoreCase("caveviewer")) {
 
@@ -61,6 +61,13 @@ public class Seed {
             e.printStackTrace();
             System.out.println("\n" + helpString);
         }
+    }
+
+    String seedToString(long seed) {
+        if (seed < 0) seed += ((1-seed/M) * M) % M;
+        String seedN = Long.toHexString(seed).toUpperCase();
+        seedN = String.format("%8s",seedN).replace(" ", "0");
+        return seedN;
     }
 	
 	void runTests() {
