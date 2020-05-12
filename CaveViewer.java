@@ -140,7 +140,23 @@ public class CaveViewer {
 
                 }
                 if (e.getKeyCode() == KeyEvent.VK_S) {
-
+                    try {
+                        long seed = -1;
+                        if (nameBuffer.size() > 0) {
+                            String[] sa = nameBuffer.get(currentImage).split(" ");
+                            if (sa.length >= 2 && !sa[0].equals("Report:") && !sa[0].equals("Agg:")) {
+                                seed = Long.decode("0x" + sa[1]); 
+                            }
+                        }
+                        if (seed > -1) {
+                            PrintWriter oWriter = new PrintWriter(new BufferedWriter(new FileWriter("seed_desired.txt")));
+                            oWriter.write(Drawer.seedToString(seed) + "\n");
+                            oWriter.close();
+                            System.out.println("Desired seed: " + Drawer.seedToString(seed));
+                        }
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
+                    }
 				}
 				if (e.getKeyCode() == KeyEvent.VK_D) {
 

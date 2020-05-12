@@ -935,11 +935,11 @@ public class Drawer {
 
         if (CaveViewer.active) {
             String name = "";
-            if (drawAsReport) name = caveN + "-" + g.sublevel;
+            if (drawAsReport) name = "Report: " + caveN + "-" + g.sublevel;
             else if (aggregator != null) {
                 String idxs = String.format("%04d", aggregator.idx);
                 String pcts = ""+(Math.round(aggregator.numInstances * 10000.0f / Aggregator.numLayoutsAggregated)/100.0);
-                name = caveN + "-" + g.sublevel + ": " + idxs + "-" + pcts;
+                name = "Agg: " + caveN + "-" + g.sublevel + ": " + idxs + "-" + pcts;
             }
             else {
                 name = caveN + "-" + g.sublevel + " " + seedN;
@@ -1189,8 +1189,7 @@ public class Drawer {
         }
     }
 
-    public static String seedToString(int seedIn) {
-        long seed = seedIn;
+    public static String seedToString(long seed) {
         if (seed < 0) seed = Integer.MAX_VALUE * 2l + seed + 2;
         String seedN = Long.toHexString(seed).toUpperCase();
         seedN = String.format("%8s",seedN).replace(" ", "0");

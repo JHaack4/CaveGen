@@ -23,6 +23,7 @@ public class CaveGen {
 
     static Drawer drawer;
     static Stats stats;
+    static Seed seedCalc;
 
     public static void main(String args[]) {
         run(args);
@@ -44,6 +45,7 @@ public class CaveGen {
         findGoodLayoutsRatio = 0.01;
         requireMapUnitsConfig = "";
         firstGenSeed = 0; numToGenerate = 1; indexBeingGenerated = 0;
+        seedCalc = new Seed();
 
         boolean allStoryMode = false, allChallengeMode = false;
         try {
@@ -98,8 +100,13 @@ public class CaveGen {
                         numToGenerate = (int)(Long.decode(args[++i]).longValue());
                     else if (s.equalsIgnoreCase("0"))
                         continue;
-                    else if (s.equalsIgnoreCase("-seed"))
-                        firstGenSeed = (int)(Long.decode(args[++i]).longValue());
+                    else if (s.equalsIgnoreCase("-seed")) {
+                        String sd = args[++i];
+                        if (sd.charAt(0) == 'n') {
+                            firstGenSeed = (int)seedCalc.nth_inv(Long.decode(sd.substring(1)).longValue());
+                        }
+                        firstGenSeed = (int)(Long.decode(sd).longValue());
+                    }
                     else if (s.equalsIgnoreCase("-region"))
                         region = args[++i].toLowerCase();
                     else if (s.equalsIgnoreCase("-251")) {

@@ -239,7 +239,7 @@ class Stats {
                 score <= allScores.get((int)(allScores.size()*Math.abs(CaveGen.findGoodLayoutsRatio))) 
                 || score == allScores.get(0) && CaveGen.indexBeingGenerated > CaveGen.numToGenerate/40) {
                 CaveGen.images = true;
-                println("GoodLayoutScore: " + Drawer.seedToString(g.initialSeed) + " -> " + score);
+                println("GoodLayoutScore: " + Drawer.seedToString(g.initialSeed) + " -> " + Math.abs(score));
             }
             else {
                 CaveGen.images = false;

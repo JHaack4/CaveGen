@@ -1,4 +1,5 @@
 import java.util.*;
+import java.io.*;
 import java.math.BigInteger;
 
 public class Seed {
@@ -7,11 +8,12 @@ public class Seed {
         new Seed().run(args);
     }
 
-    String helpString = "Usage:\n  Seed nth n\n  Seed nthinv seed\n  Seed dist seed1 seed2\n  Seed next seed [n]\n  Seed seed2seq seed\n  Seed seq2seed seq\n  Seed ieee hex\n" +
+    String helpString = "Usage:\n  Seed nth n\n  Seed nthinv seed\n  Seed dist seed1 seed2\n  Seed next seed [n]\n  Seed seed2seq seed\n  Seed seq2seed seq\n  Seed ieee hex\n  Seed digit seed\n  Seed frames seed\n  Seed window cave seed\n" +
         "  python videodigits.py - read the newest video in seed_video_path folder, and parse the digits on the result screen\n" +
         "  Seed chresult - read from seed_digits_parsed and infer the seed\n" +
-        "  Seed caveviewer [n] - read from last_known_seed and open cave viewer to see reachable seeds. (Press s to select seed)\n" +
-        "  Seed timer - create a countdown timer to reach the closest seed in seed_desired";
+        "  Seed caveviewer cave [additional_args] - read from last_known_seed and open cave viewer to see reachable seeds \n                                           for sublevel cave. (Press s to select seed)\n" +
+        "  Seed titleloop [n] - advance the last known seed by 4505 * n\n" +
+        "  Seed timer cave [desired_list] - create a countdown timer to reach the closest seed in seed_desired\n                              or, pass in a space separated list of target seeds";
     //Long.decode(args[++i]).longValue()
     void run(String args[]) {
         try {
@@ -19,6 +21,16 @@ public class Seed {
                 System.out.println(helpString);
             } else if (args[0].equalsIgnoreCase("nth") && args.length >= 2) {
                 System.out.println(seedToString(nth(Long.parseLong(args[1]))));
+            } else if (args[0].equalsIgnoreCase("digit") && args.length >= 2) {
+                System.out.println(digit_observation(Long.decode(args[1])));
+            } else if (args[0].equalsIgnoreCase("frames") && args.length >= 2) {
+                System.out.println(seed_duration(Long.decode(args[1])));
+            } else if (args[0].equalsIgnoreCase("window") && args.length >= 3) {
+                long sd = Long.decode(args[2]);
+                best_timing(args[1], next_seed(sd,-1005), sd);
+                System.out.println(Math.max(0,frame_window));
+            } else if (args[0].equalsIgnoreCase("fframes") && args.length >= 2) {
+                System.out.println(seed_duration_first(Long.decode(args[1])));
             } else if (args[0].equalsIgnoreCase("nthinv") && args.length >= 2) {
                 System.out.println(nth_inv(Long.decode(args[1])));
             } else if (args[0].equalsIgnoreCase("dist") && args.length >= 3) {
@@ -41,19 +53,27 @@ public class Seed {
                 if (args[1].length() == 16) {
                     System.out.println(Double.longBitsToDouble(Long.decode("0x" + args[1])));
                 }
-            } 
+            } else if (args[0].equalsIgnoreCase("int") && args.length >= 2) {
+                System.out.println(Long.decode("0x" + args[1]));
+            }
             else if (args[0].equalsIgnoreCase("test")) {
                 runTests();
             } 
             else if (args[0].equalsIgnoreCase("chresult")) {
-
+                processDigits();
             } 
-            else if (args[0].equalsIgnoreCase("caveviewer")) {
-
+            else if (args[0].equalsIgnoreCase("caveviewer") && args.length >= 2) {
+                openCaveViewer(args[1], args);
             } 
-            else if (args[0].equalsIgnoreCase("timer")) {
-
+            else if (args[0].equalsIgnoreCase("timer") && args.length >= 2) {
+                timer(args);
             } 
+            else if (args[0].equalsIgnoreCase("titleloop") && args.length >= 2) {
+                titleLoop(Integer.parseInt(args[1]));
+            }
+            else if (args[0].equalsIgnoreCase("titleloop")) {
+                titleLoop(1);
+            }
             else {
                 System.out.println(helpString);
             }
@@ -64,13 +84,16 @@ public class Seed {
     }
 
     String seedToString(long seed) {
-        if (seed < 0) seed += ((1-seed/M) * M) % M;
+        if (seed < 0) seed += ((1-seed/M) * M);
+        seed %= M;
         String seedN = Long.toHexString(seed).toUpperCase();
         seedN = String.format("%8s",seedN).replace(" ", "0");
         return seedN;
     }
 	
 	void runTests() {
+
+        System.out.println(seed_duration(next_seed(0x9a77e115,4)));
 
 		System.out.println(seed_to_sequence(1227587417, 15));
 		
@@ -88,6 +111,451 @@ public class Seed {
 			System.out.println(i + ": " + x + " -> " + nth_inv(x) + " " + nth_inv2(x) + " " + nth_inv3(x));
 		}
     }
+
+    void processDigits() {
+        try {
+            BufferedReader br = new BufferedReader(new FileReader("seed_digits_parsed.txt"));
+            int[][] digits = new int[10000][5];
+            String line;
+            int n = 0;
+            while ((line = br.readLine()) != null) {
+                for (int i = 0; i < 5; i++)
+                    digits[n][i] = line.charAt(i) == '_' ? -1 : line.charAt(i) - '0';
+                n++;
+            }
+            br.close();
+
+            // check for blank columns
+            int numBlankColumns = 0;
+            boolean[] columnIsBlank = new boolean[5];
+            System.out.print("Detected: ");
+            for (int j = 0; j < 5; j++) {
+                int count = 0;
+                for (int i = 0; i < n; i++) {
+                    if (digits[i][j] == -1)
+                        count += 1;
+                }
+                if (count * 1.0 / n > 0.8) {
+                    columnIsBlank[j] = true;
+                    numBlankColumns += 1;
+                    System.out.print("_");
+                } else {
+                    columnIsBlank[j] = false;
+                    System.out.print("X");
+                }
+            }
+            System.out.println(" (" + numBlankColumns + " blank)");
+
+            // determine the final frame where any advance happens
+            int firstNoAdvanceFrame = -1;
+            int numDigitsUse = -1;
+            int[] mostRecentDigit = {-1,-1,-1,-1,-1};
+            int[] consecutiveDigits = {0,0,0,0,0};
+            for (int i = 0; i < n; i++) {
+                for (int j = 0; j < 5; j++) {
+                    if (digits[i][j] == mostRecentDigit[j]) {
+                        consecutiveDigits[j]++;
+                    } else {
+                        consecutiveDigits[j] = 1;
+                        mostRecentDigit[j] = digits[i][j];
+                    }
+                }
+
+                if (    (columnIsBlank[0]) &&
+                        (columnIsBlank[1]) &&
+                        (columnIsBlank[2]) &&
+                        (columnIsBlank[3]) &&
+                        (!columnIsBlank[4]) &&
+                        (mostRecentDigit[4] == 0) ) {
+                    numDigitsUse = 1;
+                    firstNoAdvanceFrame = i;
+                    break;
+                }
+                if (    (columnIsBlank[0]) &&
+                        (columnIsBlank[1]) &&
+                        (columnIsBlank[2]) &&
+                        (!columnIsBlank[3]) &&
+                        (!columnIsBlank[4]) &&
+                        (mostRecentDigit[4] == 0 || consecutiveDigits[4] > 2) ) {
+                    numDigitsUse = 2;
+                    firstNoAdvanceFrame = i;
+                    break;
+                }
+                if (    (columnIsBlank[0]) &&
+                        (columnIsBlank[1]) &&
+                        (!columnIsBlank[2]) &&
+                        (!columnIsBlank[3]) &&
+                        (!columnIsBlank[4]) &&
+                        (mostRecentDigit[3] == 0 || consecutiveDigits[3] > 2) &&
+                        (mostRecentDigit[4] == 0 || consecutiveDigits[4] > 4) ) {
+                    numDigitsUse = 3;
+                    firstNoAdvanceFrame = i;
+                    break;
+                }
+                if (    (columnIsBlank[0]) &&
+                        (!columnIsBlank[1]) &&
+                        (!columnIsBlank[2]) &&
+                        (!columnIsBlank[3]) &&
+                        (!columnIsBlank[4]) &&
+                        (mostRecentDigit[2] == 0 || consecutiveDigits[2] > 2) &&
+                        (mostRecentDigit[3] == 0 || consecutiveDigits[3] > 4) &&
+                        (mostRecentDigit[4] == 0 || consecutiveDigits[4] > 6) ) {
+                    numDigitsUse = 4;
+                    firstNoAdvanceFrame = i;
+                    break;
+                }
+                if (    (!columnIsBlank[0]) &&
+                        (!columnIsBlank[1]) &&
+                        (!columnIsBlank[2]) &&
+                        (!columnIsBlank[3]) &&
+                        (!columnIsBlank[4]) &&
+                        (mostRecentDigit[1] == 0 || consecutiveDigits[1] > 2) &&
+                        (mostRecentDigit[2] == 0 || consecutiveDigits[2] > 4) &&
+                        (mostRecentDigit[3] == 0 || consecutiveDigits[3] > 6) &&
+                        (mostRecentDigit[4] == 0 || consecutiveDigits[4] > 8) ) {
+                    numDigitsUse = 5;
+                    firstNoAdvanceFrame = i;
+                    break;
+                }
+            }
+            if (numDigitsUse == -1) {
+                System.out.println("Digit processing error - no end found");
+                return;
+            }
+            
+            // recover the digit sequence to search for
+            System.out.println("Using last " + numDigitsUse + " digits");
+            String sequenceFull = "";
+            for (int i = Math.max(0, firstNoAdvanceFrame - 16); i < Math.min(n,firstNoAdvanceFrame+5); i++) {
+                if (i == firstNoAdvanceFrame)
+                    System.out.println("-----");
+                for (int j = 0; j < 5; j++)
+                    System.out.print(digits[i][j] == -1 ? '_' : (char)(digits[i][j]+'0'));
+                System.out.println();
+                for (int j = 4; j >= 0; j--) {
+                    if (numDigitsUse + j < 5) continue; // only use non-blank columns
+                    if (firstNoAdvanceFrame - i <= Math.max(1, (j + numDigitsUse - 5) * 2)) continue;
+                    sequenceFull += digits[i][j];
+                }
+            }
+            System.out.println("Full Sequence: " + sequenceFull);
+
+            // search for the sequence
+            String sequence = "";
+            ArrayList<Integer> candidates = new ArrayList<Integer>();
+            for (int i = Math.min(sequenceFull.length(), 10); i <= Math.min(sequenceFull.length(), 50); i++) {
+                sequence = sequenceFull.substring(sequenceFull.length()-i);
+                candidates = sequence_to_seed(sequence);
+                if (candidates.size() < 2) break;
+            }
+            if (candidates.size() == 0) {
+                System.out.println("Sequence: " + sequence);
+                System.out.println("Digit processing error: no seed for this sequence found");
+                return;
+            }
+            if (candidates.size() > 1) {
+                System.out.println("Warning, multiple candidates. Consider editing seed_last_known.txt");
+                for (Integer i: candidates) {
+                    long seedF = next_seed(i, sequenceFull.length());
+                    System.out.println("  " + seedToString(seedF) + " (" + nth_inv(seedF) + ")\t-> " + seed_to_sequence(i, 50));
+                }
+            }
+
+            // set the last known seed
+            long seed = next_seed(candidates.get(0), sequence.length());
+            String verify = seed_to_sequence(next_seed(seed, -sequenceFull.length()), sequenceFull.length());
+            System.out.println("Full Verify:   " + verify + " " + verify.equals(sequenceFull));
+            System.out.println("Sequence: " + sequence + " (length " + sequence.length() + ")");
+            System.out.println("Last known seed: " + seedToString(seed) + " (" + nth_inv(seed) + ")");
+
+            PrintWriter oWriter = new PrintWriter(new BufferedWriter(new FileWriter("seed_last_known.txt")));
+            oWriter.write(seedToString(seed) + "\n");
+            oWriter.close();
+
+        } catch(Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    void titleLoop(int n) {
+        try {
+            BufferedReader br = new BufferedReader(new FileReader("seed_last_known.txt"));
+            String line = "";
+            long seed = 0;
+            while ((line = br.readLine()) != null) {
+                if (line.trim().length() > 0)
+                    seed = Long.decode("0x" + line.trim());
+            }
+            br.close();
+
+            seed = next_seed(seed, 4505 * n);
+            System.out.println("Last known seed: " + seedToString(seed));
+
+            PrintWriter oWriter = new PrintWriter(new BufferedWriter(new FileWriter("seed_last_known.txt")));
+            oWriter.write(seedToString(seed) + "\n");
+            oWriter.close();
+        } catch (Exception e) {
+
+        }
+    }
+
+    void openCaveViewer(String map, String[] args) {
+        try {
+            BufferedReader br = new BufferedReader(new FileReader("seed_last_known.txt"));
+            String line = "";
+            long seed = 0;
+            while ((line = br.readLine()) != null) {
+                if (line.trim().length() > 0)
+                    seed = Long.decode("0x" + line.trim());
+            }
+            br.close();
+
+            seed = next_seed(seed, 1000);
+            String s = "gui " + map + " 1 -num 200 -findgoodlayouts 0.025 -run -consecutiveSeeds -noprints -seed 0x" + seedToString(seed);
+            for (int i = 2; i < args.length; i++)
+                s += args[i];
+            CaveViewer.main(s.split(" "));
+        } catch(Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    volatile boolean interrupt = false;
+    void timer(String args[]) {
+        try {
+            String cave = args[1];
+
+            // read in the start seed
+            long startSeed = 0;
+            BufferedReader br = new BufferedReader(new FileReader("seed_last_known.txt"));
+            String line = "";
+            while ((line = br.readLine()) != null) {
+                if (line.trim().length() > 0)
+                    startSeed = Long.decode("0x" + line.trim());
+            }
+            br.close();
+
+            // read in the target seed (using the closest if there are more than one)
+            ArrayList<String> considerations = new ArrayList<String>();
+            if (args.length <= 2) {
+                BufferedReader br2 = new BufferedReader(new FileReader("seed_desired.txt"));
+                line = "";
+                while ((line = br2.readLine()) != null) {
+                    if (line.trim().length() > 0)
+                        considerations.add("0x" + line.trim());
+                }
+                br2.close();
+            } else {
+                for (int i = 2; i < args.length; i++)
+                    considerations.add(args[i]);
+            }
+            long targetSeed = 0;
+            long targetDist = Long.MAX_VALUE;
+            for (String s: considerations) {
+                long seed = Long.decode(s);
+                long dist = dist(startSeed, next_seed(seed, -1004));
+                if (dist < targetDist) {
+                    targetSeed = seed;
+                    targetDist = dist;
+                }
+            }
+            
+            System.out.println(seedToString(startSeed) + " -> " + seedToString(targetSeed) + " (advances " + targetDist + ")");
+            long targetFrames = best_timing(cave, next_seed(startSeed,4), targetSeed);
+            long targetWindow = frame_window;
+            long frames = targetFrames;
+
+            if (targetDist > 1000000000) {
+                System.out.println("Target too far away");
+                return;
+            }
+            System.out.println("This target seed has a window of " + targetWindow + " frames");
+            if (targetWindow <= 0) {
+                System.out.println("Warning - this seed is theoretically impossible");
+            } else if (targetWindow <= 30) {
+                System.out.println("Warning - this seed has a tight window");
+            }
+            if (targetDist > 2500) {
+                System.out.println("Warning - target is very far from current seed (consider doing loops)");
+            }
+            System.out.println("Time the \"Enter Level\" A press when the timer reaches zero.");
+            System.out.println("Press Enter (and A for \"Don't save\" simultaneously) to begin timer for " +
+                     String.format("%d:%02d.%d%d", frames/1800, (frames%1800)/30, frames%30/3, (int)(frames%3 * 3.3)) );
+            System.in.read();
+            Scanner sc = new Scanner(System.in);
+
+
+            long startTime = System.currentTimeMillis();
+            long trgTime = startTime + frames * 1000 / 30;
+            long curTime = startTime;
+            long curSeed = next_seed(startSeed, 4);
+            long curSeedTime = startTime + (delay_between_dont_save_and_first_advance + seed_duration_first(curSeed)) * 1000 / 30; 
+            while (curTime < trgTime) {
+                Thread.sleep(16);
+                curTime = System.currentTimeMillis();
+                frames = (trgTime - curTime) * 30 / 1000;
+                if (curTime >= curSeedTime) {
+                    curSeed = next_seed(curSeed);
+                    curSeedTime += seed_duration(curSeed) * 1000 / 30;
+                }
+                System.out.print(timerString(cave, frames, curSeed, (curSeedTime - curTime) * 30 / 1000) + "            \r");
+            }
+            System.out.println("Timer elapsed... press Enter to exit                                                            ");
+
+            interrupt = false;
+
+            final long fcurTime = curTime;
+            final long fcurSeed = curSeed;
+            final long fcurSeedTime = curSeedTime;
+            final long ftrgTime = trgTime;
+            Thread thread = new Thread() {
+                public void run() {
+                    try {
+                        long curTime = fcurTime;
+                        long curSeed = fcurSeed;
+                        long curSeedTime = fcurSeedTime;
+                        long trgTime = ftrgTime;
+                        while (!interrupt) {
+                            Thread.sleep(16);
+                            curTime = System.currentTimeMillis();
+                            if (curTime >= curSeedTime) {
+                                curSeed = next_seed(curSeed);
+                                curSeedTime += seed_duration(curSeed) * 1000 / 30;
+                            }
+                            System.out.print(timerString(cave, (curTime - trgTime) * 30 / 1000, curSeed, (curSeedTime - curTime) * 30 / 1000) + "            \r");
+                        }
+                        System.out.println("\nDone");
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            };
+            thread.start();
+
+            sc.nextLine();
+            sc.nextLine();
+            interrupt = true;
+            sc.close();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    String timerString(String cave, long frames, long curSeed, long curSeedFramesLeft) {
+        long res = seed_from_A(cave, curSeed, curSeedFramesLeft);
+        return String.format("%d:%02d.%d%d", frames/1800, (frames%1800)/30, frames%30/3, (int)(frames%3 * 3.3))
+            +  String.format(" (current seed: %s %d %3d)", seedToString(curSeed), nth_inv(curSeed), (int)curSeedFramesLeft) 
+            +  String.format(" (level seed: %s %s)", seedToString(res), nth_inv(res));
+    }
+
+    // Computes the best timing to press A, measured in frames from pressing "Don't Save" to pressing "1-P Challenge"
+    // to enter the specified cave.
+    // The frame window is output in the frame_window global variable.
+    long frame_window;
+    long best_timing(String cave, long startSeed, long targetSeed) {
+ 
+        long curFrameCount = 0;
+        ArrayList<Long> goodFrames = new ArrayList<Long>();
+        long latestEarlyFrame = -1;
+        long earliestLateFrame = Long.MAX_VALUE;
+
+        long targetM1 = next_seed(targetSeed, -1);
+        long targetM2 = next_seed(targetSeed, -2);
+        long targetM999 = next_seed(targetSeed, -999);
+        long targetM1000 = next_seed(targetSeed, -1000);
+        long targetP1 = next_seed(targetSeed, 1);
+        long targetP2 = next_seed(targetSeed, 2);
+
+        long curSeed = startSeed;
+        long framesBeforeAdvance = delay_between_dont_save_and_first_advance + seed_duration_first(startSeed);
+        long framesOnThisSeed = 0;
+        long dist = dist(curSeed, targetM1000);
+
+        while (true) {
+
+            if (dist <= 3) { // close (check frame by frame)
+
+                long resSeed = seed_from_A(cave, curSeed, framesBeforeAdvance - framesOnThisSeed);
+                if (resSeed == targetSeed) {
+                    goodFrames.add(curFrameCount);
+                } else if (resSeed == targetM1 || resSeed == targetM2) {
+                    latestEarlyFrame = Math.max(latestEarlyFrame, curFrameCount);
+                } else if (resSeed == targetP1 || resSeed == targetP2) {
+                    earliestLateFrame = Math.min(earliestLateFrame, curFrameCount);
+                }
+
+                curFrameCount += 1;
+                framesOnThisSeed += 1;
+
+                if (framesOnThisSeed >= framesBeforeAdvance) {
+                    framesOnThisSeed = 0;
+                    curSeed = next_seed(curSeed);
+                    framesBeforeAdvance = seed_duration(curSeed);
+                    dist = dist(curSeed, targetM1000);
+                }
+            } else if (curSeed == targetM999 || dist > 1000001005) {
+                break;
+            } else { // far away
+                curFrameCount += framesBeforeAdvance;
+                curSeed = next_seed(curSeed);
+                framesBeforeAdvance = seed_duration(curSeed);
+                dist = dist(curSeed, targetM1000);
+            }
+        }
+
+        // no good frames
+        if (goodFrames.size() == 0) {
+            frame_window = Math.min(0, earliestLateFrame-latestEarlyFrame);
+            return (earliestLateFrame + latestEarlyFrame) / 2;
+        }
+
+        // check for the longest contiguous block of good frames
+        int bestStartOfBlock = 0;
+        int bestLengthOfBlock = 0;
+        int curStartOfBlock = 0;
+        for (int i = 0; i < goodFrames.size(); i++) {
+            if (i > 0 && goodFrames.get(i) == goodFrames.get(i-1) + 1) {
+                // block is still good
+            } else {
+                curStartOfBlock = i;
+            }
+
+            if (i - curStartOfBlock + 1 > bestLengthOfBlock) {
+                bestLengthOfBlock = i - curStartOfBlock + 1;
+                bestStartOfBlock = curStartOfBlock;
+            }
+        }
+
+        frame_window = bestLengthOfBlock;
+        return goodFrames.get(bestStartOfBlock + bestLengthOfBlock/2);
+    }
+
+    // returns the seed from pressing A for this cave
+    // with this current seed, where the current seed will advance in framesBeforeAdvance frames
+    long seed_from_A(String cave, long curSeed, long framesBeforeAdvance) {
+        long framesLeft = frames_A_to_enter(cave);
+
+        curSeed = next_seed(curSeed, 1000); // A press advances seed by 1000
+
+        while (framesBeforeAdvance < framesLeft) {
+            framesLeft -= framesBeforeAdvance;
+            curSeed = next_seed(curSeed);
+            framesBeforeAdvance = seed_duration(curSeed);
+        }
+
+        return curSeed;
+    }
+
+    // frames between pressing don't save and the first rng advance.
+    int delay_between_dont_save_and_first_advance = 57;
+
+    // frames between pressing A and entering the cave (when the seed can no longer advance)
+    // warning, these numbers are only a rought estimation, they could be off by quite a bit...
+    int[] frames_by_cave = {-1,76,76,76,84,58,56,88,68,78,82,65,61,90,79,79,77,82,80,81,96,86,79,9,80,80,64,92,97,89,85};
+    int frames_A_to_enter(String cave) {
+        return 8 + frames_by_cave[Integer.parseInt(cave.trim().toLowerCase().replace("ch", ""))];
+    }
     
     // -------------------- Functional Seed Code ------------------------------
 
@@ -97,7 +565,22 @@ public class Seed {
     
     long next_seed(long seed) {
 		return (A*seed+C) % M;
-	}
+    }
+    
+    // digit you see in challenge result screen mode for this seed
+    int digit_observation(long seed) {
+		return (int)((seed >> 16) & 0x7fff) * 9 / 32768 + 1;
+    }
+    
+    // number of frames until next advance on the challenge mode menu/result screen
+    int seed_duration(long seed) {
+        return 16 + (int)(( (int)((seed >> 16) & 0x7fff)/32768.0 * 0.9 + 0.1) * 300);
+    }
+
+    // number of frames of the first advance while entering the challenge mode menu screen
+    int seed_duration_first(long seed) {
+        return (int)(( (int)((seed >> 16) & 0x7fff)/32768.0) * 300);
+    }
 	
 	long a_inv = inverse(A,M);
 	long prev_seed(long seed) {
@@ -107,8 +590,8 @@ public class Seed {
     long next_seed(long seed, long n) {
         long idx = nth_inv(seed);
         idx += n;
-        if (idx < 0) idx += (M * (1-idx/M)) % M;
-        return nth(idx);
+        if (idx < 0) idx += M * (1-idx/M);
+        return nth(idx % M);
     }
 
     // Compute the nth seed in O(log(M)) time
@@ -182,7 +665,7 @@ public class Seed {
 	// distance from a1 to a2 (i.e. how many advances from a1 to a2)
 	long dist(long a1, long a2) {
         long x = nth_inv(a2) - nth_inv(a1);
-        if (x < 0) x += ((1-x/M) * M) % M;
+        if (x < 0) x += (1-x/M) * M;
 		return x % M;
 	}
 	
@@ -202,14 +685,10 @@ public class Seed {
 		return BigInteger.valueOf(l);
 	}
 	
-	int digitObservation(long seed) {
-		return (int)((seed >> 16) & 0x7fff) * 9 / 32768 + 1;
-	}
-	
 	String seed_to_sequence(long seed, int length) {
 		String s = "";
 		for (int i = 0; i < length; i++) {
-			s += digitObservation(seed);
+			s += digit_observation(seed);
 			seed = next_seed(seed);
 		}
 		return s;
@@ -346,7 +825,7 @@ public class Seed {
 				ret.add(candidates.get(i));
 		}
 		
-		return candidates;
+		return ret;
 	}
 	
         
@@ -387,7 +866,7 @@ public class Seed {
 		for (int i = 0; i >= 0; i++) { // i from 0 to 2^31 - 1
 			long seed = i;
 			for (int j = 0; j < seq.length; j++) {
-				if (digitObservation(seed) != seq[j])
+				if (digit_observation(seed) != seq[j])
 					continue outer;
 				seed = (A*seed+C) % M;
 			}
@@ -397,6 +876,14 @@ public class Seed {
 		return ret;
     }
     
-
+    long frames_between_seeds_slow(long start, long end) {
+        long frames = seed_duration_first(start);
+        long seed = next_seed(start);
+        while (seed != end) {
+            frames += seed_duration(seed);
+            seed = next_seed(seed);
+        }
+        return frames;
+    }
     
 }
