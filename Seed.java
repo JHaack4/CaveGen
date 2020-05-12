@@ -9,11 +9,13 @@ public class Seed {
     }
 
     String helpString = "Usage:\n  Seed nth n\n  Seed nthinv seed\n  Seed dist seed1 seed2\n  Seed next seed [n]\n  Seed seed2seq seed\n  Seed seq2seed seq\n  Seed ieee hex\n  Seed digit seed\n  Seed frames seed\n  Seed window cave seed\n" +
-        "  python videodigits.py - read the newest video in seed_video_path folder, and parse the digits on the result screen\n" +
+        "  python videodigits.py find - read the newest video in seed_video_path folder,\n" +
+        "                               and parse the digits on the result screen\n" +
         "  Seed chresult - read from seed_digits_parsed and infer the seed\n" +
-        "  Seed caveviewer cave [additional_args] - read from last_known_seed and open cave viewer to see reachable seeds \n                                           for sublevel cave. (Press s to select seed)\n" +
         "  Seed titleloop [n] - advance the last known seed by 4505 * n\n" +
-        "  Seed timer cave [desired_list] - create a countdown timer to reach the closest seed in seed_desired\n                              or, pass in a space separated list of target seeds";
+        "  Seed caveviewer cave [additional_args] - read from last_known_seed and open cave viewer to see reachable seeds \n                                           for sublevel cave. (Press s to select seed)\n" +
+        "  Seed timer cave [desired_list] - create a countdown timer to reach the closest seed in seed_desired\n" + 
+        "                                   or, pass in a space separated list of target seeds";
     //Long.decode(args[++i]).longValue()
     void run(String args[]) {
         try {
@@ -295,7 +297,7 @@ public class Seed {
             oWriter.write(seedToString(seed) + "\n");
             oWriter.close();
         } catch (Exception e) {
-
+            e.printStackTrace();
         }
     }
 
