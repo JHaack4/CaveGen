@@ -11,6 +11,7 @@ import java.awt.event.KeyListener;
 import java.awt.image.BufferedImage;
 import java.util.*;
 import java.io.*;
+import javax.imageio.*;
 
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -153,6 +154,7 @@ public class CaveViewer {
                             oWriter.write(Drawer.seedToString(seed) + "\n");
                             oWriter.close();
                             System.out.println("Desired seed: " + Drawer.seedToString(seed));
+                            ImageIO.write(imageBuffer.get(currentImage), "png", new File("seed_chosen.png"));
                         }
                     } catch (Exception ex) {
                         ex.printStackTrace();

@@ -61,7 +61,7 @@ public class Seed {
             else if (args[0].equalsIgnoreCase("test")) {
                 runTests();
             } 
-            else if (args[0].equalsIgnoreCase("chresult")) {
+            else if (args[0].equalsIgnoreCase("inferseed")) {
                 processDigits();
             } 
             else if (args[0].equalsIgnoreCase("caveviewer") && args.length >= 2) {
@@ -100,10 +100,10 @@ public class Seed {
 		System.out.println(seed_to_sequence(1227587417, 15));
 		
 		System.out.println("method LLL");
-		ArrayList<Integer> seed1 = sequence_to_seed("111111711");
+		ArrayList<Integer> seed1 = sequence_to_seed("9731927384");
 		for (int i: seed1) System.out.println(i + " " + seed_to_sequence(i,20));
 		System.out.println("slow method");
-		ArrayList<Integer> seedL = sequence_to_seed_slow("111111711");
+		ArrayList<Integer> seedL = sequence_to_seed_slow("9731927384");
 		for (int i: seedL) System.out.println(i + " " + seed_to_sequence(i,20));
 	
 		long[] tests = new long[] {0, 1, 10, 25, 60, 65535, 65536, C-1, C, C+1, A-1, A, A+1, M/2-1, M/2, M/2+1, M-2, M-1};
@@ -343,8 +343,9 @@ public class Seed {
                 BufferedReader br2 = new BufferedReader(new FileReader("seed_desired.txt"));
                 line = "";
                 while ((line = br2.readLine()) != null) {
-                    if (line.trim().length() > 0)
+                    if (line.trim().length() > 0) {
                         considerations.add("0x" + line.trim());
+                    }
                 }
                 br2.close();
             } else {
@@ -356,6 +357,12 @@ public class Seed {
             for (String s: considerations) {
                 long seed = Long.decode(s);
                 long dist = dist(startSeed, next_seed(seed, -1004));
+                if (dist < targetDist) {
+                    targetSeed = seed;
+                    targetDist = dist;
+                }
+                seed = seed ^ 0x80000000;
+                dist = dist(startSeed, next_seed(seed, -1004));
                 if (dist < targetDist) {
                     targetSeed = seed;
                     targetDist = dist;
@@ -550,10 +557,10 @@ public class Seed {
     }
 
     // frames between pressing don't save and the first rng advance.
-    int delay_between_dont_save_and_first_advance = 57;
+    int delay_between_dont_save_and_first_advance = 61;
 
     // frames between pressing A and entering the cave (when the seed can no longer advance)
-    // warning, these numbers are only a rought estimation, they could be off by quite a bit...
+    // warning, these numbers are only a rough estimation, they could be off by quite a bit...
     int[] frames_by_cave = {-1,76,76,76,84,58,56,88,68,78,82,65,61,90,79,79,77,82,80,81,96,86,79,9,80,80,64,92,97,89,85};
     int frames_A_to_enter(String cave) {
         return 8 + frames_by_cave[Integer.parseInt(cave.trim().toLowerCase().replace("ch", ""))];
