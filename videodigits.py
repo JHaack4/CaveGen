@@ -14,6 +14,7 @@ parser.add_argument('-images', help='show debug images', action="store_true")
 parser.add_argument('-x',default=0,type=int,help='x offset for digit cropping')
 parser.add_argument('-y',default=0,type=int,help='y offset for digit cropping')
 parser.add_argument('-t',default=40,type=int,help='template size (max 40)')
+parser.add_argument('-s',default=39,type=int,help='spacing (default 39)')
 args = parser.parse_args()
 if args.verbose:
     print(args)
@@ -21,6 +22,7 @@ if args.verbose:
 ### generate template numbers
 
 T = args.t
+S = args.s
 templates = []
 for i in range(10):
     temp = cv2.imread(path_to_digits + str(i) + "_32.bti.png",cv2.IMREAD_UNCHANGED)
@@ -52,7 +54,7 @@ def read_digits_on_frame(image):
     comp_img = np.zeros((11*40,5*40,3), np.uint8)
     
     for i in range(5):
-        img = image[args.y+157:args.y+157+40, args.x+267+39*i:args.x+267+39*(i+1)+1]
+        img = image[args.y+157:args.y+157+40, args.x+267+S*i:args.x+267+S*i+40]
         img = img.copy()
         blur = cv2.GaussianBlur(img,(139,139),0)
         diff = cv2.subtract(128 + cv2.subtract(img,blur),cv2.subtract(blur,img))
