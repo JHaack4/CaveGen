@@ -116,7 +116,7 @@ public class Seed {
 
     void processDigits() {
         try {
-            BufferedReader br = new BufferedReader(new FileReader("seed_digits_parsed.txt"));
+            BufferedReader br = new BufferedReader(new FileReader("files/seed_digits_parsed.txt"));
             int[][] digits = new int[10000][5];
             String line;
             int n = 0;
@@ -270,7 +270,7 @@ public class Seed {
             System.out.println("Sequence: " + sequence + " (length " + sequence.length() + ")");
             System.out.println("Last known seed: " + seedToString(seed) + " (" + nth_inv(seed) + ")");
 
-            PrintWriter oWriter = new PrintWriter(new BufferedWriter(new FileWriter("seed_last_known.txt")));
+            PrintWriter oWriter = new PrintWriter(new BufferedWriter(new FileWriter("files/seed_last_known.txt")));
             oWriter.write(seedToString(seed) + "\n");
             oWriter.close();
 
@@ -281,7 +281,7 @@ public class Seed {
 
     void titleLoop(int n) {
         try {
-            BufferedReader br = new BufferedReader(new FileReader("seed_last_known.txt"));
+            BufferedReader br = new BufferedReader(new FileReader("files/seed_last_known.txt"));
             String line = "";
             long seed = 0;
             while ((line = br.readLine()) != null) {
@@ -293,7 +293,7 @@ public class Seed {
             seed = next_seed(seed, 4505 * n);
             System.out.println("Last known seed: " + seedToString(seed));
 
-            PrintWriter oWriter = new PrintWriter(new BufferedWriter(new FileWriter("seed_last_known.txt")));
+            PrintWriter oWriter = new PrintWriter(new BufferedWriter(new FileWriter("files/seed_last_known.txt")));
             oWriter.write(seedToString(seed) + "\n");
             oWriter.close();
         } catch (Exception e) {
@@ -303,7 +303,7 @@ public class Seed {
 
     void openCaveViewer(String map, String[] args) {
         try {
-            BufferedReader br = new BufferedReader(new FileReader("seed_last_known.txt"));
+            BufferedReader br = new BufferedReader(new FileReader("files/seed_last_known.txt"));
             String line = "";
             long seed = 0;
             while ((line = br.readLine()) != null) {
@@ -329,7 +329,7 @@ public class Seed {
 
             // read in the start seed
             long startSeed = 0;
-            BufferedReader br = new BufferedReader(new FileReader("seed_last_known.txt"));
+            BufferedReader br = new BufferedReader(new FileReader("files/seed_last_known.txt"));
             String line = "";
             while ((line = br.readLine()) != null) {
                 if (line.trim().length() > 0)
@@ -340,7 +340,7 @@ public class Seed {
             // read in the target seed (using the closest if there are more than one)
             ArrayList<String> considerations = new ArrayList<String>();
             if (args.length <= 2) {
-                BufferedReader br2 = new BufferedReader(new FileReader("seed_desired.txt"));
+                BufferedReader br2 = new BufferedReader(new FileReader("files/seed_desired.txt"));
                 line = "";
                 while ((line = br2.readLine()) != null) {
                     if (line.trim().length() > 0) {

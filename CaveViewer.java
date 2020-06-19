@@ -274,10 +274,10 @@ public class CaveViewer {
                 if (i == 2) {
                     try {
                         int in = Integer.parseInt(a);
-                        argMap.get("sublevel").jComboBox.setSelectedItem(in==0?"all":in+"");
+                        argMap.get("sublevel").jComboBox.setSelectedItem(in==0?"All":in+"");
                         continue;
                     } catch (Exception e) {
-                        // pass
+                        argMap.get("sublevel").jComboBox.setSelectedItem("All");
                     }
                 }
                 if (!argMap.containsKey(a) && !argMap.containsKey(a.substring(1))) {

@@ -4,9 +4,9 @@ import java.io.*;
 public class CaveGen {
 
     // Tool parameters
-    static String caveInfoName, specialCaveInfoName, region, fileSystem, countObject;
+    static String caveInfoName, specialCaveInfoName, region, fileSystem, countObject, judgeType;
     static int sublevel, firstGenSeed, numToGenerate, indexBeingGenerated;
-    static boolean challengeMode, images, prints, showStats, seedOrder,
+    static boolean hardMode, challengeMode, images, prints, showStats, seedOrder, storyModeOverride, challengeModeOverride,
         folderSeed, folderCave, showCaveInfo, drawSpawnPoints,
         drawWayPoints, drawWayPointVertDists, drawWayPointEdgeDists,
         drawScores, drawAngles, drawTreasureGauge,
@@ -16,14 +16,16 @@ public class CaveGen {
         drawNoGateLife, drawNoHoles, drawHoleProbs, p251,
         drawEnemyScores, drawUnitHoleScores, drawUnitItemScores,
         findGoodLayouts, requireMapUnits, expectTest, noWayPointGraph,
-        memo, readMemo, aggregator, aggFirst, aggRooms, aggHalls;
-    static double findGoodLayoutsRatio;
+        writeMemo, readMemo, aggregator, aggFirst, aggRooms, aggHalls,
+        judgeActive, judgeCombine, judgeRankFile;
+    static double findGoodLayoutsRatio, judgeFilterScore, judgeFilterRank;
     static String requireMapUnitsConfig;
-    static boolean shortCircuitMap;
+    static boolean shortCircuitMap, imageToggle;
 
     static Drawer drawer;
     static Stats stats;
     static Seed seedCalc;
+    static Memo memo;
 
     public static void main(String args[]) {
         run(args);
@@ -31,7 +33,8 @@ public class CaveGen {
 
     static void run(String args[]) {
         region = "us"; fileSystem = "gc"; countObject = "";
-        challengeMode = false; images = true; prints = true; showStats = true; seedOrder = false;
+        hardMode = true; challengeMode = false; images = true; prints = true; showStats = true; seedOrder = false;
+        storyModeOverride = false; challengeModeOverride = false;
         folderSeed = true; folderCave = true; showCaveInfo = false; drawSpawnPoints = false;
         drawWayPoints = false; drawWayPointVertDists = false; drawWayPointEdgeDists = false;
         drawScores = false; drawAngles = false; drawTreasureGauge = false;
@@ -41,13 +44,17 @@ public class CaveGen {
         drawNoGateLife = false; drawNoHoles = false; drawHoleProbs = false; p251 = false;
         drawEnemyScores = false; drawUnitHoleScores = false; drawUnitItemScores = false;
         findGoodLayouts = false; requireMapUnits = false; expectTest = false; noWayPointGraph = false;
-        memo = false; readMemo = false; aggregator = false; aggFirst = false; aggRooms = false; aggHalls = false;
-        findGoodLayoutsRatio = 0.01;
-        requireMapUnitsConfig = "";
+        writeMemo = false; readMemo = false; aggregator = false; aggFirst = false; aggRooms = false; aggHalls = false;
+        judgeActive = false; judgeCombine = false; judgeRankFile = false;
+        findGoodLayoutsRatio = 0.01; judgeFilterScore = 0; judgeFilterRank = 0;
+        requireMapUnitsConfig = ""; judgeType = "default";
         firstGenSeed = 0; numToGenerate = 1; indexBeingGenerated = 0;
+        imageToggle = true;
         seedCalc = new Seed();
 
         boolean allStoryMode = false, allChallengeMode = false;
+        String caveArg = "";
+        String sublevelArgSt = "";
         try {
             if (args[0].equalsIgnoreCase("-expectTest")) {
                 expectTest = true;
@@ -69,30 +76,24 @@ public class CaveGen {
                     throw new Exception();
                 }
 
-                if (args[1].length() >= 3 && args[1].length() <= 4
-                    && args[1].substring(0,2).toLowerCase().equals("ch"))
-                    challengeMode = true;
-                if (args[1].length() >= 2 && args[1].substring(0,2).equals("ch"))
-                    challengeMode = true;
-                if (args[1].equals("cmal") || args[1].equals("chall")
-                    || args[1].equals("chal") || args[1].equals("cmat")) {
-                    challengeMode = true;
+                caveArg = args[1];
+                sublevelArgSt = args[2];
+                if (caveArg.equals("cmal") || caveArg.equals("chall")
+                    || caveArg.equals("chal") || caveArg.equals("cmat")) {
                     allChallengeMode = true;
                 }
-                if (args[1].equals("small")
-                    || args[1].equals("pod") || args[1].equals("at")
-                    || args[1].equals("story")) {
+                if (caveArg.equals("small")
+                    || caveArg.equals("pod") || caveArg.equals("at")
+                    || caveArg.equals("story")) {
                     allStoryMode = true;
-                    challengeMode = false;
                 }
-                if (args[1].equals("both") || args[1].equals("all")) {
+                if (caveArg.equals("both") || caveArg.equals("all")) {
                     allStoryMode = true;
                     allChallengeMode = true;
-                    challengeMode = false;
                 }
 
-                sublevel = allChallengeMode || allStoryMode ? 1 : Integer.parseInt(args[2]);
-                int startParse = allChallengeMode || allStoryMode ? 2 : 3;
+                sublevel = allChallengeMode || allStoryMode || sublevelArgSt.contains("-") ? 0 : Integer.parseInt(sublevelArgSt);
+                int startParse = allChallengeMode || allStoryMode || sublevelArgSt.contains("-") ? 2 : 3;
 
                 for (int i = startParse; i < args.length; i++) {
                     String s = args[i];
@@ -114,9 +115,9 @@ public class CaveGen {
                         fileSystem = "251";
                     }
                     else if (s.equalsIgnoreCase("-challengeMode"))
-                        challengeMode = false;
+                        challengeModeOverride = true;
                     else if (s.equalsIgnoreCase("-storyMode"))
-                        challengeMode = false;
+                        storyModeOverride = true;
                     else if (s.equalsIgnoreCase("-noImages"))
                         images = false;
                     else if (s.equalsIgnoreCase("-noPrint") || s.equalsIgnoreCase("-noPrints"))
@@ -199,10 +200,10 @@ public class CaveGen {
                     else if (s.equalsIgnoreCase("-noWayPointGraph"))
                         noWayPointGraph = true;
                     else if (s.equalsIgnoreCase("-memo") || s.equalsIgnoreCase("-writeMemo"))
-                        memo = true;
+                        writeMemo = true;
                     else if (s.equalsIgnoreCase("-readMemo")) {
                         readMemo = true;
-                        memo = false;
+                        writeMemo = false;
                     }
                     else if (s.equalsIgnoreCase("-agg") || s.equalsIgnoreCase("-aggregator")) {
                         aggregator = true;
@@ -222,8 +223,37 @@ public class CaveGen {
                     else if (s.equalsIgnoreCase("-count")) {
                         countObject = args[++i].toLowerCase();
                     }
-                    else if (i == 2) {
-                        continue;
+                    else if (s.equalsIgnoreCase("-judge")) {
+                        judgeActive = true;
+                        while (i < args.length-1) {
+                            i++;
+                            if (args[i].equalsIgnoreCase("combine")) {
+                                judgeCombine = true;
+                            } else if (args[i].equalsIgnoreCase("rankfile")) {
+                                judgeRankFile = true;
+                            } else if (args[i].equalsIgnoreCase("pod")) {
+                                judgeType = "pod";
+                            } else if (args[i].equalsIgnoreCase("at")) {
+                                judgeType = "at";
+                            } else if (args[i].equalsIgnoreCase("key")) {
+                                judgeType = "key";
+                            } else if (args[i].equalsIgnoreCase("cmat")) {
+                                judgeType = "cmat";
+                            } else if (args[i].equalsIgnoreCase("score")) {
+                                judgeType = "score";
+                            } else if (args[i].charAt(0) == '>' || args[i].charAt(0) == '<') {
+                                int l = args[i].length();
+                                if (args[i].charAt(l-1) == '%')
+                                    judgeFilterRank = (args[i].charAt(0) == '>' ? 1 : -1) * Double.parseDouble(args[i].substring(1,l-1));
+                                else judgeFilterScore = (args[i].charAt(0) == '>' ? 1 : -1) * Double.parseDouble(args[i].substring(1));
+                            }  else if (args[i].contains("-")) {
+                                i--;
+                                break;
+                            } else {
+                                System.out.println("Bad argument: " + args[i]);
+                                throw new Exception();
+                            }
+                        }
                     }
                     else {
                         System.out.println("Bad argument: " + s);
@@ -231,7 +261,7 @@ public class CaveGen {
                     }
                 }
 
-                caveInfoName = Parser.fromSpecial(args[1]);
+                caveInfoName = Parser.fromSpecial(caveArg);
                 fileSystem = fileSystem.toLowerCase();
             }
         } catch (Exception e) {
@@ -254,81 +284,105 @@ public class CaveGen {
 
         drawer = new Drawer();
         stats = new Stats(args);
+        memo = new Memo();
 
         if (expectTest) {
-            stats.setupExpectTests();
+            memo.setupExpectTests();
             allStoryMode = true;
             allChallengeMode = true;
-            challengeMode = false;
-            args = new String[] {"both", "both"};
+            caveArg = "both";
         }
 
         int maxStory = p251 ? 16 : 14;
         if (allStoryMode) {
-            int upper = args[1].equals("pod") ? 9 : maxStory;
-            for (int j = 0; j < upper; j++) {
+            int upperBound = caveArg.equals("pod") ? 9 : maxStory;
+            for (int j = 0; j < upperBound; j++) {
                 caveInfoName = Parser.all[j] + ".txt";
                 for (int k = 0; k < 10000; k++) {
                     sublevel = k+1;
-                    CaveGen g = new CaveGen(firstGenSeed, numToGenerate);
+                    CaveGen g = new CaveGen();
                     if (g.isFinalFloor) break;
                 }
             }
         }
         if (allChallengeMode) {
-            if (args[1].equals("both")) challengeMode = true;
             for (int j = maxStory; j < maxStory+30; j++) {
                 caveInfoName = Parser.all[j] + ".txt";
                 for (int k = 0; k < 10000; k++) {
                     sublevel = k+1;
-                    CaveGen g = new CaveGen(firstGenSeed, numToGenerate);
+                    CaveGen g = new CaveGen();
                     if (g.isFinalFloor) break;
                 }
             }
         }
         if (!allChallengeMode && !allStoryMode) {
-            if (sublevel == 0) {
-                for (int i = 0; i < 10000; i++) {
-                    sublevel = i+1;
-                    CaveGen g = new CaveGen(firstGenSeed, numToGenerate);
-                    if (g.isFinalFloor) break;
+            int sublevelArg = sublevel;
+            String[] caveStrings = caveArg.split(",");
+            for (String cs: caveStrings) {
+                if (cs.contains("-")) {
+                    String[] csSplit = cs.split("-");
+                    caveInfoName = Parser.fromSpecial(csSplit[0]);
+                    sublevel = Integer.parseInt(csSplit[1]);
+                    new CaveGen();
+                }
+                else {
+                    caveInfoName = Parser.fromSpecial(cs);
+                    if (sublevelArg == 0) {
+                        for (int i = 0; i < 10000; i++) {
+                            sublevel = i+1;
+                            CaveGen g = new CaveGen();
+                            if (g.isFinalFloor) break;
+                        }
+                    }
+                    else {
+                        sublevel = sublevelArg;
+                        new CaveGen();
+                    }
                 }
             }
-            else
-                new CaveGen(firstGenSeed, numToGenerate);
         }
 
         if (showStats) {
             stats.createReport();
         }
         if (expectTest) {
-            stats.checkExpectation();
+            memo.checkExpectation();
         }
         if (CaveViewer.active) {
             CaveViewer.caveViewer.update();
         }
     }
 
-    public CaveGen(int firstSeed, int numToGenerate) {
-        new Parser(this); // Parse everything
-        Aggregator.reset();
+    public CaveGen() {
+
         specialCaveInfoName = Parser.toSpecial(caveInfoName);
+        if (storyModeOverride)
+            hardMode = true;
+        else if (challengeModeOverride)
+            hardMode = false;
+        else {
+            hardMode = !specialCaveInfoName.substring(0,2).equalsIgnoreCase("CH");
+        }
+        challengeMode = !hardMode;
+
+        new Parser(this); // Parse everything
         if (isFinalFloor) holeClogged = !isHardMode(); // final floor geysers aren't clogged in story mode
+
+        if (aggregator) {
+            Aggregator.reset();
+        }
 
         for (int i = 0; i < numToGenerate; i++) {
             indexBeingGenerated = i;
             if (seedOrder) {
-                seed = firstSeed;
-                for (int j = 0; j < i; j++)
-                    rand();
-                initialSeed = seed;
+                initialSeed = (int)seedCalc.next_seed(firstGenSeed, i);
             }
             else {
-                initialSeed = firstSeed + i;
-                seed = initialSeed;
+                initialSeed = firstGenSeed + i;
             }
+            seed = initialSeed;
 
-            if (prints && (numToGenerate < 4096 || initialSeed % 4096 == 0)) {
+            if (prints && (numToGenerate < 4096 && !CaveGen.judgeActive || initialSeed % 4096 == 0)) {
                 System.out.println("Generating " + specialCaveInfoName + " " + sublevel + " on seed " + Drawer.seedToString(initialSeed));
                 if (CaveViewer.active) {
                     CaveViewer.caveViewer.reportBuffer.append("Generating " + specialCaveInfoName + " " + sublevel + " on seed " + Drawer.seedToString(initialSeed) + "\n");
@@ -338,7 +392,7 @@ public class CaveGen {
             reset();
 
             if (readMemo) {
-                stats.readMemo(this);
+                memo.readMemo(this);
             } else {
                 createRandomMap();
             }
@@ -351,7 +405,7 @@ public class CaveGen {
                     System.exit(0);
                 }
             }
-            if (images && !shortCircuitMap) {
+            if (images && !shortCircuitMap && imageToggle) {
                 try {
                     drawer.draw(this);
                 } catch (Exception e) {
@@ -360,10 +414,10 @@ public class CaveGen {
                 }
             }
             if (expectTest) {
-                stats.outputSublevelForExpect(this);
+                memo.outputSublevelForExpect(this);
             }
-            if (memo) {
-                stats.writeMemo(this);
+            if (writeMemo) {
+                memo.writeMemo(this);
             }
             if (aggregator) {
                 Aggregator.process(this);
@@ -387,6 +441,9 @@ public class CaveGen {
                 e.printStackTrace();
                 System.exit(0);
             }
+        }
+        if (judgeActive && !judgeCombine) {
+            stats.judge.printSortedList();
         }
     }
 
@@ -646,7 +703,7 @@ public class CaveGen {
             shuffleMapPriority(mPlaced);
         }
         if (requireMapUnits) {
-            shortCircuitMap = stats.checkForShortCircuit(this);
+            shortCircuitMap = memo.checkForShortCircuit(this);
         }
     }
 
@@ -1738,7 +1795,7 @@ public class CaveGen {
             // update the probabilities that the alcoves are visually empty
             // (this isn't part of the algorithm, it's just used to help
             // challenge mode runners guess where the hole is)
-            if (challengeMode)
+            if (!hardMode)
                 challengeModeHoleProbItem(sumWeight);
 
             SpawnPoint spot = null;
@@ -1779,7 +1836,7 @@ public class CaveGen {
         // update the probabilities that the alcoves are visually empty
         // (this isn't part of the algorithm, it's just used to help
         // challenge mode runners guess where the hole is)
-        if (challengeMode)
+        if (!hardMode)
             challengeModeHoleProbCap();
 
         int numSpawned = 0;
@@ -2152,7 +2209,7 @@ public class CaveGen {
     boolean isHardMode() {
         // hard mode is used for story mode
         // normal mode is used for challenge mode
-        return !challengeMode;
+        return hardMode;
     }
 
     String pomString = ",bluepom,redpom,yellowpom,blackpom,whitepom,randpom,pom,";

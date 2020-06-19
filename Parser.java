@@ -547,6 +547,8 @@ class Parser {
         } catch(Exception e) {
             e.printStackTrace();
         }
+
+        //TODO challenge mode config file
     }
 
     static int[] scUnitTypes;
@@ -577,10 +579,9 @@ class Parser {
 
     static void helpText() {
         if (helpText.size() > 0) return;
-        helpText.add("\nUsage: CaveGen.jar [Output] [Cave] [sublevelNum] ");
+        helpText.add("\nUsage: CaveGen.jar [Output] [Sublevels] ");
         helpText.add("  Output: seed|cave|both|none is which folder the output is sent to.");
-        helpText.add("  Cave: tutorial1.txt|cmal|story|both|BK|SCx|CH1|CH2|...");
-        helpText.add("  Sublevel: 1|2|3|4|... or use 0 for the entire cave.");
+        helpText.add("  Sublevels: BK-4|SCx|CH1|CH2|all|story|cmal|tutorial1.txt...");
         helpText.add("\nOptional: -seed 0x12345678 -num 100 -consecutiveSeeds -challengeMode -storyMode");
         helpText.add("  -noImages -noPrint -noStats -region [us|jpn|pal] -251 -caveInfoReport");
         helpText.add("  -drawSpawnPoints -drawSpawnOrder -drawAngles -drawDoorIds -drawTreasureGauge -drawHoleProbs");
@@ -588,16 +589,16 @@ class Parser {
         helpText.add("  -drawScores -drawDoorLinks -drawEnemyScores -drawUnitHoleScores -drawUnitItemScores -drawAllScores");
         helpText.add("  -drawNoWaterBox -drawNoFallType -drawNoGateLife -drawNoObjects -drawNoPlants");
         helpText.add("  -drawNoBuriedItems -drawNoItems -drawNoTekis -drawNoGates -drawNoHoles");
-        helpText.add("  -findGoodLayouts 0.01 (this keeps the top 1% of layouts by jhawk's heuristic)");
+        helpText.add("  -findGoodLayouts 0.01 (this keeps the top 1% of layouts by jhawk's old heuristic)");
         helpText.add("  -requireMapUnits unitType,rot,idFrom,doorFrom,doorTo;...");
         helpText.add("  -count object (finds distribition of teki with this internal name)");
-        helpText.add("\nExample: CaveGen.jar seed story -seed 0x12345678 -drawSpawnPoints");
-        helpText.add("  This generates images of all levels in story mode with that seed.");
-        helpText.add("Example: CaveGen.jar cave BK 4 -num 100 -seed 0 -consecutiveSeeds");
-        helpText.add("  This generates images for 100 instances of BK4, checking seeds following 0.");
-        helpText.add("Example: CaveGen.jar none CH12 0 -num 10000");
+        helpText.add("\nExample: CaveGen.jar seed pod -seed 0x12345678 -drawSpawnPoints");
+        helpText.add("  This generates images of all levels in pay off debt with that seed.");
+        helpText.add("Example: CaveGen.jar cave BK-4 -num 100 -seed 0 -consecutiveSeeds");
+        helpText.add("  This generates images for 100 instances of BK-4, checking seeds following 0.");
+        helpText.add("Example: CaveGen.jar none CH12 -num 10000");
         helpText.add("  This generates stats for 10000 instances of concrete maze, no images.");
-        helpText.add("Example: CaveGen.jar caveinfo.txt 0");
+        helpText.add("Example: CaveGen.jar caveinfo.txt");
         helpText.add("  This generates the whole caveinfo.txt cave");
     }
 }
