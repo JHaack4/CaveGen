@@ -16,6 +16,6 @@ output251/*
 *.png
 
 *~
-expected_output_this.txt
+__pycache*
 
 .vscode*
