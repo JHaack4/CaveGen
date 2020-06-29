@@ -2,7 +2,6 @@ import java.util.*;
 import java.io.*;
 import java.awt.image.*;
 import java.awt.*;
-import javax.swing.*;
 import javax.imageio.*;
 
 // This code draws the pictures
@@ -22,8 +21,8 @@ public class Drawer {
     HashMap<String, Image> IMG = new HashMap<String, Image>();
     HashMap<String, String> missing = new HashMap<String, String>();
     HashMap<String, String> special = new HashMap<String, String>();
-    String plantNames = "", buriedItems;
-    String purple20 = "", white20 = "";
+    HashSet<String> plantNames = Parser.hashSet("ooinu_s,ooinu_l,wakame_s,wakame_l,kareooinu_s,kareooinu_l,daiodored,daiodogreen,clover,hikarikinoko,tanpopo,zenmai,nekojarashi,tukushi,magaret,watage");
+    HashSet<String> purple20 = Parser.hashSet("EC2,FC1,HoB2,CoS2,GK2,SR2"), white20 = Parser.hashSet("WFG3,BK1,SH2,SR1");
 
     Color[] colorsFT = new Color[] {
                 new Color(0,0,0),
@@ -85,13 +84,6 @@ public class Drawer {
         special.put("ooinu_s", "ooinu_s");
         special.put("wakame_s", "wakame_s");
         special.put("chiyogami", "chiyogami");
-
-        purple20 = ",EC2,FC1,HoB2,CoS2,GK2,SR2,";
-        white20 = ",WFG3,BK1,SH2,SR1,";
-        plantNames = ",ooinu_s,ooinu_l,wakame_s,wakame_l,kareooinu_s,kareooinu_l,daiodored,"
-            + "daiodogreen,clover,hikarikinoko,tanpopo,zenmai,nekojarashi,tukushi,magaret,watage";
-        buriedItems = ",leaf_yellow,teala_dia_a,teala_dia_c,xmas_item,yoyo_red,akagai,toy_ring_a_green,"
-            + "sinjyu,makigai,momiji_kare,bane_yellow,toy_ring_a_red,diamond_blue,donutswhite_s,gum_tape,toy_ring_b_blue,";
 
     }
 
@@ -441,9 +433,9 @@ public class Drawer {
             for (MapUnit m: g.placedMapUnits) {
                 for (SpawnPoint sp: m.spawnPoints) {
                     if (m.type == 2 && sp.type == 9) continue;
-                    float distToStart = g.placedStart == null ? CaveGen.INF : CaveGen.spawnPointDist(g.placedStart, sp);
-                    float distToHole = g.placedHole == null ? CaveGen.INF : CaveGen.spawnPointDist(g.placedHole, sp);
-                    float distToGeyser = g.placedGeyser == null ? CaveGen.INF : CaveGen.spawnPointDist(g.placedGeyser, sp);
+                    float distToStart = g.placedStart == null ? CaveGen.INF : g.spawnPointDist(g.placedStart, sp);
+                    float distToHole = g.placedHole == null ? CaveGen.INF : g.spawnPointDist(g.placedHole, sp);
+                    float distToGeyser = g.placedGeyser == null ? CaveGen.INF : g.spawnPointDist(g.placedGeyser, sp);
                     G.setColor(colorsSP[sp.type]);
                     //G.drawString(sp.type+"", (int)(pos[0]/M*N), (int)(pos[1]/M*N));
                     int rad = 10;
@@ -519,7 +511,7 @@ public class Drawer {
             
             if (!g.drawNoTeki) {
                 for (Teki t: g.placedTekis) {
-                    if (g.drawNoPlants && plantNames.contains("," + t.tekiName.toLowerCase() +",")) continue;
+                    if (g.drawNoPlants && plantNames.contains(t.tekiName.toLowerCase())) continue;
                     int yaddn = t.spawnPoint.type == 9 && t.fallType > 0 ? -12: 0;
                     try {
                         Image im = getTeki(t);
@@ -536,13 +528,13 @@ public class Drawer {
                         }
                         if (t.tekiName.equalsIgnoreCase("blackpom")) {
                             String sls = g.specialCaveInfoName + g.sublevel;
-                            if (purple20.indexOf(","+sls+",") >= 0) {
+                            if (purple20.contains(sls)) {
                                 drawTextOutline(G, "<20", x+2, z+5, spc, spc2);
                             }
                         }
                         if (t.tekiName.equalsIgnoreCase("whitepom")) {
                             String sls = g.specialCaveInfoName + g.sublevel;
-                            if (white20.indexOf(","+sls+",") >= 0) {
+                            if (white20.contains(sls)) {
                                 drawTextOutline(G, "<20", x+2, z+5, spc, spc2);
                             }
                         }
@@ -573,7 +565,7 @@ public class Drawer {
             }
             if (!g.drawNoItems) {
                 for (Item t: g.placedItems) {
-                    if (g.drawNoBuriedItems && buriedItems.contains(t.itemName))
+                    if (g.drawNoBuriedItems && Parser.depth.get(t.itemName) >= Parser.height.get(t.itemName))
                         continue;
                     try {
                         Image im = getItem(t, "", g.region);
@@ -671,7 +663,7 @@ public class Drawer {
                     }
                     if (p.teki != null) {
                         Teki t = p.teki;
-                        if (g.drawNoPlants && plantNames.contains("," + t.tekiName.toLowerCase() +",")) continue;
+                        if (g.drawNoPlants && plantNames.contains(t.tekiName.toLowerCase())) continue;
                         Image im = getTeki(t,scale);
                         G.drawImage(im, x - im.getWidth(null)/2, z - im.getWidth(null)/2, null);
                         if (t.fallType != 0 && !g.drawNoFallType) {
@@ -718,7 +710,7 @@ public class Drawer {
                             if (drawAsReport)
                                 G.setColor(new Color(80,80,0,150));
                             G.drawLine(x,z,(ox*5+x)/6,(oz*5+z)/6);
-                            String s = "" + (int)(CaveGen.wayPointDist(wp,owp)/10);
+                            String s = "" + (int)(g.wayPointDist(wp,owp)/10);
                             if (s.equals("0")) continue;
                             drawTextOutline(G,s,(x+ox)/2-s.length()*5/2,(z+oz)/2+4,
                                               new Color(160,160,0), bgt);
@@ -1280,13 +1272,13 @@ public class Drawer {
             }
             if (t.tekiName.equalsIgnoreCase("blackpom")) {
                 String sls = CaveGen.specialCaveInfoName + CaveGen.sublevel;
-                if (purple20.indexOf(","+sls+",") >= 0) {
+                if (purple20.contains(sls)) {
                     drawTextOutline(G, "<20", x+2, z+5, spc, spc2);
                 }
             }
             if (t.tekiName.equalsIgnoreCase("whitepom")) {
                 String sls = CaveGen.specialCaveInfoName + CaveGen.sublevel;
-                if (white20.indexOf(","+sls+",") >= 0) {
+                if (white20.contains(sls)) {
                     drawTextOutline(G, "<20", x+2, z+5, spc, spc2);
                 }
             }

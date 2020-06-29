@@ -114,14 +114,6 @@ class Parser {
         return s;
     }
 
-    CaveGen g;
-
-    Parser(CaveGen g) {
-        this.g = g;
-
-        parseAll();
-    }
-
     Scanner read(String fileName) {
         StringBuilder sb2 = new StringBuilder();
         try {
@@ -198,7 +190,7 @@ class Parser {
         return nextCloseBrace(sc);
     }
 
-    void parseAll() {
+    void parseAll(CaveGen g) {
         String jpn = (CaveGen.fileSystem.equals("gc") && CaveGen.region.equals("jpn")) ? "-jpn" : "";
         Scanner sc = read("files/" + g.fileSystem + "/" + "caveinfo" + jpn + "/" + g.caveInfoName);
 
@@ -501,17 +493,25 @@ class Parser {
     }
 
     static HashMap<String, Integer> tekiDifficulty = new HashMap<String, Integer>();
+    static HashMap<String, Integer> tekiDifficultyJudgeSec = new HashMap<String, Integer>();
+    static HashMap<String, Integer> tekiDifficultyJudgePiki = new HashMap<String, Integer>();
     static HashMap<String, Integer> minCarry = new HashMap<String, Integer>();
     static HashMap<String, Integer> maxCarry = new HashMap<String, Integer>();
     static HashMap<String, Integer> pokos = new HashMap<String, Integer>();
     static HashMap<String, Integer> seeds = new HashMap<String, Integer>();
     static HashMap<String, Integer> seedsMin = new HashMap<String, Integer>();
-    static HashMap<String, Integer> depth = new HashMap<String, Integer>();
+    static HashMap<String, Float> depth = new HashMap<String, Float>();
+    static HashMap<String, Float> height = new HashMap<String, Float>();
 
+    static HashMap<String, Integer> chPikiCount = new HashMap<String, Integer>();
+    static HashMap<String, Integer> chTime = new HashMap<String, Integer>();
+    static HashMap<String, Integer> chFloorCount = new HashMap<String, Integer>();
+    static HashMap<String, Integer> chBitter = new HashMap<String, Integer>();
+    static HashMap<String, Integer> chSpicy = new HashMap<String, Integer>();
 
     static void readConfigFiles() {
         try {
-            BufferedReader br = new BufferedReader(new FileReader("files/" + CaveGen.fileSystem + "/config/teki_difficulty.csv"));
+            BufferedReader br = new BufferedReader(new FileReader("files/gc/config/teki_difficulty.csv"));
             String line;
             while ((line = br.readLine()) != null) {
                 Scanner sc = new Scanner(line);
@@ -529,7 +529,27 @@ class Parser {
             e.printStackTrace();
         }
         try {
-            BufferedReader br = new BufferedReader(new FileReader("files/" + CaveGen.fileSystem + "/config/config_" + CaveGen.region + ".txt"));
+            BufferedReader br = new BufferedReader(new FileReader("files/gc/config/teki_difficulty_judge.csv"));
+            String line;
+            while ((line = br.readLine()) != null) {
+                Scanner sc = new Scanner(line);
+                sc.useDelimiter(",");
+                String id = sc.next();
+                String hexId = sc.next();
+                String commonName = sc.next();
+                String internalName = sc.next();
+                int sec = Integer.parseInt(sc.next());
+                int piki = Integer.parseInt(sc.next());
+                tekiDifficultyJudgeSec.put(internalName.toLowerCase(), sec);
+                tekiDifficultyJudgePiki.put(internalName.toLowerCase(), piki);
+                sc.close();
+            }
+            br.close();
+        } catch(Exception e) {
+            e.printStackTrace();
+        }
+        try {
+            BufferedReader br = new BufferedReader(new FileReader("files/gc/config/config_" + CaveGen.region + ".txt"));
             String line;
             while ((line = br.readLine()) != null) {
                 Scanner sc = new Scanner(line);
@@ -540,15 +560,38 @@ class Parser {
                 seeds.put(internalName.toLowerCase(), Integer.parseInt(sc.next()));
                 seedsMin.put(internalName.toLowerCase(), Integer.parseInt(sc.next()));
                 pokos.put(internalName.toLowerCase(), Integer.parseInt(sc.next()));
-                depth.put(internalName.toLowerCase(), (int)Double.parseDouble(sc.next()));
+                depth.put(internalName.toLowerCase(), Float.parseFloat(sc.next()));
+                height.put(internalName.toLowerCase(), Float.parseFloat(sc.next()));
                 sc.close();
             }
             br.close();
         } catch(Exception e) {
             e.printStackTrace();
         }
-
-        //TODO challenge mode config file
+        try {
+            Parser p = new Parser();
+            Scanner sc = p.read("files/gc/config/stages.txt");
+            p.nextInt(sc);
+            for (int i = 1; i <= 30; i++) {
+                p.nextBrace(sc);
+                p.nextInt(sc);
+                p.nextString(sc);
+                for (int j = 0; j < 3 * 7; j++)
+                    chPikiCount.put("CH" + i + " " + j, p.nextInt(sc));
+                p.nextFloat(sc);
+                chBitter.put("CH" + i, p.nextInt(sc));
+                chSpicy.put("CH" + i, p.nextInt(sc));
+                chFloorCount.put("CH" + i, p.nextInt(sc));
+                p.nextInt(sc);
+                p.nextInt(sc);
+                for (int j = 1; j <= chFloorCount.get("CH" + i); j++) {
+                    chTime.put("CH" + i + "-" + j, (int)p.nextFloat(sc));
+                }
+            }
+            sc.close();
+        } catch(Exception e) {
+            e.printStackTrace();
+        }
     }
 
     static int[] scUnitTypes;
@@ -600,5 +643,10 @@ class Parser {
         helpText.add("  This generates stats for 10000 instances of concrete maze, no images.");
         helpText.add("Example: CaveGen.jar caveinfo.txt");
         helpText.add("  This generates the whole caveinfo.txt cave");
+    }
+
+
+    static HashSet<String> hashSet(String s) {
+        return new HashSet<String>(Arrays.asList(s.split(",")));
     }
 }

@@ -28,7 +28,6 @@ class Stats {
         if (!CaveGen.showStats) return;
         if (CaveGen.findGoodLayouts || CaveGen.judgeActive) {
             judge = new Judge(this);
-            Parser.readConfigFiles();
             judge.readRankFile();
         }
         try {
@@ -56,7 +55,6 @@ class Stats {
     int maxCountObj = 16;
     int observedMax = 0;
     int countObj[] = new int[maxCountObj];
-    int missingTreasureCount = 0;
 
     // this function gets called once for every sublevel g that generates
     void analyze(CaveGen g) {
@@ -77,34 +75,11 @@ class Stats {
             countObj[num] += 1;
         }
 
-        // report about missing treasures
-        // print the seed everytime we see a missing treasure
-        int minTreasure = 0, actualTreasure = 0;
-        for (Item t: g.spawnItem) { minTreasure += t.min; }
-        for (Teki t: g.spawnTekiConsolidated) { if (t.itemInside != null) minTreasure += t.min; }
-        actualTreasure += g.placedItems.size();
-        for (Teki t: g.placedTekis) {
-            if (t.itemInside != null)
-                actualTreasure += 1;
-        }
-        int expectedMissingTreasures = 0;
-        if ("CH29 1".equals(g.specialCaveInfoName + " " + g.sublevel))
-            expectedMissingTreasures = 1; // This level is always missing a treasure
-        boolean missingUnexpectedTreasure = actualTreasure + expectedMissingTreasures < minTreasure;
-        if (missingUnexpectedTreasure) {
-            println("Missing treasure: " + g.specialCaveInfoName + " " + g.sublevel + " " + Drawer.seedToString(g.initialSeed));
-            missingTreasureCount += 1;
-        }
-
-        if (CaveGen.findGoodLayouts) {
-            if (missingUnexpectedTreasure)
-                CaveGen.imageToggle = false;
-            else 
-                judge.findGoodLayouts(g);
-        }
-
         if (CaveGen.judgeActive)
             judge.judge(g);
+
+        if (CaveGen.findGoodLayouts) 
+            judge.findGoodLayouts(g);
         
     }
 
@@ -115,16 +90,13 @@ class Stats {
             judge.printSortedCombinedList();
         }
 
-        // report about purple flowers
+        // report about sublevel objects
         if (CaveGen.countObject.length() > 0) {
             println("\n" + CaveGen.countObject + " distribution: ");
             for (int i = 0; i < maxCountObj; i++) {
                 println(i + (i==maxCountObj-1?"+":"") + ": " + countObj[i]);
             }
         }
-        
-        // report about missing treasures
-        println("Missing treasure count: " + missingTreasureCount);
 
         println("\nGenerated " + caveGenCount + " sublevels.");
         println("Total run time: " + (System.currentTimeMillis()-startTime)/1000.0 + "s");

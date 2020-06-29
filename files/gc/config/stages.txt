@@ -1,0 +1,1050 @@
+30 	# num stages
+# stage
+{
+	4 	# version
+	ch_ABEM_tutorial.txt 
+	# PikiCounter
+	0 	# col0 happa0
+	0 	# col0 happa1
+	0 	# col0 happa2
+	50 	# col1 happa0
+	0 	# col1 happa1
+	0 	# col1 happa2
+	0 	# col2 happa0
+	0 	# col2 happa1
+	0 	# col2 happa2
+	0 	# col3 happa0
+	0 	# col3 happa1
+	0 	# col3 happa2
+	0 	# col4 happa0
+	0 	# col4 happa1
+	0 	# col4 happa2
+	0 	# col5 happa0
+	0 	# col5 happa1
+	0 	# col5 happa2
+	0 	# col6 happa0
+	0 	# col6 happa1
+	0 	# col6 happa2
+	0.000000 	# time
+	2 	# dope black
+	2 	# dope red
+	2 	# floor num
+	0 	# otakara num
+	0 	# 2d index
+	100.000000 	# 1ŠK‚Ì•b”
+	100.000000 	# 2ŠK‚Ì•b”
+}
+# stage
+{
+	4 	# version
+	ch_NARI_07whitepurple.txt 
+	# PikiCounter
+	0 	# col0 happa0
+	0 	# col0 happa1
+	0 	# col0 happa2
+	0 	# col1 happa0
+	0 	# col1 happa1
+	0 	# col1 happa2
+	0 	# col2 happa0
+	0 	# col2 happa1
+	0 	# col2 happa2
+	0 	# col3 happa0
+	0 	# col3 happa1
+	0 	# col3 happa2
+	30 	# col4 happa0
+	0 	# col4 happa1
+	0 	# col4 happa2
+	0 	# col5 happa0
+	0 	# col5 happa1
+	0 	# col5 happa2
+	0 	# col6 happa0
+	0 	# col6 happa1
+	0 	# col6 happa2
+	0.000000 	# time
+	0 	# dope black
+	3 	# dope red
+	2 	# floor num
+	0 	# otakara num
+	20 	# 2d index
+	170.000000 	# 1ŠK‚Ì•b”
+	170.000000 	# 2ŠK‚Ì•b”
+}
+# stage
+{
+	4 	# version
+	ch_NARI_03toy.txt 
+	# PikiCounter
+	0 	# col0 happa0
+	0 	# col0 happa1
+	0 	# col0 happa2
+	0 	# col1 happa0
+	0 	# col1 happa1
+	0 	# col1 happa2
+	0 	# col2 happa0
+	0 	# col2 happa1
+	100 	# col2 happa2
+	0 	# col3 happa0
+	0 	# col3 happa1
+	0 	# col3 happa2
+	0 	# col4 happa0
+	0 	# col4 happa1
+	0 	# col4 happa2
+	0 	# col5 happa0
+	0 	# col5 happa1
+	0 	# col5 happa2
+	0 	# col6 happa0
+	0 	# col6 happa1
+	0 	# col6 happa2
+	0.000000 	# time
+	2 	# dope black
+	2 	# dope red
+	2 	# floor num
+	0 	# otakara num
+	5 	# 2d index
+	100.000000 	# 1ŠK‚Ì•b”
+	150.000000 	# 2ŠK‚Ì•b”
+}
+# stage
+{
+	4 	# version
+	ch_NARI_01kusachi.txt 
+	# PikiCounter
+	0 	# col0 happa0
+	0 	# col0 happa1
+	50 	# col0 happa2
+	0 	# col1 happa0
+	0 	# col1 happa1
+	0 	# col1 happa2
+	0 	# col2 happa0
+	0 	# col2 happa1
+	0 	# col2 happa2
+	0 	# col3 happa0
+	0 	# col3 happa1
+	0 	# col3 happa2
+	0 	# col4 happa0
+	0 	# col4 happa1
+	0 	# col4 happa2
+	0 	# col5 happa0
+	0 	# col5 happa1
+	0 	# col5 happa2
+	0 	# col6 happa0
+	0 	# col6 happa1
+	0 	# col6 happa2
+	350.000000 	# time
+	1 	# dope black
+	2 	# dope red
+	1 	# floor num
+	0 	# otakara num
+	3 	# 2d index
+	180.000000 	# 1ŠK‚Ì•b”
+}
+# stage
+{
+	4 	# version
+	ch_ABEM_LeafChappy.txt 
+	# PikiCounter
+	10 	# col0 happa0
+	0 	# col0 happa1
+	0 	# col0 happa2
+	10 	# col1 happa0
+	0 	# col1 happa1
+	0 	# col1 happa2
+	10 	# col2 happa0
+	0 	# col2 happa1
+	0 	# col2 happa2
+	0 	# col3 happa0
+	0 	# col3 happa1
+	0 	# col3 happa2
+	0 	# col4 happa0
+	0 	# col4 happa1
+	0 	# col4 happa2
+	0 	# col5 happa0
+	0 	# col5 happa1
+	0 	# col5 happa2
+	0 	# col6 happa0
+	0 	# col6 happa1
+	0 	# col6 happa2
+	400.000000 	# time
+	1 	# dope black
+	1 	# dope red
+	2 	# floor num
+	11 	# otakara num
+	17 	# 2d index
+	85.000000 	# 1ŠK‚Ì•b”
+	100.000000 	# 2ŠK‚Ì•b”
+}
+# stage
+{
+	4 	# version
+	ch_NARI_05start3easy.txt 
+	# PikiCounter
+	1 	# col0 happa0
+	0 	# col0 happa1
+	0 	# col0 happa2
+	1 	# col1 happa0
+	0 	# col1 happa1
+	0 	# col1 happa2
+	1 	# col2 happa0
+	0 	# col2 happa1
+	0 	# col2 happa2
+	0 	# col3 happa0
+	0 	# col3 happa1
+	0 	# col3 happa2
+	0 	# col4 happa0
+	0 	# col4 happa1
+	0 	# col4 happa2
+	0 	# col5 happa0
+	0 	# col5 happa1
+	0 	# col5 happa2
+	0 	# col6 happa0
+	0 	# col6 happa1
+	0 	# col6 happa2
+	400.000000 	# time
+	1 	# dope black
+	2 	# dope red
+	2 	# floor num
+	0 	# otakara num
+	15 	# 2d index
+	120.000000 	# 1ŠK‚Ì•b”
+	80.000000 	# 2ŠK‚Ì•b”
+}
+# stage
+{
+	4 	# version
+	ch_MUKI_metal.txt 
+	# PikiCounter
+	0 	# col0 happa0
+	0 	# col0 happa1
+	50 	# col0 happa2
+	0 	# col1 happa0
+	0 	# col1 happa1
+	0 	# col1 happa2
+	0 	# col2 happa0
+	0 	# col2 happa1
+	0 	# col2 happa2
+	0 	# col3 happa0
+	0 	# col3 happa1
+	0 	# col3 happa2
+	0 	# col4 happa0
+	0 	# col4 happa1
+	0 	# col4 happa2
+	0 	# col5 happa0
+	0 	# col5 happa1
+	0 	# col5 happa2
+	0 	# col6 happa0
+	0 	# col6 happa1
+	0 	# col6 happa2
+	0.000000 	# time
+	1 	# dope black
+	1 	# dope red
+	2 	# floor num
+	0 	# otakara num
+	1 	# 2d index
+	130.000000 	# 1ŠK‚Ì•b”
+	100.000000 	# 2ŠK‚Ì•b”
+}
+# stage
+{
+	4 	# version
+	ch_MAT_limited_time.txt 
+	# PikiCounter
+	0 	# col0 happa0
+	0 	# col0 happa1
+	0 	# col0 happa2
+	0 	# col1 happa0
+	0 	# col1 happa1
+	40 	# col1 happa2
+	0 	# col2 happa0
+	0 	# col2 happa1
+	0 	# col2 happa2
+	0 	# col3 happa0
+	0 	# col3 happa1
+	0 	# col3 happa2
+	0 	# col4 happa0
+	0 	# col4 happa1
+	0 	# col4 happa2
+	0 	# col5 happa0
+	0 	# col5 happa1
+	0 	# col5 happa2
+	0 	# col6 happa0
+	0 	# col6 happa1
+	0 	# col6 happa2
+	160.000000 	# time
+	3 	# dope black
+	4 	# dope red
+	1 	# floor num
+	0 	# otakara num
+	11 	# 2d index
+	130.000000 	# 1ŠK‚Ì•b”
+}
+# stage
+{
+	4 	# version
+	ch_MAT_t_hunter_hana.txt 
+	# PikiCounter
+	0 	# col0 happa0
+	0 	# col0 happa1
+	0 	# col0 happa2
+	0 	# col1 happa0
+	0 	# col1 happa1
+	40 	# col1 happa2
+	0 	# col2 happa0
+	0 	# col2 happa1
+	0 	# col2 happa2
+	0 	# col3 happa0
+	0 	# col3 happa1
+	20 	# col3 happa2
+	0 	# col4 happa0
+	0 	# col4 happa1
+	20 	# col4 happa2
+	0 	# col5 happa0
+	0 	# col5 happa1
+	0 	# col5 happa2
+	0 	# col6 happa0
+	0 	# col6 happa1
+	0 	# col6 happa2
+	400.000000 	# time
+	0 	# dope black
+	0 	# dope red
+	1 	# floor num
+	0 	# otakara num
+	14 	# 2d index
+	145.000000 	# 1ŠK‚Ì•b”
+}
+# stage
+{
+	4 	# version
+	ch_MUKI_damagumo.txt 
+	# PikiCounter
+	0 	# col0 happa0
+	0 	# col0 happa1
+	0 	# col0 happa2
+	0 	# col1 happa0
+	0 	# col1 happa1
+	0 	# col1 happa2
+	0 	# col2 happa0
+	0 	# col2 happa1
+	50 	# col2 happa2
+	0 	# col3 happa0
+	0 	# col3 happa1
+	0 	# col3 happa2
+	0 	# col4 happa0
+	0 	# col4 happa1
+	0 	# col4 happa2
+	0 	# col5 happa0
+	0 	# col5 happa1
+	0 	# col5 happa2
+	0 	# col6 happa0
+	0 	# col6 happa1
+	0 	# col6 happa2
+	0.000000 	# time
+	0 	# dope black
+	1 	# dope red
+	1 	# floor num
+	0 	# otakara num
+	6 	# 2d index
+	150.000000 	# 1ŠK‚Ì•b”
+}
+# stage
+{
+	4 	# version
+	ch_MAT_t_hunter_enemy.txt 
+	# PikiCounter
+	0 	# col0 happa0
+	0 	# col0 happa1
+	0 	# col0 happa2
+	0 	# col1 happa0
+	0 	# col1 happa1
+	5 	# col1 happa2
+	0 	# col2 happa0
+	0 	# col2 happa1
+	0 	# col2 happa2
+	0 	# col3 happa0
+	0 	# col3 happa1
+	0 	# col3 happa2
+	0 	# col4 happa0
+	0 	# col4 happa1
+	5 	# col4 happa2
+	0 	# col5 happa0
+	0 	# col5 happa1
+	0 	# col5 happa2
+	0 	# col6 happa0
+	0 	# col6 happa1
+	0 	# col6 happa2
+	400.000000 	# time
+	2 	# dope black
+	3 	# dope red
+	5 	# floor num
+	0 	# otakara num
+	10 	# 2d index
+	50.000000 	# 1ŠK‚Ì•b”
+	75.000000 	# 2ŠK‚Ì•b”
+	65.000000 	# 3ŠK‚Ì•b”
+	40.000000 	# 4ŠK‚Ì•b”
+	70.000000 	# 5ŠK‚Ì•b”
+}
+# stage
+{
+	4 	# version
+	ch_MAT_conc_cave.txt 
+	# PikiCounter
+	0 	# col0 happa0
+	0 	# col0 happa1
+	0 	# col0 happa2
+	0 	# col1 happa0
+	0 	# col1 happa1
+	0 	# col1 happa2
+	0 	# col2 happa0
+	0 	# col2 happa1
+	0 	# col2 happa2
+	0 	# col3 happa0
+	0 	# col3 happa1
+	0 	# col3 happa2
+	0 	# col4 happa0
+	0 	# col4 happa1
+	2 	# col4 happa2
+	0 	# col5 happa0
+	0 	# col5 happa1
+	0 	# col5 happa2
+	0 	# col6 happa0
+	0 	# col6 happa1
+	0 	# col6 happa2
+	500.000000 	# time
+	0 	# dope black
+	0 	# dope red
+	3 	# floor num
+	0 	# otakara num
+	2 	# 2d index
+	70.000000 	# 1ŠK‚Ì•b”
+	100.000000 	# 2ŠK‚Ì•b”
+	50.000000 	# 3ŠK‚Ì•b”
+}
+# stage
+{
+	4 	# version
+	ch_NARI_04series.txt 
+	# PikiCounter
+	0 	# col0 happa0
+	0 	# col0 happa1
+	0 	# col0 happa2
+	0 	# col1 happa0
+	0 	# col1 happa1
+	0 	# col1 happa2
+	0 	# col2 happa0
+	0 	# col2 happa1
+	0 	# col2 happa2
+	0 	# col3 happa0
+	0 	# col3 happa1
+	0 	# col3 happa2
+	0 	# col4 happa0
+	0 	# col4 happa1
+	50 	# col4 happa2
+	0 	# col5 happa0
+	0 	# col5 happa1
+	0 	# col5 happa2
+	0 	# col6 happa0
+	0 	# col6 happa1
+	0 	# col6 happa2
+	450.000000 	# time
+	2 	# dope black
+	3 	# dope red
+	7 	# floor num
+	0 	# otakara num
+	12 	# 2d index
+	40.000000 	# 1ŠK‚Ì•b”
+	30.000000 	# 2ŠK‚Ì•b”
+	40.000000 	# 3ŠK‚Ì•b”
+	40.000000 	# 4ŠK‚Ì•b”
+	40.000000 	# 5ŠK‚Ì•b”
+	45.000000 	# 6ŠK‚Ì•b”
+	60.000000 	# 7ŠK‚Ì•b”
+}
+# stage
+{
+	4 	# version
+	ch_MAT_t_hunter_otakara.txt 
+	# PikiCounter
+	0 	# col0 happa0
+	0 	# col0 happa1
+	25 	# col0 happa2
+	0 	# col1 happa0
+	0 	# col1 happa1
+	25 	# col1 happa2
+	0 	# col2 happa0
+	0 	# col2 happa1
+	25 	# col2 happa2
+	0 	# col3 happa0
+	0 	# col3 happa1
+	0 	# col3 happa2
+	0 	# col4 happa0
+	0 	# col4 happa1
+	25 	# col4 happa2
+	0 	# col5 happa0
+	0 	# col5 happa1
+	0 	# col5 happa2
+	0 	# col6 happa0
+	0 	# col6 happa1
+	0 	# col6 happa2
+	300.000000 	# time
+	0 	# dope black
+	0 	# dope red
+	1 	# floor num
+	6 	# otakara num
+	23 	# 2d index
+	180.000000 	# 1ŠK‚Ì•b”
+}
+# stage
+{
+	4 	# version
+	ch_MUKI_bigfoot.txt 
+	# PikiCounter
+	0 	# col0 happa0
+	0 	# col0 happa1
+	0 	# col0 happa2
+	25 	# col1 happa0
+	0 	# col1 happa1
+	0 	# col1 happa2
+	0 	# col2 happa0
+	0 	# col2 happa1
+	0 	# col2 happa2
+	0 	# col3 happa0
+	0 	# col3 happa1
+	0 	# col3 happa2
+	25 	# col4 happa0
+	0 	# col4 happa1
+	0 	# col4 happa2
+	0 	# col5 happa0
+	0 	# col5 happa1
+	0 	# col5 happa2
+	0 	# col6 happa0
+	0 	# col6 happa1
+	0 	# col6 happa2
+	0.000000 	# time
+	0 	# dope black
+	2 	# dope red
+	1 	# floor num
+	0 	# otakara num
+	7 	# 2d index
+	200.000000 	# 1ŠK‚Ì•b”
+}
+# stage
+{
+	4 	# version
+	ch_MIYA_oopan.txt 
+	# PikiCounter
+	5 	# col0 happa0
+	0 	# col0 happa1
+	0 	# col0 happa2
+	5 	# col1 happa0
+	0 	# col1 happa1
+	0 	# col1 happa2
+	5 	# col2 happa0
+	0 	# col2 happa1
+	0 	# col2 happa2
+	5 	# col3 happa0
+	0 	# col3 happa1
+	0 	# col3 happa2
+	5 	# col4 happa0
+	0 	# col4 happa1
+	0 	# col4 happa2
+	0 	# col5 happa0
+	0 	# col5 happa1
+	0 	# col5 happa2
+	0 	# col6 happa0
+	0 	# col6 happa1
+	0 	# col6 happa2
+	0.000000 	# time
+	0 	# dope black
+	0 	# dope red
+	1 	# floor num
+	0 	# otakara num
+	21 	# 2d index
+	150.000000 	# 1ŠK‚Ì•b”
+}
+# stage
+{
+	4 	# version
+	ch_MAT_yellow_purple_white.txt 
+	# PikiCounter
+	0 	# col0 happa0
+	0 	# col0 happa1
+	0 	# col0 happa2
+	0 	# col1 happa0
+	0 	# col1 happa1
+	0 	# col1 happa2
+	30 	# col2 happa0
+	0 	# col2 happa1
+	0 	# col2 happa2
+	15 	# col3 happa0
+	0 	# col3 happa1
+	0 	# col3 happa2
+	15 	# col4 happa0
+	0 	# col4 happa1
+	0 	# col4 happa2
+	0 	# col5 happa0
+	0 	# col5 happa1
+	0 	# col5 happa2
+	0 	# col6 happa0
+	0 	# col6 happa1
+	0 	# col6 happa2
+	700.000000 	# time
+	0 	# dope black
+	2 	# dope red
+	1 	# floor num
+	0 	# otakara num
+	19 	# 2d index
+	230.000000 	# 1ŠK‚Ì•b”
+}
+# stage
+{
+	4 	# version
+	ch_MUKI_redblue.txt 
+	# PikiCounter
+	0 	# col0 happa0
+	0 	# col0 happa1
+	25 	# col0 happa2
+	0 	# col1 happa0
+	0 	# col1 happa1
+	25 	# col1 happa2
+	0 	# col2 happa0
+	0 	# col2 happa1
+	0 	# col2 happa2
+	0 	# col3 happa0
+	0 	# col3 happa1
+	0 	# col3 happa2
+	0 	# col4 happa0
+	0 	# col4 happa1
+	0 	# col4 happa2
+	0 	# col5 happa0
+	0 	# col5 happa1
+	0 	# col5 happa2
+	0 	# col6 happa0
+	0 	# col6 happa1
+	0 	# col6 happa2
+	0.000000 	# time
+	1 	# dope black
+	1 	# dope red
+	2 	# floor num
+	0 	# otakara num
+	18 	# 2d index
+	200.000000 	# 1ŠK‚Ì•b”
+	200.000000 	# 2ŠK‚Ì•b”
+}
+# stage
+{
+	4 	# version
+	ch_NARI_08tobasare.txt 
+	# PikiCounter
+	0 	# col0 happa0
+	0 	# col0 happa1
+	25 	# col0 happa2
+	0 	# col1 happa0
+	0 	# col1 happa1
+	20 	# col1 happa2
+	0 	# col2 happa0
+	0 	# col2 happa1
+	0 	# col2 happa2
+	0 	# col3 happa0
+	0 	# col3 happa1
+	5 	# col3 happa2
+	0 	# col4 happa0
+	0 	# col4 happa1
+	0 	# col4 happa2
+	0 	# col5 happa0
+	0 	# col5 happa1
+	0 	# col5 happa2
+	0 	# col6 happa0
+	0 	# col6 happa1
+	0 	# col6 happa2
+	0.000000 	# time
+	2 	# dope black
+	0 	# dope red
+	2 	# floor num
+	0 	# otakara num
+	24 	# 2d index
+	150.000000 	# 1ŠK‚Ì•b”
+	100.000000 	# 2ŠK‚Ì•b”
+}
+# stage
+{
+	4 	# version
+	ch_NARI_02tile.txt 
+	# PikiCounter
+	0 	# col0 happa0
+	0 	# col0 happa1
+	50 	# col0 happa2
+	0 	# col1 happa0
+	0 	# col1 happa1
+	0 	# col1 happa2
+	0 	# col2 happa0
+	0 	# col2 happa1
+	0 	# col2 happa2
+	0 	# col3 happa0
+	0 	# col3 happa1
+	0 	# col3 happa2
+	0 	# col4 happa0
+	0 	# col4 happa1
+	0 	# col4 happa2
+	0 	# col5 happa0
+	0 	# col5 happa1
+	0 	# col5 happa2
+	0 	# col6 happa0
+	0 	# col6 happa1
+	0 	# col6 happa2
+	0.000000 	# time
+	0 	# dope black
+	5 	# dope red
+	2 	# floor num
+	0 	# otakara num
+	4 	# 2d index
+	200.000000 	# 1ŠK‚Ì•b”
+	150.000000 	# 2ŠK‚Ì•b”
+}
+# stage
+{
+	4 	# version
+	ch_MAT_crawler.txt 
+	# PikiCounter
+	0 	# col0 happa0
+	0 	# col0 happa1
+	30 	# col0 happa2
+	0 	# col1 happa0
+	0 	# col1 happa1
+	30 	# col1 happa2
+	0 	# col2 happa0
+	0 	# col2 happa1
+	0 	# col2 happa2
+	0 	# col3 happa0
+	0 	# col3 happa1
+	0 	# col3 happa2
+	0 	# col4 happa0
+	0 	# col4 happa1
+	0 	# col4 happa2
+	0 	# col5 happa0
+	0 	# col5 happa1
+	0 	# col5 happa2
+	0 	# col6 happa0
+	0 	# col6 happa1
+	0 	# col6 happa2
+	500.000000 	# time
+	3 	# dope black
+	4 	# dope red
+	2 	# floor num
+	0 	# otakara num
+	29 	# 2d index
+	170.000000 	# 1ŠK‚Ì•b”
+	120.000000 	# 2ŠK‚Ì•b”
+}
+# stage
+{
+	4 	# version
+	ch_MAT_route_rover.txt 
+	# PikiCounter
+	0 	# col0 happa0
+	0 	# col0 happa1
+	20 	# col0 happa2
+	0 	# col1 happa0
+	0 	# col1 happa1
+	20 	# col1 happa2
+	0 	# col2 happa0
+	0 	# col2 happa1
+	20 	# col2 happa2
+	0 	# col3 happa0
+	0 	# col3 happa1
+	0 	# col3 happa2
+	0 	# col4 happa0
+	0 	# col4 happa1
+	0 	# col4 happa2
+	0 	# col5 happa0
+	0 	# col5 happa1
+	0 	# col5 happa2
+	0 	# col6 happa0
+	0 	# col6 happa1
+	0 	# col6 happa2
+	300.000000 	# time
+	2 	# dope black
+	2 	# dope red
+	1 	# floor num
+	0 	# otakara num
+	27 	# 2d index
+	90.000000 	# 1ŠK‚Ì•b”
+}
+# stage
+{
+	4 	# version
+	ch_MUKI_enemyzero.txt 
+	# PikiCounter
+	0 	# col0 happa0
+	0 	# col0 happa1
+	0 	# col0 happa2
+	0 	# col1 happa0
+	0 	# col1 happa1
+	0 	# col1 happa2
+	0 	# col2 happa0
+	0 	# col2 happa1
+	0 	# col2 happa2
+	0 	# col3 happa0
+	0 	# col3 happa1
+	0 	# col3 happa2
+	0 	# col4 happa0
+	0 	# col4 happa1
+	0 	# col4 happa2
+	0 	# col5 happa0
+	0 	# col5 happa1
+	2 	# col5 happa2
+	0 	# col6 happa0
+	0 	# col6 happa1
+	0 	# col6 happa2
+	0.000000 	# time
+	0 	# dope black
+	0 	# dope red
+	1 	# floor num
+	0 	# otakara num
+	13 	# 2d index
+	200.000000 	# 1ŠK‚Ì•b”
+}
+# stage
+{
+	4 	# version
+	ch_NARI_09suikomi.txt 
+	# PikiCounter
+	0 	# col0 happa0
+	0 	# col0 happa1
+	0 	# col0 happa2
+	0 	# col1 happa0
+	0 	# col1 happa1
+	30 	# col1 happa2
+	0 	# col2 happa0
+	0 	# col2 happa1
+	30 	# col2 happa2
+	0 	# col3 happa0
+	0 	# col3 happa1
+	0 	# col3 happa2
+	0 	# col4 happa0
+	0 	# col4 happa1
+	0 	# col4 happa2
+	0 	# col5 happa0
+	0 	# col5 happa1
+	0 	# col5 happa2
+	0 	# col6 happa0
+	0 	# col6 happa1
+	0 	# col6 happa2
+	450.000000 	# time
+	1 	# dope black
+	2 	# dope red
+	1 	# floor num
+	0 	# otakara num
+	25 	# 2d index
+	180.000000 	# 1ŠK‚Ì•b”
+}
+# stage
+{
+	4 	# version
+	ch_MUKI_houdai.txt 
+	# PikiCounter
+	0 	# col0 happa0
+	0 	# col0 happa1
+	10 	# col0 happa2
+	0 	# col1 happa0
+	0 	# col1 happa1
+	10 	# col1 happa2
+	0 	# col2 happa0
+	0 	# col2 happa1
+	10 	# col2 happa2
+	0 	# col3 happa0
+	0 	# col3 happa1
+	10 	# col3 happa2
+	0 	# col4 happa0
+	0 	# col4 happa1
+	10 	# col4 happa2
+	0 	# col5 happa0
+	0 	# col5 happa1
+	0 	# col5 happa2
+	0 	# col6 happa0
+	0 	# col6 happa1
+	0 	# col6 happa2
+	0.000000 	# time
+	1 	# dope black
+	1 	# dope red
+	2 	# floor num
+	0 	# otakara num
+	8 	# 2d index
+	100.000000 	# 1ŠK‚Ì•b”
+	150.000000 	# 2ŠK‚Ì•b”
+}
+# stage
+{
+	4 	# version
+	ch_NARI_06start3hard.txt 
+	# PikiCounter
+	0 	# col0 happa0
+	0 	# col0 happa1
+	0 	# col0 happa2
+	0 	# col1 happa0
+	0 	# col1 happa1
+	4 	# col1 happa2
+	0 	# col2 happa0
+	0 	# col2 happa1
+	0 	# col2 happa2
+	0 	# col3 happa0
+	0 	# col3 happa1
+	0 	# col3 happa2
+	0 	# col4 happa0
+	0 	# col4 happa1
+	0 	# col4 happa2
+	0 	# col5 happa0
+	0 	# col5 happa1
+	0 	# col5 happa2
+	0 	# col6 happa0
+	0 	# col6 happa1
+	0 	# col6 happa2
+	450.000000 	# time
+	2 	# dope black
+	3 	# dope red
+	3 	# floor num
+	0 	# otakara num
+	16 	# 2d index
+	100.000000 	# 1ŠK‚Ì•b”
+	150.000000 	# 2ŠK‚Ì•b”
+	180.000000 	# 3ŠK‚Ì•b”
+}
+# stage
+{
+	4 	# version
+	ch_MAT_flier.txt 
+	# PikiCounter
+	0 	# col0 happa0
+	0 	# col0 happa1
+	0 	# col0 happa2
+	0 	# col1 happa0
+	0 	# col1 happa1
+	50 	# col1 happa2
+	0 	# col2 happa0
+	0 	# col2 happa1
+	0 	# col2 happa2
+	0 	# col3 happa0
+	0 	# col3 happa1
+	0 	# col3 happa2
+	0 	# col4 happa0
+	0 	# col4 happa1
+	0 	# col4 happa2
+	0 	# col5 happa0
+	0 	# col5 happa1
+	0 	# col5 happa2
+	0 	# col6 happa0
+	0 	# col6 happa1
+	0 	# col6 happa2
+	500.000000 	# time
+	1 	# dope black
+	1 	# dope red
+	1 	# floor num
+	0 	# otakara num
+	28 	# 2d index
+	160.000000 	# 1ŠK‚Ì•b”
+}
+# stage
+{
+	4 	# version
+	ch_MIYA_trap.txt 
+	# PikiCounter
+	0 	# col0 happa0
+	0 	# col0 happa1
+	0 	# col0 happa2
+	0 	# col1 happa0
+	0 	# col1 happa1
+	0 	# col1 happa2
+	0 	# col2 happa0
+	0 	# col2 happa1
+	0 	# col2 happa2
+	0 	# col3 happa0
+	0 	# col3 happa1
+	25 	# col3 happa2
+	0 	# col4 happa0
+	0 	# col4 happa1
+	0 	# col4 happa2
+	0 	# col5 happa0
+	0 	# col5 happa1
+	0 	# col5 happa2
+	0 	# col6 happa0
+	0 	# col6 happa1
+	0 	# col6 happa2
+	0.000000 	# time
+	2 	# dope black
+	2 	# dope red
+	1 	# floor num
+	0 	# otakara num
+	26 	# 2d index
+	300.000000 	# 1ŠK‚Ì•b”
+}
+# stage
+{
+	4 	# version
+	ch_MUKI_bombing.txt 
+	# PikiCounter
+	0 	# col0 happa0
+	0 	# col0 happa1
+	0 	# col0 happa2
+	0 	# col1 happa0
+	0 	# col1 happa1
+	0 	# col1 happa2
+	0 	# col2 happa0
+	0 	# col2 happa1
+	30 	# col2 happa2
+	0 	# col3 happa0
+	0 	# col3 happa1
+	20 	# col3 happa2
+	0 	# col4 happa0
+	0 	# col4 happa1
+	0 	# col4 happa2
+	0 	# col5 happa0
+	0 	# col5 happa1
+	0 	# col5 happa2
+	0 	# col6 happa0
+	0 	# col6 happa1
+	0 	# col6 happa2
+	0.000000 	# time
+	1 	# dope black
+	1 	# dope red
+	1 	# floor num
+	0 	# otakara num
+	22 	# 2d index
+	255.000000 	# 1ŠK‚Ì•b”
+}
+# stage
+{
+	4 	# version
+	ch_MUKI_king.txt 
+	# PikiCounter
+	0 	# col0 happa0
+	0 	# col0 happa1
+	20 	# col0 happa2
+	0 	# col1 happa0
+	0 	# col1 happa1
+	20 	# col1 happa2
+	0 	# col2 happa0
+	0 	# col2 happa1
+	0 	# col2 happa2
+	0 	# col3 happa0
+	0 	# col3 happa1
+	10 	# col3 happa2
+	0 	# col4 happa0
+	0 	# col4 happa1
+	0 	# col4 happa2
+	0 	# col5 happa0
+	0 	# col5 happa1
+	0 	# col5 happa2
+	0 	# col6 happa0
+	0 	# col6 happa1
+	0 	# col6 happa2
+	0.000000 	# time
+	2 	# dope black
+	2 	# dope red
+	5 	# floor num
+	0 	# otakara num
+	9 	# 2d index
+	100.000000 	# 1ŠK‚Ì•b”
+	100.000000 	# 2ŠK‚Ì•b”
+	100.000000 	# 3ŠK‚Ì•b”
+	100.000000 	# 4ŠK‚Ì•b”
+	100.000000 	# 5ŠK‚Ì•b”
+}

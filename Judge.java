@@ -10,35 +10,31 @@ public class Judge {
         stats = s;
     }
 
+    HashSet<String> plantNames = hashSet("ooinu_s,ooinu_l,wakame_s,wakame_l,kareooinu_s,kareooinu_l,daiodored,daiodogreen,clover,hikarikinoko,tanpopo,zenmai,nekojarashi,tukushi,magaret,watage,chiyogami");     
+    HashSet<String> hazardNames = hashSet("gashiba,hiba,elechiba,rock");
+    HashSet<String> noCarcassNames = hashSet("wealthy,fart,kogane,mar,hanachirashi,damagumo,bigfoot,bigtreasure,qurione,baby,bomb,egg,kurage,onikurage,bombotakara,blackman,tyre,houdai,ooinu_s,ooinu_l,wakame_s,wakame_l,kareooinu_s,kareooinu_l,daiodored,daiodogreen,clover,hikarikinoko,tanpopo,zenmai,nekojarashi,tukushi,magaret,watage,chiyogami,gashiba,hiba,elechiba,rock,bluepom,redpom,yellowpom,blackpom,whitepom,randpom,pom");
+    HashSet<String> pomNames = hashSet("bluepom,redpom,yellowpom,blackpom,whitepom,randpom,pom");
+    HashSet<String> ignoreTreasuresPoD = hashSet("kinoko_doku,bird_hane,futa_a_silver,flower_red,flower_blue,g_futa_kyodo,dia_a_green,makigai,mojiban,nut,dashboots,cookie_m_l,bane_red,chocolate,tape_blue");
+    HashSet<String> optionalTreasuresPoD = hashSet("bey_goma,chess_queen_white,gum_tape_s,chess_king_white,chess_queen_black,leaf_normal,locket");
+    HashSet<String> purple20 = hashSet("EC-2,FC-1,HoB-2,CoS-2,GK-2,SR-2"), white20 = hashSet("WFG-3,BK-1,SH-2,SR-1");
+
 /* 
 
 judge [pod at (default for story) key cmat score (default for challenge)]
-<1 or >99 : only output top/bottom percentile of results (for images and prints) as compared to the distribution of 10M random seeds.
+<1% or >99% : only output top/bottom percentile of results (for images and prints) as compared to the distribution of 100K random seeds.
 combine: combine results across seeds for the final sorted list output
 
-pod: output is [expected pokos + collected pokos] / 2 - seconds
-at: output is -seconds
-	need a better heuristic for these two, considering treasure paths...
-	at should consider purple flowers
-cmat/cmal: output is -seconds
-	every enemy has a treasure so fight times are not an issue for cmat. probably use something similar to score
-	cmal: enemies aren't really an issue either, only key location + gates + hole location
-score: output is pokos * 10 + [start pikis+8*queen candypops] * 10 + start time - seconds / 2
+pod: output is seconds - [expected pokos - collected pokos] / 2
+at: output is seconds (penalties included for missing purple flowers and treasures)
+cmat/cmal: output is seconds
+attk (score attack): output is ( pokos * 10 + [start pikis+8*queen candypops] * 10 + start time - seconds / 2 ) (meant to guess the final score)
 	find good layouts is pretty good, just need to handle gates
 defaults: pod/score
-High score is always best...
-
-
+low score is better
 
 special cases:
-pod sh 6
-pod gk 4
-ch 16 breadbugs?
-
-if prints are active, each score (that passes the filter is output)
-and then a sorted list is printed at the end (if stats are active) for all that pass the filter.
-
-if images are active, then there is an image toggle to pass the filter.
+pod sh 6 - (todo?)
+pod breadbugs/high treasures
 
 */
 
@@ -52,41 +48,559 @@ if images are active, then there is an image toggle to pass the filter.
 
         // calculate score... (in this function, "score" is based on jhawk's heuristics, not the game's version of score)
         double score = 0;
-        
-        if (CaveGen.judgeType.equals("default") && CaveGen.hardMode || CaveGen.judgeType.equals("pod")) {
 
+        ArrayList<Teki> placedTekisWithItemsInside;
+        placedTekisWithItemsInside = new ArrayList<Teki>();
+        for (Teki t: g.placedTekis) {
+            if (t.itemInside != null) {
+                placedTekisWithItemsInside.add(t);
+            }
+        }
+        
+        if (CaveGen.judgeType.equals("score")) { // sum of scores, using the game's version of score
+            int treasureCount = 0;
+            for (Item t: g.placedItems) {
+                score += t.spawnPoint.mapUnit.unitScore;
+                treasureCount += 1;
+            }
+            for (Teki t: placedTekisWithItemsInside) {
+                if (t.spawnPoint.type == 5)
+                    score += t.spawnPoint.door.doorScore;
+                else
+                    score += t.spawnPoint.mapUnit.unitScore;
+                treasureCount += 1;
+            }
+            score += 100000 * (expectedNumTreasures - treasureCount); // add penalty for missing treasures
+        } 
+
+        else if (CaveGen.judgeType.equals("default") && CaveGen.hardMode || CaveGen.judgeType.equals("pod")) {
+
+            HashSet<SpawnPoint> visited = new HashSet<SpawnPoint>();
+            HashSet<SpawnPoint> unVisited = new HashSet<SpawnPoint>();
+            visited.add(g.placedStart);
+
+            int numPokosCollected = 0;
+            int numTreasuresCollected = 0;
+            for (Item t: g.placedItems) {
+                String name = t.itemName.toLowerCase();
+                if (!ignoreTreasuresPoD.contains(name) && !optionalTreasuresPoD.contains(name)) {
+                    numTreasuresCollected += 1;
+                    numPokosCollected += Parser.pokos.get(name);
+                    unVisited.add(t.spawnPoint);
+                }
+            }
+            for (Teki t: placedTekisWithItemsInside) {
+                String name = t.itemInside;
+                if (!ignoreTreasuresPoD.contains(name) && !optionalTreasuresPoD.contains(name)) {
+                    numTreasuresCollected += 1;
+                    numPokosCollected += Parser.pokos.get(name);
+                    unVisited.add(t.spawnPoint);
+                }
+            }
+        
+            // compute pikmin*seconds required to collect all treasures
+            float pikminSeconds = 0;
+            float activePikmin = 0;
+
+            for (Item t: g.placedItems) {
+                String name = t.itemName.toLowerCase();
+                if (ignoreTreasuresPoD.contains(name)) continue;
+                int minCarry = Parser.minCarry.get(name);
+                int maxCarry = Parser.maxCarry.get(name);
+                int carry = maxCarry;
+                float dig = 0;
+                if (Parser.depth.containsKey(name) && Parser.depth.get(name) > 0) {
+                    dig = Math.min(1, Parser.depth.get(name)/Parser.height.get(name)) * diggingHealth / pikiDigValue;
+                }
+                if (optionalTreasuresPoD.contains(name)) { // check if this treasure is worth
+                    float timeNeeded = g.spawnPointDistToStart(t.spawnPoint) / olimarSpeedCm
+                        + loadTimeSecondsStory + dig / (pikiCount / 3) 
+                        + g.spawnPointDistToStart(t.spawnPoint) // carry cost
+                           * carryMultiplier / (220.0f + 180.0f * (pikiCarryValue * carry - minCarry + 1) / maxCarry);
+                    int pokos = Parser.pokos.get(name);
+                    if (timeNeeded < pokos / 2.4f) {
+                        numTreasuresCollected += 1;
+                        numPokosCollected += Parser.pokos.get(name);
+                        unVisited.add(t.spawnPoint);
+                        //System.out.println("collect: " + name);
+                    } else {
+                        continue; // skip
+                    }
+                }
+                g.closestWayPoint(t.spawnPoint).hasCarryableBehind = true;
+                activePikmin += maxCarry;
+                pikminSeconds += 
+                        carry * loadTimeSecondsStory + dig + // loading + digging
+                        carry * g.spawnPointDistToStart(t.spawnPoint) // carry cost
+                           * carryMultiplier / (220.0f + 180.0f * (pikiCarryValue * carry - minCarry + 1) / maxCarry);
+            }
+
+            for (Teki t: placedTekisWithItemsInside) {
+                String name = t.itemInside.toLowerCase();
+                if (ignoreTreasuresPoD.contains(name)) continue;
+                int minCarry = Parser.minCarry.get(name);
+                int maxCarry = Parser.maxCarry.get(name);
+                int carry = maxCarry;
+                float dig = 0;
+                if (Parser.depth.containsKey(name) && Parser.depth.get(name) > 0) {
+                    dig = Math.min(1, Parser.depth.get(name)/Parser.height.get(name)) * diggingHealth / pikiDigValue;
+                }
+                if (optionalTreasuresPoD.contains(name)) { // check if this treasure is worth
+                    float timeNeeded = g.spawnPointDistToStart(t.spawnPoint) / olimarSpeedCm
+                        + loadTimeSecondsStory + dig / (pikiCount / 3) 
+                        + g.spawnPointDistToStart(t.spawnPoint) // carry cost
+                           * carryMultiplier / (220.0f + 180.0f * (pikiCarryValue * carry - minCarry + 1) / maxCarry);
+                    int pokos = Parser.pokos.get(name);
+                    if (timeNeeded + 10 < pokos / 2.5f) {
+                        numTreasuresCollected += 1;
+                        numPokosCollected += Parser.pokos.get(name);
+                        unVisited.add(t.spawnPoint);
+                        //System.out.println("collect: " + name);
+                    } else {
+                        continue; // skip
+                    }
+                }
+                g.closestWayPoint(t.spawnPoint).hasCarryableBehind = true;
+                activePikmin += maxCarry;
+                pikminSeconds += 
+                        carry * loadTimeSecondsStory + dig + // loading + digging
+                        carry * g.spawnPointDistToStart(t.spawnPoint) // carry cost
+                           * carryMultiplier / (220.0f + 180.0f * (pikiCarryValue * carry - minCarry + 1) / maxCarry);
+            }
+
+            float carrySeconds = pikminSeconds == 0 ? 0 : pikminSeconds / Math.min(pikiCount, activePikmin);
+
+            // compute the minimum spanning tree, and add the time needed for the captain to walk it
+            float walkingSeconds = 0;
+            while (unVisited.size() > 0) {
+                float minDist = CaveGen.INF;
+                SpawnPoint minU = null;
+                for (SpawnPoint v: visited) {
+                    for (SpawnPoint u: unVisited) {
+                        float dist = v == g.placedStart ? g.spawnPointDistToStart(u) : g.spawnPointDist(v, u);
+                        if (dist < minDist) {
+                            minU = u;
+                            minDist = dist;
+                        }
+                    }
+                }
+                walkingSeconds += (minDist / olimarSpeedCm);
+                unVisited.remove(minU);
+                visited.add(minU);
+            }
+
+            // walking to hole
+            if (g.placedHole != null) {
+                walkingSeconds += g.spawnPointDistToStart(g.placedHole) / olimarSpeedCm / (1 + numTreasuresCollected);
+            } else if (g.placedGeyser != null) {
+                walkingSeconds += g.spawnPointDistToStart(g.placedGeyser) / olimarSpeedCm / (1 + numTreasuresCollected);
+            } else {
+                walkingSeconds += 300; // ho holes
+            }
+            
+            // Teki/Hazards that are in the way of treasures, bug pokos
+            float hazardSeconds = 0;
+            int bugPokos = 0;
+            computeWaypointCarryableGraph(g, ""); // pod treasures (already marked above)
+            for (Teki t: g.placedTekis) {
+                String name = t.tekiName.toLowerCase();
+                if (g.closestWayPoint(t.spawnPoint).hasCarryableBehind) {
+                    hazardSeconds += Parser.tekiDifficultyJudgeSec.get(name);
+                    if (!noCarcassNames.contains(name) && g.spawnPointDistToStart(t.spawnPoint) / olimarSpeedCm < walkingSeconds * 0.4f) {
+                        bugPokos += Parser.pokos.get(name);
+                    }
+                }
+            }
+
+            // gates that are in the way of holes/treasures
+            float gateSeconds = 0;
+            if (g.placedGates.size() > 0) {
+                computeWaypointCarryableGraph(g, "h"); // holes (+ pod treasures)
+                for (Gate t: g.placedGates) {
+                    if (g.closestWayPoint(t.spawnPoint).hasCarryableBehind) {
+                        gateSeconds += Math.max(6, 3 + t.life * gateLifeMultiplier / (pikiAttackValue * pikiCount));
+                    }
+                }
+            }
+
+            float pokoSeconds = expectedNumPokosPoD - numPokosCollected - bugPokos;
+            pokoSeconds /= pokoSeconds > 0 ? 2.0f : 1.67f;
+
+            // adjustments
+            float adjSeconds = 0;
+            if (CaveGen.specialCaveInfoName.equals("GK")) {
+                // high treasures
+                for (Item t: g.placedItems) {
+                    if (ignoreTreasuresPoD.contains(t.itemName.toLowerCase())) continue;
+                    if (t.spawnPoint.y == 100 || t.spawnPoint.y == 125) {
+                        adjSeconds += 12;
+                        //System.out.println("high treasure");
+                    }
+                }
+                // breadbugs
+                for (Item i: g.placedItems) {
+                    String name = i.itemName.toLowerCase();
+                    if (ignoreTreasuresPoD.contains(name)) continue;
+                    if (i.spawnPoint.y >= 30) continue; // high
+                    if (Parser.minCarry.get(name) > 10) continue; // too heavy
+                    float worst = 0;
+                    for (Teki t: g.placedTekis) {
+                        if (t.tekiName.equalsIgnoreCase("panmodoki")) {
+                            float closeness = g.spawnPointDist(t.spawnPoint, i.spawnPoint) / g.spawnPointDistToStart(i.spawnPoint);
+                            if (closeness < 0.25) {
+                                worst = Math.max(worst, Math.min(20, 2 / closeness));
+                            }
+                        }
+                    }
+                    adjSeconds += worst;
+                    //if (worst > 0) System.out.println("breadbug " + worst + " " + name);
+                }
+            }
+
+            //System.out.println("carry" + carrySeconds + " walk" + walkingSeconds + " haz" + hazardSeconds + " gate" + gateSeconds);
+            //System.out.println("poko" + pokoSeconds + " adj" + adjSeconds);
+            score = walkingSeconds + carrySeconds + hazardSeconds + gateSeconds
+                        + pokoSeconds + adjSeconds + 10*numTreasuresCollected;
         } 
         
         else if (CaveGen.judgeType.equals("at")) {
+            int treasureCount = g.placedItems.size() + placedTekisWithItemsInside.size();
+            int numPurpleCandypop = 0;
+            for (Teki t: g.placedTekis)
+                if (t.tekiName.equalsIgnoreCase("blackpom"))
+                    numPurpleCandypop += 1;
 
+            // compute the minimum spanning tree, and add the time needed for the captain to walk it
+            float walkingSeconds = 0;
+            HashSet<SpawnPoint> visited = new HashSet<SpawnPoint>();
+            HashSet<SpawnPoint> unVisited = new HashSet<SpawnPoint>();
+            visited.add(g.placedStart);
+            for (Item t: g.placedItems) unVisited.add(t.spawnPoint);
+            for (Teki t: placedTekisWithItemsInside) unVisited.add(t.spawnPoint);
+        
+            while (unVisited.size() > 0) {
+                float minDist = CaveGen.INF;
+                SpawnPoint minU = null;
+                for (SpawnPoint v: visited) {
+                    for (SpawnPoint u: unVisited) {
+                        float dist = v == g.placedStart ? g.spawnPointDistToStart(u) : g.spawnPointDist(v, u);
+                        if (dist < minDist) {
+                            minU = u;
+                            minDist = dist;
+                        }
+                    }
+                }
+                walkingSeconds += (minDist / olimarSpeedCm);
+                unVisited.remove(minU);
+                visited.add(minU);
+            }
+
+            // walking to hole
+            if (g.placedHole != null) {
+                walkingSeconds += g.spawnPointDistToStart(g.placedHole) / olimarSpeedCm / (1 + expectedNumTreasures);
+            } else if (g.placedGeyser != null) {
+                walkingSeconds += g.spawnPointDistToStart(g.placedGeyser) / olimarSpeedCm / (1 + expectedNumTreasures);
+            } else {
+                walkingSeconds += 300; // ho holes
+            }
+
+            // purple candypops
+            if (!purple20.contains(sublevelId) && expectedNumPurpleCandypop > 0) {
+                for (Teki t: g.placedTekis) {
+                    if (t.tekiName.equalsIgnoreCase("blackpom")) {
+                        walkingSeconds += g.spawnPointDistToStart(t.spawnPoint) / olimarSpeedCm / (2 + expectedNumTreasures);
+                    }
+                }
+            }
+
+            // compute pikmin*seconds required to collect all treasures
+            float pikminSeconds = 0;
+            float activePikmin = 0;
+
+            for (Item t: g.placedItems) {
+                String name = t.itemName.toLowerCase();
+                int minCarry = Parser.minCarry.get(name);
+                int maxCarry = Parser.maxCarry.get(name);
+                int carry = maxCarry;
+                activePikmin += maxCarry;
+                float dig = 0;
+                if (Parser.depth.containsKey(name) && Parser.depth.get(name) > 0) {
+                    dig = Math.min(1, Parser.depth.get(name)/Parser.height.get(name)) * diggingHealth / pikiDigValue;
+                }
+                pikminSeconds += 
+                        carry * loadTimeSecondsStory + dig + // loading + digging
+                        carry * g.spawnPointDistToStart(t.spawnPoint) // carry cost
+                           * carryMultiplier / (220.0f + 180.0f * (pikiCarryValue * carry - minCarry + 1) / maxCarry);
+            }
+
+            for (Teki t: placedTekisWithItemsInside) {
+                String name = t.itemInside.toLowerCase();
+                int minCarry = Parser.minCarry.get(name);
+                int maxCarry = Parser.maxCarry.get(name);
+                int carry = maxCarry;
+                activePikmin += maxCarry;
+                float dig = 0;
+                if (Parser.depth.containsKey(name) && Parser.depth.get(name) > 0) {
+                    dig = Math.min(1, Parser.depth.get(name)/Parser.height.get(name)) * diggingHealth / pikiDigValue;
+                }
+                pikminSeconds += 
+                        carry * loadTimeSecondsStory + dig + // loading + digging
+                        carry * g.spawnPointDistToStart(t.spawnPoint) // carry cost
+                           * carryMultiplier / (220.0f + 180.0f * (pikiCarryValue * carry - minCarry + 1) / maxCarry);
+            }
+
+            float carrySeconds = pikminSeconds == 0 ? 0 : pikminSeconds / Math.min(pikiCount, activePikmin);
+            
+            // Teki/Hazards that are in the way of treasures
+            float hazardSeconds = 0;
+            computeWaypointCarryableGraph(g, "t"); // treasures
+            for (Teki t: g.placedTekis) {
+                String name = t.tekiName.toLowerCase();
+                if (g.closestWayPoint(t.spawnPoint).hasCarryableBehind) {
+                    hazardSeconds += Parser.tekiDifficultyJudgeSec.get(name);
+                }
+            }
+
+            // gates that are in the way of holes/treasures
+            float gateSeconds = 0;
+            if (g.placedGates.size() > 0) {
+                computeWaypointCarryableGraph(g, "htp"); // holes + treasures + purple candypops
+                for (Gate t: g.placedGates) {
+                    if (g.closestWayPoint(t.spawnPoint).hasCarryableBehind) {
+                        gateSeconds += Math.max(6, 3 + t.life * gateLifeMultiplier / (pikiAttackValue * pikiCount));
+                    }
+                }
+            }
+
+            // penalties
+            float purpPenalty = purple20.contains(sublevelId) ? 0 : (60 * (expectedNumPurpleCandypop - numPurpleCandypop));
+            float treasurePenalty = treasureCount < expectedNumTreasures ? 300 : 0;
+
+            //System.out.println("carry" + carrySeconds + " walk" + walkingSeconds + " haz" + hazardSeconds + " gate" + gateSeconds);
+            //System.out.println("tpen" + treasurePenalty + " ppen" + purpPenalty);
+            score = walkingSeconds + carrySeconds + hazardSeconds + gateSeconds
+                        + treasurePenalty + purpPenalty + 10*treasureCount;
+            
         } 
         
-        else if (CaveGen.judgeType.equals("default") && CaveGen.challengeMode || CaveGen.judgeType.equals("score")) {
+        else if (CaveGen.judgeType.equals("default") && CaveGen.challengeMode || CaveGen.judgeType.equals("attk")) {
+            // compute the number of pokos availible on this layout
+            int pokosAvailible = 0;
+            for (Teki t: g.placedTekis) {
+                String name = t.tekiName.toLowerCase();
+                if (name.equalsIgnoreCase("egg"))
+                    pokosAvailible += 10; // mitites
+                else if (!noCarcassNames.contains(name))
+                    pokosAvailible += Parser.pokos.get(name);
+                if (t.itemInside != null)
+                    pokosAvailible += Parser.pokos.get(t.itemInside.toLowerCase());
+            }
+            for (Item t: g.placedItems)
+                pokosAvailible += Parser.pokos.get(t.itemName.toLowerCase());
 
+            // compute the number of pikmin*seconds required to complete the level
+            float pikminSeconds = 0;
+            int numHazards = 0;
+            for (Teki t: g.placedTekis) {
+                String name = t.tekiName.toLowerCase();
+                if (plantNames.contains(name)) continue;
+                if (hazardNames.contains(name)) {
+                    numHazards += 1;
+                    continue;
+                }
+                pikminSeconds += Parser.tekiDifficultyJudgePiki.get(name) * Parser.tekiDifficultyJudgeSec.get(name);
+                pikminSeconds += judgeWorkFunction(g, t.tekiName, t.spawnPoint);
+                //System.out.println(name + " " + (Parser.tekiDifficultyJudgePiki.get(name) * Parser.tekiDifficultyJudgeSec.get(name)) + " " + judgeWorkFunction(g, t.tekiName, t.spawnPoint));
+                if (t.itemInside != null)
+                    pikminSeconds += judgeWorkFunction(g, t.itemInside, t.spawnPoint);
+                //if (t.itemInside != null) System.out.println("-" + t.itemInside + " " + judgeWorkFunction(g, t.itemInside, t.spawnPoint));
+            }
+            for (Item t: g.placedItems) {
+                pikminSeconds += judgeWorkFunction(g, t.itemName, t.spawnPoint);
+                //System.out.println(t.itemName + " " + judgeWorkFunction(g, t.itemName, t.spawnPoint));
+            }
+            pikminSeconds += judgeWorkFunction(g, "hole", g.placedHole);
+            //System.out.println("hole " + judgeWorkFunction(g, "hole", g.placedHole));
+            pikminSeconds += judgeWorkFunction(g, "geyser", g.placedGeyser);
+            //System.out.println("geyser " + judgeWorkFunction(g, "geyser", g.placedGeyser));
+            
+            // Hazards that are in the way of treasures/carcasses
+            if (numHazards > 0) {
+                computeWaypointCarryableGraph(g, "tc"); // treasures + carcasses
+                for (Teki t: g.placedTekis) {
+                    String name = t.tekiName.toLowerCase();
+                    if (hazardNames.contains(name) && g.closestWayPoint(t.spawnPoint).hasCarryableBehind) {
+                        pikminSeconds += Parser.tekiDifficultyJudgePiki.get(name) * Parser.tekiDifficultyJudgeSec.get(name);
+                        //System.out.println(t.tekiName + " " + (Parser.tekiDifficultyJudgePiki.get(name) * Parser.tekiDifficultyJudgeSec.get(name)));
+                    }
+                }
+            }
+
+            // gates that are in the way of holes/treasures/carcasses
+            if (g.placedGates.size() > 0) {
+                computeWaypointCarryableGraph(g, "htc"); // holes + treasures + carcasses
+                for (Gate t: g.placedGates) {
+                    if (g.closestWayPoint(t.spawnPoint).hasCarryableBehind) {
+                        float wallCount = pikiCount / 2.0f;
+                        pikminSeconds += wallCount * Math.max(6, 3 + t.life * gateLifeMultiplier / (pikiAttackValue * wallCount));
+                        //System.out.println("gate " + (wallCount * Math.max(6, 3 + t.life * gateLifeMultiplier / (pikiAttackValue * wallCount))));
+                    }
+                }
+            }
+
+            // geyser breaking
+            if (g.placedGeyser != null && g.holeClogged) {
+                pikminSeconds += geyserHealth / pikiAttackValue;
+                //System.out.println("clog " + geyserHealth / pikiAttackValue);
+            }
+            
+            //System.out.println("cnt " + pikiCount + " attk " + pikiAttackValue + " crry " + pikiCarryValue + " strg " + pikiStrengthValue + " poko " + pokosAvailible + " time " + Parser.chTime.get(sublevelId) ); 
+            float pikminEfficiencyRate = 1.0f;
+            score = -pokosAvailible * 10 - pikiCount * 10 + Parser.chTime.get(sublevelId) 
+                        + 0.5 * pikminSeconds / (pikiCount * pikminEfficiencyRate);
         } 
         
         else if (CaveGen.judgeType.equals("cmat")) {
+            // compute the number of pikmin*seconds required to complete the level
+            float pikminSeconds = 0;
+            int numHazards = 0;
+            for (Teki t: g.placedTekis) {
+                String name = t.tekiName.toLowerCase();
+                if (hazardNames.contains(name)) {
+                    numHazards += 1;
+                    continue;
+                }
+                if (t.itemInside == null) continue;
+                pikminSeconds += Parser.tekiDifficultyJudgePiki.get(name) * Parser.tekiDifficultyJudgeSec.get(name);
+                //System.out.println(name + " " + (Parser.tekiDifficultyJudgePiki.get(name) * Parser.tekiDifficultyJudgeSec.get(name)));
+                pikminSeconds += judgeWorkFunction(g, t.itemInside, t.spawnPoint);
+                //System.out.println("-" + t.itemInside + " " + judgeWorkFunction(g, t.itemInside, t.spawnPoint));
+            }
+            for (Item t: g.placedItems) {
+                pikminSeconds += judgeWorkFunction(g, t.itemName, t.spawnPoint);
+                //System.out.println(t.itemName + " " + judgeWorkFunction(g, t.itemName, t.spawnPoint));
+            }
+            pikminSeconds += judgeWorkFunction(g, "hole", g.placedHole);
+            //System.out.println("hole " + judgeWorkFunction(g, "hole", g.placedHole));
+            pikminSeconds += judgeWorkFunction(g, "geyser", g.placedGeyser);
+            //System.out.println("geyser " + judgeWorkFunction(g, "geyser", g.placedGeyser));
+            
+            // Hazards that are in the way of treasures
+            if (numHazards > 0) {
+                computeWaypointCarryableGraph(g, "t"); // treasures
+                for (Teki t: g.placedTekis) {
+                    String name = t.tekiName.toLowerCase();
+                    if (hazardNames.contains(name) && g.closestWayPoint(t.spawnPoint).hasCarryableBehind) {
+                        pikminSeconds += Parser.tekiDifficultyJudgePiki.get(name) * Parser.tekiDifficultyJudgeSec.get(name);
+                        //System.out.println(t.tekiName + " " + (Parser.tekiDifficultyJudgePiki.get(name) * Parser.tekiDifficultyJudgeSec.get(name)));
+                    }
+                }
+            }
 
+            // gates that are in the way of holes/treasures
+            if (g.placedGates.size() > 0) {
+                computeWaypointCarryableGraph(g, "ht"); // holes + treasures
+                for (Gate t: g.placedGates) {
+                    if (g.closestWayPoint(t.spawnPoint).hasCarryableBehind) {
+                        float wallCount = pikiCount / 2.0f;
+                        pikminSeconds += wallCount * Math.max(6, 3 + t.life * gateLifeMultiplier / (pikiAttackValue * wallCount));
+                        //System.out.println("gate " + (wallCount * Math.max(6, 3 + t.life * gateLifeMultiplier / (pikiAttackValue * wallCount))));
+                    }
+                }
+            }
+
+            // geyser breaking
+            if (g.placedGeyser != null && g.holeClogged) {
+                pikminSeconds += geyserHealth / pikiAttackValue;
+                //System.out.println("clog " + geyserHealth / pikiAttackValue);
+            }
+            
+            //System.out.println("cnt " + pikiCount + " attk " + pikiAttackValue + " crry " + pikiCarryValue + " strg " + pikiStrengthValue + " time " + Parser.chTime.get(sublevelId) ); 
+            float pikminEfficiencyRate = 1.0f;
+            score = pikminSeconds / (pikiCount * pikminEfficiencyRate);
         } 
         
         else if (CaveGen.judgeType.equals("key")) {
+            // travel time to key (including gates)
+            // + max (time to travel from key to hole, time for key to return to ship fastest carry)
+            // + time to break geyser
+            float tripKeyGates = 0;
+            float tripHoleGates = 0;
+            if (g.placedGates.size() > 0) {
+                computeWaypointCarryableGraph(g, "k"); // holes + treasures
+                for (Gate t: g.placedGates) {
+                    if (g.closestWayPoint(t.spawnPoint).hasCarryableBehind) {
+                        float wallCount = pikiCount;
+                        tripKeyGates += Math.max(6, 3 + t.life * gateLifeMultiplier / (pikiAttackValue * wallCount));
+                    }
+                }
+
+                computeWaypointCarryableGraph(g, "h"); // holes + treasures
+                for (Gate t: g.placedGates) {
+                    if (g.closestWayPoint(t.spawnPoint).hasCarryableBehind) {
+                        float wallCount = pikiCount;
+                        tripHoleGates += Math.max(6, 3 + t.life * gateLifeMultiplier / (pikiAttackValue * wallCount));
+                    }
+                }
+                tripHoleGates -= tripKeyGates;
+            }
+
+            float keyWalk = 0;
+            float keyCarry = 0;
+            float holeWalk = 0;
+            boolean keyFound = false;
             for (Item t: g.placedItems) {
-                if (t.itemName.equals("key"))
-                    score += t.spawnPoint.mapUnit.unitScore;
+                if (t.itemName.equals("key")) {
+                    int carry = Math.min(pikiCount, 3);
+                    keyWalk = g.spawnPointDistToStart(t.spawnPoint) / olimarSpeedCm;
+                    keyCarry = g.spawnPointDistToStart(t.spawnPoint)
+                        * carryMultiplier / (220.0f + 180.0f * (fastestPikiCarryValue * carry - 1 + 1) / 3);
+                    if (g.placedHole != null)
+                        holeWalk = g.spawnPointDist(g.placedHole, t.spawnPoint) / olimarSpeedCm;
+                    if (g.placedGeyser != null)
+                        holeWalk = g.spawnPointDist(g.placedGeyser, t.spawnPoint) / olimarSpeedCm;
+                    holeWalk = Math.min(holeWalk, g.spawnPointDist(g.placedStart, t.spawnPoint) / olimarSpeedCm);
+                    keyFound = true;
+                    break;
+                }
             }
             for (Teki t: g.placedTekis) {
-                if (t.itemInside != null && t.itemInside.equals("key"))
-                    score += t.spawnPoint.mapUnit.unitScore;
+                if (keyFound) break;
+                if (t.itemInside != null && t.itemInside.equals("key")) {
+                    int carry = Math.min(pikiCount, 3);
+                    keyWalk = g.spawnPointDistToStart(t.spawnPoint) / olimarSpeedCm
+                            + Parser.tekiDifficultyJudgeSec.get(t.tekiName.toLowerCase());
+                    keyCarry = g.spawnPointDistToStart(t.spawnPoint)
+                        * carryMultiplier / (220.0f + 180.0f * (fastestPikiCarryValue * carry - 1 + 1) / 3);
+                        if (g.placedHole != null)
+                        holeWalk = g.spawnPointDist(g.placedHole, t.spawnPoint) / olimarSpeedCm;
+                    if (g.placedGeyser != null)
+                        holeWalk = g.spawnPointDist(g.placedGeyser, t.spawnPoint) / olimarSpeedCm;
+                    holeWalk = Math.min(holeWalk, g.spawnPointDist(g.placedStart, t.spawnPoint) / olimarSpeedCm);
+                    keyFound = true;
+                    break;
+                }
             }
-        }
 
-        // calculate rank...
-        double rank = scoreToRank(score);
+            if (!keyFound) {
+                keyWalk = 100000;
+            }
+
+            float geyserBreak = 0;
+            if (g.placedGeyser != null)
+                geyserBreak = geyserHealth / pikiAttackValue / pikiCount;
+
+            //System.out.println("keywalk" + keyWalk + " keygates" + tripKeyGates + " keyCarry" + keyCarry + "holewalk" + holeWalk + " holegates" + tripHoleGates + " geyserbreak" + geyserBreak + " fastestcarry" + fastestPikiCarryValue);
+            score = (keyWalk + tripKeyGates)
+                + Math.max(keyCarry, holeWalk + tripHoleGates)
+                + geyserBreak;
+        }
     
         // add to dictionaries
         String seedStr = Drawer.seedToString(g.initialSeed);
         String s = CaveGen.specialCaveInfoName + "-" + CaveGen.sublevel + " " + seedStr;
         scoreMap.put(s, score);
+        double rank = scoreToRank(score);
         rankMap.put(s, rank);
 
         if (seeds.contains(seedStr)) {
@@ -96,12 +610,12 @@ if images are active, then there is an image toggle to pass the filter.
             seedAggregatedScoreMap.put(seedStr, score);
         }
 
-        // TODO check if passes filter
+        // check if the image passes the filter
         if (filter(score, rank)) {
-            if (CaveGen.numToGenerate < 4096) {
-                stats.println("Judge: " + s  + " -> " + score + " (" + rank + "%)");
+            if (CaveGen.numToGenerate < 4096 || CaveGen.judgeFilterRank != 0 || CaveGen.judgeFilterScore != 0) {
+                stats.println(String.format("Judge: %s -> %.2f (%.1f%%)", s, score, rank));
                 if (CaveGen.prints)
-                    System.out.println("Judge: " + s  + " -> " + score + " (" + rank + "%)");
+                    System.out.println(String.format("Judge: %s -> %.2f (%.1f%%)", s, score, rank));
             }
             CaveGen.imageToggle = true;
         }
@@ -111,15 +625,213 @@ if images are active, then there is an image toggle to pass the filter.
         
     }
 
+
+    // units of return type is pikmin*seconds
+    // used for score attack and cmat heuristics
+    float judgeWorkFunction(CaveGen g, String name, SpawnPoint sp) {
+        if (sp == null) return 0;
+        name = name.toLowerCase();
+        if (name.equals("hole"))
+            return g.spawnPointDistToStart(sp) / olimarSpeedCm * holeWorkMultiplier; // walking cost
+        if (name.equals("geyser"))
+            return g.spawnPointDistToStart(sp) / olimarSpeedCm * geyserWorkMultiplier; // walking cost
+        if (name.equals("egg")) // assume 10 mitites
+            return 10 * g.spawnPointDistToStart(sp) / olimarSpeedCm + 10 * loadTimeSeconds + // walking/loading cost
+                    10 * g.spawnPointDistToStart(sp) * carryMultiplier / (220.0f + 180.0f * (pikiCarryValue)); // carry cost
+        if (pomNames.contains(name))
+            return g.spawnPointDistToStart(sp) / olimarSpeedCm * candypopWorkMultiplier; // walking cost
+        if (noCarcassNames.contains(name)) return 0;
+        int minCarry = Parser.minCarry.get(name);
+        int maxCarry = Parser.maxCarry.get(name);
+        int carry = (int)Math.ceil(minCarry / pikiStrengthValue);
+        float dig = 0;
+        if (Parser.depth.containsKey(name) && Parser.depth.get(name) > 0) {
+            dig = Math.min(1, Parser.depth.get(name)/Parser.height.get(name)) * diggingHealth / pikiDigValue;
+        }
+        return  carry * loadTimeSeconds + dig + // loading + digging
+                carry * g.spawnPointDistToStart(sp) / olimarSpeedCm + // walking cost
+                carry * g.spawnPointDistToStart(sp) // carry cost
+                   * carryMultiplier / (220.0f + 180.0f * (pikiCarryValue * carry - minCarry + 1) / maxCarry);
+    }
+    // CARRY NOTES
+        // carry velocity (wiki) is 220 + 180 * (sum_i piki_i - minCarry + 1) / maxCarry
+        // piki_i = (purp: 0.6, white: 3.0, rest: 1.0) + (leaf: 0.0, bud: 0.5, flower: 1.0) 
+        // my unit adjustment: carry velocity is (220 + 180 * (sum_i piki_i - minCarry + 1) / maxCarry) / 8.5 cm/s
+        // olimar moves 1.17 units/s = 199.8 cm/s without rush boots.
+        // rush boots 4 units / 3.68s, without 4 units / 4.70s (ratio is 205/160)
+    final float olimarSpeedUnitsNoRush = 1.17f;
+    final float olimarSpeedUnitsRush = 1.17f * 205 / 160;
+    // cm = in game units of x/z measurement (waypoint distances are in cm)
+    // unit = length of 1 map unit
+    // 170cm = 1 unit.
+    // carrying formula on wiki gives measurements in some arbitrary velocity unit.
+    // however, if you divide by ~8.5, the carrying formula is in cm/s.   
+        // trials on HoB 1: 8.53,8.44,8.63,8.54,8.40,8.32
+        // 1 flower on grub 5 units / 12.51s (sumpiki = 2, vel = 220+180*2=580)
+        // 1 leaf on grub 5 units / 17.94s (sumpiki = 1, vel = 220+180*1=400)
+        // 1 purp flower 5 units / 14.45s (sumpiki = 1.6, vel = 220+180*1.6=508)
+    final float carryMultiplier = 8.5f;
+    // gate notes:
+        // formula: time in seconds = max(6, 3 + life * 2 / attkpower)
+        // ~6s of fixed costs
+        // 1 life (ch12)   6s
+        //  4000 life     18*60, 9s, 16s, 27*18
+        // 2500 life   100 attk 52s,, 50 attk 102s, 30 attk 170s, 20 attk 253
+        // (piki attack animation is 30 / 20s, 30/11s spicy)
+    final float gateLifeMultiplier = 2.0f;
+    // geyser health: 17s / 145 attk, 15s / 180 attk, 9s / 340 attk -> 2700
+    final float geyserHealth = 2700.0f;
+    // digging: 
+        // iid says: HP is 3900 and Pikmin digs once per a second
+        // First 480HP requires whites
+        // Theoretical digging time is 48/Pw + 342/P[s], where Pw is number of whites and P is weighted sum of Pikmin (Purple and Spicy:2, Red:1.5, others:1)
+        // my tests: 10 whites on ring/SAT: ~40s each. 5 whites: 78s.
+        // formula ~3900 / pikiDigSum
+    final float diggingHealth = 3900.0f;
+    // loading carryable objects (just made this up)
+    final float loadTimeSeconds = 0.5f;
+    final float loadTimeSecondsStory = 3.0f;
+
+    // these are computed once per sublevel based on what the game is trying to spawn.
+    int expectedNumTreasures;
+    int expectedNumQueenCandypop;
+    int previousNumQueenCandypop;
+    int expectedNumPurpleCandypop;
+    int expectedNumWhiteCandypop;
+    int expectedNumPokosPoD;
+    int pikiCount;
+    float holeWorkMultiplier, geyserWorkMultiplier, candypopWorkMultiplier;
+    float pikiCarryValue, pikiAttackValue, pikiStrengthValue, pikiDigValue, fastestPikiCarryValue;
+    String sublevelId;
+    boolean rushBoots;
+    float olimarSpeedCm;
+
+    void setupJudge(CaveGen g) {
+        readRankFile();
+
+        sublevelId = CaveGen.specialCaveInfoName + "-" + CaveGen.sublevel;
+
+        // count expected number of treasures
+        expectedNumTreasures = 0;
+        expectedNumPokosPoD = 0;
+        for (Item t: g.spawnItem) {
+            expectedNumTreasures += t.min;
+            String name = t.itemName.toLowerCase();
+            if (!ignoreTreasuresPoD.contains(name) && !optionalTreasuresPoD.contains(name)) {
+                expectedNumPokosPoD += Parser.pokos.get(name);
+            }
+        }
+        for (Teki t: g.spawnTekiConsolidated) 
+            if (t.itemInside != null) {
+                expectedNumTreasures += t.min;
+                String name = t.itemInside.toLowerCase();
+                if (!ignoreTreasuresPoD.contains(name) && !optionalTreasuresPoD.contains(name)) {
+                    expectedNumPokosPoD += Parser.pokos.get(name);
+                }
+            }
+        if (sublevelId.equals("CH8-1")) expectedNumTreasures += 3;
+        if (sublevelId.equals("CH29-1")) expectedNumTreasures -= 1;
+        if (sublevelId.equals("CH21-1")) expectedNumTreasures += 3;
+
+        // count candypops
+        expectedNumQueenCandypop = 0;
+        expectedNumPurpleCandypop = 0;
+        expectedNumWhiteCandypop = 0;
+        for (Teki t: g.spawnTekiConsolidated) {
+            if (t.tekiName.equalsIgnoreCase("randpom")) expectedNumQueenCandypop += t.min;
+            if (t.tekiName.equalsIgnoreCase("blackpom")) expectedNumPurpleCandypop += t.min;
+            if (t.tekiName.equalsIgnoreCase("whitepom")) expectedNumWhiteCandypop += t.min;
+        }
+        if (sublevelId.equals("CH6-2")) previousNumQueenCandypop = 1;
+        else if (sublevelId.equals("CH26-2")) previousNumQueenCandypop = 3;
+        else if (sublevelId.equals("CH26-3")) previousNumQueenCandypop = 8;
+        else if (sublevelId.equals("CH30-4")) previousNumQueenCandypop = 3;
+        else if (sublevelId.equals("CH30-5")) previousNumQueenCandypop = 3;
+        else previousNumQueenCandypop = 0;
+
+        holeWorkMultiplier = 1;
+        geyserWorkMultiplier = 10;
+        candypopWorkMultiplier = 1;
+        rushBoots = false;
+
+        // calculate challenge mode piki counts
+        if (Parser.chPikiCount.containsKey(CaveGen.specialCaveInfoName + " 0")) {
+            float pikiCarrySum = 0;
+            float pikiAttackSum = 0;
+            float pikiStrengthSum = 0;
+            float pikiDigSum = 0;
+            fastestPikiCarryValue = 0;
+            pikiCount = 0;
+            boolean spicy = Parser.chSpicy.get(CaveGen.specialCaveInfoName) > 0;
+            for (int i = 0; i < 18; i++) {
+                int num = Parser.chPikiCount.get(CaveGen.specialCaveInfoName + " " + i);
+                pikiCount += num;
+                float carryVal = (i%3 == 2 || spicy ? 1 : i%3 == 1 ? 0.5f : 0) + (i/3 == 3 ? 0.6f : i/3 == 4 ? 3 : 1);
+                pikiCarrySum += num * carryVal;
+                pikiAttackSum += num * (i/3 == 3 || spicy ? 20 : i/3 == 1 ? 15 : 10);
+                pikiStrengthSum += num * (i/3 == 3 ? 10 : 1);
+                pikiDigSum += num * (i/3 == 3 || spicy ? 20 : i/3 == 1 ? 15 : 10);
+                if (num > 0)
+                    fastestPikiCarryValue = Math.max(fastestPikiCarryValue, carryVal);
+            }
+            int extraPiki = (expectedNumQueenCandypop + previousNumQueenCandypop) * 8;
+            pikiCount += extraPiki;
+            pikiCarrySum += extraPiki * (spicy ? 2 : 1);
+            pikiAttackSum += extraPiki * (spicy ? 18 : 15);
+            pikiStrengthSum += extraPiki;
+            pikiCarryValue = pikiCarrySum / pikiCount;
+            pikiAttackValue = pikiAttackSum / pikiCount;
+            pikiStrengthValue = pikiStrengthSum / pikiCount;
+            pikiDigValue = pikiDigSum / pikiCount;
+        } else {
+            pikiCount = 60;
+            pikiCarryValue = 2.5f;
+            pikiAttackValue = 13;
+            pikiStrengthValue = 1;
+            pikiDigValue = 13;
+            fastestPikiCarryValue = 4;
+        }
+
+        if (CaveGen.judgeType.equals("at")) {
+            rushBoots = true;
+            pikiCount = 80;
+            pikiCarryValue = 3.2f;
+            pikiAttackValue = 18;
+            pikiStrengthValue = 1;
+            pikiDigValue = 16;
+            fastestPikiCarryValue = 4;
+        }
+
+        olimarSpeedCm = rushBoots ? olimarSpeedUnitsRush * 170.0f : olimarSpeedUnitsNoRush * 170.0f;
+
+    }
+
     double scoreToRank(double score) {
-        // TODO calculate rank from rank file
-        return 0;
+        // calculate rank from rank file using binary search
+        if (rankBreakPoints == null)
+            return 50;
+        if (score < rankBreakPoints[0]) 
+            return 0;
+        if (score > rankBreakPoints[999]) 
+            return 100;
+        int hi = 999, low = 0;
+        while (low+1 < hi) {
+            int mid = (hi+low)/2;
+            double x = rankBreakPoints[mid];
+            if (score <= x) 
+                hi = mid;
+            else if (score > x)
+                low = mid;
+        }
+        if (rankBreakPoints[hi] == score) low = hi;
+        return low / 10.0;
     }
 
     boolean filter(double score, double rank) {
         if (CaveGen.judgeFilterScore > 0 && CaveGen.judgeFilterScore > score) return false;
         if (CaveGen.judgeFilterScore < 0 && -CaveGen.judgeFilterScore < score) return false;
-        // TODO rank filter
+        if (CaveGen.judgeFilterRank > 0 && CaveGen.judgeFilterRank > rank) return false;
+        if (CaveGen.judgeFilterRank < 0 && -CaveGen.judgeFilterRank < rank) return false;
         return true;
     }
     
@@ -140,8 +852,8 @@ if images are active, then there is an image toggle to pass the filter.
 
         Collections.sort(ss, new Comparator<ScoredSeed>() {
             public int compare(ScoredSeed s1, ScoredSeed s2) {
-                if (s1.score < s2.score) return 1;
-                if (s1.score > s2.score) return -1;
+                if (s1.score < s2.score) return -1;
+                if (s1.score > s2.score) return 1;
                 return s1.seed.compareTo(s2.seed);
             }
         });
@@ -149,13 +861,42 @@ if images are active, then there is an image toggle to pass the filter.
         stats.println("\nJudge sorted list " + sublevelString + ":");
 
         for (ScoredSeed s: ss) {
-            stats.println(s.seed  + " -> " + s.score + " (" + rankMap.get(sublevelString + " " + s.seed) + "%)");
+            double rank = rankMap.get(sublevelString + " " + s.seed);
+            if (filter(s.score, rank))
+            stats.println(String.format("%s -> %.2f (%.1f%%)", s.seed, s.score, rank));
         }
 
+        // write out the rank file
         if (CaveGen.judgeRankFile) {
             try {
                 BufferedWriter wr = new BufferedWriter(new FileWriter("files/rank_file.txt", true));
-                // TODO write rank file
+                wr.write(sublevelString + "-" + CaveGen.judgeType);
+                int n = ss.size();
+                /* < 1
+                for (int p = 1000000000; p >= 1000; p /= 10) {
+                    for (int i = 1; i < 10; i++) {
+                        double r = i * 1.0 / p;
+                        if (n * i >= p) {
+                            wr.write(String.format(";%."+(int)(Math.log10(p))+"f:" + "%.2f",r,ss.get((int)(r * n)).score));
+                        }
+                    }
+                } 
+                // > 99
+                for (int p = 1000; p <= 1000000000; p *= 10) {
+                    for (int i = 9; i > 0; i--) {
+                        double r = 1 - i * 1.0 / p;
+                        if (n * i >= p) {
+                            wr.write(String.format(";%."+(int)(Math.log10(p))+"f:" + "%.2f",r,ss.get((int)(r * n)).score));
+                        }
+                    }
+                } */
+
+                // .1 spacing for ranks
+                for (int i = 1; i <= 1000; i++) {
+                    wr.write(String.format(";%.2f",ss.get((int)((i / 1000.0 - 0.0005) * n)).score));
+                }
+
+                wr.write("\n");
                 wr.close();
             } catch (Exception e) {
                 e.printStackTrace();
@@ -168,7 +909,7 @@ if images are active, then there is an image toggle to pass the filter.
             for (int i = 0; i < l; i++)
                 for (int j = i+1; j < l; j++) 
                     if (CaveViewer.caveViewer.nameBuffer.get(i).contains(sublevelString) && CaveViewer.caveViewer.nameBuffer.get(j).contains(sublevelString))
-                        if (scoreMap.get(CaveViewer.caveViewer.nameBuffer.get(i)) < scoreMap.get(CaveViewer.caveViewer.nameBuffer.get(j))) {
+                        if (scoreMap.get(CaveViewer.caveViewer.nameBuffer.get(i)) > scoreMap.get(CaveViewer.caveViewer.nameBuffer.get(j))) {
                             String tempName = CaveViewer.caveViewer.nameBuffer.get(i);
                             CaveViewer.caveViewer.nameBuffer.set(i, CaveViewer.caveViewer.nameBuffer.get(j));
                             CaveViewer.caveViewer.nameBuffer.set(j, tempName);
@@ -178,10 +919,6 @@ if images are active, then there is an image toggle to pass the filter.
                         }            
         }
 
-    }
-
-    void readRankFile() {
-        // TODO
     }
 
     void printSortedCombinedList() {
@@ -197,16 +934,94 @@ if images are active, then there is an image toggle to pass the filter.
 
         Collections.sort(ss, new Comparator<ScoredSeed>() {
             public int compare(ScoredSeed s1, ScoredSeed s2) {
-                if (s1.score < s2.score) return 1;
-                if (s1.score > s2.score) return -1;
+                if (s1.score < s2.score) return -1;
+                if (s1.score > s2.score) return 1;
                 return s1.seed.compareTo(s2.seed);
             }
         });
 
         for (ScoredSeed s: ss) {
-            stats.println(s.seed  + " -> " + s.score);
+            stats.println(String.format("%s -> %.2f", s.seed, s.score));
         }
 
+    }
+
+    double[] rankBreakPoints = null;
+    HashMap<String, String> rankFileStrings = null;
+    void readRankFile() {
+        String id = CaveGen.specialCaveInfoName + "-" + CaveGen.sublevel + "-" + CaveGen.judgeType;
+        if (rankFileStrings == null) {
+            rankFileStrings = new HashMap<String, String>();
+            try {
+                BufferedReader br = new BufferedReader(new FileReader("files/rank_file.txt"));
+                String line;
+                while ((line = br.readLine()) != null) {
+                    int i = line.indexOf(';');
+                    if (i != -1)
+                        rankFileStrings.put(line.substring(0, i), line.substring(i+1));
+                }
+                br.close();
+            } catch(Exception e) {
+                e.printStackTrace();
+            }
+        }
+        if (rankFileStrings.containsKey(id)) {
+            String[] st = rankFileStrings.get(id).split(";");
+            rankBreakPoints = new double[1000];
+            for (int i = 0; i < 1000; i++) {
+                rankBreakPoints[i] = Double.parseDouble(st[i]);
+            }
+        } else {
+            rankBreakPoints = null;
+        }
+    }
+
+    // this computes the set of waypoints that have a carryable item that will take this path
+    void computeWaypointCarryableGraph(CaveGen g, String config) {
+        if (config.contains("h")) { // holes
+            if (g.placedHole != null)
+                g.closestWayPoint(g.placedHole).hasCarryableBehind = true;
+            if (g.placedGeyser != null)
+                g.closestWayPoint(g.placedGeyser).hasCarryableBehind = true;
+        }
+        if (config.contains("t")) { // treasures
+            for (Item t: g.placedItems)
+                g.closestWayPoint(t.spawnPoint).hasCarryableBehind = true;
+            for (Teki t: g.placedTekis)
+                if (t.itemInside != null)
+                    g.closestWayPoint(t.spawnPoint).hasCarryableBehind = true;
+        }
+        if (config.contains("c")) { // carcasses
+            for (Teki t: g.placedTekis) 
+                if (!noCarcassNames.contains(t.tekiName))
+                    g.closestWayPoint(t.spawnPoint).hasCarryableBehind = true;
+        }
+        if (config.contains("k")) { // key
+            for (Item t: g.placedItems)
+                if (t.itemName.equalsIgnoreCase("key"))
+                    g.closestWayPoint(t.spawnPoint).hasCarryableBehind = true;
+            for (Teki t: g.placedTekis)
+                if (t.itemInside != null)
+                    if (t.itemInside.equalsIgnoreCase("key"))
+                        g.closestWayPoint(t.spawnPoint).hasCarryableBehind = true;
+        }
+        if (config.contains("p")) { // purple candypops
+            for (Teki t: g.placedTekis)
+                if (t.tekiName.equalsIgnoreCase("blackpom"))
+                    g.closestWayPoint(t.spawnPoint).hasCarryableBehind = true;
+        }
+
+        for (MapUnit m: g.placedMapUnits)
+            for (WayPoint w: m.wayPoints) {
+                if (!w.hasCarryableBehind) continue;
+                WayPoint wp = w;
+                while (true) {
+                    wp.hasCarryableBehind = true;
+                    if (wp.isStart) break;
+                    wp = wp.backWp;
+                    if (wp.hasCarryableBehind) break;
+                }
+            }
     }
 
 
@@ -214,8 +1029,27 @@ if images are active, then there is an image toggle to pass the filter.
     // this should be depricated in favor of using -judge
 
     void findGoodLayouts(CaveGen g) {
+
+        // report about missing treasures
+        // print the seed everytime we see a missing treasure
+        int minTreasure = 0, actualTreasure = 0;
+        for (Item t: g.spawnItem) { minTreasure += t.min; }
+        for (Teki t: g.spawnTekiConsolidated) { if (t.itemInside != null) minTreasure += t.min; }
+        actualTreasure += g.placedItems.size();
+        for (Teki t: g.placedTekis) {
+            if (t.itemInside != null)
+                actualTreasure += 1;
+        }
+        int expectedMissingTreasures = 0;
+        if ("CH29 1".equals(g.specialCaveInfoName + " " + g.sublevel))
+            expectedMissingTreasures = 1; // This level is always missing a treasure
+        boolean missingUnexpectedTreasure = actualTreasure + expectedMissingTreasures < minTreasure;
+        if (missingUnexpectedTreasure) {
+            stats.println("Missing treasure: " + g.specialCaveInfoName + " " + g.sublevel + " " + Drawer.seedToString(g.initialSeed));
+        }
+
         // Good layout finder (story mode)
-        if (CaveGen.findGoodLayouts && !CaveGen.challengeMode) {
+        if (CaveGen.findGoodLayouts && !CaveGen.challengeMode && !missingUnexpectedTreasure) {
             boolean giveWorstLayoutsInstead = CaveGen.findGoodLayoutsRatio < 0;
 
             ArrayList<Teki> placedTekisWithItems = new ArrayList<Teki>();
@@ -227,7 +1061,7 @@ if images are active, then there is an image toggle to pass the filter.
             // Compute the waypoints on the shortest paths
             ArrayList<WayPoint> wpOnShortPath = new ArrayList<WayPoint>();
             for (Item t: g.placedItems) { // Treasures
-                if (ignoreItems.contains(t.itemName.toLowerCase())) continue;
+                if (ignoreTreasuresPoD.contains(t.itemName.toLowerCase())) continue;
                 WayPoint wp = g.closestWayPoint(t.spawnPoint);
                 while (!wp.isStart) {
                     if (!wpOnShortPath.contains(wp)) wpOnShortPath.add(wp);
@@ -235,7 +1069,7 @@ if images are active, then there is an image toggle to pass the filter.
                 }
             }
             for (Teki t: placedTekisWithItems) { // Treasures inside enemies
-                if (ignoreItems.contains(t.itemInside.toLowerCase())) continue;
+                if (ignoreTreasuresPoD.contains(t.itemInside.toLowerCase())) continue;
                 WayPoint wp = g.closestWayPoint(t.spawnPoint);
                 while (!wp.isStart) {
                     if (!wpOnShortPath.contains(wp)) wpOnShortPath.add(wp);
@@ -308,18 +1142,18 @@ if images are active, then there is an image toggle to pass the filter.
         }
 
         // good layout finder (challenge mode)
-        if (CaveGen.findGoodLayouts && CaveGen.challengeMode) {
+        else if (CaveGen.findGoodLayouts && CaveGen.challengeMode && !missingUnexpectedTreasure) {
             boolean giveWorstLayoutsInstead = CaveGen.findGoodLayoutsRatio < 0;
 
             // compute the number of pokos availible
             int pokosAvailible = 0;
             for (Teki t: g.placedTekis) {
                 String name = t.tekiName.toLowerCase();
-                if (plantNames.contains("," + name + ",")) continue;
-                if (hazardNames.contains("," + name + ",")) continue;
+                if (plantNames.contains(name)) continue;
+                if (hazardNames.contains(name)) continue;
                 if (name.equalsIgnoreCase("egg"))
                     pokosAvailible += 10; // mitites
-                else if (!noCarcassNames.contains("," + name + ",") && !name.contains("pom"))
+                else if (!noCarcassNames.contains(name) && !g.isPomGroup(t))
                     pokosAvailible += Parser.pokos.get(t.tekiName.toLowerCase());
                 if (t.itemInside != null)
                     pokosAvailible += Parser.pokos.get(t.itemInside.toLowerCase());
@@ -330,8 +1164,8 @@ if images are active, then there is an image toggle to pass the filter.
             // compute the number of pikmin*seconds required to complete the level
             float pikminSeconds = 0;
             for (Teki t: g.placedTekis) {
-                if (plantNames.contains("," + t.tekiName.toLowerCase() + ",")) continue;
-                if (hazardNames.contains("," + t.tekiName.toLowerCase() + ",")) continue;
+                if (plantNames.contains(t.tekiName.toLowerCase())) continue;
+                if (hazardNames.contains(t.tekiName.toLowerCase())) continue;
                 pikminSeconds += fglWorkFunction(g, t.tekiName, t.spawnPoint);
                 if (t.itemInside != null)
                     pikminSeconds += fglWorkFunction(g, t.itemInside, t.spawnPoint);
@@ -361,16 +1195,18 @@ if images are active, then there is an image toggle to pass the filter.
                 CaveGen.imageToggle = false;
             }
         }
+
+        else
+            CaveGen.imageToggle = false;
     }
 
     
     SortedList<Integer> allScores = new SortedList<Integer>(Comparator.naturalOrder());
-    String plantNames = ",ooinu_s,ooinu_l,wakame_s,wakame_l,kareooinu_s,kareooinu_l,daiodored,"
-        + "daiodogreen,clover,hikarikinoko,tanpopo,zenmai,nekojarashi,tukushi,magaret,watage,chiyogami,";     
-    String hazardNames = ",gashiba,hiba,elechiba,rock,";
-    String noCarcassNames = ",wealthy,fart,kogane,mar,hanachirashi,damagumo,bigfoot,bigtreasure,qurione,baby,bomb,egg,kurage,onikurage,bombotakara,blackman,tyre,";
-    String ignoreItems = "g_futa_kyodo,flower_blue,tape_blue,kinoko_doku,flower_red,futa_a_silver,cookie_m_l,chocolate";
-    String findTekis = ""; //"whitepom,blackpom";
+    String findTekis = ""; // "blackpom,whitepom"
+
+    HashSet<String> hashSet(String s) {
+        return new HashSet<String>(Arrays.asList(s.split(",")));
+    }
 
     private float fglWorkFunction(CaveGen g, String name, SpawnPoint sp) {
         if (sp == null) return 0;
@@ -383,7 +1219,7 @@ if images are active, then there is an image toggle to pass the filter.
             return 7 * 10 * g.closestWayPoint(sp).distToStart / 580.0f;
         if (name.contains("pom"))
             return g.closestWayPoint(sp).distToStart / 170.0f * 10;
-        if (noCarcassNames.contains(","+name+",")) return 0;
+        if (noCarcassNames.contains(name)) return 0;
         int minCarry = Parser.minCarry.get(name);
         int maxCarry = Parser.maxCarry.get(name);
         return 7 * minCarry * g.closestWayPoint(sp).distToStart

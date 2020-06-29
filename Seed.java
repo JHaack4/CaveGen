@@ -50,10 +50,10 @@ public class Seed {
                 System.out.println(seed_to_sequence(Long.decode(args[1]), 30));
             } else if (args[0].equalsIgnoreCase("ieee") && args.length >= 2) {
                 if (args[1].length() == 8) {
-                    System.out.println(Float.intBitsToFloat(Integer.decode("0x" + args[1])));
+                    System.out.println(Float.intBitsToFloat(Long.decode("0x" + args[1]).intValue()));
                 }
                 if (args[1].length() == 16) {
-                    System.out.println(Double.longBitsToDouble(Long.decode("0x" + args[1])));
+                    System.out.println(Double.longBitsToDouble(Long.parseUnsignedLong(args[1],16)));
                 }
             } else if (args[0].equalsIgnoreCase("int") && args.length >= 2) {
                 System.out.println(Long.decode("0x" + args[1]));
@@ -627,7 +627,7 @@ public class Seed {
 				n += p;
 			p *= 2;
 		}
-		return n;
+		return n % (M/2);
 	}
 	
 	BigInteger theta(long num) {
@@ -831,7 +831,7 @@ public class Seed {
 		ArrayList<Integer> ret = new ArrayList<Integer>();
 		for (int i = 0; i < candidates.size(); i++) {
 			if (seed_to_sequence(candidates.get(i), sequence.length()).equals(sequence))
-				ret.add(candidates.get(i));
+				ret.add((int)(candidates.get(i) % (M/2)));
 		}
 		
 		return ret;

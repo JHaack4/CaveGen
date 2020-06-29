@@ -169,12 +169,24 @@ public class CaveViewer {
                 if (e.getKeyCode() == KeyEvent.VK_ENTER) {
                     runCaveGen();
                 }
-                if (e.getKeyCode() == KeyEvent.VK_RIGHT || e.getKeyCode() == KeyEvent.VK_PERIOD) {
-                    nextImg();
+                if ((e.getKeyCode() == KeyEvent.VK_RIGHT || e.getKeyCode() == KeyEvent.VK_PERIOD) && e.isControlDown()) {
+                    lastImg();
                 }
-                if (e.getKeyCode() == KeyEvent.VK_LEFT || e.getKeyCode() == KeyEvent.VK_COMMA) {
-                    prevImg();
-				}
+                else if ((e.getKeyCode() == KeyEvent.VK_LEFT || e.getKeyCode() == KeyEvent.VK_COMMA) && e.isControlDown()) {
+                    firstImg();
+                }
+                else if (e.getKeyCode() == KeyEvent.VK_RIGHT || e.getKeyCode() == KeyEvent.VK_PERIOD) {
+                    nextImg(1);
+                }
+                else if (e.getKeyCode() == KeyEvent.VK_LEFT || e.getKeyCode() == KeyEvent.VK_COMMA) {
+                    prevImg(1);
+                }
+                else if (e.getKeyCode() == KeyEvent.VK_L) {
+                    nextImg(10);
+                }
+                else if (e.getKeyCode() == KeyEvent.VK_J) {
+                    prevImg(10);
+                }
 			}
         };
         keyListener2 = new KeyAdapter() {
@@ -312,15 +324,26 @@ public class CaveViewer {
 		jfr.setVisible(true);
     }
 
-    void nextImg() {
-        currentImage += 1;
+    void nextImg(int i) {
+        currentImage += i;
         currentImage = Math.min(imageBuffer.size() - 1, currentImage);
         currentImage = Math.max(0, currentImage);
         dispCurrentImage();
     }
 
-    void prevImg() {
-        currentImage -= 1;
+    void prevImg(int i) {
+        currentImage -= i;
+        currentImage = Math.max(0, currentImage);
+        dispCurrentImage();
+    }
+
+    void firstImg() {
+        currentImage = 0;
+        dispCurrentImage();
+    }
+
+    void lastImg() {
+        currentImage = imageBuffer.size() - 1;
         currentImage = Math.max(0, currentImage);
         dispCurrentImage();
     }
@@ -366,7 +389,7 @@ public class CaveViewer {
             }
         });
         if (!firstImageDisplayedYet) {
-            prevImg();
+            prevImg(1);
         }
     }
 

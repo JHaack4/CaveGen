@@ -16,6 +16,7 @@ class WayPoint {
     float posX, posY, posZ; // global position in the sublevel
 
     boolean visited = false; // for BFS
+    boolean hasCarryableBehind = false; // for 
 
     WayPoint copy() {
         WayPoint wp = new WayPoint();

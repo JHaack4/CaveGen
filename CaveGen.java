@@ -241,6 +241,8 @@ public class CaveGen {
                                 judgeType = "cmat";
                             } else if (args[i].equalsIgnoreCase("score")) {
                                 judgeType = "score";
+                            }  else if (args[i].equalsIgnoreCase("attk") || args[i].equalsIgnoreCase("sa") || args[i].equalsIgnoreCase("scoreattack")) {
+                                judgeType = "attk";
                             } else if (args[i].charAt(0) == '>' || args[i].charAt(0) == '<') {
                                 int l = args[i].length();
                                 if (args[i].charAt(l-1) == '%')
@@ -254,6 +256,8 @@ public class CaveGen {
                                 throw new Exception();
                             }
                         }
+                        if (judgeType.equals("attk"))
+                            judgeFilterScore *= -1;
                     }
                     else {
                         System.out.println("Bad argument: " + s);
@@ -285,6 +289,7 @@ public class CaveGen {
         drawer = new Drawer();
         stats = new Stats(args);
         memo = new Memo();
+        Parser.readConfigFiles();
 
         if (expectTest) {
             memo.setupExpectTests();
@@ -365,11 +370,14 @@ public class CaveGen {
         }
         challengeMode = !hardMode;
 
-        new Parser(this); // Parse everything
+        new Parser().parseAll(this); // Parse everything
         if (isFinalFloor) holeClogged = !isHardMode(); // final floor geysers aren't clogged in story mode
 
         if (aggregator) {
             Aggregator.reset();
+        }
+        if (judgeActive) {
+            stats.judge.setupJudge(this);
         }
 
         for (int i = 0; i < numToGenerate; i++) {
@@ -383,9 +391,9 @@ public class CaveGen {
             seed = initialSeed;
 
             if (prints && (numToGenerate < 4096 && !CaveGen.judgeActive || initialSeed % 4096 == 0)) {
-                System.out.println("Generating " + specialCaveInfoName + " " + sublevel + " on seed " + Drawer.seedToString(initialSeed));
+                System.out.println("Generating " + specialCaveInfoName + "-" + sublevel + " on seed " + Drawer.seedToString(initialSeed));
                 if (CaveViewer.active) {
-                    CaveViewer.caveViewer.reportBuffer.append("Generating " + specialCaveInfoName + " " + sublevel + " on seed " + Drawer.seedToString(initialSeed) + "\n");
+                    CaveViewer.caveViewer.reportBuffer.append("Generating " + specialCaveInfoName + "-" + sublevel + " on seed " + Drawer.seedToString(initialSeed) + "\n");
                 }
             }
 
@@ -2212,10 +2220,10 @@ public class CaveGen {
         return hardMode;
     }
 
-    String pomString = ",bluepom,redpom,yellowpom,blackpom,whitepom,randpom,pom,";
+    HashSet<String> pomString = Parser.hashSet("bluepom,redpom,yellowpom,blackpom,whitepom,randpom,pom");
     boolean isPomGroup(Teki t) {
         // aka isCandypopBud
-        return pomString.contains(","+t.tekiName.toLowerCase()+",");
+        return pomString.contains(t.tekiName.toLowerCase());
     }
 
     void recomputeOpenDoors() {
@@ -2272,6 +2280,26 @@ public class CaveGen {
         return minWp;
     }
 
+    float spawnPointDistToStart(SpawnPoint a) {
+        float minDist = INF;
+        WayPoint minWp = null;
+        for (MapUnit m: placedMapUnits) {
+            for (WayPoint wp: m.wayPoints) {
+                float dist = spawnPointWayPointDist(a, wp);
+                if (dist < minDist) {
+                    minDist = dist;
+                    minWp = wp;
+                }
+            }
+        }
+        float dist = spawnPointWayPointDist(a, minWp);
+        if (minWp.isStart) return dist;
+        float distBack = spawnPointWayPointDist(a, minWp.backWp) + minWp.backWp.distToStart;
+        if (distBack < minWp.distToStart)
+            return distBack;
+        return dist + minWp.distToStart;
+    }
+
     void challengeModeHoleProbItem(int sumWeight) {
         for (MapUnit m: placedMapUnits) {
             for (SpawnPoint sp: m.spawnPoints) {
@@ -2314,21 +2342,21 @@ public class CaveGen {
         }
     }
     
-    static float spawnPointDist(SpawnPoint a, SpawnPoint b) {
+    float spawnPointDist(SpawnPoint a, SpawnPoint b) {
         float dx = a.posX - b.posX;
         float dz = a.posZ - b.posZ;
         float dy = a.posY - b.posY;
         return (float)sqrt(dx * dx + dy * dy + dz * dz);
     }
 
-    static float wayPointDist(WayPoint a, WayPoint b) {
+    float wayPointDist(WayPoint a, WayPoint b) {
         float dx = a.posX - b.posX;
         float dz = a.posZ - b.posZ;
         float dy = a.posY - b.posY;
         return (float)sqrt(dx * dx + dy * dy + dz * dz);
     }
 
-    static float spawnPointWayPointDist(SpawnPoint a, WayPoint b) {
+    float spawnPointWayPointDist(SpawnPoint a, WayPoint b) {
         float dx = a.posX - b.posX;
         float dz = a.posZ - b.posZ;
         float dy = a.posY - b.posY;
