@@ -16,6 +16,8 @@ class SpawnPoint {
     float posX, posZ, posY, ang; // these are "global positions" relative to the sublevel
 
     int spawnListIdx = -1;
+    float distToStart = -1;
+    WayPoint closestWayPoint = null;
 
     SpawnPoint copy() {
         SpawnPoint sp = new SpawnPoint();

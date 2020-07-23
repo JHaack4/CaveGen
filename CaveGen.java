@@ -9,7 +9,7 @@ public class CaveGen {
     static boolean hardMode, challengeMode, images, prints, showStats, seedOrder, storyModeOverride, challengeModeOverride,
         folderSeed, folderCave, showCaveInfo, drawSpawnPoints,
         drawWayPoints, drawWayPointVertDists, drawWayPointEdgeDists,
-        drawScores, drawAngles, drawTreasureGauge,
+        drawScores, drawAngles, drawPodAngle, drawTreasureGauge,
         drawNoPlants, drawNoFallType, drawWaterBox,
         drawDoorLinks, drawDoorIds, drawSpawnOrder, drawNoObjects,
         drawNoBuriedItems, drawNoItems, drawNoTeki, drawNoGates,
@@ -18,7 +18,7 @@ public class CaveGen {
         findGoodLayouts, requireMapUnits, expectTest, noWayPointGraph,
         writeMemo, readMemo, aggregator, aggFirst, aggRooms, aggHalls,
         judgeActive, judgeCombine, judgeRankFile;
-    static double findGoodLayoutsRatio, judgeFilterScore, judgeFilterRank;
+    static double findGoodLayoutsRatio, judgeFilterScore, judgeFilterScoreSign, judgeFilterRank;
     static String requireMapUnitsConfig;
     static boolean shortCircuitMap, imageToggle;
 
@@ -31,13 +31,13 @@ public class CaveGen {
         run(args);
     }
 
-    static void run(String args[]) {
+    static void resetParams() {
         region = "us"; fileSystem = "gc"; countObject = "";
         hardMode = true; challengeMode = false; images = true; prints = true; showStats = true; seedOrder = false;
         storyModeOverride = false; challengeModeOverride = false;
         folderSeed = true; folderCave = true; showCaveInfo = false; drawSpawnPoints = false;
         drawWayPoints = false; drawWayPointVertDists = false; drawWayPointEdgeDists = false;
-        drawScores = false; drawAngles = false; drawTreasureGauge = false;
+        drawScores = false; drawAngles = false; drawTreasureGauge = false; drawPodAngle = false;
         drawNoPlants = false; drawNoFallType = false; drawWaterBox = true;
         drawDoorLinks = false; drawDoorIds = false; drawSpawnOrder = false; drawNoObjects = false;
         drawNoBuriedItems = false; drawNoItems = false; drawNoTeki = false; drawNoGates = false;
@@ -46,11 +46,15 @@ public class CaveGen {
         findGoodLayouts = false; requireMapUnits = false; expectTest = false; noWayPointGraph = false;
         writeMemo = false; readMemo = false; aggregator = false; aggFirst = false; aggRooms = false; aggHalls = false;
         judgeActive = false; judgeCombine = false; judgeRankFile = false;
-        findGoodLayoutsRatio = 0.01; judgeFilterScore = 0; judgeFilterRank = 0;
+        findGoodLayoutsRatio = 0.01; judgeFilterScore = 0; judgeFilterRank = 0; judgeFilterScoreSign = 0;
         requireMapUnitsConfig = ""; judgeType = "default";
         firstGenSeed = 0; numToGenerate = 1; indexBeingGenerated = 0;
         imageToggle = true;
         seedCalc = new Seed();
+    }
+
+    static void run(String args[]) {
+        resetParams();
 
         boolean allStoryMode = false, allChallengeMode = false;
         String caveArg = "";
@@ -158,6 +162,8 @@ public class CaveGen {
                     }
                     else if (s.equalsIgnoreCase("-drawAngles"))
                         drawAngles = true;
+                    else if (s.equalsIgnoreCase("-drawPodAngle"))
+                        drawPodAngle = true;
                     else if (s.equalsIgnoreCase("-consecutiveSeeds"))
                         seedOrder = true;
                     else if (s.equalsIgnoreCase("-drawTreasureGauge"))
@@ -247,7 +253,10 @@ public class CaveGen {
                                 int l = args[i].length();
                                 if (args[i].charAt(l-1) == '%')
                                     judgeFilterRank = (args[i].charAt(0) == '>' ? 1 : -1) * Double.parseDouble(args[i].substring(1,l-1));
-                                else judgeFilterScore = (args[i].charAt(0) == '>' ? 1 : -1) * Double.parseDouble(args[i].substring(1));
+                                else {
+                                    judgeFilterScore = Double.parseDouble(args[i].substring(1));
+                                    judgeFilterScoreSign =  (args[i].charAt(0) == '>' ? 1 : -1);
+                                }
                             }  else if (args[i].contains("-")) {
                                 i--;
                                 break;
@@ -256,14 +265,19 @@ public class CaveGen {
                                 throw new Exception();
                             }
                         }
-                        if (judgeType.equals("attk"))
+                        if (judgeType.equals("attk")) {
                             judgeFilterScore *= -1;
+                            judgeFilterScoreSign *= -1;
+                        }
                     }
                     else {
                         System.out.println("Bad argument: " + s);
                         throw new Exception();
                     }
                 }
+
+                if (judgeActive && judgeType.equals("default"))
+                    throw new Exception();
 
                 caveInfoName = Parser.fromSpecial(caveArg);
                 fileSystem = fileSystem.toLowerCase();
@@ -2266,6 +2280,7 @@ public class CaveGen {
     }
 
     WayPoint closestWayPoint(SpawnPoint a) {
+        if (a.closestWayPoint != null) return a.closestWayPoint;
         float minDist = INF;
         WayPoint minWp = null;
         for (MapUnit m: placedMapUnits) {
@@ -2277,27 +2292,23 @@ public class CaveGen {
                 }
             }
         }
-        return minWp;
+        a.closestWayPoint = minWp;
+        return a.closestWayPoint;
     }
 
     float spawnPointDistToStart(SpawnPoint a) {
-        float minDist = INF;
-        WayPoint minWp = null;
-        for (MapUnit m: placedMapUnits) {
-            for (WayPoint wp: m.wayPoints) {
-                float dist = spawnPointWayPointDist(a, wp);
-                if (dist < minDist) {
-                    minDist = dist;
-                    minWp = wp;
-                }
-            }
-        }
+        if (a.distToStart != -1) return a.distToStart;
+        WayPoint minWp = closestWayPoint(a);
         float dist = spawnPointWayPointDist(a, minWp);
-        if (minWp.isStart) return dist;
-        float distBack = spawnPointWayPointDist(a, minWp.backWp) + minWp.backWp.distToStart;
-        if (distBack < minWp.distToStart)
-            return distBack;
-        return dist + minWp.distToStart;
+        if (minWp.isStart) {
+            a.distToStart = dist;
+        } else {
+            float distBack = spawnPointWayPointDist(a, minWp.backWp) + minWp.backWp.distToStart;
+            if (distBack < minWp.distToStart)
+                a.distToStart = distBack;
+            else a.distToStart = dist + minWp.distToStart;
+        }
+        return a.distToStart;
     }
 
     void challengeModeHoleProbItem(int sumWeight) {

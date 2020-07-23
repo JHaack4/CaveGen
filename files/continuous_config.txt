@@ -1,0 +1,13 @@
+{"y": 161,
+ "x": 232,
+ "spacing":37,
+ "width":38,
+ "height":38,
+ "camera":1,
+ "templates":"files/digits_wii/",
+ "video_path":"C:\\Users\\Jordan\\Videos\\",
+ "images":False,
+ "verbose":False,
+ "generate_new_templates":False,
+ "template_wait":10
+}

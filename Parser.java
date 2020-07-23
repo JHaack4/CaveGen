@@ -133,8 +133,8 @@ class Parser {
         }
 
         try {
-            if (CaveGen.prints) 
-                System.out.println("File read: " + fileName);
+            //if (CaveGen.prints) 
+            //    System.out.println("File read: " + fileName);
             Scanner s = new Scanner(sb2.toString());
             StringBuilder sb = new StringBuilder();
             while (s.hasNextLine()){
@@ -626,13 +626,15 @@ class Parser {
         helpText.add("  Output: seed|cave|both|none is which folder the output is sent to.");
         helpText.add("  Sublevels: BK-4|SCx|CH1|CH2|all|story|cmal|tutorial1.txt...");
         helpText.add("\nOptional: -seed 0x12345678 -num 100 -consecutiveSeeds -challengeMode -storyMode");
-        helpText.add("  -noImages -noPrint -noStats -region [us|jpn|pal] -251 -caveInfoReport");
+        helpText.add("  -noImages -noPrint -noStats -region us|jpn|pal -251 -caveInfoReport");
         helpText.add("  -drawSpawnPoints -drawSpawnOrder -drawAngles -drawDoorIds -drawTreasureGauge -drawHoleProbs");
         helpText.add("  -drawWayPoints -drawWPVertexDists -drawWPEdgeDists -drawAllWayPoints -noWayPointGraph");
         helpText.add("  -drawScores -drawDoorLinks -drawEnemyScores -drawUnitHoleScores -drawUnitItemScores -drawAllScores");
         helpText.add("  -drawNoWaterBox -drawNoFallType -drawNoGateLife -drawNoObjects -drawNoPlants");
         helpText.add("  -drawNoBuriedItems -drawNoItems -drawNoTekis -drawNoGates -drawNoHoles");
         helpText.add("  -findGoodLayouts 0.01 (this keeps the top 1% of layouts by jhawk's old heuristic)");
+        helpText.add("  -judge pod|at|attk|cmat|key|score [combine] [filter] (this judges each layout via jhawk's heuristic)");
+        helpText.add("      combine: combine by seed  filter: \"<1%\" shows top 1% of sublevels");
         helpText.add("  -requireMapUnits unitType,rot,idFrom,doorFrom,doorTo;...");
         helpText.add("  -count object (finds distribition of teki with this internal name)");
         helpText.add("\nExample: CaveGen.jar seed pod -seed 0x12345678 -drawSpawnPoints");

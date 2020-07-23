@@ -29,6 +29,9 @@ public class CaveViewer {
 
     static boolean active = false;
     Thread caveGenThread = null;
+    static boolean manipActive = false;
+    static boolean manipKeepImages = false;
+    int lastSSeed = 0;
 
     ArrayList<String> nameBuffer = new ArrayList<String>();
     ArrayList<BufferedImage> imageBuffer = new ArrayList<BufferedImage>();
@@ -126,10 +129,30 @@ public class CaveViewer {
         keyListener = new KeyAdapter() {
 			public void keyPressed(KeyEvent e) {
 				if (e.getKeyCode() == KeyEvent.VK_PLUS || e.getKeyCode() == KeyEvent.VK_EQUALS) {
-
+                    if (currentImage >= 0 && currentImage < nameBuffer.size()) {
+                        String[] ss = nameBuffer.get(currentImage).split(" ");
+                        if (ss.length == 2 && !ss[0].contains("Agg") && !ss[0].contains("Report")) {
+                            CaveViewer.manipKeepImages = true;
+                            String args2 = "cave " + ss[0] + " -noprints -drawpodangle "
+                            + "-seed 0x" + new Seed().next_seed(Long.decode("0x"+ss[1]), 1);
+                            CaveGen.main(args2.split(" "));
+                            CaveViewer.manipKeepImages = false;
+                            lastImg();
+                        }
+                    }                    
 				}
 				if (e.getKeyCode() == KeyEvent.VK_MINUS) {
-
+                    if (currentImage >= 0 && currentImage < nameBuffer.size()) {
+                        String[] ss = nameBuffer.get(currentImage).split(" ");
+                        if (ss.length == 2 && !ss[0].contains("Agg") && !ss[0].contains("Report")) {
+                            CaveViewer.manipKeepImages = true;
+                            String args2 = "cave " + ss[0] + " -noprints -drawpodangle "
+                            + "-seed 0x" + new Seed().next_seed(Long.decode("0x"+ss[1]), -1);
+                            CaveGen.main(args2.split(" "));
+                            CaveViewer.manipKeepImages = false;
+                            lastImg();
+                        }
+                    } 
                 }
                 if (e.getKeyCode() == KeyEvent.VK_C && e.isControlDown()) {
                     System.exit(0);
@@ -141,6 +164,7 @@ public class CaveViewer {
 
                 }
                 if (e.getKeyCode() == KeyEvent.VK_S) {
+                    lastSSeed = currentImage;
                     try {
                         long seed = -1;
                         if (nameBuffer.size() > 0) {
@@ -153,7 +177,7 @@ public class CaveViewer {
                             PrintWriter oWriter = new PrintWriter(new BufferedWriter(new FileWriter("seed_desired.txt")));
                             oWriter.write(Drawer.seedToString(seed) + "\n");
                             oWriter.close();
-                            System.out.println("Desired seed: " + Drawer.seedToString(seed));
+                            System.out.println("Desired: " + nameBuffer.get(currentImage) + "\t\t\t\t\t\t");
                             ImageIO.write(imageBuffer.get(currentImage), "png", new File("seed_chosen.png"));
                         }
                     } catch (Exception ex) {
@@ -359,7 +383,7 @@ public class CaveViewer {
                         int w = img.getWidth();
                         int h = img.getHeight();
                         //System.out.println(w + " " + h);
-                        float scale = Math.min(790.0f / h, Math.min(1590.0f / w, 1));
+                        float scale = Math.min(790.0f / h, Math.min(1190.0f / w, 1));
                         jfrView.setSize((int)(w * scale) + 14, (int)(h * scale) + 37);
                         jfrView.setVisible(true);
                         jfrView.setTitle(nameBuffer.get(currentImage) + " (" + (currentImage+1) + "/" + nameBuffer.size() + ")");
@@ -395,6 +419,7 @@ public class CaveViewer {
 
     @SuppressWarnings( "deprecation" )
     void runCaveGen() {
+        if (manipActive) return;
         try {
             if (caveGenThread != null && caveGenThread.isAlive()) {
                 caveGenThread.stop();

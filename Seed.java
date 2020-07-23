@@ -8,6 +8,8 @@ public class Seed {
         new Seed().run(args);
     }
 
+    Manip manip;
+
     String helpString = "Usage:\n  Seed nth n\n  Seed nthinv seed\n  Seed dist seed1 seed2\n  Seed next seed [n]\n  Seed seed2seq seed\n  Seed seq2seed seq\n  Seed ieee hex\n  Seed digit seed\n  Seed frames seed\n  Seed window cave seed\n" +
         "  python videodigits.py find - read the newest video in seed_video_path folder,\n" +
         "                               and parse the digits on the result screen\n" +
@@ -18,6 +20,7 @@ public class Seed {
         "                                   or, pass in a space separated list of target seeds";
     //Long.decode(args[++i]).longValue()
     void run(String args[]) {
+        manip = new Manip(this);
         try {
             if (args.length == 0) {
                 System.out.println(helpString);
@@ -42,8 +45,8 @@ public class Seed {
             } else if (args[0].equalsIgnoreCase("next") && args.length >= 2) {
                 System.out.println(seedToString(next_seed(Long.decode(args[1]))));
             } else if (args[0].equalsIgnoreCase("seq2seed") && args.length >= 2) {
-                ArrayList<Integer> r = sequence_to_seed(args[1]);
-                for (Integer i: r) System.out.println(seedToString(i));
+                ArrayList<Long> r = sequence_to_seed(args[1]);
+                for (Long i: r) System.out.println(seedToString(i));
             }  else if (args[0].equalsIgnoreCase("seed2seq") && args.length >= 3) {
                 System.out.println(seed_to_sequence(Long.decode(args[1]), Integer.parseInt(args[2])));
             } else if (args[0].equalsIgnoreCase("seed2seq") && args.length >= 2) {
@@ -76,6 +79,12 @@ public class Seed {
             else if (args[0].equalsIgnoreCase("titleloop")) {
                 titleLoop(1);
             }
+            else if (args[0].equalsIgnoreCase("timestable") && args.length >= 2) {
+                manip.timesTable(args[1]);
+            }
+            else if (args[0].equalsIgnoreCase("manip")) {
+                manip.manip();
+            }
             else {
                 System.out.println(helpString);
             }
@@ -100,8 +109,8 @@ public class Seed {
 		System.out.println(seed_to_sequence(1227587417, 15));
 		
 		System.out.println("method LLL");
-		ArrayList<Integer> seed1 = sequence_to_seed("9731927384");
-		for (int i: seed1) System.out.println(i + " " + seed_to_sequence(i,20));
+		ArrayList<Long> seed1 = sequence_to_seed("9731927384");
+		for (long i: seed1) System.out.println(i + " " + seed_to_sequence(i,20));
 		System.out.println("slow method");
 		ArrayList<Integer> seedL = sequence_to_seed_slow("9731927384");
 		for (int i: seedL) System.out.println(i + " " + seed_to_sequence(i,20));
@@ -244,7 +253,7 @@ public class Seed {
 
             // search for the sequence
             String sequence = "";
-            ArrayList<Integer> candidates = new ArrayList<Integer>();
+            ArrayList<Long> candidates = new ArrayList<Long>();
             for (int i = Math.min(sequenceFull.length(), 10); i <= Math.min(sequenceFull.length(), 50); i++) {
                 sequence = sequenceFull.substring(sequenceFull.length()-i);
                 candidates = sequence_to_seed(sequence);
@@ -257,7 +266,7 @@ public class Seed {
             }
             if (candidates.size() > 1) {
                 System.out.println("Warning, multiple candidates. Consider editing seed_last_known.txt");
-                for (Integer i: candidates) {
+                for (Long i: candidates) {
                     long seedF = next_seed(i, sequenceFull.length());
                     System.out.println("  " + seedToString(seedF) + " (" + nth_inv(seedF) + ")\t-> " + seed_to_sequence(i, 50));
                 }
@@ -733,7 +742,7 @@ public class Seed {
 	// Take an ordered sequence of digit observations and output the potential seeds
 	// length of sequence should be 10 or more, ideally, to avoid collisions
 	// This is based on Matthew's implementation of lattice reduction using the LLL algorithm.
-	ArrayList<Integer> sequence_to_seed(String sequence) {
+	ArrayList<Long> sequence_to_seed(String sequence) {
 		
 		// convert the sequence to an array.
 		long[] seq = new long[sequence.length()];
@@ -792,7 +801,7 @@ public class Seed {
 		}
 
 		// iterate over the set of possibilities contained in min/max. (we're checking all of them)
-		ArrayList<Integer> candidates = new ArrayList<Integer>();		
+		ArrayList<Long> candidates = new ArrayList<Long>();		
 		while(true) {
 
 			// check if the current v vector falls in the desired region
@@ -804,7 +813,7 @@ public class Seed {
 		        }
 			}
 			if (isInRegion) {
-				candidates.add((int)(v[0] & 0x7fffffff));
+				candidates.add((v[0] & 0x7fffffff));
 			}
 			
 			// move to the next b/v vector.
@@ -828,10 +837,10 @@ public class Seed {
 		}
 		
 		// Verify the candidates and return the ones that match
-		ArrayList<Integer> ret = new ArrayList<Integer>();
+		ArrayList<Long> ret = new ArrayList<Long>();
 		for (int i = 0; i < candidates.size(); i++) {
 			if (seed_to_sequence(candidates.get(i), sequence.length()).equals(sequence))
-				ret.add((int)(candidates.get(i) % (M/2)));
+				ret.add(candidates.get(i));
 		}
 		
 		return ret;

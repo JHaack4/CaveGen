@@ -73,7 +73,7 @@ pod breadbugs/high treasures
             score += 100000 * (expectedNumTreasures - treasureCount); // add penalty for missing treasures
         } 
 
-        else if (CaveGen.judgeType.equals("default") && CaveGen.hardMode || CaveGen.judgeType.equals("pod")) {
+        else if (CaveGen.judgeType.equals("pod")) {
 
             HashSet<SpawnPoint> visited = new HashSet<SpawnPoint>();
             HashSet<SpawnPoint> unVisited = new HashSet<SpawnPoint>();
@@ -205,7 +205,7 @@ pod breadbugs/high treasures
             for (Teki t: g.placedTekis) {
                 String name = t.tekiName.toLowerCase();
                 if (g.closestWayPoint(t.spawnPoint).hasCarryableBehind) {
-                    hazardSeconds += Parser.tekiDifficultyJudgeSec.get(name);
+                    hazardSeconds += Parser.tekiDifficultyJudgeSec.get(name) / 2.0f;
                     if (!noCarcassNames.contains(name) && g.spawnPointDistToStart(t.spawnPoint) / olimarSpeedCm < walkingSeconds * 0.4f) {
                         bugPokos += Parser.pokos.get(name);
                     }
@@ -229,6 +229,15 @@ pod breadbugs/high treasures
             // adjustments
             float adjSeconds = 0;
             if (CaveGen.specialCaveInfoName.equals("GK")) {
+                // gk2 shortcuts
+                if (CaveGen.sublevel == 2) {
+                    for (Item i: g.placedItems) {
+                        if (i.itemName.equalsIgnoreCase("g_futa_kyusyu")) {
+                            if (i.spawnPoint.spawnListIdx == 6 || i.spawnPoint.spawnListIdx == 7)
+                                walkingSeconds = 8.0f;
+                        }
+                    }
+                }
                 // high treasures
                 for (Item t: g.placedItems) {
                     if (ignoreTreasuresPoD.contains(t.itemName.toLowerCase())) continue;
@@ -248,7 +257,7 @@ pod breadbugs/high treasures
                         if (t.tekiName.equalsIgnoreCase("panmodoki")) {
                             float closeness = g.spawnPointDist(t.spawnPoint, i.spawnPoint) / g.spawnPointDistToStart(i.spawnPoint);
                             if (closeness < 0.25) {
-                                worst = Math.max(worst, Math.min(20, 2 / closeness));
+                                worst = Math.max(worst, Math.min(15, 1.5f / closeness));
                             }
                         }
                     }
@@ -357,7 +366,7 @@ pod breadbugs/high treasures
             for (Teki t: g.placedTekis) {
                 String name = t.tekiName.toLowerCase();
                 if (g.closestWayPoint(t.spawnPoint).hasCarryableBehind) {
-                    hazardSeconds += Parser.tekiDifficultyJudgeSec.get(name);
+                    hazardSeconds += Parser.tekiDifficultyJudgeSec.get(name) / 2.0f;
                 }
             }
 
@@ -383,7 +392,7 @@ pod breadbugs/high treasures
             
         } 
         
-        else if (CaveGen.judgeType.equals("default") && CaveGen.challengeMode || CaveGen.judgeType.equals("attk")) {
+        else if (CaveGen.judgeType.equals("attk")) {
             // compute the number of pokos availible on this layout
             int pokosAvailible = 0;
             for (Teki t: g.placedTekis) {
@@ -586,6 +595,20 @@ pod breadbugs/high treasures
                 keyWalk = 100000;
             }
 
+            /*if (CaveGen.specialCaveInfoName.equals("CH16")) {
+                for (Teki t: g.placedTekis) {
+                    if (t.itemInside != null && t.itemInside.equals("key")) {
+                        for (Item i: g.placedItems) {
+                            double dist = g.spawnPointDist(t.spawnPoint, i.spawnPoint);
+                            if (dist < 70) {
+                                keyWalk += dist < 40 ? 10 : 6;
+                            }
+                        }
+                    }
+                }
+            }*/
+            // special cases: ch6 candypop, ch26 candypop, ch16 bbgs
+
             float geyserBreak = 0;
             if (g.placedGeyser != null)
                 geyserBreak = geyserHealth / pikiAttackValue / pikiCount;
@@ -699,6 +722,7 @@ pod breadbugs/high treasures
     int expectedNumPurpleCandypop;
     int expectedNumWhiteCandypop;
     int expectedNumPokosPoD;
+    int expectedMaxCarry;
     int pikiCount;
     float holeWorkMultiplier, geyserWorkMultiplier, candypopWorkMultiplier;
     float pikiCarryValue, pikiAttackValue, pikiStrengthValue, pikiDigValue, fastestPikiCarryValue;
@@ -714,19 +738,26 @@ pod breadbugs/high treasures
         // count expected number of treasures
         expectedNumTreasures = 0;
         expectedNumPokosPoD = 0;
+        expectedMaxCarry = 0;
         for (Item t: g.spawnItem) {
             expectedNumTreasures += t.min;
             String name = t.itemName.toLowerCase();
+            expectedMaxCarry += Parser.maxCarry.get(name);
             if (!ignoreTreasuresPoD.contains(name) && !optionalTreasuresPoD.contains(name)) {
                 expectedNumPokosPoD += Parser.pokos.get(name);
+            } else if (CaveGen.judgeType.equals("pod")) {
+                expectedMaxCarry -= Parser.maxCarry.get(name);
             }
         }
         for (Teki t: g.spawnTekiConsolidated) 
             if (t.itemInside != null) {
                 expectedNumTreasures += t.min;
                 String name = t.itemInside.toLowerCase();
+                expectedMaxCarry += Parser.maxCarry.get(name);
                 if (!ignoreTreasuresPoD.contains(name) && !optionalTreasuresPoD.contains(name)) {
                     expectedNumPokosPoD += Parser.pokos.get(name);
+                }  else if (CaveGen.judgeType.equals("pod")) {
+                    expectedMaxCarry -= Parser.maxCarry.get(name);
                 }
             }
         if (sublevelId.equals("CH8-1")) expectedNumTreasures += 3;
@@ -793,13 +824,37 @@ pod breadbugs/high treasures
         }
 
         if (CaveGen.judgeType.equals("at")) {
-            rushBoots = true;
+            int whites = 0;
+            switch (CaveGen.specialCaveInfoName) {
+                case "EC": whites = 0; rushBoots = false; break;
+                case "HoB": whites = 15; rushBoots = false; break;
+                case "WFG": whites = CaveGen.sublevel >= 3 ? 15 : 0; rushBoots = false; break;
+                default: whites = 35; rushBoots = true;
+            }
             pikiCount = 80;
-            pikiCarryValue = 3.2f;
+            expectedMaxCarry += 1;
+            pikiCarryValue = (2.0f*Math.min(whites,expectedMaxCarry) + 2.0f*expectedMaxCarry) / expectedMaxCarry;
             pikiAttackValue = 18;
             pikiStrengthValue = 1;
             pikiDigValue = 16;
-            fastestPikiCarryValue = 4;
+        }
+        if (CaveGen.judgeType.equals("pod")) {
+            int whites = 0;
+            switch (CaveGen.specialCaveInfoName) {
+                case "EC":
+                case "HoB": whites = 0; break;
+                case "WFG": whites = CaveGen.sublevel >= 3 ? 15 : 0; break;
+                case "SH":
+                case "BK": whites = 20; break;
+                default: whites = 30;
+            }
+            rushBoots = false;
+            pikiCount = 60;
+            expectedMaxCarry += 1;
+            pikiCarryValue = (2.0f*Math.min(whites,expectedMaxCarry) + 2.0f*expectedMaxCarry) / expectedMaxCarry;
+            pikiAttackValue = 13;
+            pikiStrengthValue = 1;
+            pikiDigValue = 13;
         }
 
         olimarSpeedCm = rushBoots ? olimarSpeedUnitsRush * 170.0f : olimarSpeedUnitsNoRush * 170.0f;
@@ -807,6 +862,7 @@ pod breadbugs/high treasures
     }
 
     double scoreToRank(double score) {
+        score = Double.parseDouble(String.format("%.2f", score));
         // calculate rank from rank file using binary search
         if (rankBreakPoints == null)
             return 50;
@@ -828,8 +884,8 @@ pod breadbugs/high treasures
     }
 
     boolean filter(double score, double rank) {
-        if (CaveGen.judgeFilterScore > 0 && CaveGen.judgeFilterScore > score) return false;
-        if (CaveGen.judgeFilterScore < 0 && -CaveGen.judgeFilterScore < score) return false;
+        if (CaveGen.judgeFilterScoreSign > 0 && CaveGen.judgeFilterScore > score) return false;
+        if (CaveGen.judgeFilterScoreSign < 0 && CaveGen.judgeFilterScore < score) return false;
         if (CaveGen.judgeFilterRank > 0 && CaveGen.judgeFilterRank > rank) return false;
         if (CaveGen.judgeFilterRank < 0 && -CaveGen.judgeFilterRank < rank) return false;
         return true;
@@ -865,6 +921,7 @@ pod breadbugs/high treasures
             if (filter(s.score, rank))
             stats.println(String.format("%s -> %.2f (%.1f%%)", s.seed, s.score, rank));
         }
+        stats.println("\n");
 
         // write out the rank file
         if (CaveGen.judgeRankFile) {

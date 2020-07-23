@@ -482,7 +482,7 @@ public class Drawer {
                 int x = (int)(g.placedStart.posX/M*N - im.getWidth(null)/2);
                 int z = (int)(g.placedStart.posZ/M*N - im.getHeight(null)/2);
                 G.drawImage(im, x, z, null);
-                if (g.drawAngles)
+                if (g.drawAngles || g.drawPodAngle)
                     drawAngle(G, g.placedStart.posX, g.placedStart.posZ, g.placedStart.ang);
                 //G.drawString("S", (int)(pos[0]/M*N), (int)(pos[1]/M*N));
             }
@@ -925,7 +925,7 @@ public class Drawer {
         String seedN = seedToString(g.initialSeed);
         String caveN = g.specialCaveInfoName;
 
-        if (CaveViewer.active) {
+        if (CaveViewer.active || CaveViewer.manipKeepImages) {
             String name = "";
             if (drawAsReport) name = "Report: " + caveN + "-" + g.sublevel;
             else if (aggregator != null) {

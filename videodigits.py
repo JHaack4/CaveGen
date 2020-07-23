@@ -114,7 +114,7 @@ def is_chresult_screen(frame):
 videoFile = args.videoFile
 if videoFile == 'find':
     videoDir = ""
-    with open("seed_video_path.txt","r") as f:
+    with open("files/seed_video_path.txt","r") as f:
         for line in f:
             if len(line) > 0:
                 videoDir = line.strip()
@@ -167,7 +167,7 @@ while(cap.isOpened()):
         cv2.waitKey(50)
     read_digits_on_frame(frame)
 
-with open("seed_digits_parsed.txt","w") as f:
+with open("files/seed_digits_parsed.txt","w") as f:
     for i in range(len(all_digits)):
         d = all_digits[i]
         f.write(('_' if d > 9 else str(d)) + ("\n" if i % 5 == 4 else ""))
