@@ -13,7 +13,8 @@ output/*/*.png
 output/*
 output251/*
 !reports/*.txt
-*.png
+seed_chosen.png
+files/times_table*
 
 *~
 __pycache*
