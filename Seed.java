@@ -11,13 +11,15 @@ public class Seed {
     Manip manip;
 
     String helpString = "Usage:\n  Seed nth n\n  Seed nthinv seed\n  Seed dist seed1 seed2\n  Seed next seed [n]\n  Seed seed2seq seed\n  Seed seq2seed seq\n  Seed ieee hex\n  Seed digit seed\n  Seed frames seed\n  Seed window cave seed\n" +
-        "  python videodigits.py find - read the newest video in seed_video_path folder,\n" +
-        "                               and parse the digits on the result screen\n" +
-        "  Seed chresult - read from seed_digits_parsed and infer the seed\n" +
-        "  Seed titleloop [n] - advance the last known seed by 4505 * n\n" +
-        "  Seed caveviewer cave [additional_args] - read from last_known_seed and open cave viewer to see reachable seeds \n                                           for sublevel cave. (Press s to select seed)\n" +
-        "  Seed timer cave [desired_list] - create a countdown timer to reach the closest seed in seed_desired\n" + 
-        "                                   or, pass in a space separated list of target seeds";
+        //"  python videodigits.py find - read the newest video in seed_video_path folder,\n" +
+        //"                               and parse the digits on the result screen\n" +
+        //"  Seed chresult - read from seed_digits_parsed and infer the seed\n" +
+        //"  Seed titleloop [n] - advance the last known seed by 4505 * n\n" +
+        //"  Seed caveviewer cave [additional_args] - read from last_known_seed and open cave viewer to see reachable seeds \n                                           for sublevel cave. (Press s to select seed)\n" +
+        //"  Seed timer cave [desired_list] - create a countdown timer to reach the closest seed in seed_desired\n" + 
+        //"                                   or, pass in a space separated list of target seeds\n" +
+        "  python continuous.py - used to setup the real time seed finder\n" +
+        "  Seed manip key|cmat|700k|attk - run real time manip";
     //Long.decode(args[++i]).longValue()
     void run(String args[]) {
         manip = new Manip(this);
@@ -82,8 +84,8 @@ public class Seed {
             else if (args[0].equalsIgnoreCase("timestable") && args.length >= 2) {
                 manip.timesTable(args[1]);
             }
-            else if (args[0].equalsIgnoreCase("manip")) {
-                manip.manip();
+            else if (args[0].equalsIgnoreCase("manip") && args.length >= 2) {
+                manip.manip(args[1]);
             }
             else {
                 System.out.println(helpString);
@@ -609,7 +611,7 @@ public class Seed {
         long idx = nth_inv(seed);
         idx += n;
         if (idx < 0) idx += M * (1-idx/M);
-        return nth(idx % M);
+        return nth(idx);
     }
 
     // Compute the nth seed in O(log(M)) time
@@ -617,7 +619,7 @@ public class Seed {
 	long nth(long n) {
 		n = n % M;
 		long r2 = power(A,n,4*M)/4;
-		return (r1_ * r2) % M;
+		return (r1_ * r2) % (M/2);
     }
     
     // The 2-adic valuation of x
@@ -629,6 +631,7 @@ public class Seed {
 	// find the value of n such that the nth seed is x
 	// Technique is based on Mihai's lemma / lifting the exponent
 	long nth_inv(long x) {
+        x = x % (M/2);
 		long xpow = (x * (A-1) * inverse(C,M) + 1) % (4*M);
 		long n=0, p=1;
 		for (int i = 0; i < 32; i++) {

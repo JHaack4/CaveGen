@@ -1,4 +1,5 @@
-mode = key
+levelsToPlay = 4,9,10
+levelsToIgnore = 0
 secondsGiveUpPerSecondVol = 0.5
 secondsGiveUpPerSecondWait = 0.03
 secondsWaitingForLevel = 180.0
@@ -6,4 +7,6 @@ secondsOfDelay = 1.6
 framesNeededToSelectLevel = 60
 framesNeededToScrollLevel = 20
 framesNeededForWindow = 10
+attkMaxWaitingForLevel = 180.0
+attkRankThreshold = 3.0,3,3,3,3,  3,3,3,3,3,  3,3,3,3,3,  3,3,3,3,3,  3,3,3,3,3,  3,3,3,3,3   # for every level, only show levels that are top 3% rng
 splits =  1.20,1.40,1.20,1.10,1.50,  2.00,1.40,1.00,0.50,1.00,  3.50,4.20,4.00,0.50,1.45,  1.20,1.00,1.45,1.50,1.30,  1.40,0.50,1.50,0.50,2.00,  3.57,0.52,2.10,1.35,4.15

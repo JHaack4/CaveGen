@@ -134,7 +134,7 @@ public class CaveViewer {
                         if (ss.length == 2 && !ss[0].contains("Agg") && !ss[0].contains("Report")) {
                             CaveViewer.manipKeepImages = true;
                             String args2 = "cave " + ss[0] + " -noprints -drawpodangle "
-                            + "-seed 0x" + new Seed().next_seed(Long.decode("0x"+ss[1]), 1);
+                            + "-seed 0x" + Drawer.seedToString(new Seed().next_seed(Long.decode("0x"+ss[1]), 1));
                             CaveGen.main(args2.split(" "));
                             CaveViewer.manipKeepImages = false;
                             lastImg();
@@ -147,7 +147,7 @@ public class CaveViewer {
                         if (ss.length == 2 && !ss[0].contains("Agg") && !ss[0].contains("Report")) {
                             CaveViewer.manipKeepImages = true;
                             String args2 = "cave " + ss[0] + " -noprints -drawpodangle "
-                            + "-seed 0x" + new Seed().next_seed(Long.decode("0x"+ss[1]), -1);
+                            + "-seed 0x" + Drawer.seedToString(new Seed().next_seed(Long.decode("0x"+ss[1]), -1));
                             CaveGen.main(args2.split(" "));
                             CaveViewer.manipKeepImages = false;
                             lastImg();
@@ -174,9 +174,9 @@ public class CaveViewer {
                             }
                         }
                         if (seed > -1) {
-                            PrintWriter oWriter = new PrintWriter(new BufferedWriter(new FileWriter("seed_desired.txt")));
+                            /*PrintWriter oWriter = new PrintWriter(new BufferedWriter(new FileWriter("files/seed_desired.txt")));
                             oWriter.write(Drawer.seedToString(seed) + "\n");
-                            oWriter.close();
+                            oWriter.close();*/
                             System.out.println("Desired: " + nameBuffer.get(currentImage) + "\t\t\t\t\t\t");
                             ImageIO.write(imageBuffer.get(currentImage), "png", new File("seed_chosen.png"));
                         }

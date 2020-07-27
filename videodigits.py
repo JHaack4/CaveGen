@@ -5,8 +5,6 @@ import os
 import glob
 import sys
 
-path_to_digits = "files/digits/"
-
 parser = argparse.ArgumentParser(description='Find the digits from a video file.')
 parser.add_argument('videoFile', help='video file for processing. Must be 720x480')
 parser.add_argument('-verbose', help='print debug text', action="store_true")
@@ -15,6 +13,7 @@ parser.add_argument('-x',default=0,type=int,help='x offset for digit cropping')
 parser.add_argument('-y',default=0,type=int,help='y offset for digit cropping')
 parser.add_argument('-t',default=40,type=int,help='template size (max 40)')
 parser.add_argument('-s',default=39,type=int,help='spacing (default 39)')
+parser.add_argument('-digits',default="files/digits/",type=int,help='spacing (default 39)')
 args = parser.parse_args()
 if args.verbose:
     print(args)
@@ -25,7 +24,7 @@ T = args.t
 S = args.s
 templates = []
 for i in range(10):
-    temp = cv2.imread(path_to_digits + str(i) + "_32.bti.png",cv2.IMREAD_UNCHANGED)
+    temp = cv2.imread(args.digits + str(i) + ".png",cv2.IMREAD_UNCHANGED)
     
     height,width = temp.shape[:2]
     temp = cv2.resize(temp, (int(width*T*1.0/height),T))

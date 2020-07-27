@@ -16,21 +16,22 @@ public class Manip {
     JTextPane jtext = new JTextPane();
     JTextPane jtext2 = new JTextPane();
     JTextPane jtextplay = new JTextPane();
-    //JComboBox<String> jComboBox = new JComboBox<String>();
-    //JTextField jTextField = new JTextField();
     ArrayList<JTextPane> jTextGrid = new ArrayList<JTextPane>();
 
-    void manip() {
+    void manip(String mode) {
 
-        readParams();
-        String kind = params.get("mode");
+        if (!(mode.equals("key") || mode.equals("cmat") || mode.equals("700k") || mode.equals("attk"))) {
+            System.out.println("Bad mode.");
+            return;
+        }
 
+
+        // Set up the Manip UI
         jfr.getContentPane().setLayout(null);
-		jfr.setSize(434, 555);
-        //jfr.setResizable(false);
+		jfr.setSize(410, 660);
         jfr.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         
-        jtext.setText("mode: " + kind);
+        jtext.setText("mode: " + mode);
         jtext.setFont(font);
         jtext.setEditable(false);
         jtext.setContentType("text/plain");
@@ -40,7 +41,7 @@ public class Manip {
         jfr.add(jtext);
 
         jtext2.setText("");
-        jtext2.setFont(font);
+        jtext2.setFont(fontMono);
         jtext2.setEditable(false);
         jtext2.setContentType("text/plain");
         jtext2.setBackground(null);
@@ -57,8 +58,9 @@ public class Manip {
         jtextplay.setBounds(5,5,40,100);
         jfr.add(jtextplay);
 
-        int[] gA = {20,40,50,60,60,80,30};
-        int gX = gA.length, gY = 25;
+        int cwidth = 9;
+        int[] gA = {2,4,5,4,3,8,3,5,4};
+        int gX = gA.length, gY = 30;
         for (int i = 0; i < gY; i++) {
             int x = 0;
             for (int j = 0; j < gX; j++) {
@@ -69,10 +71,10 @@ public class Manip {
                 jg.setContentType("text/plain");
                 jg.setBackground(null);
                 //jg.putClientProperty(JEditorPane.HONOR_DISPLAY_PROPERTIES, true);
-                jg.setBounds(x + 5,125 + 16*i,gA[j],16);
+                jg.setBounds(x + 5,125 + 16*i,gA[j]*cwidth,16);
                 jfr.add(jg);
                 jTextGrid.add(jg);
-                x += gA[j]+5;
+                x += gA[j]*cwidth+5;
             }
         }
 
@@ -80,6 +82,8 @@ public class Manip {
 		jfr.repaint();
         jfr.setVisible(true);
 
+
+        // launch the continuous digit parser
         Thread thread = new Thread(new Runnable() {
             public void run() {
 
@@ -114,6 +118,7 @@ public class Manip {
         });
         thread.start();
 
+
         final CaveViewer caveViewer = new CaveViewer();
         CaveViewer.caveViewer = caveViewer;
         caveViewer.run("gui ch1 1".split(" "));
@@ -129,48 +134,52 @@ public class Manip {
         int numLevelsPlayed = 0;
         int lastStagePlayed = 0;
         long runStartTime = 0;
-        double stageStddevs[] = new double[31];
-        double timers[] = new double[gY];
+        double lateStageStdevs[] = new double[31];
         ArrayList<Option> options = null;
-
-        CaveGen.resetParams();
-        Parser.readConfigFiles();
-        computeStats(kind);
 
         long timerTargetFrame = 0;
         long timerCurSeed = 0;
         long timerStartSeed = 0;
 
+        boolean realTimeAttackMode = mode.equals("key") || mode.equals("cmat") || mode.equals("700k");
+        CaveGen.resetParams();
+        Parser.readConfigFiles();
+        computeStats(mode.equals("700k") ? "attk" : mode);
+        resetDigitTrackers();
+
         for (int i = 1; i <= 30; i++) {
             for (int j = 2; j <= Parser.chFloorCount.get("CH"+i); j++) {
-                stageStddevs[i] += stddevs.get("CH"+i+"-"+j) * stddevs.get("CH"+i+"-"+j);
+                lateStageStdevs[i] += stddevs.get("CH"+i+"-"+j) * stddevs.get("CH"+i+"-"+j);
             }
-            stageStddevs[i] = Math.sqrt(stageStddevs[i]);
-            //System.out.println(i + ": " + stageStddevs[i]);
+            lateStageStdevs[i] = Math.sqrt(lateStageStdevs[i]);
         }
-        System.out.println("stdevs: " + Arrays.toString(stageStddevs));
+        System.out.println("stdevs: " + Arrays.toString(lateStageStdevs));
+
 
         try {
-            resetDigitTrackers();
-            RandomAccessFile raf = new RandomAccessFile("files/times_table_" + kind + ".txt", "r");
+            RandomAccessFile raf = realTimeAttackMode ? new RandomAccessFile("files/times_table_" + mode + ".txt", "r") : null;
 
             while (true) {
+
+                // process the message from continuous.py
                 String r = message(true, null);
                 long time = System.currentTimeMillis();
                 if (r != null) {
-                    //System.out.println("continuous: " + r);
                     if (r.equals("exit"))
                         break;
 
                     String[] s = r.split(" ");
                     if (s[0].equals("digits")) {
-                        if (numDigitsRead == 0) {
+                        if (numDigitsRead == 0) { // new set of digits to read. reset everything
                             resetDigitTrackers();
                             for (int i = 0; i < gY; i++) {
                                 for (int j = 0; j < gX; j++) jTextGrid.get(gX*i+j).setText("");
-                                timers[i] = -1;
                             }
                             repaintManip();
+                            for (int i = 1; i <= 30; i++) {
+                                if (levelsToPlay[i]) levelsPlayed[i] = false;
+                                else if (levelsToIgnore[i]) levelsPlayed[i] = true;
+                            }
                         }
                         if (numDigitsRead < 3000) {
                             for (int i = 0; i < 5; i++) {
@@ -179,7 +188,7 @@ public class Manip {
                             }
                             numDigitsRead += 1;
                         }
-                        if (!seedRead) {
+                        if (!seedRead) { // process a set of digits, and try to read the seed
                             tryReadSeed();
                             if (seedRead && lastReadSeed == -1) {
                                 System.out.println("Failed to detect seed, you are on your own");
@@ -189,18 +198,18 @@ public class Manip {
                                 readyToGenerate = true;
                             }
                         }
-                        if (waitForNextSeed) {
+                        if (waitForNextSeed) { // params to change after a level has been played
                             System.out.println("\nStarting to look for next seed");
                             waitForNextSeed = false;
                             showTimers = false;
-                            if (options.size() > caveViewer.lastSSeed) {
+                            numLevelsPlayed += 1;
+                            lastStagePlayed = options.get(caveViewer.lastSSeed).level;
+                            if (options.size() > caveViewer.lastSSeed && realTimeAttackMode) {
                                 levelsPlayed[options.get(caveViewer.lastSSeed).level] = true;
-                                numLevelsPlayed += 1;
-                                lastStagePlayed = options.get(caveViewer.lastSSeed).level;
                             }
                         }
                     }
-                    if (s[0].equals("fadeout")) {
+                    if (s[0].equals("fadeout")) { // count fadeouts
                         numDigitsRead = 0;
                         if (time - timeOfLastFadeout < 1000) {
                             timeOfLastFadeout = time;
@@ -218,7 +227,7 @@ public class Manip {
                             runStartTime = time;
                         }
                     }
-                    if (s[0].equals("donedigit")) {
+                    if (s[0].equals("donedigit")) { // message that there are no more digits to be read
                         if (numDigitsRead > 0 && !seedRead) {
                             System.out.println("Missed seed, you are on your own");
                             seedRead = true;
@@ -228,58 +237,66 @@ public class Manip {
                     }
                 }
 
-                // cmal manip
-                if (kind.equals("key")) {
-                    if (readyToGenerate) {
 
-                        StringBuilder text1 = new StringBuilder();
+                // compute and show the recommended manip
+                if (readyToGenerate) {
 
-                        boolean unknownSeed = lastReadSeed == -1;
-                        int numSeedsToConsider = numLevelsPlayed == 0 ? (int)Double.parseDouble(params.get("secondsWaitingForLevel"))/6 : 5;
-                        if (unknownSeed) {
-                            lastReadSeed = 0;
-                            numSeedsToConsider = 1;
-                        }
-                        long firstSeedToConsider = seed.next_seed(lastReadSeed, 1004);
-                        long startSeed = seed.next_seed(lastReadSeed, 4);
+                    StringBuilder text1 = new StringBuilder();
 
-                        String args = "none CH1-1,CH2-1,CH3-1,CH4-1,CH5-1,CH6-1,CH7-1,CH8-1,CH9-1,CH10-1,"
-                         + "CH11-1,CH12-1,CH13-1,CH14-1,CH15-1,CH16-1,CH17-1,CH18-1,CH19-1,CH20-1,CH21-1,"
-                         + "CH22-1,CH23-1,CH24-1,CH25-1,CH26-1,CH27-1,CH28-1,CH29-1,CH30-1 "
-                         + "-consecutiveseeds -seed 0x" + Drawer.seedToString(firstSeedToConsider) 
-                         + " -num " + numSeedsToConsider + " -judge " + kind;
-                        System.out.println("Generating levels...");
-                        CaveGen.main(args.split(" "));
-                        System.out.println("Done generating levels.");
+                    boolean unknownSeed = lastReadSeed == -1;
+                    int numSeedsToConsider = realTimeAttackMode ? 
+                                (numLevelsPlayed == 0 ? (int)Double.parseDouble(params.get("secondsWaitingForLevel"))/5 : 5)
+                                : (int)Double.parseDouble(params.get("attkMaxWaitingForLevel"))/5;
+                    if (unknownSeed) {
+                        lastReadSeed = seed.next_seed(0, -1004);
+                        numSeedsToConsider = 1;
+                    }
+                    if (!realTimeAttackMode || numLevelsPlayed == 0) lastStagePlayed = 8;
+                    long firstSeedToConsider = seed.next_seed(lastReadSeed, 1004);
+                    long startSeed = seed.next_seed(lastReadSeed, 4);
+                    //System.out.println(Drawer.seedToString(lastReadSeed) + " " + Drawer.seedToString(startSeed) + " " + Drawer.seedToString(firstSeedToConsider));
 
-                        int waitTimesBySeed[] = new int[numSeedsToConsider];
-                        int scrollTimesByLevel[] = new int[31];
-                        float optimalResetGiveupByLevel[] = new float[31];
-                        String scrollSeq[] = new String[31];
-                        for (int i = 1; i < numSeedsToConsider; i++) {
-                            waitTimesBySeed[i] = i == 1 ? seed.seed_duration_first(startSeed)
-                                            : waitTimesBySeed[i-1] + seed.seed_duration(seed.next_seed(lastReadSeed, 4+i-1));
-                        }
-                        if (numLevelsPlayed == 0) {
-                            for (int i = 0; i < numSeedsToConsider; i++)
-                                waitTimesBySeed[i] *= Double.parseDouble(params.get("secondsGiveUpPerSecondWait"));
-                        }
-                        int rl = (lastStagePlayed-1) / 5;
-                        int cl = (lastStagePlayed-1) % 5;
-                        for (int i = 1; i <= 30; i++) {
-                            optimalResetGiveupByLevel[i] = (float)(stageStddevs[i] * Double.parseDouble(params.get("secondsGiveUpPerSecondVol")) * (1-numLevelsPlayed/30.0));
-                            if (numLevelsPlayed == 0) continue; // all 0
-                            int rc = (i-1) / 5;
-                            int cc = (i-1) % 5;
-                            int rd = (rc-rl+6) % 6;
-                            int cd = (cc-cl+5) % 5;
-                            int dist = Math.min(rd, 6-rd) + Math.min(cd, 5-cd);
-                            scrollTimesByLevel[i] = Integer.parseInt(params.get("framesNeededToScrollLevel")) * dist;
-                            scrollSeq[i] = (rd==0?"":rd==1?"v":rd==2?"vv":rd==3?"vvv":rd==4?"^^":"^")
-                                        + (cd==0?"":cd==1?">":cd==2?">>":cd==3?"<<":"<");
-                        }
+                    String args = "none CH1-1,CH2-1,CH3-1,CH4-1,CH5-1,CH6-1,CH7-1,CH8-1,CH9-1,CH10-1,"
+                        + "CH11-1,CH12-1,CH13-1,CH14-1,CH15-1,CH16-1,CH17-1,CH18-1,CH19-1,CH20-1,CH21-1,"
+                        + "CH22-1,CH23-1,CH24-1,CH25-1,CH26-1,CH27-1,CH28-1,CH29-1,CH30-1 "
+                        + "-consecutiveseeds -seed 0x" + Drawer.seedToString(firstSeedToConsider) 
+                        + " -num " + numSeedsToConsider + " -judge " + mode;
+                    System.out.println("Generating levels...");
+                    CaveGen.main(args.split(" "));
+                    System.out.println("Done generating levels.");
 
-                        float[] remainingTimesByLevel = new float[31];
+                    int waitTimesBySeed[] = new int[numSeedsToConsider];
+                    int scrollTimesByLevel[] = new int[31];
+                    float optimalResetGiveupByLevel[] = new float[31];
+                    float[] remainingTimesByLevel = new float[31];
+                    String scrollSeq[] = new String[31];
+
+                    for (int i = 1; i < numSeedsToConsider; i++) {
+                        waitTimesBySeed[i] = i == 1 ? seed.seed_duration_first(startSeed)
+                                        : waitTimesBySeed[i-1] + seed.seed_duration(seed.next_seed(lastReadSeed, 4+i-1));
+                    }
+                    if (numLevelsPlayed == 0) {
+                        for (int i = 0; i < numSeedsToConsider; i++)
+                            waitTimesBySeed[i] *= Double.parseDouble(params.get("secondsGiveUpPerSecondWait"));
+                    }
+                    int rl = (lastStagePlayed-1) / 5;
+                    int cl = (lastStagePlayed-1) % 5;
+                    for (int i = 1; i <= 30; i++) {
+                        optimalResetGiveupByLevel[i] = (float)(lateStageStdevs[i] * Double.parseDouble(params.get("secondsGiveUpPerSecondVol")) * (1-numLevelsPlayed/30.0));
+                        if (numLevelsPlayed == 0) continue; // all 0
+                        int rc = (i-1) / 5;
+                        int cc = (i-1) % 5;
+                        int rd = (rc-rl+6) % 6;
+                        int cd = (cc-cl+5) % 5;
+                        int dist = Math.min(rd, 6-rd) + Math.min(cd, 5-cd);
+                        scrollTimesByLevel[i] = Integer.parseInt(params.get("framesNeededToScrollLevel")) * dist;
+                        //scrollSeq[i] = (rd==0?"":rd==1?"v":rd==2?"vv":rd==3?"vvv":rd==4?"^^":"^")
+                        //            + (cd==0?"":cd==1?">":cd==2?">>":cd==3?"<<":"<");
+                        scrollSeq[i] = (rd==0?"":rd==1?"D":rd==2?"DD":rd==3?"DDD":rd==4?"UU":"U")
+                                    + (cd==0?"":cd==1?"R":cd==2?"RR":cd==3?"LL":"L");
+                    }
+
+                    if (realTimeAttackMode) {
                         int binKey = 0;
                         for (int i = 1; i <= 30; i++) {
                             if (!levelsPlayed[i]) {
@@ -297,15 +314,6 @@ public class Manip {
                         System.out.println("orpg " + Arrays.toString(optimalResetGiveupByLevel));
                         System.out.println("remt " + Arrays.toString(remainingTimesByLevel));
 
-                        StringBuilder textPlay = new StringBuilder();
-                        for (int i = 1; i <= 30; i++) {
-                            System.out.print(levelsPlayed[i] ? "X" : "O");
-                            textPlay.append(levelsPlayed[i] ? "X" : "O");
-                            if (i%5 == 0) {
-                                System.out.println();
-                                textPlay.append("\n");
-                            }
-                        }
                         int splitsSum = 0;
                         for (int i = 1; i <= 30; i++) {
                             if (levelsPlayed[i]) {
@@ -322,180 +330,221 @@ public class Manip {
                         System.out.println("delta: " + (int)((time-runStartTime)/1000 - splitsSum));
                         if (runStartTime > 0)
                             text1.append(String.format("%dm%ds\n%d\n", (int)((time-runStartTime)/60000), (int)((time-runStartTime)/1000)%60, (int)((time-runStartTime)/1000 - splitsSum)));
-                        jtext.setText(text1.toString());
-                        jtextplay.setText(textPlay.toString());
-                        repaintManip();
+                    } else {
+                        text1.append(String.format("%dm%ds\n", (int)((time-runStartTime)/60000), (int)((time-runStartTime)/1000)%60));
+                        text1.append(numLevelsPlayed +"/30" + " last=" + lastStagePlayed + "\n");
+                    }
 
-                        long[] seedsConsidered = new long[numSeedsToConsider];
-                        String[] seedStr = new String[numSeedsToConsider];
-                        options = new ArrayList<Option>(30*numSeedsToConsider);
+                    StringBuilder textPlay = new StringBuilder();
+                    for (int i = 1; i <= 30; i++) {
+                        System.out.print(levelsToPlay[i] ? "P" : levelsToIgnore[i] ? "I" : levelsPlayed[i] ? "X" : "O");
+                        textPlay.append(levelsToPlay[i] ? "P" : levelsToIgnore[i] ? "I" : levelsPlayed[i] ? "X" : "O");
+                        if (i%5 == 0) {
+                            System.out.println();
+                            textPlay.append("\n");
+                        }
+                    }
+                    jtext.setText(text1.toString());
+                    jtextplay.setText(textPlay.toString());
+                    repaintManip();
 
-                        for (int i = 0; i < numSeedsToConsider; i++) {
-                            seedsConsidered[i] = seed.next_seed(lastReadSeed, 1004+i);
-                            seedStr[i] = Drawer.seedToString(seedsConsidered[i]);
-                            for (int j = 1; j <= 30; j++) {
+                    long[] seedsConsidered = new long[numSeedsToConsider];
+                    String[] seedStr = new String[numSeedsToConsider];
+                    options = new ArrayList<Option>(30*numSeedsToConsider);
+
+                    for (int i = 0; i < numSeedsToConsider; i++) {
+                        seedsConsidered[i] = seed.next_seed(firstSeedToConsider, i);
+                        seedStr[i] = Drawer.seedToString(seedsConsidered[i]);
+                        for (int j = 1; j <= 30; j++) {
+                            if (realTimeAttackMode) {
                                 //System.out.println(" CH"+j+"-1 " + seedStr);
-                                double playt = CaveGen.stats.judge.scoreMap.get("CH"+j+"-1 " + seedStr[i])
+                                double playt = unknownSeed ? 0 : CaveGen.stats.judge.scoreMap.get("CH"+j+"-1 " + seedStr[i])
                                                 - means.get("CH"+j+"-1");
                                 double t = Math.max(scrollTimesByLevel[j], waitTimesBySeed[i]) / 30.0
                                     + remainingTimesByLevel[j]
-                                    + (unknownSeed ? 0 : playt)
+                                    + playt
                                     - optimalResetGiveupByLevel[j]
                                     + (levelsPlayed[j] ? 1000 : 0);
-                                options.add(new Option(t, i, j));
+                                Option o = new Option(t, i, j);
+                                o.rank =  unknownSeed ? 50 : CaveGen.stats.judge.rankMap.get("CH"+j+"-1 " + seedStr[i]);
+                                o.avgDiff = playt;
+                                options.add(o);
+                            } else {
+                                double playt = unknownSeed ? 0 : CaveGen.stats.judge.scoreMap.get("CH"+j+"-1 " + seedStr[i])
+                                                - tenthPercentile.get("CH"+j+"-1");
+                                double rankt = unknownSeed ? 0 : CaveGen.stats.judge.rankMap.get("CH"+j+"-1 " + seedStr[i]);
+                                double t = (levelsToPlay[j] ? -15 : 0)
+                                        + (levelsToIgnore[j] ? 100000 : 0)
+                                        + playt
+                                        + (rankt <= rankCutoffs[j] ? 0 : 100000)
+                                        + (rankt - rankCutoffs[j]);
+                                Option o = new Option(t, i, j);
+                                o.rank = rankt;
+                                o.avgDiff = playt;
+                                options.add(o);
                             }
                         }
+                    }
 
-                        Collections.sort(options, new Comparator<Option>() {
-                            public int compare(Option a, Option b) {
-                                return Double.compare(a.time, b.time);
-                            }
-                        });
-
-                        int numOptionsShow = Math.min(numLevelsPlayed == 0 ? 30 : 5,options.size());
-
-                        for (int i = 0; i < numOptionsShow; i++) {
-                            Option o = options.get(i);
-                            double scrollt = scrollTimesByLevel[o.level] /30.0;
-                            double waitt = waitTimesBySeed[o.seed] / 30.0;
-                            double remt = remainingTimesByLevel[o.level];
-                            double playt = CaveGen.stats.judge.scoreMap.get("CH"+o.level+"-1 " + seedStr[o.seed]) - means.get("CH"+o.level+"-1");
-                            double orpt = optimalResetGiveupByLevel[o.level];
-                            System.out.printf("%2d: CH%-2s %s t=%.3f play=%.2f rem=%.2f orp=%.1f wait=%.1f scroll=%.1f\n", 
-                                i+1, o.level+"", seedStr[o.seed], o.time, playt, remt, orpt, waitt, scrollt);
-                            if (i >= gY) continue;
-                            //jTextGrid.get(gX*i+0).setText(""+(i+1));
-                            //jTextGrid.get(gX*i+1).setText("CH"+o.level);
-                            //jTextGrid.get(gX*i+2).setText(scrollSeq[o.level]+"");
-                            //jTextGrid.get(gX*i+3).setText("");
-                            //jTextGrid.get(gX*i+4).setText("");
-                            //jTextGrid.get(gX*i+5).setText("");
-                            //jTextGrid.get(gX*i+6).setText("");
+                    Collections.sort(options, new Comparator<Option>() {
+                        public int compare(Option a, Option b) {
+                            return Double.compare(a.time, b.time);
                         }
-                        //repaintManip();
+                    });
 
-                        System.out.println("Done sorting options");
+                    int numOptionsShow = Math.min(numLevelsPlayed == 0 || !realTimeAttackMode ? 30 : 5,options.size());
 
-                        for (int i = 0; i < numOptionsShow; i++) {
-                            Option o = options.get(i);
+                    for (int i = 0; i < numOptionsShow; i++) {
+                        Option o = options.get(i);
+                        double scrollt = scrollTimesByLevel[o.level] /30.0;
+                        double waitt = waitTimesBySeed[o.seed] / 30.0;
+                        double remt = remainingTimesByLevel[o.level];
+                        double playt = CaveGen.stats.judge.scoreMap.get("CH"+o.level+"-1 " + seedStr[o.seed]) - means.get("CH"+o.level+"-1");
+                        double orpt = optimalResetGiveupByLevel[o.level];
+                        System.out.printf("%2d: CH%-2s %s t=%.3f play=%.2f rem=%.2f orp=%.1f wait=%.1f scroll=%.1f\n", 
+                            i+1, o.level+"", seedStr[o.seed], o.time, playt, remt, orpt, waitt, scrollt);
+                        if (i >= gY) continue;
+                        //jTextGrid.get(gX*i+0).setText(""+(i+1));
+                        //jTextGrid.get(gX*i+1).setText("CH"+o.level);
+                        //jTextGrid.get(gX*i+2).setText(scrollSeq[o.level]+"");
+                        //jTextGrid.get(gX*i+3).setText("");
+                        //jTextGrid.get(gX*i+4).setText("");
+                        //jTextGrid.get(gX*i+5).setText("");
+                        //jTextGrid.get(gX*i+6).setText("");
+                    }
+                    //repaintManip();
+
+                    System.out.println("Done sorting options");
+
+                    for (int i = 0; i < numOptionsShow; i++) {
+                        Option o = options.get(i);
+                        if (unknownSeed) {
+                            o.targetFrame = 297/2;
+                            o.targetWindow = 297;
+                        }
+                        else {
                             o.targetFrame = seed.best_timing("CH"+o.level, startSeed, seedsConsidered[o.seed]);
                             o.targetWindow = seed.frame_window;
-                            if (o.targetWindow <= Integer.parseInt(params.get("framesNeededForWindow"))
-                                 || o.targetFrame+o.targetWindow/2 < Integer.parseInt(params.get("framesNeededToSelectLevel")) + scrollTimesByLevel[o.level] ) {
-                                options.remove(i);
-                                numOptionsShow = Math.min(numOptionsShow, options.size());
-                                i -= 1;
-                                continue;
-                            }
-                            if (i >= gY) continue;
-                            jTextGrid.get(gX*i+0).setText(""+(i+1));
-                            jTextGrid.get(gX*i+1).setText("CH"+o.level);
-                            jTextGrid.get(gX*i+2).setText(scrollSeq[o.level]+"");
-                            jTextGrid.get(gX*i+3).setText(String.format("%6.1f", (o.targetFrame-o.targetWindow/2)/30.0));
-                            jTextGrid.get(gX*i+4).setText(String.format("%6.1f", o.targetWindow/30.0));
-                            jTextGrid.get(gX*i+5).setText(seedStr[o.seed]+"");
-                            jTextGrid.get(gX*i+6).setText(""+seed.dist(firstSeedToConsider,seedsConsidered[o.seed]));
-                            timers[i] = (o.targetFrame-o.targetWindow/2)/30.0;
-                            repaintManip();
                         }
-                        
-
-                        for (int i = numOptionsShow; i < gY; i++) {
-                            for (int j = 0; j < gX; j++) jTextGrid.get(gX*i+j).setText("");
-                            timers[i] = -1;
+                        if (o.targetWindow <= Integer.parseInt(params.get("framesNeededForWindow"))
+                                || o.targetFrame+o.targetWindow/2 < Integer.parseInt(params.get("framesNeededToSelectLevel")) + scrollTimesByLevel[o.level] ) {
+                            options.remove(i);
+                            numOptionsShow = Math.min(numOptionsShow, options.size());
+                            i -= 1;
+                            continue;
                         }
+                        if (i >= gY) continue;
+                        jTextGrid.get(gX*i+0).setText(""+(i+1));
+                        jTextGrid.get(gX*i+1).setText("CH"+o.level);
+                        jTextGrid.get(gX*i+2).setText(scrollSeq[o.level]+"");
+                        double tf = (o.targetFrame-o.targetWindow/2.0)/30.0;
+                        if (tf<0) tf=0;
+                        if (tf >= 100)
+                            jTextGrid.get(gX*i+3).setText(String.format("%4d", (int)tf));
+                        else jTextGrid.get(gX*i+3).setText(String.format("%4.1f", tf));
+                        jTextGrid.get(gX*i+4).setText(o.targetWindow/30.0 >= 10 ? String.format("%2d.", (int)(o.targetWindow/30.0)) : String.format("%3.1f", o.targetWindow/30.0));
+                        jTextGrid.get(gX*i+5).setText(seedStr[o.seed]+"");
+                        jTextGrid.get(gX*i+6).setText(""+seed.dist(firstSeedToConsider,seedsConsidered[o.seed]));
+                        jTextGrid.get(gX*i+7).setText(o.rank >= 100 ? "100.%" : String.format("%4.1f%%", o.rank));
+                        jTextGrid.get(gX*i+8).setText(String.format("%4d", Math.round(o.avgDiff)));
                         repaintManip();
+                    }
+                    
+                    for (int i = numOptionsShow; i < gY; i++) {
+                        for (int j = 0; j < gX; j++) jTextGrid.get(gX*i+j).setText("");
+                    }
+                    repaintManip();
 
-                        System.out.println("Done timing options");
+                    System.out.println("Done timing options");
 
-                        for (int i = numOptionsShow-1; i >= 0; i--) {
-                            Option o = options.get(i);
-                            System.out.printf("%2d: CH%-2s %s %3d -> %6.2f + %.2f   %s\n", 
-                                i+1, o.level+"", seedStr[o.seed], seed.dist(firstSeedToConsider,seedsConsidered[o.seed]),
-                                    (o.targetFrame-o.targetWindow/2)/30.0,  o.targetWindow/30.0, 
-                                    scrollSeq[o.level]);
-                        }
-
-                        CaveViewer.guiOnly = true;
-                        caveViewer.imageBuffer.clear();
-                        caveViewer.nameBuffer.clear();
-                        CaveViewer.manipKeepImages = true;
-                        
-                        for (int i = 0; i < numOptionsShow; i++) {
-                            Option o = options.get(i);
-                            String args2 = "cave CH" + o.level + "-1 -noprints -drawpodangle "
-                            + "-seed 0x" + seedStr[o.seed];
-                            CaveGen.main(args2.split(" "));
-                            if (i == 0)  {
-                                caveViewer.lastSSeed = 0;
-                                caveViewer.jfrView.setVisible(true);
-                                caveViewer.firstImg();
-                            }
-                        }
-
-                        CaveViewer.manipKeepImages = false;
-
-                        readyToGenerate = false;
-                        lastStagePlayed = options.get(0).level;
-                        waitForNextFadeout = true;
-                        timerStartSeed = startSeed;
-                        timerCurSeed = startSeed;
-                        timerTargetFrame = 0;
+                    for (int i = numOptionsShow-1; i >= 0; i--) {
+                        Option o = options.get(i);
+                        System.out.printf("%2d: CH%-2s %s %3d -> %6.2f + %.2f   %s\n", 
+                            i+1, o.level+"", seedStr[o.seed], seed.dist(firstSeedToConsider,seedsConsidered[o.seed]),
+                                (o.targetFrame-o.targetWindow/2)/30.0,  o.targetWindow/30.0, 
+                                scrollSeq[o.level]);
                     }
 
-                    if (showTimers) {
-                        if (timerTargetFrame == 0) {
-                            timerTargetFrame = seed.seed_duration_first(timerStartSeed);
+                    CaveViewer.guiOnly = true;
+                    caveViewer.imageBuffer.clear();
+                    caveViewer.nameBuffer.clear();
+                    CaveViewer.manipKeepImages = true;
+                    
+                    for (int i = 0; i < numOptionsShow; i++) {
+                        Option o = options.get(i);
+                        String args2 = "cave CH" + o.level + "-1 -noprints -drawpodangle "
+                        + "-seed 0x" + seedStr[o.seed];
+                        CaveGen.main(args2.split(" "));
+                        if (i == 0)  {
+                            caveViewer.lastSSeed = 0;
+                            caveViewer.jfrView.setVisible(true);
+                            caveViewer.firstImg();
                         }
-                        int diff = (int)(System.currentTimeMillis() - timeOfLastFadeout);
-                        int timeShow = (int)((diff + Double.parseDouble(params.get("secondsOfDelay"))*1000) * 30.0 / 1000);
-
-                        //System.out.println(timeShow + " " + timerTargetFrame + " " + timeOfLastFadeout + " " + diff);
-
-                        if (timeShow >= timerTargetFrame) {
-                            timerCurSeed = seed.next_seed(timerCurSeed);
-                            timerTargetFrame += seed.seed_duration(timerCurSeed);
-                        }
-                        
-                        StringBuilder text = new StringBuilder();
-                        text.append(""+String.format("%6.1f\n", timeShow/30.0));
-                        text.append(Drawer.seedToString(timerCurSeed) + " " + seed.dist(timerStartSeed,timerCurSeed) + "\n");
-
-                        for (int i = 0; i < gY; i++) {
-                            if (timers[i] == -1) {
-                                jTextGrid.get(gX*i+3).setText("");
-                                continue;
-                            }
-                            double t = timers[i]-timeShow/30.0;
-                            t = Math.max(0,t);
-                            if (numFadeouts > 1) t = 0;
-                            jTextGrid.get(gX*i+3).setText(String.format("%6.1f", t));
-
-                            double w = options.get(i).targetWindow/30.0;
-                            if (t <= 0) {
-                                w += timers[i]-timeShow/30.0;
-                                w = Math.max(w,0);
-                                jTextGrid.get(gX*i+4).setText(String.format("%6.1f", w));
-                            }
-                        }
-
-                        jtext2.setText(text.toString());
-                        repaintManip();
-
-                        String cave = caveViewer.lastSSeed < options.size() ? 
-                                        "CH" + options.get(caveViewer.lastSSeed).level : "CH1";
-                        System.out.printf(" TIMER:  %s %3d -> %6.2f    (cur %s %d)                   \r", 
-                                            Drawer.seedToString(seed.seed_from_A(cave, timerCurSeed, timerTargetFrame-timeShow)), 
-                                            seed.dist(timerStartSeed,timerCurSeed), timeShow/30.0, Drawer.seedToString(timerCurSeed),
-                                            seed.nth_inv(timerCurSeed));
-
-
                     }
+
+                    CaveViewer.manipKeepImages = false;
+
+                    readyToGenerate = false;
+                    lastStagePlayed = options.size() > 0 ? options.get(0).level : 1;
+                    waitForNextFadeout = true;
+                    timerStartSeed = startSeed;
+                    timerCurSeed = startSeed;
+                    timerTargetFrame = 0;
+                }
+
+                // show the countdown timers
+                if (showTimers) {
+                    if (timerTargetFrame == 0) {
+                        timerTargetFrame = seed.seed_duration_first(timerStartSeed);
+                    }
+                    int diff = (int)(System.currentTimeMillis() - timeOfLastFadeout);
+                    int timeShow = (int)((diff + Double.parseDouble(params.get("secondsOfDelay"))*1000) * 30.0 / 1000);
+
+                    if (timeShow >= timerTargetFrame) {
+                        timerCurSeed = seed.next_seed(timerCurSeed);
+                        timerTargetFrame += seed.seed_duration(timerCurSeed);
+                    }
+                    
+                    StringBuilder text = new StringBuilder();
+                    text.append(""+String.format("%6.1f\n", timeShow/30.0));
+                    text.append(Drawer.seedToString(timerCurSeed) + " " + seed.dist(timerStartSeed,timerCurSeed) + "\n");
+
+                    for (int i = 0; i < gY; i++) {
+                        if (i >= options.size() || options.get(i).targetWindow <= 0) {
+                            jTextGrid.get(gX*i+3).setText("");
+                            jTextGrid.get(gX*i+4).setText("");
+                            continue;
+                        }
+                        Option o = options.get(i);
+                        double timer = (o.targetFrame-o.targetWindow/2.0)/30.0;
+                        double t = timer-timeShow/30.0;
+                        t = Math.max(0,t);
+                        if (numFadeouts > 1) t = 0;
+                        if (t >= 100)
+                            jTextGrid.get(gX*i+3).setText(String.format("%4d", (int)t));
+                        else jTextGrid.get(gX*i+3).setText(String.format("%4.1f", t));
+
+                        double w = o.targetWindow/30.0;
+                        if (t <= 0) {
+                            w += timer-timeShow/30.0;
+                            w = Math.max(w,0);
+                            if (numFadeouts > 1) w = 0;
+                            jTextGrid.get(gX*i+4).setText(w >= 10 ? String.format("%2d.", (int)w) : String.format("%3.1f", w));
+                        }
+                    }
+
+                    jtext2.setText(text.toString());
+                    repaintManip();
+
+                    String cave = caveViewer.lastSSeed < options.size() ? 
+                                    "CH" + options.get(caveViewer.lastSSeed).level : "CH1";
+                    System.out.printf(" TIMER:  %s %3d -> %6.2f    (cur %s %d)                   \r", 
+                                        Drawer.seedToString(seed.seed_from_A(cave, timerCurSeed, timerTargetFrame-timeShow)), 
+                                        seed.dist(timerStartSeed,timerCurSeed), timeShow/30.0, Drawer.seedToString(timerCurSeed),
+                                        seed.nth_inv(timerCurSeed));
 
 
                 }
-
-
 
 
                 Thread.sleep(10);
@@ -525,13 +574,17 @@ public class Manip {
     }
 
     HashMap<String, String> params;
-    double splits[] = new double[31];
+    double splits[] = new double[31], rankCutoffs[] = new double[31];
+    boolean levelsToPlay[] = new boolean[31],levelsToIgnore[] = new boolean[31];
     void readParams() {
         try {
             params = new HashMap<String, String>();
             BufferedReader br = new BufferedReader(new FileReader("files/manip_config.txt"));
             String line;
             while ((line = br.readLine()) != null) {
+                int hash = line.indexOf("#");
+                if (hash >= 0) line = line.substring(0,hash).trim();
+                if (line.indexOf("=") < 0) continue;
                 Scanner sc = new Scanner(line);
                 sc.useDelimiter("=");
                 String a = sc.next().trim();
@@ -552,6 +605,38 @@ public class Manip {
                         //}
                     }
                     System.out.println("Splits time: " + (splitsSum/60) + "m" + (splitsSum%60) + "s");
+                    sc2.close();
+                }
+                if (a.equals("attkRankThreshold")) {
+                    Scanner sc2 = new Scanner(b);
+                    sc2.useDelimiter(",");
+                    for (int i = 0; i < 30; i++) {
+                        rankCutoffs[i+1] = Double.parseDouble(sc2.next().trim());
+                    }
+                    System.out.println("Rank cutoffs: " + Arrays.toString(rankCutoffs));
+                    sc2.close();
+                }
+                if (a.equals("levelsToPlay")) {
+                    Scanner sc2 = new Scanner(b);
+                    sc2.useDelimiter(",");
+                    levelsToPlay = new boolean[31];
+                    while(sc2.hasNext()) {
+                        int p = Integer.parseInt(sc2.next().trim());
+                        levelsToPlay[p] = true;
+                    }
+                    System.out.println("Override levels to play: " + Arrays.toString(levelsToPlay));
+                    sc2.close();
+                }
+                if (a.equals("levelsToIgnore")) {
+                    Scanner sc2 = new Scanner(b);
+                    sc2.useDelimiter(",");
+                    levelsToIgnore = new boolean[31];
+                    while(sc2.hasNext()) {
+                        int p = Integer.parseInt(sc2.next().trim());
+                        levelsToIgnore[p] = true;
+                    }
+                    System.out.println("Override levels to ignore: " + Arrays.toString(levelsToIgnore));
+                    sc2.close();
                 }
             }
             br.close();
@@ -577,6 +662,7 @@ public class Manip {
         int level;
         long targetFrame;
         long targetWindow;
+        double rank,avgDiff;
         Option(double time, int seed, int level) {
             this.time=time; this.seed=seed; this.level=level;
         }
@@ -685,6 +771,7 @@ public class Manip {
 
     ArrayList<String> ids = new ArrayList<String>();
     HashMap<String, Double> means = new HashMap<String, Double>();
+    HashMap<String, Double> tenthPercentile = new HashMap<String, Double>();
     HashMap<String, Double> stddevs = new HashMap<String, Double>();
     HashMap<String, Double> ranges = new HashMap<String, Double>();
     void computeStats(String kind) {
@@ -707,6 +794,7 @@ public class Manip {
                 means.put(id, x);
                 stddevs.put(id, Math.sqrt(Math.max(0,x2/rank.length - x*x)));
                 ranges.put(id, rank[rank.length-1]-rank[0]);
+                tenthPercentile.put(id, rank[rank.length/10]);
             } 
         }
     }
