@@ -53,7 +53,7 @@ import ast
 # images: True
 # verbose: True
 
-with open("files/continuous_config.txt", "r") as f:
+with open("continuous_config.txt", "r") as f:
     args = Namespace(**ast.literal_eval(f.read()))
 print(args)
 
