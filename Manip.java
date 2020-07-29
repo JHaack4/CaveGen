@@ -371,7 +371,7 @@ public class Manip {
                                 options.add(o);
                             } else {
                                 double playt = unknownSeed ? 0 : CaveGen.stats.judge.scoreMap.get("CH"+j+"-1 " + seedStr[i])
-                                                - tenthPercentile.get("CH"+j+"-1");
+                                                - topPercentile.get("CH"+j+"-1");
                                 double rankt = unknownSeed ? 0 : CaveGen.stats.judge.rankMap.get("CH"+j+"-1 " + seedStr[i]);
                                 double t = (levelsToPlay[j] ? -15 : 0)
                                         + (levelsToIgnore[j] ? 100000 : 0)
@@ -579,7 +579,7 @@ public class Manip {
     void readParams() {
         try {
             params = new HashMap<String, String>();
-            BufferedReader br = new BufferedReader(new FileReader("files/manip_config.txt"));
+            BufferedReader br = new BufferedReader(new FileReader("manip_config.txt"));
             String line;
             while ((line = br.readLine()) != null) {
                 int hash = line.indexOf("#");
@@ -771,7 +771,7 @@ public class Manip {
 
     ArrayList<String> ids = new ArrayList<String>();
     HashMap<String, Double> means = new HashMap<String, Double>();
-    HashMap<String, Double> tenthPercentile = new HashMap<String, Double>();
+    HashMap<String, Double> topPercentile = new HashMap<String, Double>();
     HashMap<String, Double> stddevs = new HashMap<String, Double>();
     HashMap<String, Double> ranges = new HashMap<String, Double>();
     void computeStats(String kind) {
@@ -794,7 +794,7 @@ public class Manip {
                 means.put(id, x);
                 stddevs.put(id, Math.sqrt(Math.max(0,x2/rank.length - x*x)));
                 ranges.put(id, rank[rank.length-1]-rank[0]);
-                tenthPercentile.put(id, rank[rank.length/10]);
+                topPercentile.put(id, rank[rank.length*5/100]);
             } 
         }
     }
