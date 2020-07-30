@@ -283,7 +283,7 @@ public class Manip {
                     int cl = (lastStagePlayed-1) % 5;
                     for (int i = 1; i <= 30; i++) {
                         optimalResetGiveupByLevel[i] = (float)(lateStageStdevs[i] * Double.parseDouble(params.get("secondsGiveUpPerSecondVol")) * (1-numLevelsPlayed/30.0));
-                        if (numLevelsPlayed == 0) continue; // all 0
+                        if (lastStagePlayed <= 0) continue; // all 0
                         int rc = (i-1) / 5;
                         int cc = (i-1) % 5;
                         int rd = (rc-rl+6) % 6;
@@ -331,8 +331,9 @@ public class Manip {
                         if (runStartTime > 0)
                             text1.append(String.format("%dm%ds\n%d\n", (int)((time-runStartTime)/60000), (int)((time-runStartTime)/1000)%60, (int)((time-runStartTime)/1000 - splitsSum)));
                     } else {
-                        text1.append(String.format("%dm%ds\n", (int)((time-runStartTime)/60000), (int)((time-runStartTime)/1000)%60));
-                        text1.append(numLevelsPlayed +"/30" + " last=" + lastStagePlayed + "\n");
+                        if (runStartTime > 0)
+                            text1.append(String.format("%dm%ds\n", (int)((time-runStartTime)/60000), (int)((time-runStartTime)/1000)%60));
+                        text1.append(numLevelsPlayed +"" + " last=" + lastStagePlayed + "\n");
                     }
 
                     StringBuilder textPlay = new StringBuilder();
@@ -485,7 +486,7 @@ public class Manip {
                     CaveViewer.manipKeepImages = false;
 
                     readyToGenerate = false;
-                    lastStagePlayed = options.size() > 0 ? options.get(0).level : 1;
+                    lastStagePlayed = options.size() > 0 ? options.get(0).level : 0;
                     waitForNextFadeout = true;
                     timerStartSeed = startSeed;
                     timerCurSeed = startSeed;
