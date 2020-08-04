@@ -32,7 +32,7 @@ public class Manip {
         jfr.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         
         jtext.setText("mode: " + mode);
-        jtext.setFont(font);
+        jtext.setFont(fontMono);
         jtext.setEditable(false);
         jtext.setContentType("text/plain");
         jtext.setBackground(null);
@@ -155,6 +155,8 @@ public class Manip {
         }
         System.out.println("stdevs: " + Arrays.toString(lateStageStdevs));
 
+        readyToGenerate = true;
+        lastReadSeed = 1;
 
         try {
             RandomAccessFile raf = realTimeAttackMode ? new RandomAccessFile("files/times_table_" + mode + ".txt", "r") : null;
@@ -251,7 +253,7 @@ public class Manip {
                         lastReadSeed = seed.next_seed(0, -1004);
                         numSeedsToConsider = 1;
                     }
-                    if (!realTimeAttackMode || numLevelsPlayed == 0) lastStagePlayed = 8;
+                    if (numLevelsPlayed == 0) lastStagePlayed = 8;
                     long firstSeedToConsider = seed.next_seed(lastReadSeed, 1004);
                     long startSeed = seed.next_seed(lastReadSeed, 4);
                     //System.out.println(Drawer.seedToString(lastReadSeed) + " " + Drawer.seedToString(startSeed) + " " + Drawer.seedToString(firstSeedToConsider));
@@ -424,7 +426,7 @@ public class Manip {
                             o.targetWindow = 297;
                         }
                         else {
-                            o.targetFrame = seed.best_timing("CH"+o.level, startSeed, seedsConsidered[o.seed]);
+                            o.targetFrame = seed.best_timing(o.level, startSeed, seedsConsidered[o.seed]);
                             o.targetWindow = seed.frame_window;
                         }
                         if (o.targetWindow <= Integer.parseInt(params.get("framesNeededForWindow"))
@@ -466,24 +468,28 @@ public class Manip {
                                 scrollSeq[o.level]);
                     }
 
-                    CaveViewer.guiOnly = true;
-                    caveViewer.imageBuffer.clear();
-                    caveViewer.nameBuffer.clear();
-                    CaveViewer.manipKeepImages = true;
-                    
-                    for (int i = 0; i < numOptionsShow; i++) {
-                        Option o = options.get(i);
-                        String args2 = "cave CH" + o.level + "-1 -noprints -drawpodangle "
-                        + "-seed 0x" + seedStr[o.seed];
-                        CaveGen.main(args2.split(" "));
-                        if (i == 0)  {
-                            caveViewer.lastSSeed = 0;
-                            caveViewer.jfrView.setVisible(true);
-                            caveViewer.firstImg();
+                    if (!unknownSeed) {
+                        CaveViewer.guiOnly = true;
+                        caveViewer.imageBuffer.clear();
+                        caveViewer.nameBuffer.clear();
+                        CaveViewer.manipKeepImages = true;
+                        
+                        for (int i = 0; i < numOptionsShow; i++) {
+                            Option o = options.get(i);
+                            String args2 = "cave CH" + o.level + "-1 -noprints -drawpodangle "
+                            + "-seed 0x" + seedStr[o.seed];
+                            CaveGen.main(args2.split(" "));
+                            if (i == 0)  {
+                                caveViewer.lastSSeed = 0;
+                                caveViewer.jfrView.setVisible(true);
+                                caveViewer.firstImg();
+                            }
                         }
-                    }
 
-                    CaveViewer.manipKeepImages = false;
+                        CaveViewer.manipKeepImages = false;
+                    } else {
+                        caveViewer.jfrView.setVisible(false);
+                    }
 
                     readyToGenerate = false;
                     lastStagePlayed = options.size() > 0 ? options.get(0).level : 0;
@@ -508,7 +514,8 @@ public class Manip {
                     
                     StringBuilder text = new StringBuilder();
                     text.append(""+String.format("%6.1f\n", timeShow/30.0));
-                    text.append(Drawer.seedToString(timerCurSeed) + " " + seed.dist(timerStartSeed,timerCurSeed) + "\n");
+                    text.append(Drawer.seedToString(timerCurSeed) + " " + seed.dist(timerStartSeed,timerCurSeed) + " " 
+                            + String.format("%3.1f", seed.seed_duration(timerCurSeed)/30.0) + "\n");
 
                     for (int i = 0; i < gY; i++) {
                         if (i >= options.size() || options.get(i).targetWindow <= 0) {
@@ -537,8 +544,8 @@ public class Manip {
                     jtext2.setText(text.toString());
                     repaintManip();
 
-                    String cave = caveViewer.lastSSeed < options.size() ? 
-                                    "CH" + options.get(caveViewer.lastSSeed).level : "CH1";
+                    int cave = caveViewer.lastSSeed < options.size() ? 
+                                    options.get(caveViewer.lastSSeed).level : 1;
                     System.out.printf(" TIMER:  %s %3d -> %6.2f    (cur %s %d)                   \r", 
                                         Drawer.seedToString(seed.seed_from_A(cave, timerCurSeed, timerTargetFrame-timeShow)), 
                                         seed.dist(timerStartSeed,timerCurSeed), timeShow/30.0, Drawer.seedToString(timerCurSeed),
@@ -960,9 +967,18 @@ public class Manip {
             if (candidates.size() < 2) break;
         }
         if (candidates.size() == 0) {
-            System.out.println("Sequence: " + sequence);
-            System.out.println("Digit processing error: no seed for this sequence found");
-            return;
+            System.out.println("Trying alt sequencing strat");
+            for (int i = Math.min(sequenceFull.length(), 13); i <= Math.min(sequenceFull.length(), 50); i++) {
+                sequence = sequenceFull.substring(sequenceFull.length()-i, sequenceFull.length()-2);
+                candidates = seed.sequence_to_seed(sequence);
+                candidateAdvances = i;
+                if (candidates.size() < 2) break;
+            }
+            if (candidates.size() == 0) {
+                System.out.println("Sequence: " + sequence);
+                System.out.println("Digit processing error: no seed for this sequence found");
+                return;
+            }
         }
         if (candidates.size() > 1) {
             System.out.println("Warning, multiple candidates. Consider editing seed_last_known.txt");

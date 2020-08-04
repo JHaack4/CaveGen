@@ -34,7 +34,7 @@ public class Seed {
                 System.out.println(seed_duration(Long.decode(args[1])));
             } else if (args[0].equalsIgnoreCase("window") && args.length >= 3) {
                 long sd = Long.decode(args[2]);
-                best_timing(args[1], next_seed(sd,-1005), sd);
+                best_timing(Integer.parseInt(args[1].toLowerCase().replace("ch", "")), next_seed(sd,-1005), sd);
                 System.out.println(Math.max(0,frame_window));
             } else if (args[0].equalsIgnoreCase("fframes") && args.length >= 2) {
                 System.out.println(seed_duration_first(Long.decode(args[1])));
@@ -105,6 +105,11 @@ public class Seed {
     }
 	
 	void runTests() {
+
+        long a = best_timing(24, 1, next_seed(1,1025));
+        System.out.println("new " + a + " " + frame_window);
+        a = best_timing_slow(24, 1, next_seed(1,1025));
+        System.out.println("old " + a + " " + frame_window);
 
         System.out.println(seed_duration(next_seed(0x9a77e115,4)));
 
@@ -336,7 +341,7 @@ public class Seed {
     volatile boolean interrupt = false;
     void timer(String args[]) {
         try {
-            String cave = args[1];
+            int cave = Integer.parseInt(args[1].toLowerCase().replace("ch", ""));
 
             // read in the start seed
             long startSeed = 0;
@@ -462,7 +467,7 @@ public class Seed {
         }
     }
 
-    String timerString(String cave, long frames, long curSeed, long curSeedFramesLeft) {
+    String timerString(int cave, long frames, long curSeed, long curSeedFramesLeft) {
         long res = seed_from_A(cave, curSeed, curSeedFramesLeft);
         return String.format("%d:%02d.%d%d", frames/1800, (frames%1800)/30, frames%30/3, (int)(frames%3 * 3.3))
             +  String.format(" (current seed: %s %d %3d)", seedToString(curSeed), nth_inv(curSeed), (int)curSeedFramesLeft) 
@@ -473,7 +478,90 @@ public class Seed {
     // to enter the specified cave.
     // The frame window is output in the frame_window global variable.
     long frame_window;
-    long best_timing(String cave, long startSeed, long targetSeed) {
+    long best_timing(int cave, long startSeed, long targetSeed) {
+ 
+        long curFrameCount = 0;
+        ArrayList<Long> goodFrames = new ArrayList<Long>();
+        long latestEarlyFrame = -1;
+        long earliestLateFrame = Long.MAX_VALUE;
+
+        long targetM1 = next_seed(targetSeed, -1);
+        long targetM2 = next_seed(targetSeed, -2);
+        long targetM1000 = next_seed(targetSeed, -1000);
+        long targetP1 = next_seed(targetSeed, 1);
+        long targetP2 = next_seed(targetSeed, 2);
+
+        long curSeed = startSeed;
+        long framesBeforeAdvance = delay_between_dont_save_and_first_advance + seed_duration_first(startSeed);
+        long dist = dist(curSeed, targetM1000);
+
+        int frames_A_to_enter = frames_A_to_enter(cave);
+
+        if (dist < 100001005) {
+            while (dist >= 0) {
+
+                if (dist <= 3) { // close (check frame by frame)
+
+                    //System.out.println(nth_inv(curSeed) + " " + framesBeforeAdvance + " " + frames_A_to_enter);
+                    long currentMinThresh = framesBeforeAdvance - frames_A_to_enter;
+                    long resSeed = next_seed(curSeed, 1000);
+                    
+                    for (int i = 0; i < framesBeforeAdvance; i++) {
+                        while (i > currentMinThresh) {
+                            resSeed = next_seed(resSeed);
+                            currentMinThresh += seed_duration(resSeed);
+                            //System.out.println("   " + i + " " + nth_inv(resSeed) + " " + currentMinThresh + " " + seed_duration(resSeed));
+                        }
+                        if (resSeed == targetSeed) {
+                            goodFrames.add(curFrameCount + i);
+                            //System.out.println(curFrameCount + " " + i + " " + nth_inv(curSeed) + " " + nth_inv(resSeed));
+                        } else if (resSeed == targetM1 || resSeed == targetM2) {
+                            latestEarlyFrame = Math.max(latestEarlyFrame, curFrameCount + i);
+                        } else if (resSeed == targetP1 || resSeed == targetP2) {
+                            earliestLateFrame = Math.min(earliestLateFrame, curFrameCount + i);
+                        }
+                    }
+                }
+
+                curFrameCount += framesBeforeAdvance;
+                curSeed = next_seed(curSeed);
+                framesBeforeAdvance = seed_duration(curSeed);
+                dist -= 1;
+            }
+        }
+        else { // too far away
+            frame_window = 0;
+            return 0;
+        }
+
+        // no good frames
+        if (goodFrames.size() == 0) {
+            frame_window = Math.min(0, earliestLateFrame-latestEarlyFrame);
+            return (earliestLateFrame + latestEarlyFrame) / 2;
+        }
+
+        // check for the longest contiguous block of good frames
+        int bestStartOfBlock = 0;
+        int bestLengthOfBlock = 0;
+        int curStartOfBlock = 0;
+        for (int i = 0; i < goodFrames.size(); i++) {
+            if (i > 0 && goodFrames.get(i) == goodFrames.get(i-1) + 1) {
+                // block is still good
+            } else {
+                curStartOfBlock = i;
+            }
+
+            if (i - curStartOfBlock + 1 > bestLengthOfBlock) {
+                bestLengthOfBlock = i - curStartOfBlock + 1;
+                bestStartOfBlock = curStartOfBlock;
+            }
+        }
+
+        frame_window = bestLengthOfBlock;
+        return goodFrames.get(bestStartOfBlock + bestLengthOfBlock/2);
+    }
+
+    long best_timing_slow(int cave, long startSeed, long targetSeed) {
  
         long curFrameCount = 0;
         ArrayList<Long> goodFrames = new ArrayList<Long>();
@@ -499,6 +587,7 @@ public class Seed {
                 long resSeed = seed_from_A(cave, curSeed, framesBeforeAdvance - framesOnThisSeed);
                 if (resSeed == targetSeed) {
                     goodFrames.add(curFrameCount);
+                    //System.out.println((curFrameCount-framesOnThisSeed) + " " + framesOnThisSeed + " " + nth_inv(curSeed) + " " + nth_inv(resSeed));
                 } else if (resSeed == targetM1 || resSeed == targetM2) {
                     latestEarlyFrame = Math.max(latestEarlyFrame, curFrameCount);
                 } else if (resSeed == targetP1 || resSeed == targetP2) {
@@ -551,9 +640,10 @@ public class Seed {
         return goodFrames.get(bestStartOfBlock + bestLengthOfBlock/2);
     }
 
+
     // returns the seed from pressing A for this cave
     // with this current seed, where the current seed will advance in framesBeforeAdvance frames
-    long seed_from_A(String cave, long curSeed, long framesBeforeAdvance) {
+    long seed_from_A(int cave, long curSeed, long framesBeforeAdvance) {
         long framesLeft = frames_A_to_enter(cave);
 
         curSeed = next_seed(curSeed, 1000); // A press advances seed by 1000
@@ -573,8 +663,8 @@ public class Seed {
     // frames between pressing A and entering the cave (when the seed can no longer advance)
     // warning, these numbers are only a rough estimation, they could be off by quite a bit...
     int[] frames_by_cave = {-1,76,76,76,84,58,56,88,68,78,82,65,61,90,79,79,77,82,80,81,96,86,79,9,80,80,64,92,97,89,85};
-    int frames_A_to_enter(String cave) {
-        return 8 + frames_by_cave[Integer.parseInt(cave.trim().toLowerCase().replace("ch", ""))];
+    int frames_A_to_enter(int cave) {
+        return 8 + frames_by_cave[cave];
     }
     
     // -------------------- Functional Seed Code ------------------------------
