@@ -64,6 +64,8 @@ requiredMapUnits unitType,rot,idFrom,doorFrom,doorTo;... - only outputs maps suc
 	for the ith entry in this semicolon separated list, the ith map unit generated
 	has this unit type and rotation, and is attached at the door with id doorTo 
 	to the map unit with id idFrom at the door with id doorFrom
+judge attk|pod|at|key|cmat|score [<0.5%] [>12345] - runs various heuristics to score/rank 
+	levels, with optional filtering
 
 EXAMPLES:
 java -jar CaveGen.jar seed story -seed 0x12345678 -drawSpawnPoints
@@ -164,3 +166,22 @@ SUBLEVEL KNOWLEDGE
 30. On CoS3, if you see a gate with nothing visually behind it, what does that tell you? Why?
 31. On GK4, the odds of high invigorator are 27.6%, while the odds of high chocolate are 28.8%. Why are these different?
 32. Why does the treasure sometimes not spawn on SCx7? SC4? GK3? CoS4? How are all of these cases different?
+
+
+REAL TIME CONTINOUS CHALLENGE MODE MANIPULATION:
+1) Install: Git, Python (with numpy & opencv), and OBS (with VirtualCam).
+2) Use Git to download CaveGen from GitHub (this way, you can easily pull updates)
+3) Test that VirtualCam works from OBS (can use Google hangouts or some other way to read your camera)
+4) Configure OBS in some reasonable way, and record a video of challenge mode result screen digits
+5) Modify continous_config.py so that images is True, "camera"="find", and video_path to the directory of your recorded video
+6) Run python continuous.py, and make sure it's reading the video you recorded
+7) Create a new directory and set templates to point there, and set generate_new_templates to True
+8) Tweak the parameters x,y,height,width,spacing until you crop out well shaped templates (important to make these as perfect as possible)
+9) Select a set of templates, and name them 0,1,...,9 and _.png. (similar to files/digits_wii)
+10) Set images and generate_new_templates back to False, and see if continuous can read the digits
+11) Once you're satisfied that continous.py can read digits, set camera back to 1 (or whatever port VirtualCam outputs to)
+12) Configure manip_config.txt to your desired parameters
+13) Run the score attack manip with: seed manip attk
+14) If you want to run the CMAL manip, you need a special file called a timestable. You can create one yourself with "seed timestable key|cmat|700k", 
+	but this will take ~30hr to run. See if someone on the discord has already uploaded it separately (it's ~4GB)
+

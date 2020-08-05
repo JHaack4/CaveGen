@@ -130,6 +130,8 @@ public class Manip {
         boolean showTimers = false;
         boolean waitForNextSeed = false;
         boolean waitForNextFadeout = false;
+        boolean waitForNextLevelEnter = false;
+        int numConsecutiveLevelEnters = 0;
         boolean levelsPlayed[] = new boolean[31];
         int numLevelsPlayed = 0;
         int lastStagePlayed = 0;
@@ -140,6 +142,11 @@ public class Manip {
         long timerTargetFrame = 0;
         long timerCurSeed = 0;
         long timerStartSeed = 0;
+
+        long specialTargetSeed = 0;
+        int specialTargetLevel = 0;
+        long specialTargetWindow = 0;
+        long specialTargetFrame = 0;
 
         boolean realTimeAttackMode = mode.equals("key") || mode.equals("cmat") || mode.equals("700k");
         CaveGen.resetParams();
@@ -154,9 +161,6 @@ public class Manip {
             lateStageStdevs[i] = Math.sqrt(lateStageStdevs[i]);
         }
         System.out.println("stdevs: " + Arrays.toString(lateStageStdevs));
-
-        readyToGenerate = true;
-        lastReadSeed = 1;
 
         try {
             RandomAccessFile raf = realTimeAttackMode ? new RandomAccessFile("files/times_table_" + mode + ".txt", "r") : null;
@@ -221,14 +225,31 @@ public class Manip {
                             System.out.println("Detect fadeout " + numFadeouts + "\t\t\t\t\t\t\t\t");
                         }
                         if (waitForNextFadeout) {
+                            waitForNextLevelEnter = true;
                             waitForNextFadeout = false;
-                            waitForNextSeed = true;
                             showTimers = true;
                         }
-                        if (numLevelsPlayed == 0 && numFadeouts == 2 && seedRead) {
-                            runStartTime = time;
-                        }
                     }
+                    if (s[0].equals("levelenter")) {
+                        numConsecutiveLevelEnters += 1;
+                        if (numConsecutiveLevelEnters >= 10) {
+                            if (time - timeOfLastLevelEnter < 1000) {
+                                timeOfLastLevelEnter = time;
+                            } else {
+                                numLevelEnters += 1;
+                                timeOfLastLevelEnter = time;
+                                System.out.println("Detect level enter " + numLevelEnters + "\t\t\t\t\t\t\t\t");
+                            }
+                            if (numLevelsPlayed == 0 && numLevelEnters == 1 && seedRead) {
+                                runStartTime = time;
+                            }
+                            if (waitForNextLevelEnter) {
+                                waitForNextSeed = true;
+                                waitForNextLevelEnter = false;
+                                showTimers = false;
+                            }
+                        }
+                    } else numConsecutiveLevelEnters = 0;
                     if (s[0].equals("donedigit")) { // message that there are no more digits to be read
                         if (numDigitsRead > 0 && !seedRead) {
                             System.out.println("Missed seed, you are on your own");
@@ -237,6 +258,18 @@ public class Manip {
                             lastReadSeed = -1;
                         }
                     }
+                }
+
+                // detect title loops
+                if (numFadeouts >= 2 && time-timeOfLastFadeout > 1000 && numLevelEnters == 0 && numFadeouts % 2 == 0 && waitForNextLevelEnter && lastReadSeed != -1) {
+                    numTitleLoops += 1;
+                    System.out.println("Detected title loop " + numTitleLoops);
+                    showTimers = false;
+                    waitForNextFadeout = false;
+                    waitForNextLevelEnter = false;
+                    waitForNextSeed = false;
+                    readyToGenerate = true;
+                    lastReadSeed = seed.next_seed(timerCurSeed, 4505-4);
                 }
 
 
@@ -349,6 +382,7 @@ public class Manip {
                     }
                     jtext.setText(text1.toString());
                     jtextplay.setText(textPlay.toString());
+                    jtext2.setText("");
                     repaintManip();
 
                     long[] seedsConsidered = new long[numSeedsToConsider];
@@ -450,7 +484,6 @@ public class Manip {
                         jTextGrid.get(gX*i+6).setText(""+seed.dist(firstSeedToConsider,seedsConsidered[o.seed]));
                         jTextGrid.get(gX*i+7).setText(o.rank >= 100 ? "100.%" : String.format("%4.1f%%", o.rank));
                         jTextGrid.get(gX*i+8).setText(String.format("%4d", Math.round(o.avgDiff)));
-                        repaintManip();
                     }
                     
                     for (int i = numOptionsShow; i < gY; i++) {
@@ -466,6 +499,62 @@ public class Manip {
                             i+1, o.level+"", seedStr[o.seed], seed.dist(firstSeedToConsider,seedsConsidered[o.seed]),
                                 (o.targetFrame-o.targetWindow/2)/30.0,  o.targetWindow/30.0, 
                                 scrollSeq[o.level]);
+                    }
+
+                    // find a special level
+                    if (!unknownSeed && !realTimeAttackMode) {
+                        long startInv = seed.nth_inv(firstSeedToConsider);
+                        long bestDist = Long.MAX_VALUE;
+                        long bestSeed = -1;
+                        int bestLevel = 0;
+                        for (int i = 0; i < specialTargetLevels.size(); i++) {
+                            long dist = specialTargetSeeds.get(i) - startInv;
+                            if (dist < 0) dist += (seed.M/2);
+                            if (dist < bestDist) {
+                                bestDist = dist;
+                                bestSeed = specialTargetSeeds.get(i);
+                                bestLevel = specialTargetLevels.get(i);
+                                //System.out.println(dist + " " + Integer.parseInt(params.get("maxDistToConsider")) + " " + Drawer.seedToString(seed.nth(bestSeed)));
+                                //System.out.println(startSeed + " " + startInv + " " + bestSeed + " " + seed.dist(firstSeedToConsider, seed.nth(bestSeed)));
+                            }
+                        }
+                        if (bestDist < Integer.parseInt(params.get("maxDistToConsider"))) {
+                            specialTargetLevel = bestLevel;
+                            specialTargetSeed = seed.nth(bestSeed);
+                            specialTargetFrame = seed.best_timing(specialTargetLevel, startSeed, specialTargetSeed);
+                            specialTargetWindow = seed.frame_window;
+                            System.out.println("Special target found: CH" + specialTargetLevel + " " + Drawer.seedToString(specialTargetSeed) +
+                                    " " + specialTargetFrame + " " + specialTargetWindow);
+                            
+                            StringBuilder text = new StringBuilder();
+                            text.append("special target:\n CH" + specialTargetLevel + " " + Drawer.seedToString(specialTargetSeed) + "\n ");
+                            // show timer, num advances, and window
+                            // also append this in the first phase.
+                            double t = (specialTargetFrame-specialTargetWindow/2.0)/30.0;
+                            if (t >= 60000)
+                                text.append(String.format("%dh", (int)t/3600));
+                            else if (t >= 10000)
+                                text.append(String.format("%dm", (int)t/60));
+                            else if (t >= 100)
+                                text.append(String.format("%4d", (int)t));
+                            else text.append(String.format("%4.1f", t));
+                            text.append(" ");
+                            
+                            double w = specialTargetWindow/30.0;
+                            text.append(w >= 10 ? String.format("%2d.", (int)w) : String.format("%3.1f", w));
+                            text.append(" ");
+    
+                            text.append(seed.dist(firstSeedToConsider,specialTargetSeed));
+                            text.append("\n");
+                        
+                            jtext2.setText(text.toString());
+                            repaintManip();
+                        }
+                        else {
+                            specialTargetLevel = 0;
+                        }
+                    } else {
+                        specialTargetLevel = 0;
                     }
 
                     if (!unknownSeed) {
@@ -484,6 +573,12 @@ public class Manip {
                                 caveViewer.jfrView.setVisible(true);
                                 caveViewer.firstImg();
                             }
+                        }
+
+                        if (specialTargetLevel > 0) {
+                            String args2 = "cave CH" + specialTargetLevel + "-1 -noprints -drawpodangle "
+                            + "-seed 0x" + Drawer.seedToString(specialTargetSeed);
+                            CaveGen.main(args2.split(" "));
                         }
 
                         CaveViewer.manipKeepImages = false;
@@ -514,8 +609,41 @@ public class Manip {
                     
                     StringBuilder text = new StringBuilder();
                     text.append(""+String.format("%6.1f\n", timeShow/30.0));
+                    double dt = timerTargetFrame - timeShow;
+                    dt = Math.max(0,Math.min(30*9.9,dt));
                     text.append(Drawer.seedToString(timerCurSeed) + " " + seed.dist(timerStartSeed,timerCurSeed) + " " 
-                            + String.format("%3.1f", seed.seed_duration(timerCurSeed)/30.0) + "\n");
+                            + String.format("%3.1f", dt/30.0) + "\n");
+                    text.append(String.format("fd=%d le=%d,tl=%d\n",  numFadeouts, numLevelEnters, numTitleLoops));
+
+                    if (specialTargetSeed > 0) {
+                        text.append("special target:\n CH" + specialTargetLevel + " " + Drawer.seedToString(specialTargetSeed) + "\n ");
+                        // show timer, num advances, and window
+                        // also append this in the first phase.
+                        double t = (specialTargetFrame-specialTargetWindow/2.0)/30.0-timeShow/30.0;
+                        t = Math.max(0,t);
+                        if (numLevelEnters >= 1) t = 0;
+                        if (t >= 60000)
+                            text.append(String.format("%dh", (int)t/3600));
+                        else if (t >= 10000)
+                            text.append(String.format("%dm", (int)t/60));
+                        else if (t >= 100)
+                            text.append(String.format("%4d", (int)t));
+                        else text.append(String.format("%4.1f", t));
+                        text.append(" ");
+                        
+                        double w = specialTargetWindow/30.0;
+                        if (t <= 0) {
+                            w += (specialTargetFrame-specialTargetWindow/2.0)/30.0-timeShow/30.0;
+                            w = Math.max(w,0);
+                        }
+                        if (numLevelEnters >= 1) w = 0;
+                        text.append(w >= 10 ? String.format("%2d.", (int)w) : String.format("%3.1f", w));
+                        text.append(" ");
+
+                        long distt = seed.dist(timerCurSeed,specialTargetSeed);
+                        text.append(distt/4505 + ":" + distt%4505);
+                        text.append("\n");
+                    }
 
                     for (int i = 0; i < gY; i++) {
                         if (i >= options.size() || options.get(i).targetWindow <= 0) {
@@ -527,7 +655,7 @@ public class Manip {
                         double timer = (o.targetFrame-o.targetWindow/2.0)/30.0;
                         double t = timer-timeShow/30.0;
                         t = Math.max(0,t);
-                        if (numFadeouts > 1) t = 0;
+                        if (numLevelEnters > 1) t = 0;
                         if (t >= 100)
                             jTextGrid.get(gX*i+3).setText(String.format("%4d", (int)t));
                         else jTextGrid.get(gX*i+3).setText(String.format("%4.1f", t));
@@ -536,7 +664,7 @@ public class Manip {
                         if (t <= 0) {
                             w += timer-timeShow/30.0;
                             w = Math.max(w,0);
-                            if (numFadeouts > 1) w = 0;
+                            if (numLevelEnters> 1) w = 0;
                             jTextGrid.get(gX*i+4).setText(w >= 10 ? String.format("%2d.", (int)w) : String.format("%3.1f", w));
                         }
                     }
@@ -584,6 +712,8 @@ public class Manip {
     HashMap<String, String> params;
     double splits[] = new double[31], rankCutoffs[] = new double[31];
     boolean levelsToPlay[] = new boolean[31],levelsToIgnore[] = new boolean[31];
+    ArrayList<Long> specialTargetSeeds = new ArrayList<Long>();
+    ArrayList<Integer> specialTargetLevels = new ArrayList<Integer>();
     void readParams() {
         try {
             params = new HashMap<String, String>();
@@ -591,7 +721,21 @@ public class Manip {
             String line;
             while ((line = br.readLine()) != null) {
                 int hash = line.indexOf("#");
-                if (hash >= 0) line = line.substring(0,hash).trim();
+                if (hash >= 0) line = line.substring(0,hash);
+                line = line.trim();
+                if (line.length() == 0) continue;
+                if (line.charAt(0) == '@') {
+                    String[] sp = line.split(",");
+                    int level = Integer.parseInt(sp[0].toLowerCase().replace("@ch",""));
+                    for (int i = 1; i < sp.length; i++) {
+                        if (sp[i].length() < 8) continue;
+                        long tseed = Long.decode("0x" + sp[i]).longValue() % (seed.M/2);
+                        if (tseed < 0) continue;
+                        specialTargetSeeds.add(seed.nth_inv(tseed));
+                        specialTargetLevels.add(level);
+                    }
+                    continue;
+                }
                 if (line.indexOf("=") < 0) continue;
                 Scanner sc = new Scanner(line);
                 sc.useDelimiter("=");
@@ -845,6 +989,9 @@ public class Manip {
     int[][] digitsRead;
     long timeOfLastFadeout;
     int numFadeouts;
+    long timeOfLastLevelEnter;
+    int numTitleLoops;
+    int numLevelEnters;
     long lastReadSeed;
     boolean seedRead;
 
@@ -857,6 +1004,9 @@ public class Manip {
         seedRead = false;
         lastReadSeed = -1;
         numFadeouts = 0;
+        numTitleLoops = 0;
+        numLevelEnters = 0;
+        timeOfLastLevelEnter = 0;
         timeOfLastFadeout = 0;
         digitsRead = new int[3000][5];
         numBlankColumns = 0;

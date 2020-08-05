@@ -161,6 +161,24 @@ def is_fadeout_screen(frame):
     average = frame.mean(axis=0).mean(axis=0)
     return average[0] < 5 and average[1] < 5 and average[2] < 5
 
+def is_levelenter_screen(frame):
+    height,width = frame.shape[:2]
+    x = width
+    y = height//10
+    window1 = frame[0:2*y, 0:x, :]
+    window2 = frame[2*y:7*y, 0:x, :]
+    window3 = frame[7*y:height, 0:x, :]
+    average1 = window1.mean(axis=0).mean(axis=0)
+    average2 = window2.mean(axis=0).mean(axis=0)
+    average3 = window3.mean(axis=0).mean(axis=0)
+    #print()
+    #print(average1)
+    #print(average2)
+    #print(average3)
+    return average1[0] < 5 and average1[1] < 5 and average1[2] < 5 and \
+            average3[0] < 5 and average3[1] < 5 and average3[2] < 5 and \
+            average2[0] < 20 and average2[1] < 30 and average2[2] < 30
+
 def generate_new_templates(image):
 
     copy = image.copy()
@@ -213,6 +231,8 @@ while(cap.isOpened()):
     
     if is_fadeout_screen(frame):
         print("fadeout",flush=True)
+    elif is_levelenter_screen(frame):
+        print("levelenter", flush=True)
     elif is_chresult_screen(frame):
         if args.generate_new_templates:
             generate_new_templates(frame)

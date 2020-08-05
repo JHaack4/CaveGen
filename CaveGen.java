@@ -270,6 +270,16 @@ public class CaveGen {
                             judgeFilterScoreSign *= -1;
                         }
                     }
+                    else if (s.equalsIgnoreCase("-judgefilter")) {
+                        i++;
+                        int l = args[i].length();
+                        if (args[i].charAt(l-1) == '%')
+                            judgeFilterRank = (args[i].charAt(0) == '>' ? 1 : -1) * Double.parseDouble(args[i].substring(1,l-1));
+                        else {
+                            judgeFilterScore = Double.parseDouble(args[i].substring(1));
+                            judgeFilterScoreSign =  (args[i].charAt(0) == '>' ? 1 : -1);
+                        }
+                    }
                     else {
                         System.out.println("Bad argument: " + s);
                         throw new Exception();

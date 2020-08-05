@@ -561,86 +561,6 @@ public class Seed {
         return goodFrames.get(bestStartOfBlock + bestLengthOfBlock/2);
     }
 
-    long best_timing_slow(int cave, long startSeed, long targetSeed) {
- 
-        long curFrameCount = 0;
-        ArrayList<Long> goodFrames = new ArrayList<Long>();
-        long latestEarlyFrame = -1;
-        long earliestLateFrame = Long.MAX_VALUE;
-
-        long targetM1 = next_seed(targetSeed, -1);
-        long targetM2 = next_seed(targetSeed, -2);
-        long targetM999 = next_seed(targetSeed, -999);
-        long targetM1000 = next_seed(targetSeed, -1000);
-        long targetP1 = next_seed(targetSeed, 1);
-        long targetP2 = next_seed(targetSeed, 2);
-
-        long curSeed = startSeed;
-        long framesBeforeAdvance = delay_between_dont_save_and_first_advance + seed_duration_first(startSeed);
-        long framesOnThisSeed = 0;
-        long dist = dist(curSeed, targetM1000);
-
-        while (true) {
-
-            if (dist <= 3) { // close (check frame by frame)
-
-                long resSeed = seed_from_A(cave, curSeed, framesBeforeAdvance - framesOnThisSeed);
-                if (resSeed == targetSeed) {
-                    goodFrames.add(curFrameCount);
-                    //System.out.println((curFrameCount-framesOnThisSeed) + " " + framesOnThisSeed + " " + nth_inv(curSeed) + " " + nth_inv(resSeed));
-                } else if (resSeed == targetM1 || resSeed == targetM2) {
-                    latestEarlyFrame = Math.max(latestEarlyFrame, curFrameCount);
-                } else if (resSeed == targetP1 || resSeed == targetP2) {
-                    earliestLateFrame = Math.min(earliestLateFrame, curFrameCount);
-                }
-
-                curFrameCount += 1;
-                framesOnThisSeed += 1;
-
-                if (framesOnThisSeed >= framesBeforeAdvance) {
-                    framesOnThisSeed = 0;
-                    curSeed = next_seed(curSeed);
-                    framesBeforeAdvance = seed_duration(curSeed);
-                    dist = dist(curSeed, targetM1000);
-                }
-            } else if (curSeed == targetM999 || dist > 1000001005) {
-                break;
-            } else { // far away
-                curFrameCount += framesBeforeAdvance;
-                curSeed = next_seed(curSeed);
-                framesBeforeAdvance = seed_duration(curSeed);
-                dist = dist(curSeed, targetM1000);
-            }
-        }
-
-        // no good frames
-        if (goodFrames.size() == 0) {
-            frame_window = Math.min(0, earliestLateFrame-latestEarlyFrame);
-            return (earliestLateFrame + latestEarlyFrame) / 2;
-        }
-
-        // check for the longest contiguous block of good frames
-        int bestStartOfBlock = 0;
-        int bestLengthOfBlock = 0;
-        int curStartOfBlock = 0;
-        for (int i = 0; i < goodFrames.size(); i++) {
-            if (i > 0 && goodFrames.get(i) == goodFrames.get(i-1) + 1) {
-                // block is still good
-            } else {
-                curStartOfBlock = i;
-            }
-
-            if (i - curStartOfBlock + 1 > bestLengthOfBlock) {
-                bestLengthOfBlock = i - curStartOfBlock + 1;
-                bestStartOfBlock = curStartOfBlock;
-            }
-        }
-
-        frame_window = bestLengthOfBlock;
-        return goodFrames.get(bestStartOfBlock + bestLengthOfBlock/2);
-    }
-
-
     // returns the seed from pressing A for this cave
     // with this current seed, where the current seed will advance in framesBeforeAdvance frames
     long seed_from_A(int cave, long curSeed, long framesBeforeAdvance) {
@@ -996,5 +916,85 @@ public class Seed {
         }
         return frames;
     }
+
+    long best_timing_slow(int cave, long startSeed, long targetSeed) {
+ 
+        long curFrameCount = 0;
+        ArrayList<Long> goodFrames = new ArrayList<Long>();
+        long latestEarlyFrame = -1;
+        long earliestLateFrame = Long.MAX_VALUE;
+
+        long targetM1 = next_seed(targetSeed, -1);
+        long targetM2 = next_seed(targetSeed, -2);
+        long targetM999 = next_seed(targetSeed, -999);
+        long targetM1000 = next_seed(targetSeed, -1000);
+        long targetP1 = next_seed(targetSeed, 1);
+        long targetP2 = next_seed(targetSeed, 2);
+
+        long curSeed = startSeed;
+        long framesBeforeAdvance = delay_between_dont_save_and_first_advance + seed_duration_first(startSeed);
+        long framesOnThisSeed = 0;
+        long dist = dist(curSeed, targetM1000);
+
+        while (true) {
+
+            if (dist <= 3) { // close (check frame by frame)
+
+                long resSeed = seed_from_A(cave, curSeed, framesBeforeAdvance - framesOnThisSeed);
+                if (resSeed == targetSeed) {
+                    goodFrames.add(curFrameCount);
+                    //System.out.println((curFrameCount-framesOnThisSeed) + " " + framesOnThisSeed + " " + nth_inv(curSeed) + " " + nth_inv(resSeed));
+                } else if (resSeed == targetM1 || resSeed == targetM2) {
+                    latestEarlyFrame = Math.max(latestEarlyFrame, curFrameCount);
+                } else if (resSeed == targetP1 || resSeed == targetP2) {
+                    earliestLateFrame = Math.min(earliestLateFrame, curFrameCount);
+                }
+
+                curFrameCount += 1;
+                framesOnThisSeed += 1;
+
+                if (framesOnThisSeed >= framesBeforeAdvance) {
+                    framesOnThisSeed = 0;
+                    curSeed = next_seed(curSeed);
+                    framesBeforeAdvance = seed_duration(curSeed);
+                    dist = dist(curSeed, targetM1000);
+                }
+            } else if (curSeed == targetM999 || dist > 1000001005) {
+                break;
+            } else { // far away
+                curFrameCount += framesBeforeAdvance;
+                curSeed = next_seed(curSeed);
+                framesBeforeAdvance = seed_duration(curSeed);
+                dist = dist(curSeed, targetM1000);
+            }
+        }
+
+        // no good frames
+        if (goodFrames.size() == 0) {
+            frame_window = Math.min(0, earliestLateFrame-latestEarlyFrame);
+            return (earliestLateFrame + latestEarlyFrame) / 2;
+        }
+
+        // check for the longest contiguous block of good frames
+        int bestStartOfBlock = 0;
+        int bestLengthOfBlock = 0;
+        int curStartOfBlock = 0;
+        for (int i = 0; i < goodFrames.size(); i++) {
+            if (i > 0 && goodFrames.get(i) == goodFrames.get(i-1) + 1) {
+                // block is still good
+            } else {
+                curStartOfBlock = i;
+            }
+
+            if (i - curStartOfBlock + 1 > bestLengthOfBlock) {
+                bestLengthOfBlock = i - curStartOfBlock + 1;
+                bestStartOfBlock = curStartOfBlock;
+            }
+        }
+
+        frame_window = bestLengthOfBlock;
+        return goodFrames.get(bestStartOfBlock + bestLengthOfBlock/2);
+    }
     
 }
+
