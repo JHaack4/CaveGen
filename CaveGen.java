@@ -11,9 +11,9 @@ public class CaveGen {
         drawWayPoints, drawWayPointVertDists, drawWayPointEdgeDists,
         drawScores, drawAngles, drawPodAngle, drawTreasureGauge,
         drawNoPlants, drawNoFallType, drawWaterBox,
-        drawDoorLinks, drawDoorIds, drawSpawnOrder, drawNoObjects,
-        drawNoBuriedItems, drawNoItems, drawNoTeki, drawNoGates,
-        drawNoGateLife, drawNoHoles, drawHoleProbs, p251,
+        drawDoorLinks, drawDoorIds, drawSpawnOrder, drawNoObjects, 
+        drawNoBuriedItems, drawNoItems, drawNoTeki, drawNoGates, drawNoOnions,
+        drawNoGateLife, drawNoHoles, drawHoleProbs, p251, colossal, ultraRandomizer,
         drawEnemyScores, drawUnitHoleScores, drawUnitItemScores,
         findGoodLayouts, requireMapUnits, expectTest, noWayPointGraph,
         writeMemo, readMemo, aggregator, aggFirst, aggRooms, aggHalls,
@@ -40,8 +40,8 @@ public class CaveGen {
         drawScores = false; drawAngles = false; drawTreasureGauge = false; drawPodAngle = false;
         drawNoPlants = false; drawNoFallType = false; drawWaterBox = true;
         drawDoorLinks = false; drawDoorIds = false; drawSpawnOrder = false; drawNoObjects = false;
-        drawNoBuriedItems = false; drawNoItems = false; drawNoTeki = false; drawNoGates = false;
-        drawNoGateLife = false; drawNoHoles = false; drawHoleProbs = false; p251 = false;
+        drawNoBuriedItems = false; drawNoItems = false; drawNoTeki = false; drawNoGates = false; drawNoOnions = false;
+        drawNoGateLife = false; drawNoHoles = false; drawHoleProbs = false; p251 = false; colossal = false; ultraRandomizer = false;
         drawEnemyScores = false; drawUnitHoleScores = false; drawUnitItemScores = false;
         findGoodLayouts = false; requireMapUnits = false; expectTest = false; noWayPointGraph = false;
         writeMemo = false; readMemo = false; aggregator = false; aggFirst = false; aggRooms = false; aggHalls = false;
@@ -118,6 +118,9 @@ public class CaveGen {
                         p251 = true;
                         fileSystem = "251";
                     }
+                    else if (s.equalsIgnoreCase("-ultraRandomizer")) {
+                        ultraRandomizer = true;
+                    }
                     else if (s.equalsIgnoreCase("-challengeMode"))
                         challengeModeOverride = true;
                     else if (s.equalsIgnoreCase("-storyMode"))
@@ -186,6 +189,8 @@ public class CaveGen {
                         drawNoTeki = true;
                     else if (s.equalsIgnoreCase("-drawNoGates"))
                         drawNoGates = true;
+                    else if (s.equalsIgnoreCase("-drawNoOnions"))
+                        drawNoGates = true;
                     else if (s.equalsIgnoreCase("-drawNoHoles"))
                         drawNoHoles = true;
                     else if (s.equalsIgnoreCase("-caveInfoReport"))
@@ -239,7 +244,9 @@ public class CaveGen {
                                 judgeRankFile = true;
                             } else if (args[i].equalsIgnoreCase("pod")) {
                                 judgeType = "pod";
-                            } else if (args[i].equalsIgnoreCase("at")) {
+                            } else if (args[i].equalsIgnoreCase("colossal")) {
+                                judgeType = "colossal";
+                            }else if (args[i].equalsIgnoreCase("at")) {
                                 judgeType = "at";
                             } else if (args[i].equalsIgnoreCase("key")) {
                                 judgeType = "key";
@@ -288,6 +295,12 @@ public class CaveGen {
 
                 if (judgeActive && judgeType.equals("default"))
                     throw new Exception();
+
+                if (caveArg.equalsIgnoreCase("colossal")) {
+                    fileSystem = "colossal";
+                    caveArg = "colossal";
+                    colossal = true;
+                }
 
                 caveInfoName = Parser.fromSpecial(caveArg);
                 fileSystem = fileSystem.toLowerCase();
@@ -488,6 +501,7 @@ public class CaveGen {
         placedTekis = new ArrayList<Teki>();
         placedItems = new ArrayList<Item>();
         placedGates = new ArrayList<Gate>();
+        placedOnions = new ArrayList<Onion>();
         placedStart = null;
         placedHole = null;
         placedGeyser = null;
@@ -554,6 +568,7 @@ public class CaveGen {
     SpawnPoint placedStart;
     SpawnPoint placedHole;
     SpawnPoint placedGeyser;
+    ArrayList<Onion> placedOnions;
 
     // Other helper variables
     ArrayList<Door> openDoors;
@@ -612,6 +627,9 @@ public class CaveGen {
         setCapEnemy();
         //setScore(); // pretty sure this call doesn't actually change any scores
         setGate();
+
+        if (colossal)
+            placeOnionsColossal();
 
         if (!noWayPointGraph) {
             buildWayPointGraph();
@@ -2231,6 +2249,44 @@ public class CaveGen {
                 if (dist + w.distToStart < inv.distToStart) {
                     inv.backWp = w;
                     inv.distToStart = dist + w.distToStart;
+                }
+            }
+        }
+    }
+
+    void placeOnionsColossal() {
+        int validRooms = 0;
+        for (MapUnit m: placedMapUnits) {
+            if (m.type == 1) {
+                for (SpawnPoint p: m.spawnPoints) {
+                    if (p.type == 7) {
+                        validRooms += 1;
+                        break;
+                    }
+                }
+            }
+        }
+        int roomInterval = validRooms/3;
+        if (roomInterval == 0) roomInterval += 1;
+        int colorID = 0, roomNum = 0;
+        for (MapUnit m: placedMapUnits) {
+            if (m.type == 1) {
+                SpawnPoint sp = null;
+                for (SpawnPoint p: m.spawnPoints) {
+                    if (p.type == 7) {
+                        sp = p;
+                        break;
+                    }
+                }
+                if (sp != null && colorID < 3 && ++roomNum == (colorID + 1) * roomInterval) {
+                    Onion o = new Onion();
+                    o.posX = sp.posX;
+                    o.posZ = sp.posZ;
+                    o.posY = sp.posY;
+                    o.spawnPoint = sp;
+                    o.type = 2-colorID;
+                    placedOnions.add(o);
+                    colorID += 1;
                 }
             }
         }

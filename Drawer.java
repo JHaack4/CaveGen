@@ -84,6 +84,8 @@ public class Drawer {
         special.put("ooinu_s", "ooinu_s");
         special.put("wakame_s", "wakame_s");
         special.put("chiyogami", "chiyogami");
+        for (int i = 0; i < 3; i++)
+            special.put("onion"+i, "onion"+i);
 
     }
 
@@ -124,6 +126,7 @@ public class Drawer {
         if (missing.containsKey(name)) name = missing.get(name);
         if (special.containsKey(name)) return getSpecial(name, 0, scale);
         String loc = "files/" + CaveGen.fileSystem + "/" + "enemytex/arc.d/" + name + "/texture.bti.png";
+        if (CaveGen.colossal) loc = "files/" + "gc" + "/" + "enemytex/arc.d/" + name + "/texture.bti.png";
         String hash = loc + t.type + scale + alpha1;
         if (IMG.containsKey(hash)) return IMG.get(hash);
 
@@ -147,6 +150,7 @@ public class Drawer {
 
     Image getSpecial(String s, int rotation, float scale) throws Exception {
         String loc = "files/" + CaveGen.fileSystem + "/" + "enemytex/special/" + special.get(s) + ".png";
+        if (CaveGen.colossal) loc = "files/" + "gc" + "/" + "enemytex/special/" + special.get(s) + ".png";
         String hash = loc + rotation + scale + alpha1;
         if (IMG.containsKey(hash)) return IMG.get(hash);
 
@@ -176,6 +180,7 @@ public class Drawer {
         String name = t != null ? t.itemName : inside;
         String loc = "files/" + CaveGen.fileSystem + "/" + "resulttex/" + region + "/arc.d/" + name.toLowerCase() + "/texture.bti.png";
         if (CaveGen.p251) loc =  "files/" + CaveGen.fileSystem + "/" + "resulttex/" + region + "/arc.d/" + name.toLowerCase() + ".bti.png";
+        if (CaveGen.colossal) loc = "files/" + "gc" + "/" + "resulttex/" + "us" + "/arc.d/" + name.toLowerCase() + "/texture.bti.png";
         String hash = loc + inside + scale + alpha2;
         if (IMG.containsKey(hash)) return IMG.get(hash);
 
@@ -589,6 +594,14 @@ public class Drawer {
                     String st = "" + (int)t.life;
                     if (!g.drawNoGateLife) drawTextOutline(G,st,x+39-3*st.length(),z+45,spc,spc2);//G.drawString(st,x+39-3*st.length(),z+45);
                     //G.drawString(st, (int)(t.posX/M*N), (int)(t.posZ/M*N));
+                }
+            }
+            if (!g.drawNoOnions) {
+                for (Onion o: g.placedOnions) {
+                    Image im = getSpecial("onion"+o.type, 0, 1.0f);
+                    int x = (int)(o.posX/M*N - im.getWidth(null)/2);
+                    int z = (int)(o.posZ/M*N - im.getHeight(null)/2);
+                    G.drawImage(im, x, z, null);
                 }
             }
         }

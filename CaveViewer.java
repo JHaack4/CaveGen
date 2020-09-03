@@ -112,7 +112,7 @@ public class CaveViewer {
 
     String caveArgs = "EC,SCx,FC,HoB,WFG,BK,SH,CoS,GK,SR,SC,CoC,HoH,DD,Story,PoD,CMAL,All,CH1,CH2,CH3,CH4,CH5,CH6,CH7,CH8,CH9,CH10,CH11,CH12,CH13,CH14,CH15,CH16,CH17,CH18,CH19,CH20,CH21,CH22,CH23,CH24,CH25,CH26,CH27,CH28,CH29,CH30,AT,IM,AD,GD,FT,WF,GdD,SC,AS,SS,CK,PoW,PoM,EA,DD,PP";
     String argString1 = "Output,dropdown,GUI only|None (no images)|Cave Folder|Seed Folder|Both Folders,x;Cave,dropdown," + caveArgs.replace(",", "|") + ",editable;Sublevel,dropdown,1|2|3|4|5|6|7|8|9|10|11|12|13|14|15|All,x;Num,_;Seed,_";
-    String argString2 = "AdditionalArgs,_;Region,dropdown,US|JPN|PAL,x;Judge,dropdown,|attk|pod|at|key|cmat|score,x;JudgeFilter,_;ConsecutiveSeeds,#";
+    String argString2 = "AdditionalArgs,_;Region,dropdown,US|JPN|PAL,x;Judge,dropdown,|attk|pod|at|key|cmat|score|colossal,x;JudgeFilter,_;ConsecutiveSeeds,#";
     String argString3 = "NoImages,NoStats,NoPrints,NoWayPointGraph,ChallengeMode,StoryMode,DrawSpawnPoints,DrawAngles,DrawScores,DrawEnemyScores,DrawDoorLinks,DrawAllScores,DrawDoorIds,DrawWayPoints,DrawAllWayPoints,DrawTreasureGauge,DrawHoleProbs,DrawNoPlants,DrawNoObjects,DrawNoWaterBox,DrawNoBuriedItems,DrawNoItems,DrawNoTekis,DrawNoGates,DrawNoHoles,DrawNoFallType,CaveInfoReport,Aggregator,AggRooms,WriteMemo,ReadMemo,251";
     ArrayList<Arg> args = new ArrayList<Arg>();
     HashMap<String,Arg> argMap = new HashMap<String,Arg>();

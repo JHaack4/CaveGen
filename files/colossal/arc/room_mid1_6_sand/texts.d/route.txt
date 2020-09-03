@@ -1,0 +1,172 @@
+21 # waypoint count 
+{
+	0 # index 
+	1 # numLinks 
+	9 # link 0 
+	0.0 0.0 -595.0 85.0 
+}
+{
+	1 # index 
+	1 # numLinks 
+	10 # link 0 
+	425.0 0.0 -340.0 85.0 
+}
+{
+	2 # index 
+	2 # numLinks 
+	18 # link 0 
+	13 # link 1 
+	425.0 0.0 340.0 85.0 
+}
+{
+	3 # index 
+	2 # numLinks 
+	17 # link 0 
+	12 # link 1 
+	0.0 0.0 595.0 85.0 
+}
+{
+	4 # index 
+	1 # numLinks 
+	11 # link 0 
+	-425.0 0.0 340.0 85.0 
+}
+{
+	5 # index 
+	1 # numLinks 
+	8 # link 0 
+	-425.0 0.0 -340.0 85.0 
+}
+{
+	6 # index 
+	5 # numLinks 
+	8 # link 0 
+	9 # link 1 
+	14 # link 2 
+	15 # link 3 
+	16 # link 4 
+	-130.0 0.0 -170.0 85.0 
+}
+{
+	7 # index 
+	3 # numLinks 
+	14 # link 0 
+	16 # link 1 
+	18 # link 2 
+	220.0 0.0 30.0 85.0 
+}
+{
+	8 # index 
+	3 # numLinks 
+	5 # link 0 
+	6 # link 1 
+	9 # link 2 
+	-255.0 0.0 -340.0 85.0 
+}
+{
+	9 # index 
+	5 # numLinks 
+	0 # link 0 
+	6 # link 1 
+	8 # link 2 
+	10 # link 3 
+	14 # link 4 
+	0.0 0.0 -425.0 85.0 
+}
+{
+	10 # index 
+	3 # numLinks 
+	1 # link 0 
+	9 # link 1 
+	14 # link 2 
+	255.0 0.0 -340.0 85.0 
+}
+{
+	11 # index 
+	4 # numLinks 
+	4 # link 0 
+	15 # link 1 
+	12 # link 2 
+	19 # link 3 
+	-255.0 0.0 340.0 85.0 
+}
+{
+	12 # index 
+	4 # numLinks 
+	3 # link 0 
+	11 # link 1 
+	17 # link 2 
+	19 # link 3 
+	-82.5 0.001885609541204758 434.6 50.0 
+}
+{
+	13 # index 
+	3 # numLinks 
+	2 # link 0 
+	17 # link 1 
+	20 # link 2 
+	252.5 0.0 459.6 50.0 
+}
+{
+	14 # index 
+	5 # numLinks 
+	6 # link 0 
+	7 # link 1 
+	9 # link 2 
+	10 # link 3 
+	16 # link 4 
+	150.0 0.0 -170.0 85.0 
+}
+{
+	15 # index 
+	3 # numLinks 
+	6 # link 0 
+	11 # link 1 
+	16 # link 2 
+	-172.5 0.0 146.60000000000002 60.0 
+}
+{
+	16 # index 
+	6 # numLinks 
+	6 # link 0 
+	7 # link 1 
+	14 # link 2 
+	15 # link 3 
+	19 # link 4 
+	20 # link 5 
+	0.0 0.0 30.0 85.0 
+}
+{
+	17 # index 
+	3 # numLinks 
+	13 # link 0 
+	3 # link 1 
+	12 # link 2 
+	77.5 0.008653773853438906 485.6 50.0 
+}
+{
+	18 # index 
+	3 # numLinks 
+	2 # link 0 
+	7 # link 1 
+	20 # link 2 
+	266.5 0.0 223.60000000000002 50.0 
+}
+{
+	19 # index 
+	4 # numLinks 
+	20 # link 0 
+	11 # link 1 
+	16 # link 2 
+	12 # link 3 
+	-42.89999999999998 -17.08598845329834 275.3616940581543 50.0 
+}
+{
+	20 # index 
+	4 # numLinks 
+	18 # link 0 
+	19 # link 1 
+	16 # link 2 
+	13 # link 3 
+	152.39999999999998 -25.000699996948242 328.46915297092295 50.0 
+}

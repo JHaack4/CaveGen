@@ -91,6 +91,9 @@ class Parser {
                                                 "CH26","CH27","CH28","CH29","CH30"};
 
     static String fromSpecial(String s) {
+        if (CaveGen.colossal) {
+            return "colossal.txt";
+        }
         if (CaveGen.p251) {
             all = all251;
             special = special251;
@@ -102,7 +105,10 @@ class Parser {
         return s;
     }
 
-    static String toSpecial(String s){
+    static String toSpecial(String s) {
+        if (CaveGen.colossal) {
+            return "colossal";
+        }
         if (CaveGen.p251) {
             all = all251;
             special = special251;

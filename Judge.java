@@ -618,6 +618,82 @@ pod breadbugs/high treasures
                 + Math.max(keyCarry, holeWalk + tripHoleGates)
                 + geyserBreak;
         }
+
+        else if (CaveGen.judgeType.equals("colossal")) {
+            int treasureCount = g.placedItems.size() + placedTekisWithItemsInside.size();
+
+            // compute pikmin*seconds required to collect all treasures
+            float pikminSeconds = 0;
+            float activePikmin = 0;
+
+            for (Onion o: g.placedOnions) {
+                pikminSeconds += 
+                        10 * pikiCount * g.spawnPointDistToStart(o.spawnPoint) / 170.0f;
+            }
+
+            for (Item t: g.placedItems) {
+                String name = t.itemName.toLowerCase();
+                int minCarry = Parser.minCarry.get(name);
+                int maxCarry = Parser.maxCarry.get(name);
+                int carry = maxCarry;
+                activePikmin += maxCarry;
+                float dig = 0;
+                if (Parser.depth.containsKey(name) && Parser.depth.get(name) > 0) {
+                    dig = Math.min(1, Parser.depth.get(name)/Parser.height.get(name)) * diggingHealth / pikiDigValue;
+                }
+                pikminSeconds += 
+                        carry * loadTimeSecondsStory + dig + // loading + digging
+                        carry * g.spawnPointDistToStart(t.spawnPoint) // carry cost
+                           * carryMultiplier / (220.0f + 180.0f * (pikiCarryValue * carry - minCarry + 1) / maxCarry);
+            }
+
+            for (Teki t: placedTekisWithItemsInside) {
+                String name = t.itemInside.toLowerCase();
+                int minCarry = Parser.minCarry.get(name);
+                int maxCarry = Parser.maxCarry.get(name);
+                int carry = maxCarry;
+                activePikmin += maxCarry;
+                float dig = 0;
+                if (Parser.depth.containsKey(name) && Parser.depth.get(name) > 0) {
+                    dig = Math.min(1, Parser.depth.get(name)/Parser.height.get(name)) * diggingHealth / pikiDigValue;
+                }
+                pikminSeconds += 
+                        carry * loadTimeSecondsStory + dig + // loading + digging
+                        carry * g.spawnPointDistToStart(t.spawnPoint) // carry cost
+                           * carryMultiplier / (220.0f + 180.0f * (pikiCarryValue * carry - minCarry + 1) / maxCarry);
+            }
+
+            float carrySeconds = pikminSeconds == 0 ? 0 : pikminSeconds / Math.min(pikiCount, activePikmin);
+            
+            // Teki/Hazards that are in the way of treasures
+            float hazardSeconds = 0;
+            computeWaypointCarryableGraph(g, "t"); // treasures
+            for (Teki t: g.placedTekis) {
+                String name = t.tekiName.toLowerCase();
+                if (g.closestWayPoint(t.spawnPoint).hasCarryableBehind) {
+                    hazardSeconds += Parser.tekiDifficultyJudgeSec.get(name) / 2.0f;
+                }
+            }
+
+            // gates that are in the way of holes/treasures
+            float gateSeconds = 0;
+            if (g.placedGates.size() > 0) {
+                computeWaypointCarryableGraph(g, "htp"); // holes + treasures + purple candypops
+                for (Gate t: g.placedGates) {
+                    if (g.closestWayPoint(t.spawnPoint).hasCarryableBehind) {
+                        gateSeconds += Math.max(6, 3 + t.life * gateLifeMultiplier / (pikiAttackValue * pikiCount));
+                    }
+                }
+            }
+
+            float treasurePenalty = treasureCount < expectedNumTreasures ? 1000 * (expectedNumTreasures - treasureCount): 0;
+
+            //System.out.println("carry" + carrySeconds + " walk" + walkingSeconds + " haz" + hazardSeconds + " gate" + gateSeconds);
+            //System.out.println("tpen" + treasurePenalty + " ppen" + purpPenalty);
+            score = carrySeconds + hazardSeconds + gateSeconds
+                        + treasurePenalty;
+            
+        } 
     
         // add to dictionaries
         String seedStr = Drawer.seedToString(g.initialSeed);
