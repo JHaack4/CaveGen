@@ -18,9 +18,16 @@ public class Manip {
     JTextPane jtextplay = new JTextPane();
     ArrayList<JTextPane> jTextGrid = new ArrayList<JTextPane>();
 
+    String curCave = "";
+    int curSublevel = 0;
+
     void manip(String mode) {
 
-        if (!(mode.equals("key") || mode.equals("cmat") || mode.equals("700k") || mode.equals("attk"))) {
+        boolean pod_mode = mode.equals("pod");
+        boolean at_mode = mode.equals("at");
+        boolean storyMode = pod_mode || at_mode;
+
+        if (!(mode.equals("key") || mode.equals("cmat") || mode.equals("700k") || mode.equals("attk") || mode.equals("pod") || mode.equals("at"))) {
             System.out.println("Bad mode.");
             return;
         }
@@ -138,6 +145,10 @@ public class Manip {
         long runStartTime = 0;
         double lateStageStdevs[] = new double[31];
         ArrayList<Option> options = null;
+        ArrayList<String> storyLevels = new ArrayList<String>();
+        ArrayList<Long> storySeeds = new ArrayList<Long>();
+        ArrayList<Double> storyRanks = new ArrayList<Double>();
+        ArrayList<Double> storyDiffs = new ArrayList<Double>();
 
         long timerTargetFrame = 0;
         long timerCurSeed = 0;
@@ -151,8 +162,9 @@ public class Manip {
         boolean realTimeAttackMode = mode.equals("key") || mode.equals("cmat") || mode.equals("700k");
         CaveGen.resetParams();
         Parser.readConfigFiles();
-        computeStats(mode.equals("700k") ? "attk" : mode);
+        computeStats(mode.equals("700k") || storyMode ? "attk" : mode);
         resetDigitTrackers();
+        computeStatsStory(mode);
 
         for (int i = 1; i <= 30; i++) {
             for (int j = 2; j <= Parser.chFloorCount.get("CH"+i); j++) {
@@ -160,7 +172,7 @@ public class Manip {
             }
             lateStageStdevs[i] = Math.sqrt(lateStageStdevs[i]);
         }
-        System.out.println("stdevs: " + Arrays.toString(lateStageStdevs));
+        System.out.println("stdevs: " + Arrays.toString(lateStageStdevs) +"\n\n");
 
         try {
             RandomAccessFile raf = realTimeAttackMode ? new RandomAccessFile("files/times_table_" + mode + ".txt", "r") : null;
@@ -256,6 +268,82 @@ public class Manip {
                             seedRead = true;
                             readyToGenerate = true;
                             lastReadSeed = -1;
+                        }
+                    }
+                    if (s[0].length() >= 11 && s[0].substring(0,11).equals("lettersinfo") && storyMode) {
+                        System.out.println(s[0]);
+                        System.out.println("reading story seed");
+
+                        long sd = seed.letters.letters(s[0],lastReadSeed);
+
+                        if (curCave.equals("Hole of Heroes")||curCave.equals("Dream Den")||curCave.equals("Cavern of Chaos")) {
+                            if (seed.letters.out_cave.equals("Hole of Beasts"))
+                                seed.letters.out_cave = "Hole of Heroes";
+                        }
+                        if (!seed.letters.out_cave.equals(curCave))
+                            curSublevel = 1;
+                        else curSublevel += 1;
+                        curCave = seed.letters.out_cave;
+
+                        if (sd == -1) {
+                            jtext.setText("Failed to read story seed");
+                            lastReadSeed = -1;
+                        }
+                        else {
+                            
+                            sd = seed.next_seed(sd, curCave.length());
+                            lastReadSeed = sd;
+                            String curCaveSp = Parser.fullNameToSpecial(curCave);
+                            System.out.println(curCaveSp + "-" + curSublevel);
+                            jtext.setText(curCaveSp + " " + curSublevel + "\n" + Drawer.seedToString(sd));
+
+                            CaveViewer.guiOnly = true;
+                            //caveViewer.imageBuffer.clear();
+                            //caveViewer.nameBuffer.clear();
+                            CaveViewer.manipKeepImages = true;
+                            
+                            storyLevels.add(0, curCaveSp + "-" + curSublevel);
+                            storySeeds.add(0, sd);
+                            for (int i = 0; i < 1; i++) {
+                                String args2 = "cave " + curCaveSp + "-" + curSublevel + " -noprints -drawpodangle "
+                                + "-seed 0x" + Drawer.seedToString(sd) + " -judge " + mode ;
+                                CaveGen.main(args2.split(" "));
+                                if (i == 0)  {
+                                    caveViewer.lastSSeed = 0;
+                                    caveViewer.jfrView.setVisible(true);
+                                    caveViewer.lastImg();
+                                }
+                            }
+                            storyRanks.add(0, CaveGen.stats.judge.rankMap.get(curCaveSp + "-" + curSublevel +" " + Drawer.seedToString(sd)));
+                            storyDiffs.add(0, CaveGen.stats.judge.scoreMap.get(curCaveSp + "-" + curSublevel +" " + Drawer.seedToString(sd)) - story_topPercentile.get(curCaveSp + "-" + curSublevel));
+
+                            CaveViewer.manipKeepImages = false;
+
+                            int numOptionsShow = 30;
+                            for (int i = 0; i < numOptionsShow; i++) {
+                                if (i >= storyLevels.size()) {
+
+                                    continue;
+                                }
+                                
+                                if (i >= gY) continue;
+                                double rank = storyRanks.get(i);
+                                double avgDiff = storyDiffs.get(i);
+                                jTextGrid.get(gX*i+0).setText(""+(i+1));
+                                jTextGrid.get(gX*i+1).setText(storyLevels.get(i));
+                                jTextGrid.get(gX*i+2).setText("");
+                                jTextGrid.get(gX*i+3).setText("");
+                                jTextGrid.get(gX*i+4).setText("");
+                                jTextGrid.get(gX*i+5).setText(Drawer.seedToString(storySeeds.get(i)));
+                                jTextGrid.get(gX*i+6).setText("");
+                                jTextGrid.get(gX*i+7).setText(rank >= 100 ? "100.%" : String.format("%4.1f%%", rank));
+                                jTextGrid.get(gX*i+8).setText(String.format("%4d", Math.round(avgDiff)));
+                            }
+                            
+                            for (int i = numOptionsShow; i < gY; i++) {
+                                for (int j = 0; j < gX; j++) jTextGrid.get(gX*i+j).setText("");
+                            }
+                            repaintManip();
                         }
                     }
                 }
@@ -685,7 +773,8 @@ public class Manip {
 
                 Thread.sleep(10);
             }
-            raf.close();
+            if (raf != null)
+                raf.close();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -947,6 +1036,42 @@ public class Manip {
                 stddevs.put(id, Math.sqrt(Math.max(0,x2/rank.length - x*x)));
                 ranges.put(id, rank[rank.length-1]-rank[0]);
                 topPercentile.put(id, rank[rank.length*5/100]);
+            } 
+        }
+    }
+
+    ArrayList<String> story_ids = new ArrayList<String>();
+    HashMap<String, Double> story_means = new HashMap<String, Double>();
+    HashMap<String, Double> story_topPercentile = new HashMap<String, Double>();
+    HashMap<String, Double> story_stddevs = new HashMap<String, Double>();
+    HashMap<String, Double> story_ranges = new HashMap<String, Double>();
+    void computeStatsStory(String kind) {
+        if (!(kind.equals("pod") || kind.equals("at"))) return;
+        if (story_ids.size() > 0) return;
+        for (String st: Parser.special) {
+            if (st.length() > 2 && st.substring(0,2).equals("CH")) continue;
+            for (int s = 1; s <= 20; s++) {
+                String id = st + "-" + s;
+
+                //if (s == 1) readRankFile(id + "-" + kind);
+
+                if (!rankFile.containsKey(id + "-" + kind)) continue;
+
+                story_ids.add(id);
+                double[] rank = readRankFile(id + "-" + kind);
+
+                double x = 0, x2 = 0;
+                for (int i = 0; i < rank.length; i++) {
+                    double k = rank[i];
+                    if (k >= 100000) k = rank[500]+40;
+                    x += k;
+                    x2 += k * k;
+                }
+                x /= rank.length;
+                story_means.put(id, x);
+                story_stddevs.put(id, Math.sqrt(Math.max(0,x2/rank.length - x*x)));
+                story_ranges.put(id, rank[rank.length-1]-rank[0]);
+                story_topPercentile.put(id, rank[rank.length*50/100]);
             } 
         }
     }

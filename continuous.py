@@ -164,20 +164,53 @@ def is_fadeout_screen(frame):
 def is_levelenter_screen(frame):
     height,width = frame.shape[:2]
     x = width
-    y = height//10
-    window1 = frame[0:2*y, 0:x, :]
-    window2 = frame[2*y:7*y, 0:x, :]
-    window3 = frame[7*y:height, 0:x, :]
+    y = height//20
+    window1 = frame[0:4*y, 0:x, :]
+    window2 = frame[4*y:8*y, 0:x, :]
+    window3 = frame[8*y:10*y, 0:x, :]
+    window4 = frame[10*y:13*y, x//4:3*x//4, :]
+    window5 = frame[13*y:height, 0:x, :]
     average1 = window1.mean(axis=0).mean(axis=0)
     average2 = window2.mean(axis=0).mean(axis=0)
     average3 = window3.mean(axis=0).mean(axis=0)
-    #print()
-    #print(average1)
-    #print(average2)
-    #print(average3)
-    return average1[0] < 5 and average1[1] < 5 and average1[2] < 5 and \
-            average3[0] < 5 and average3[1] < 5 and average3[2] < 5 and \
-            average2[0] < 20 and average2[1] < 30 and average2[2] < 30
+    average4 = window4.mean(axis=0).mean(axis=0)
+    average5 = window5.mean(axis=0).mean(axis=0)
+    # print()
+    # print(average1)
+    # print(average2)
+    # print(average3)
+    # print(average4)
+    # print(average5)
+    # frame[4*y,:,:] = 255
+    # frame[8*y,:,:] = 255
+    # frame[10*y,:,:] = 255
+    # frame[13*y,:,:] = 255
+
+    f = 6
+
+    if  average1[0] < f and average1[1] < f and average1[2] < f and \
+        average2[0] < f and average2[1] < f and average2[2] < f and \
+        average3[0] < f and average3[1] < f and average3[2] < f and \
+        average4[0] < f and average4[1] < f and average4[2] < f and \
+        average5[0] < f and average5[1] < f and average5[2] < f and abs(average4[2]-average5[2])<2:
+        return 'fadeout'
+    if  average1[0] < f and average1[1] < f and average1[2] < f and \
+        average2[0] < 50 and average2[1] < 50 and average2[2] > 15 and average2[2] < 70 and abs(average2[0] - average2[2]) > 10 and \
+        average3[0] < f and average3[1] < f and average3[2] < f and \
+        average4[0] > f and average4[1] > f and average4[2] > f and \
+        average4[0] < 40 and average4[1] < 40 and average4[2] < 40 and \
+        average5[0] < f and average5[1] < f and average5[2] < f:
+        return 'chenter'
+    if  average1[0] < 30 and average1[1] < 30 and average1[2] < 30 and \
+        average2[0] < 40 and average2[1] < 40 and average2[2] < 40 and abs(average2[0] - average2[2]) < 10 and \
+        average3[0] < 30 and average3[1] < 30 and average3[2] < 30 and \
+        average4[0] > f and average4[1] > f and average4[2] > f and \
+        average4[0] < 40 and average4[1] < 40 and average4[2] < 40 and \
+        average5[0] < f and average5[1] < f and average5[2] < f:
+        return 'storyenter'
+
+    
+    return None
 
 def generate_new_templates(image):
 
@@ -210,14 +243,190 @@ def generate_new_templates(image):
         args.width = updated.width
         args.height = updated.height
     
+union_img = None
+frames_since_first_story = 10000
+frames_since_last_story = 10000
+story_frames = []
+story_frames_processed = False
+
+legal_names = ["Emergence Cave","Subterranean Complex","Frontier Cavern",
+                "Hole of Beasts","White Flower Garden","Bulblax Kingdom","Snagret Hole",
+                "Citadel of Spiders","Glutton's Kitchen","Shower Room","Submerged Castle",
+                "Cavern of Chaos","Hole of Heroes","Dream Den"]
+legal_names_mistakes = ["H!ole of Beasts","Snagret H!ole","H!ole of Heroes","H!ole of H!eroes","Hole of H!eroes"]
+
+def process_story_frames():
+    #print("processing story frames")
+
+    height,width = union_img.shape[:2]
+
+    #fps, todo delete me
+    # union_img[0:height//7,3*width//4-30:,:] = 0 
+
+    union_img[10*height//100,:,:] = 0 
+    union_img[10*height//100,:,0] = 155
+
+    union_img[35*height//100,:,:] = 0 
+    union_img[35*height//100,:,0] = 155
+
+    #print(height)
+    #print(width)
+
+    #print(union_img)
+
+    column_img = union_img[0:10*height//100,:,2]
+    #print(column_img.shape)
+    column_mean = column_img.mean(axis=0)
+    #print(column_mean)
+    #print(len(column_mean))
+
+    whitespace = []
+    last_black = True
+    for i in range(len(column_mean)):
+        f = 6
+        if column_mean[i] > f and last_black:
+            whitespace.append(i)
+        elif column_mean[i] <= f and not last_black:
+            whitespace.append(i)
+        last_black = column_mean[i] <= f
+
+    #print(whitespace)
+
+    spaces_between = []
+    cur_space_count = 0
+    word_shape = ""
+    for i in range(0,len(whitespace),2):
+        black_dist = whitespace[i] - whitespace[i-1] if i > 0 else 0
+        if black_dist/width > 20/1280:
+            cur_space_count += 1
+            word_shape += ' '
+        word_shape += "x"
+        spaces_between.append(cur_space_count)
+
+    print(word_shape)
+    cave_name = ""
+    for s in legal_names:
+        if len(s) == len(word_shape):
+            match=True
+            for i in range(len(s)):
+                if (word_shape[i]==' ') != (s[i]==' '):
+                    match=False
+            if match:
+                cave_name = s
+                break
+    if cave_name == "": # try to error correct a mistake...
+        #print("trying to error correct")
+        for s in legal_names_mistakes:
+            #print(s)
+            if len(s) == len(word_shape):
+                #print("len match")
+                match=True
+                for i in range(len(s)):
+                    if (word_shape[i]==' ') != (s[i]==' '):
+                        match=False
+                if match:
+                    #print("match")
+                    cave_name = s.replace("!","")
+                    for i in range(len(s)-1,-1,-1):
+                        if s[i] == "!":
+                            #print("bad i " + str(i))
+                            whitespace.pop(2*i-1)
+                            whitespace.pop(2*i-1)
+                            spaces_between.pop(i)
+                    break
+        #print(whitespace)
+        #print(spaces_between)
+
+    for x in whitespace:
+        union_img[:,x,:] = 0
+        union_img[:,x,2] = 255
+
+    story_frame_count = 0
+    info_string = []
+    
+    for frame in story_frames:
+        story_frame_count += 1
+
+        #print("storyenter " + str(story_frame_count), flush=True)
+        img = frame.copy()
+        _,img = cv2.threshold(img,20,255,cv2.THRESH_BINARY)
+        for i in range(0,len(whitespace),2):
+            section_img = img[0:15*height//100,whitespace[i]:whitespace[i+1],1]
+            row_means = section_img.mean(axis=1)
+            #print(row_means)
+            last_nonzero = -1
+            for j,r in enumerate(row_means):
+                if r > 5:
+                    last_nonzero = j
+            if last_nonzero != -1 and last_nonzero < 10*height//100-1:
+                #print(str(i//2) + " " + str(last_nonzero))
+                info_string.append(str(i//2+spaces_between[i//2])+","+str(last_nonzero)+",")
+                union_img[last_nonzero,whitespace[i]:whitespace[i+1],:]=0
+                union_img[last_nonzero,whitespace[i]:whitespace[i+1],2]=255
+                img[last_nonzero,whitespace[i]:whitespace[i+1],:]=0
+                img[last_nonzero,whitespace[i]:whitespace[i+1],2]=255
+        if args.images:
+            cv2.imwrite("im/" + str(count) + "s" + str(story_frame_count) + ".png", img)
+        info_string.append(";")
+    
+
+    num_avg = 30
+    sum_image = union_img.copy()
+    sum_image[:,:,:] = 0
+    for frame in story_frames[-num_avg:]:
+        sum_image = sum_image + frame / num_avg
+    if args.images:
+        cv2.imwrite("im/" + str(count) + "!avg" + ".png", sum_image)
+    _,avg_thresh_img = cv2.threshold(sum_image,65,255,cv2.THRESH_BINARY)
+    if args.images:
+        cv2.imwrite("im/" + str(count) + "!avg_th" + ".png", avg_thresh_img)
+
+    offset_info = ""
+    char_heights = []
+    for i in range(0,len(whitespace),2):
+        section_img = avg_thresh_img[0:38*height//100,whitespace[i]:whitespace[i+1],1]
+        row_means = section_img.mean(axis=1)
+        last_nonzero = -1
+        first_nonzero = -1
+        for j,r in enumerate(row_means):
+            if r > 5:
+                last_nonzero = j
+                if first_nonzero == -1:
+                    first_nonzero = j
+        if i > 0 and spaces_between[i//2] - spaces_between[i//2-1] > 0:
+            offset_info += ",-1"
+        if last_nonzero != -1 and last_nonzero < 38*height//100-1:
+            offset_info += "," + str(last_nonzero)
+            union_img[last_nonzero,whitespace[i]:whitespace[i+1],:]=0
+            union_img[last_nonzero,whitespace[i]:whitespace[i+1],1:2]=255
+        else:
+            offset_info += ",-2"
+        char_heights.append(last_nonzero-first_nonzero)
+
+    #print(char_heights)
+    if cave_name == "Hole of Beasts" and char_heights[-3] * 1.2 >= char_heights[-2]:
+        cave_name = "Hole of Heroes"
+
+    print("lettersinfo," + cave_name.replace(" ","_") + "," + str(height) + "," + str(len(whitespace)//2+cur_space_count) + offset_info + ";" + "".join(info_string), flush=True)    
+    
+    if args.images:
+        cv2.imwrite("im/" + str(count) + "!union" + ".png", union_img)
+
+        _,final_img = cv2.threshold(union_img,65,200,cv2.THRESH_BINARY)
+        cv2.imwrite("im/" + str(count) + "!final" + ".png", final_img)
+
+
     
 ### watch the video, find frames of the challenge mode result screen, and read the digits  
 skip = 0
 count = 0
 last_frame_was_digit = False
+
 while(cap.isOpened()):
     count += 1
     ret, frame = cap.read()
+    frames_since_first_story += 1
+    frames_since_last_story += 1
     
     if not ret:
         break
@@ -225,14 +434,39 @@ while(cap.isOpened()):
         skip -= 1
         continue
     
-    #height,width = frame.shape[:2]
+    height,width = frame.shape[:2]
+    if count == 1:
+        print(f"height {height} width {width}")
     #frame = cv2.resize(frame, (853,480), interpolation=cv2.INTER_NEAREST)
     #frame = frame[:,66:786,:] # crop to 720x480
+    frame = frame[:,180:,:]
     
-    if is_fadeout_screen(frame):
+    frame_type = is_levelenter_screen(frame)
+
+    if frame_type == 'fadeout':
         print("fadeout",flush=True)
-    elif is_levelenter_screen(frame):
+    elif frame_type == 'chenter':
         print("levelenter", flush=True)
+    elif frame_type == 'storyenter':
+        print("storyenter " + str(count), flush=True)
+        img = frame.copy()
+        story_frames.append(img)
+        _,img = cv2.threshold(img,25,255,cv2.THRESH_BINARY)
+        if union_img is None or frames_since_last_story > 1000:
+            union_img = img
+            frames_since_first_story = 0
+            story_frames = []
+            story_frames.append(img)
+            story_frames_processed = False
+        elif frames_since_first_story <= 60:
+            union_img = union_img + img
+        frames_since_last_story = 0
+
+        if frames_since_first_story >= 85 and len(story_frames) >= 85:
+            if not story_frames_processed:
+                story_frames_processed = True
+                process_story_frames()
+        
     elif is_chresult_screen(frame):
         if args.generate_new_templates:
             generate_new_templates(frame)
@@ -242,16 +476,16 @@ while(cap.isOpened()):
     else:
         if last_frame_was_digit:
             print("donedigit",flush=True)
+        else:
+            skip = 5
         last_frame_was_digit = False
-    
-    # print("count " + str(count), flush=True)
 
+    
     if args.images:
         cv2.imshow('Frame',frame)
-        key_press = cv2.waitKey(10)
+        key_press = cv2.waitKey(1)
         if key_press & 0xFF == ord('q'):
             break
-    
 
 cap.release()
 cv2.destroyAllWindows()
@@ -283,3 +517,24 @@ print("exit")
 #  "generate_new_templates":False,
 #  "template_wait":10
 # }
+
+# if  average1[0] < 3 and average1[1] < 3 and average1[2] < 3 and \
+#         average2[0] < 3 and average2[1] < 3 and average2[2] < 3 and \
+#         average3[0] < 3 and average3[1] < 3 and average3[2] < 3 and \
+#         average4[0] < 1.5 and average4[1] < 1.5 and average4[2] < 1.5 and \
+#         average5[0] < 3 and average5[1] < 3 and average5[2] < 3:
+#         return 'fadeout'
+#     if  average1[0] < 3 and average1[1] < 3 and average1[2] < 3 and \
+#         average2[0] < 20 and average2[1] < 20 and average2[2] > 15 and average2[2] < 45 and \
+#         average3[0] < 3 and average3[1] < 3 and average3[2] < 3 and \
+#         average4[0] > 5 and average4[1] > 5 and average4[2] > 5 and \
+#         average4[0] < 30 and average4[1] < 30 and average4[2] < 30 and \
+#         average5[0] < 3 and average5[1] < 3 and average5[2] < 3:
+#         return 'chenter'
+#     if  average1[0] < 20 and average1[1] < 20 and average1[2] < 20 and \
+#         average2[0] < 20 and average2[1] < 20 and average2[2] < 20 and abs(average2[0] - average2[2]) < 10 and \
+#         average3[0] < 20 and average3[1] < 20 and average3[2] < 20 and \
+#         average4[0] > 1.5 and average4[1] > 1.5 and average4[2] > 1.5 and \
+#         average4[0] < 30 and average4[1] < 30 and average4[2] < 30 and \
+#         average5[0] < 3 and average5[1] < 3 and average5[2] < 3:
+#         return 'storyenter'

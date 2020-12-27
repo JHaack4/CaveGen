@@ -9,6 +9,7 @@ public class Seed {
     }
 
     Manip manip;
+    Letters letters;
 
     String helpString = "Usage:\n  Seed nth n\n  Seed nthinv seed\n  Seed dist seed1 seed2\n  Seed next seed [n]\n  Seed seed2seq seed\n  Seed seq2seed seq\n  Seed ieee hex\n  Seed digit seed\n  Seed frames seed\n  Seed window cave seed\n" +
         //"  python videodigits.py find - read the newest video in seed_video_path folder,\n" +
@@ -23,6 +24,7 @@ public class Seed {
     //Long.decode(args[++i]).longValue()
     void run(String args[]) {
         manip = new Manip(this);
+        letters = new Letters(this);
         try {
             if (args.length == 0) {
                 System.out.println(helpString);
@@ -86,6 +88,15 @@ public class Seed {
             }
             else if (args[0].equalsIgnoreCase("manip") && args.length >= 2) {
                 manip.manip(args[1]);
+            }
+            else if (args[0].equalsIgnoreCase("lettersim") && args.length >= 1) {
+                letters.letterSim();
+            } 
+            else if (args[0].equalsIgnoreCase("letters") && args.length >= 2) {
+                letters.letters(args[1],-1);
+            }
+            else if (args[0].equalsIgnoreCase("search") && args.length >= 1) {
+                //letters.searchForLowDisutilNear();
             }
             else {
                 System.out.println(helpString);
@@ -624,6 +635,20 @@ public class Seed {
         return nth(idx);
     }
 
+    float[] seed_to_vel_vector(int seed, int len) {
+        float vs[] = new float[len];
+        for (int j = 0; j < len; j++) {
+            seed = seed * 0x41c64e6d + 0x3039;
+            int ret = (seed >>> 0x10) & 0x7fff;
+            vs[j] = ret * 5.0f / 32768.0f;
+        }
+        return vs;
+    }
+
+    int clamp(long seed) { // clamp to [0, 2^31)
+        return (int)((seed + M * (1-seed/M)) % (M/2));
+    }
+
     // Compute the nth seed in O(log(M)) time
     private long r1_ = (C * inverse((A - 1)/4, M)) % M;
 	long nth(long n) {
@@ -854,6 +879,132 @@ public class Seed {
 		for (int i = 0; i < candidates.size(); i++) {
 			if (seed_to_sequence(candidates.get(i), sequence.length()).equals(sequence))
 				ret.add(candidates.get(i));
+		}
+		
+		return ret;
+    }
+    
+    ArrayList<Float> out_disutil_for_vs_array;
+    ArrayList<Long> vs_array_to_seed(float[] vs, boolean[] is_space, float tol) {
+		
+		// find the upper and lower bounds for the seed
+		// for each part of the sequence
+		int N = 10;
+		long[] LowerBounds = new long[N];
+		long[] UpperBounds = new long[N];
+		for (int i = 0; i < N; i++) {
+			if (i < vs.length && !is_space[i]) {
+                float lb = Math.max(0, vs[i] - tol);
+                float ub = Math.min(5, vs[i] + tol);
+				LowerBounds[i] = Math.max(0, Math.round(lb/5.0f * 0x80000000l));
+				UpperBounds[i] = Math.min(Integer.MAX_VALUE, Math.round(ub/5.0f * 0x80000000l));
+			} else {
+				LowerBounds[i] = 0;
+				UpperBounds[i] = Integer.MAX_VALUE;
+			}
+        }
+        
+        //System.out.println(Arrays.toString(LowerBounds));
+        //System.out.println(Arrays.toString(UpperBounds));
+		
+		// find upper and lower bounds in the LLL basis representation
+		// this is the crucial step which reduces the number of vectors we must check
+		double[] minD = new double[N];
+		double[] maxD = new double[N];
+		double M2_31 = M / 2;
+		for (int i = 0; i < N; i++) {
+			for (int j = 0; j < N; j++) {
+				if (lattice_LLLinv[i][j] < 0) {
+					minD[j] += (UpperBounds[i] - lattice_P[i]) * lattice_LLLinv[i][j] / M2_31;
+					maxD[j] += (LowerBounds[i] - lattice_P[i]) * lattice_LLLinv[i][j] / M2_31;
+				} else {
+					maxD[j] += (UpperBounds[i] - lattice_P[i]) * lattice_LLLinv[i][j] / M2_31;
+					minD[j] += (LowerBounds[i] - lattice_P[i]) * lattice_LLLinv[i][j] / M2_31;
+				}
+			}
+		}
+		// clamp these to integer values
+		long[] min = new long[N];
+		long[] max = new long[N];
+		for (int i = 0; i < N; i++) {
+			min[i] = (long)Math.ceil(minD[i]);
+			max[i] = (long)Math.floor(maxD[i]);
+        }
+        
+        //System.out.println(Arrays.toString(min));
+        //System.out.println(Arrays.toString(max) + "\n");
+		
+		// v is the vector of seeds that we are currently checking (initially min * LLL + P)
+		// b is the vector v but in the basis representation (initially "min")
+		long[] v = new long[N];
+		long[] b = new long[N];
+		for (int i = 0; i < N; i++) {
+			b[i] = min[i];
+			v[i] = lattice_P[i];
+			for (int j = 0; j < N; j++)
+				v[i] += min[j]*lattice_LLL[j][i];
+		}
+
+		// iterate over the set of possibilities contained in min/max. (we're checking all of them)
+		ArrayList<Long> candidates = new ArrayList<Long>();		
+		while(true) {
+
+			// check if the current v vector falls in the desired region
+			boolean isInRegion = true;
+			for (int i = 0; i < N; i++) {
+		        if (v[i] < LowerBounds[i] || v[i] > UpperBounds[i]) {
+		            isInRegion = false;
+		            break;
+		        }
+			}
+			if (isInRegion) {
+				candidates.add((v[0] & 0x7fffffff));
+			}
+			
+			// move to the next b/v vector.
+			boolean done = true;
+			for (int i = 0; i < N; i++) {
+		        b[i] += 1;
+		        for (int j = 0; j < N; j++)
+		        	v[j] += lattice_LLL[i][j];
+		        if (b[i] > max[i]) {
+		            b[i] = min[i];
+		            for (int j = 0; j < v.length; j++)
+		            	v[j] -= lattice_LLL[i][j]*(max[i]-min[i]+1);
+		        }
+		        else {
+		        	done = false;
+		            break;
+		        }
+			}
+			if (done)
+				break;
+		}
+		
+		// Verify the candidates and return the ones that match
+        ArrayList<Long> ret = new ArrayList<Long>();
+        out_disutil_for_vs_array = new ArrayList<Float>();
+		for (int i = 0; i < candidates.size(); i++) {
+            Long s = candidates.get(i);
+            s = next_seed(s, -1);
+            float[] vout = seed_to_vel_vector(clamp(s), vs.length);
+            //System.out.println("candidate: " + Drawer.seedToString(s) + " " + Arrays.toString(vout));
+
+            float disutil = 0;
+            float worst = 0;
+            boolean good = true;
+			for (int j = 0; j < vs.length; j++) {
+                if (is_space[j]) continue;
+                disutil += Math.abs(vout[j]-vs[j]);
+                if (Math.abs(vout[j]-vs[j]) > tol) good = false;
+                worst = Math.max(worst, Math.abs(vout[j]-vs[j]));
+            }
+
+            if (good) {
+                ret.add((long)clamp(s));
+                out_disutil_for_vs_array.add(disutil);
+            }
+            //System.out.println("worst " + worst + " dis " + disutil);
 		}
 		
 		return ret;

@@ -90,6 +90,19 @@ class Parser {
                                                 "CH21","CH22","CH23","CH24","CH25",
                                                 "CH26","CH27","CH28","CH29","CH30"};
 
+    static String[] fullNames = { "Emergence Cave","Subterranean Complex","Frontier Cavern",
+                "Hole of Beasts","White Flower Garden","Bulblax Kingdom","Snagret Hole",
+                "Citadel of Spiders","Glutton's Kitchen","Shower Room","Submerged Castle",
+                "Cavern of Chaos","Hole of Heroes","Dream Den"};
+
+
+    static String fullNameToSpecial(String s) {
+        for (int i = 0; i < fullNames.length; i++) {
+            if (s.equalsIgnoreCase(fullNames[i])) return special[i];
+        }
+        return s;
+    }
+
     static String fromSpecial(String s) {
         if (CaveGen.colossal) {
             return "colossal.txt";
