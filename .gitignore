@@ -15,6 +15,7 @@ output251/*
 !reports/*.txt
 seed_chosen.png
 files/times_table*
+im/*
 
 manip_config.txt
 continuous_config.txt

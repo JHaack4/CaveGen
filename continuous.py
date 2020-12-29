@@ -468,11 +468,11 @@ while(cap.isOpened()):
         print("storyenter " + str(count), flush=True)
         img = frame.copy()
         story_frames.append(img)
-        _,img = cv2.threshold(img,15,255,cv2.THRESH_BINARY)
+        _,img = cv2.threshold(img,17,255,cv2.THRESH_BINARY)
         # Creating kernel 
-        kernel = np.ones((5, 5), np.uint8) 
+        kernel = np.ones((3, 3), np.uint8) 
         img = cv2.erode(img, kernel) 
-        if frames_since_last_story > 90:
+        if frames_since_last_story > 10:
             falling_img = img.copy()
             union_img = img.copy()
             falling_img[:,:,:] = 0

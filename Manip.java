@@ -3,6 +3,9 @@ import java.io.*;
 import java.awt.*;
 import javax.swing.*;
 
+import java.time.format.DateTimeFormatter;  
+import java.time.LocalDateTime;  
+
 public class Manip {
 
     final JFrame jfr = new JFrame("Manip");
@@ -20,6 +23,8 @@ public class Manip {
 
     String curCave = "";
     int curSublevel = 0;
+
+    PrintWriter out = null;
 
     void manip(String mode) {
 
@@ -88,7 +93,6 @@ public class Manip {
         jfr.revalidate();
 		jfr.repaint();
         jfr.setVisible(true);
-
 
         // launch the continuous digit parser
         Thread thread = new Thread(new Runnable() {
@@ -280,10 +284,11 @@ public class Manip {
                             if (seed.letters.out_cave.equals("Hole of Beasts"))
                                 seed.letters.out_cave = "Hole of Heroes";
                         }
-                        if (!seed.letters.out_cave.equals(curCave))
+                        if (!seed.letters.out_cave.equals(curCave) && !seed.letters.out_cave.equals(""))
                             curSublevel = 1;
                         else curSublevel += 1;
-                        curCave = seed.letters.out_cave;
+                        if (!seed.letters.out_cave.equals(""))
+                            curCave = seed.letters.out_cave;
 
                         if (sd == -1) {
                             jtext.setText("Failed to read story seed");
@@ -296,6 +301,7 @@ public class Manip {
                             String curCaveSp = Parser.fullNameToSpecial(curCave);
                             System.out.println(curCaveSp + "-" + curSublevel);
                             jtext.setText(curCaveSp + " " + curSublevel + "\n" + Drawer.seedToString(sd));
+                            seedOut(curCaveSp + "-" + curSublevel + " " + Drawer.seedToString(sd) + "\n");
 
                             CaveViewer.guiOnly = true;
                             //caveViewer.imageBuffer.clear();
@@ -330,7 +336,7 @@ public class Manip {
                                 double rank = storyRanks.get(i);
                                 double avgDiff = storyDiffs.get(i);
                                 jTextGrid.get(gX*i+0).setText(""+(i+1));
-                                jTextGrid.get(gX*i+1).setText(storyLevels.get(i));
+                                jTextGrid.get(gX*i+1).setText(storyLevels.get(i).replace("-",""));
                                 jTextGrid.get(gX*i+2).setText("");
                                 jTextGrid.get(gX*i+3).setText("");
                                 jTextGrid.get(gX*i+4).setText("");
@@ -775,6 +781,8 @@ public class Manip {
             }
             if (raf != null)
                 raf.close();
+            if (out != null)
+                out.close();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -1265,6 +1273,26 @@ public class Manip {
 
         lastReadSeed = seed.next_seed(candidates.get(0), candidateAdvances);
         System.out.println("Seed found: " + Drawer.seedToString(lastReadSeed));
+    }
+
+    void seedOut(String s) {
+        if (out == null) {
+            try {
+                DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd-HH-mm-ss");
+                LocalDateTime now = LocalDateTime.now();  
+                String dateString = dtf.format(now);
+                String output = CaveGen.p251 ? "output251" : "output";
+                new File(output+"/").mkdir();
+                new File(output + "/!seeds/").mkdir();
+                String outputFileName = output + "/!seeds/seeds-" + dateString + ".txt";
+                out = new PrintWriter(new BufferedWriter(new FileWriter(outputFileName)));
+            } catch (Exception e) {
+                e.printStackTrace();
+                System.exit(0);
+            }
+        }
+        out.write(s);
+        out.flush();
     }
 
 }
