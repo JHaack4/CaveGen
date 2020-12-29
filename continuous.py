@@ -7,6 +7,7 @@ import glob
 import sys
 import time
 import ast
+import random
 
 # def RepresentsInt(s):
 #     try: 
@@ -186,8 +187,7 @@ def is_levelenter_screen(frame):
     # frame[10*y,:,:] = 255
     # frame[13*y,:,:] = 255
 
-    f = 6
-
+    f = 7
     if  average1[0] < f and average1[1] < f and average1[2] < f and \
         average2[0] < f and average2[1] < f and average2[2] < f and \
         average3[0] < f and average3[1] < f and average3[2] < f and \
@@ -199,14 +199,14 @@ def is_levelenter_screen(frame):
         average3[0] < f and average3[1] < f and average3[2] < f and \
         average4[0] > f and average4[1] > f and average4[2] > f and \
         average4[0] < 40 and average4[1] < 40 and average4[2] < 40 and \
-        average5[0] < f and average5[1] < f and average5[2] < f:
+        average5[0] < f and average5[1] < f+1 and average5[2] < f+5:
         return 'chenter'
-    if  average1[0] < 30 and average1[1] < 30 and average1[2] < 30 and \
-        average2[0] < 40 and average2[1] < 40 and average2[2] < 40 and abs(average2[0] - average2[2]) < 10 and \
-        average3[0] < 30 and average3[1] < 30 and average3[2] < 30 and \
+    if  average1[0] < 25 and average1[1] < 25 and average1[2] < 25 and \
+        average2[0] < 40 and average2[1] < 40 and average2[2] < 40 and abs(average2[0] - average2[2]) < 6 and abs(average2[0] - average2[1]) < 6 and \
+        average3[0] < 25 and average3[1] < 25 and average3[2] < 25 and \
         average4[0] > f and average4[1] > f and average4[2] > f and \
         average4[0] < 40 and average4[1] < 40 and average4[2] < 40 and \
-        average5[0] < f and average5[1] < f and average5[2] < f:
+        average5[0] < f and average5[1] < f+1 and average5[2] < f+5:
         return 'storyenter'
 
     
@@ -243,6 +243,7 @@ def generate_new_templates(image):
         args.width = updated.width
         args.height = updated.height
     
+falling_img = None
 union_img = None
 frames_since_first_story = 10000
 frames_since_last_story = 10000
@@ -253,43 +254,41 @@ legal_names = ["Emergence Cave","Subterranean Complex","Frontier Cavern",
                 "Hole of Beasts","White Flower Garden","Bulblax Kingdom","Snagret Hole",
                 "Citadel of Spiders","Glutton's Kitchen","Shower Room","Submerged Castle",
                 "Cavern of Chaos","Hole of Heroes","Dream Den"]
-legal_names_mistakes = ["H!ole of Beasts","Snagret H!ole","H!ole of Heroes","H!ole of H!eroes","Hole of H!eroes"]
+legal_names_mistakes = ["Bulb!lax Kingdom","Sub!merged Castle","Sub!terranean Complex","H!ole of Beasts","Snagret H!ole","H!ole of Heroes","H!ole of H!eroes","Hole of H!eroes","Wh!ite Flower Garden","Cavern of Ch!aos","Wh!!ite Flower Garden"]
 
 def process_story_frames():
     #print("processing story frames")
-
-    height,width = union_img.shape[:2]
-
-    #fps, todo delete me
-    # union_img[0:height//7,3*width//4-30:,:] = 0 
-
-    union_img[10*height//100,:,:] = 0 
-    union_img[10*height//100,:,0] = 155
-
-    union_img[35*height//100,:,:] = 0 
-    union_img[35*height//100,:,0] = 155
+    height,width = story_frames[0].shape[:2]
 
     #print(height)
     #print(width)
 
-    #print(union_img)
+    # compute the average image after the letters have stopped moving
+    num_avg = 25
+    sum_image = story_frames[0].copy()
+    sum_image[:,:,:] = 0
+    for frame in story_frames[-num_avg:]:
+        sum_image = sum_image + frame / num_avg
+    _,avg_thresh_img = cv2.threshold(sum_image,75,255,cv2.THRESH_BINARY)
 
-    column_img = union_img[0:10*height//100,:,2]
-    #print(column_img.shape)
-    column_mean = column_img.mean(axis=0)
-    #print(column_mean)
-    #print(len(column_mean))
+    max_row_for_falling = 10*height//100
+    min_row_for_columns = 26*height//100
+    max_row_for_columns = 35*height//100
 
+    # compute the spaces from the column image
+    column_img = union_img[0:max_row_for_falling,:,2]
+    column_mean = [x*max_row_for_falling for x in column_img.mean(axis=0)]
+    print(",".join([f"{int(x)}" for x in column_mean]))
+    
     whitespace = []
     last_black = True
     for i in range(len(column_mean)):
-        f = 6
+        f = 11*255/5 # need at least 12 pixels in column white...
         if column_mean[i] > f and last_black:
             whitespace.append(i)
         elif column_mean[i] <= f and not last_black:
             whitespace.append(i)
         last_black = column_mean[i] <= f
-
     #print(whitespace)
 
     spaces_between = []
@@ -303,7 +302,8 @@ def process_story_frames():
         word_shape += "x"
         spaces_between.append(cur_space_count)
 
-    print(word_shape)
+    # try to error correct the name by joining pieces (solves for separated H)
+    #print(word_shape)
     cave_name = ""
     for s in legal_names:
         if len(s) == len(word_shape):
@@ -326,65 +326,55 @@ def process_story_frames():
                         match=False
                 if match:
                     #print("match")
+                    print("correction match" + s)
                     cave_name = s.replace("!","")
                     for i in range(len(s)-1,-1,-1):
                         if s[i] == "!":
                             #print("bad i " + str(i))
-                            whitespace.pop(2*i-1)
-                            whitespace.pop(2*i-1)
+                            whitespace.pop(2*i-1-spaces_between[i]*2)
+                            whitespace.pop(2*i-1-spaces_between[i]*2)
                             spaces_between.pop(i)
                     break
         #print(whitespace)
         #print(spaces_between)
 
-    for x in whitespace:
-        union_img[:,x,:] = 0
-        union_img[:,x,2] = 255
-
     story_frame_count = 0
     info_string = []
     
-    for frame in story_frames:
+    # for each frame with a falling letter, compute the location of the falling letter
+    for frame in story_frames[0:50]:
         story_frame_count += 1
 
         #print("storyenter " + str(story_frame_count), flush=True)
         img = frame.copy()
-        _,img = cv2.threshold(img,20,255,cv2.THRESH_BINARY)
+        _,img = cv2.threshold(img,15,255,cv2.THRESH_BINARY)
         for i in range(0,len(whitespace),2):
-            section_img = img[0:15*height//100,whitespace[i]:whitespace[i+1],1]
+            section_img = img[0:max_row_for_falling,whitespace[i]:whitespace[i+1],2]
             row_means = section_img.mean(axis=1)
             #print(row_means)
             last_nonzero = -1
             for j,r in enumerate(row_means):
                 if r > 5:
                     last_nonzero = j
-            if last_nonzero != -1 and last_nonzero < 10*height//100-1:
+            if last_nonzero != -1 and last_nonzero < max_row_for_falling-1:
                 #print(str(i//2) + " " + str(last_nonzero))
                 info_string.append(str(i//2+spaces_between[i//2])+","+str(last_nonzero)+",")
                 union_img[last_nonzero,whitespace[i]:whitespace[i+1],:]=0
                 union_img[last_nonzero,whitespace[i]:whitespace[i+1],2]=255
-                img[last_nonzero,whitespace[i]:whitespace[i+1],:]=0
-                img[last_nonzero,whitespace[i]:whitespace[i+1],2]=255
+                falling_img[last_nonzero,whitespace[i]:whitespace[i+1],:]=0
+                falling_img[last_nonzero,whitespace[i]:whitespace[i+1],2]=255
+                #img[last_nonzero,whitespace[i]:whitespace[i+1],:]=0
+                #img[last_nonzero,whitespace[i]:whitespace[i+1],2]=255
         if args.images:
-            cv2.imwrite("im/" + str(count) + "s" + str(story_frame_count) + ".png", img)
+            pass
+            #cv2.imwrite("im/" + str(count) + "s" + str(story_frame_count) + ".png", img)
         info_string.append(";")
-    
 
-    num_avg = 30
-    sum_image = union_img.copy()
-    sum_image[:,:,:] = 0
-    for frame in story_frames[-num_avg:]:
-        sum_image = sum_image + frame / num_avg
-    if args.images:
-        cv2.imwrite("im/" + str(count) + "!avg" + ".png", sum_image)
-    _,avg_thresh_img = cv2.threshold(sum_image,65,255,cv2.THRESH_BINARY)
-    if args.images:
-        cv2.imwrite("im/" + str(count) + "!avg_th" + ".png", avg_thresh_img)
-
+    # compute the height/bottom of each char for offsetting
     offset_info = ""
     char_heights = []
     for i in range(0,len(whitespace),2):
-        section_img = avg_thresh_img[0:38*height//100,whitespace[i]:whitespace[i+1],1]
+        section_img = avg_thresh_img[min_row_for_columns:max_row_for_columns,whitespace[i]:whitespace[i+1],2]
         row_means = section_img.mean(axis=1)
         last_nonzero = -1
         first_nonzero = -1
@@ -393,12 +383,16 @@ def process_story_frames():
                 last_nonzero = j
                 if first_nonzero == -1:
                     first_nonzero = j
+        last_nonzero += min_row_for_columns
+        first_nonzero += min_row_for_columns
         if i > 0 and spaces_between[i//2] - spaces_between[i//2-1] > 0:
             offset_info += ",-1"
-        if last_nonzero != -1 and last_nonzero < 38*height//100-1:
+        if last_nonzero != -1 and last_nonzero < max_row_for_columns-1:
             offset_info += "," + str(last_nonzero)
-            union_img[last_nonzero,whitespace[i]:whitespace[i+1],:]=0
-            union_img[last_nonzero,whitespace[i]:whitespace[i+1],1:2]=255
+            avg_thresh_img[last_nonzero,whitespace[i]:whitespace[i+1],:]=0
+            avg_thresh_img[last_nonzero,whitespace[i]:whitespace[i+1],1:2]=255
+            avg_thresh_img[first_nonzero,whitespace[i]:whitespace[i+1],:]=0
+            avg_thresh_img[first_nonzero,whitespace[i]:whitespace[i+1],1:2]=255
         else:
             offset_info += ",-2"
         char_heights.append(last_nonzero-first_nonzero)
@@ -410,11 +404,32 @@ def process_story_frames():
     print("lettersinfo," + cave_name.replace(" ","_") + "," + str(height) + "," + str(len(whitespace)//2+cur_space_count) + offset_info + ";" + "".join(info_string), flush=True)    
     
     if args.images:
+        avg_thresh_img[min_row_for_columns,:,:] = 255
+        avg_thresh_img[max_row_for_columns,:,:] = 255
+        union_img[max_row_for_falling,:,:] = 0 
+        union_img[max_row_for_falling,:,0] = 155
+        falling_img[max_row_for_falling,:,:] = 0 
+        falling_img[max_row_for_falling,:,0] = 155
+        for x in whitespace:
+            avg_thresh_img[0:max_row_for_columns,x,:] = 0
+            avg_thresh_img[0:max_row_for_columns,x,2] = 255
+            union_img[0:max_row_for_columns,x,:] = 0
+            union_img[0:max_row_for_columns,x,2] = 255
+            falling_img[0:max_row_for_columns,x,:] = 0
+            falling_img[0:max_row_for_columns,x,2] = 255
+
+        cv2.imwrite("im/" + str(count) + "!avg" + ".png", sum_image)
+        cv2.imwrite("im/" + str(count) + "!avg_th" + ".png", avg_thresh_img)
         cv2.imwrite("im/" + str(count) + "!union" + ".png", union_img)
+        cv2.imwrite("im/" + str(count) + "!union_p" + ".png", falling_img)
 
-        _,final_img = cv2.threshold(union_img,65,200,cv2.THRESH_BINARY)
-        cv2.imwrite("im/" + str(count) + "!final" + ".png", final_img)
 
+def random_colorize(img):
+    ret = img.copy()
+    ret[:,:,0] = img[:,:,2]*(random.randint(100,255)/255)
+    ret[:,:,1] = img[:,:,2]*(random.randint(100,255)/255)
+    ret[:,:,2] = img[:,:,2]*(random.randint(100,255)/255)
+    return ret
 
     
 ### watch the video, find frames of the challenge mode result screen, and read the digits  
@@ -433,13 +448,15 @@ while(cap.isOpened()):
     if skip > 0:
         skip -= 1
         continue
+
+    if count < 30*60*8: continue
     
     height,width = frame.shape[:2]
     if count == 1:
         print(f"height {height} width {width}")
     #frame = cv2.resize(frame, (853,480), interpolation=cv2.INTER_NEAREST)
     #frame = frame[:,66:786,:] # crop to 720x480
-    frame = frame[:,180:,:]
+    frame = frame[:,360:,:]
     
     frame_type = is_levelenter_screen(frame)
 
@@ -451,21 +468,29 @@ while(cap.isOpened()):
         print("storyenter " + str(count), flush=True)
         img = frame.copy()
         story_frames.append(img)
-        _,img = cv2.threshold(img,25,255,cv2.THRESH_BINARY)
-        if union_img is None or frames_since_last_story > 1000:
-            union_img = img
+        _,img = cv2.threshold(img,15,255,cv2.THRESH_BINARY)
+        # Creating kernel 
+        kernel = np.ones((5, 5), np.uint8) 
+        img = cv2.erode(img, kernel) 
+        if frames_since_last_story > 90:
+            falling_img = img.copy()
+            union_img = img.copy()
+            falling_img[:,:,:] = 0
+            union_img[:,:,:] = 0
             frames_since_first_story = 0
             story_frames = []
             story_frames.append(img)
             story_frames_processed = False
-        elif frames_since_first_story <= 60:
-            union_img = union_img + img
+        if frames_since_first_story <= 50:
+            falling_img = falling_img + random_colorize(img)
+            union_img = union_img + img/5
         frames_since_last_story = 0
 
-        if frames_since_first_story >= 85 and len(story_frames) >= 85:
+        if frames_since_first_story >= 80 and len(story_frames) >= 80:
             if not story_frames_processed:
                 story_frames_processed = True
                 process_story_frames()
+
         
     elif is_chresult_screen(frame):
         if args.generate_new_templates:
