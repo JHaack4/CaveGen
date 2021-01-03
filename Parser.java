@@ -637,6 +637,26 @@ class Parser {
         }
     }
 
+    static ArrayList<String> parseSeedFile(String file) {
+        ArrayList<String> ret = new ArrayList<String>();
+        try {
+            BufferedReader br = new BufferedReader(new FileReader(file));
+            String line;
+            while ((line = br.readLine()) != null) {
+                Scanner sc = new Scanner(line);
+                sc.useDelimiter("[- ]+");
+                ret.add(sc.next());
+                ret.add(sc.next());
+                ret.add(sc.next());
+                sc.close();
+            }
+            br.close();
+        } catch(Exception e) {
+            e.printStackTrace();
+        }
+        return ret;
+    }
+
     static ArrayList<String> helpText = new ArrayList<String>();
 
     static void helpText() {

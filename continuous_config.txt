@@ -9,5 +9,8 @@
  "images":True,
  "verbose":True,
  "generate_new_templates":False,
- "template_wait":10
+ "template_wait":10,
+ "letters_xscale":1.465,
+ "letters_yscale":1.465,
+ "letters_xoffset":-4
 }

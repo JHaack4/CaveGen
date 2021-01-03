@@ -9,6 +9,9 @@ import time
 import ast
 import random
 
+default_cave_order = "Emergence Cave,Emergence Cave,Hole of Beasts,Hole of Beasts,Hole of Beasts,Hole of Beasts,Hole of Beasts,White Flower Garden,White Flower Garden,White Flower Garden,White Flower Garden,White Flower Garden,Snagret Hole,Snagret Hole,Snagret Hole,Snagret Hole,Snagret Hole,Snagret Hole,Snagret Hole,Bulblax Kingdom,Bulblax Kingdom,Bulblax Kingdom,Bulblax Kingdom,Bulblax Kingdom,Bulblax Kingdom,Bulblax Kingdom,Subterranean Complex,Subterranean Complex,Subterranean Complex,Subterranean Complex,Subterranean Complex,Subterranean Complex,Subterranean Complex,Subterranean Complex,Frontier Cavern,Frontier Cavern,Frontier Cavern,Frontier Cavern,Frontier Cavern,Frontier Cavern,Frontier Cavern,Citadel of Spiders,Citadel of Spiders,Citadel of Spiders,Citadel of Spiders,Citadel of Spiders,Glutton's Kitchen,Glutton's Kitchen,Glutton's Kitchen,Glutton's Kitchen,Glutton's Kitchen,Glutton's Kitchen".split(",")
+default_cave_index = 0
+
 # def RepresentsInt(s):
 #     try: 
 #         int(s)
@@ -85,6 +88,40 @@ if not args.generate_new_templates:
         templates.append(temp)
     templates.append(cv2.imread(args.templates + "_.png",cv2.IMREAD_UNCHANGED))
         
+### generate template letters
+
+letters = {}
+letters_height = {}
+letters_yoff = {}
+letters_width = {}
+letters_xoff = {}
+
+for l in 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ':
+    img = cv2.imread('files/letters/' + (l+l if l.isupper() else l) + ".png")
+    img = cv2.resize(img, (int(img.shape[1]*args.letters_xscale), int(img.shape[0]*args.letters_yscale) ), interpolation=cv2.INTER_NEAREST)
+    letters[l] = np.uint8(img)
+    row_mean = letters[l].max(axis=2).max(axis=1)
+    min_idx = 1000
+    max_idx = 0
+    for i in range(len(row_mean)):
+        if row_mean[i] > 6:
+            min_idx = min(min_idx,i)
+            max_idx = max(max_idx,i)
+    letters_height[l] = max_idx-min_idx+1
+    letters_yoff[l] = min_idx
+    col_mean = letters[l].max(axis=2).max(axis=0)
+    min_idx = 1000
+    max_idx = 0
+    for i in range(len(col_mean)):
+        if col_mean[i] > 6:
+            min_idx = min(min_idx,i)
+            max_idx = max(max_idx,i)
+    letters_width[l] = max_idx-min_idx+1
+    letters_xoff[l] = min_idx
+    #print(l + " " + str(img.shape) + " h" + str(letters_height[l]) + " y" + str(letters_yoff[l]) + " w" + str(letters_width[l]) + " x" + str(letters_xoff[l]))
+
+other_letters_w = {" ": 1.34, "'": 11/16}
+
 ### find and read the digits of a single frame
 
 def read_digits_on_frame(image):
@@ -256,171 +293,427 @@ legal_names = ["Emergence Cave","Subterranean Complex","Frontier Cavern",
                 "Cavern of Chaos","Hole of Heroes","Dream Den"]
 legal_names_mistakes = ["Bulb!lax Kingdom","Sub!merged Castle","Sub!terranean Complex","H!ole of Beasts","Snagret H!ole","H!ole of Heroes","H!ole of H!eroes","Hole of H!eroes","Wh!ite Flower Garden","Cavern of Ch!aos","Wh!!ite Flower Garden"]
 
-def process_story_frames():
-    #print("processing story frames")
+# def process_story_frames():
+#     #print("processing story frames")
+#     height,width = story_frames[0].shape[:2]
+
+#     #print(height)
+#     #print(width)
+
+#     # compute the average image after the letters have stopped moving
+#     num_avg = 25
+#     sum_img = story_frames[0].copy()
+#     sum_img[:,:,:] = 0
+#     for frame in story_frames[-num_avg:]:
+#         sum_img = sum_img + frame / num_avg
+#     _,avg_thresh_img = cv2.threshold(sum_img,75,255,cv2.THRESH_BINARY)
+
+#     max_row_for_falling = 10*height//100
+#     min_row_for_columns = 26*height//100
+#     max_row_for_columns = 35*height//100
+
+#     # compute the spaces from the column image
+#     column_img = union_img[0:max_row_for_falling,:,2]
+#     column_mean = [x*max_row_for_falling for x in column_img.mean(axis=0)]
+#     print(",".join([f"{int(x)}" for x in column_mean]))
+    
+#     whitespace = []
+#     last_black = True
+#     for i in range(len(column_mean)):
+#         f = 11*255/5 # need at least 12 pixels in column white...
+#         if column_mean[i] > f and last_black:
+#             whitespace.append(i)
+#         elif column_mean[i] <= f and not last_black:
+#             whitespace.append(i)
+#         last_black = column_mean[i] <= f
+#     #print(whitespace)
+
+#     spaces_between = []
+#     cur_space_count = 0
+#     word_shape = ""
+#     for i in range(0,len(whitespace),2):
+#         black_dist = whitespace[i] - whitespace[i-1] if i > 0 else 0
+#         if black_dist/width > 20/1280:
+#             cur_space_count += 1
+#             word_shape += ' '
+#         word_shape += "x"
+#         spaces_between.append(cur_space_count)
+
+#     # try to error correct the name by joining pieces (solves for separated H)
+#     #print(word_shape)
+#     cave_name = ""
+#     for s in legal_names:
+#         if len(s) == len(word_shape):
+#             match=True
+#             for i in range(len(s)):
+#                 if (word_shape[i]==' ') != (s[i]==' '):
+#                     match=False
+#             if match:
+#                 cave_name = s
+#                 break
+#     if cave_name == "": # try to error correct a mistake...
+#         #print("trying to error correct")
+#         for s in legal_names_mistakes:
+#             #print(s)
+#             if len(s) == len(word_shape):
+#                 #print("len match")
+#                 match=True
+#                 for i in range(len(s)):
+#                     if (word_shape[i]==' ') != (s[i]==' '):
+#                         match=False
+#                 if match:
+#                     #print("match")
+#                     print("correction match" + s)
+#                     cave_name = s.replace("!","")
+#                     for i in range(len(s)-1,-1,-1):
+#                         if s[i] == "!":
+#                             #print("bad i " + str(i))
+#                             whitespace.pop(2*i-1-spaces_between[i]*2)
+#                             whitespace.pop(2*i-1-spaces_between[i]*2)
+#                             spaces_between.pop(i)
+#                     break
+#         #print(whitespace)
+#         #print(spaces_between)
+
+#     story_frame_count = 0
+#     info_string = []
+    
+#     # for each frame with a falling letter, compute the location of the falling letter
+#     for frame in story_frames[0:50]:
+#         story_frame_count += 1
+
+#         #print("storyenter " + str(story_frame_count), flush=True)
+#         img = frame.copy()
+#         _,img = cv2.threshold(img,15,255,cv2.THRESH_BINARY)
+#         for i in range(0,len(whitespace),2):
+#             section_img = img[0:max_row_for_falling,whitespace[i]:whitespace[i+1],2]
+#             row_means = section_img.mean(axis=1)
+#             #print(row_means)
+#             last_nonzero = -1
+#             for j,r in enumerate(row_means):
+#                 if r > 5:
+#                     last_nonzero = j
+#             if last_nonzero != -1 and last_nonzero < max_row_for_falling-1:
+#                 #print(str(i//2) + " " + str(last_nonzero))
+#                 info_string.append(str(i//2+spaces_between[i//2])+","+str(last_nonzero)+",")
+#                 union_img[last_nonzero,whitespace[i]:whitespace[i+1],:]=0
+#                 union_img[last_nonzero,whitespace[i]:whitespace[i+1],2]=255
+#                 falling_img[last_nonzero,whitespace[i]:whitespace[i+1],:]=0
+#                 falling_img[last_nonzero,whitespace[i]:whitespace[i+1],2]=255
+#                 #img[last_nonzero,whitespace[i]:whitespace[i+1],:]=0
+#                 #img[last_nonzero,whitespace[i]:whitespace[i+1],2]=255
+#         if args.images:
+#             pass
+#             #cv2.imwrite("im/" + str(count) + "s" + str(story_frame_count) + ".png", img)
+#         info_string.append(";")
+
+#     # compute the height/bottom of each char for offsetting
+#     offset_info = ""
+#     char_heights = []
+#     for i in range(0,len(whitespace),2):
+#         section_img = avg_thresh_img[min_row_for_columns:max_row_for_columns,whitespace[i]:whitespace[i+1],2]
+#         row_means = section_img.mean(axis=1)
+#         last_nonzero = -1
+#         first_nonzero = -1
+#         for j,r in enumerate(row_means):
+#             if r > 5:
+#                 last_nonzero = j
+#                 if first_nonzero == -1:
+#                     first_nonzero = j
+#         last_nonzero += min_row_for_columns
+#         first_nonzero += min_row_for_columns
+#         if i > 0 and spaces_between[i//2] - spaces_between[i//2-1] > 0:
+#             offset_info += ",-1"
+#         if last_nonzero != -1 and last_nonzero < max_row_for_columns-1:
+#             offset_info += "," + str(last_nonzero)
+#             avg_thresh_img[last_nonzero,whitespace[i]:whitespace[i+1],:]=0
+#             avg_thresh_img[last_nonzero,whitespace[i]:whitespace[i+1],1:2]=255
+#             avg_thresh_img[first_nonzero,whitespace[i]:whitespace[i+1],:]=0
+#             avg_thresh_img[first_nonzero,whitespace[i]:whitespace[i+1],1:2]=255
+#         else:
+#             offset_info += ",-2"
+#         char_heights.append(last_nonzero-first_nonzero)
+
+#     #print(char_heights)
+#     if cave_name == "Hole of Beasts" and char_heights[-3] * 1.2 >= char_heights[-2]:
+#         cave_name = "Hole of Heroes"
+
+#     print("lettersinfo," + cave_name.replace(" ","_") + "," + str(height) + "," + str(len(whitespace)//2+cur_space_count) + offset_info + ";" + "".join(info_string), flush=True)    
+    
+#     if args.images:
+#         avg_thresh_img[min_row_for_columns,:,:] = 255
+#         avg_thresh_img[max_row_for_columns,:,:] = 255
+#         union_img[max_row_for_falling,:,:] = 0 
+#         union_img[max_row_for_falling,:,0] = 155
+#         falling_img[max_row_for_falling,:,:] = 0 
+#         falling_img[max_row_for_falling,:,0] = 155
+#         for x in whitespace:
+#             avg_thresh_img[0:max_row_for_columns,x,:] = 0
+#             avg_thresh_img[0:max_row_for_columns,x,2] = 255
+#             union_img[0:max_row_for_columns,x,:] = 0
+#             union_img[0:max_row_for_columns,x,2] = 255
+#             falling_img[0:max_row_for_columns,x,:] = 0
+#             falling_img[0:max_row_for_columns,x,2] = 255
+
+#         cv2.imwrite("im/" + str(count) + "!avg" + ".png", sum_img)
+#         cv2.imwrite("im/" + str(count) + "!avg_th" + ".png", avg_thresh_img)
+#         cv2.imwrite("im/" + str(count) + "!union" + ".png", union_img)
+#         cv2.imwrite("im/" + str(count) + "!union_p" + ".png", falling_img)
+
+num_letters_info = 0
+
+def process_story_frames_name_known():
+    #print("processing story frames with name known")
+
+    # find the cave name
+    cave_name = ""
+
+    global default_cave_index
+    global num_letters_info
+    with open("files/cave_name.txt") as f:
+        cave_name = f.readline().strip()
+    if cave_name == "":
+        cave_name = default_cave_order[default_cave_index]
+    #print("cave=" + cave_name)
+
     height,width = story_frames[0].shape[:2]
 
     #print(height)
     #print(width)
 
     # compute the average image after the letters have stopped moving
-    num_avg = 25
-    sum_image = story_frames[0].copy()
-    sum_image[:,:,:] = 0
-    for frame in story_frames[-num_avg:]:
-        sum_image = sum_image + frame / num_avg
-    _,avg_thresh_img = cv2.threshold(sum_image,75,255,cv2.THRESH_BINARY)
+    if args.images:
+        num_avg = 25
+        sum_img = story_frames[0].copy()
+        sum_img[:,:,:] = 0
+        for frame in story_frames[-num_avg:]:
+            sum_img = sum_img + frame / num_avg
+        _,avg_thresh_img = cv2.threshold(sum_img,75,255,cv2.THRESH_BINARY)
 
+    # important params
     max_row_for_falling = 10*height//100
     min_row_for_columns = 26*height//100
     max_row_for_columns = 35*height//100
 
-    # compute the spaces from the column image
-    column_img = union_img[0:max_row_for_falling,:,2]
-    column_mean = [x*max_row_for_falling for x in column_img.mean(axis=0)]
-    print(",".join([f"{int(x)}" for x in column_mean]))
+    # find the expected with of the image
+    temp_w = 0
+    temp_h = 0
+    for l in cave_name:
+        if l in letters:
+            img = letters[l]
+            temp_h = max(temp_h, img.shape[0])
+            temp_w += img.shape[1]
+        else:
+            temp_w += letters['l'].shape[1] * other_letters_w[l]
+
+    # compute the letters postions, scrunching if necesary
+    xs0 = []
+    xs1 = []
+    x_off = int(width/2 - temp_w/2 + args.letters_xoffset)
+    y_off = int(height*0.265)
+    x_scrunch = 1
+    x_scrunch_limit = 0.758
+    if temp_w > x_scrunch_limit * width:
+        x_scrunch = x_scrunch_limit * width/temp_w
+        x_off = int(width * (1-x_scrunch_limit)//2)+args.letters_xoffset
+        #print("x scr " + str(x_scrunch))
+    if args.images:
+        sum_img[:,:,0]=0
+        sum_img[:,int(width*(1-x_scrunch_limit)//2)+args.letters_xoffset,0] = 255
+        sum_img[:,int(width-width*(1-x_scrunch_limit)//2)+args.letters_xoffset,0] = 255
+    for l in cave_name:
+        xs0.append(int(x_off))
+        if l in letters:
+            if args.images:
+                img = letters[l].copy()
+                img[:,:,1:2] = 0
+                img = cv2.resize(img, (int(img.shape[1]*x_scrunch), img.shape[0] ), interpolation=cv2.INTER_NEAREST)
+                sum_img[y_off:y_off+img.shape[0], int(x_off):int(x_off)+img.shape[1], :] = sum_img[y_off:y_off+img.shape[0], int(x_off):int(x_off)+img.shape[1], :] + img
+            x_off += letters[l].shape[1]*x_scrunch
+        else:
+            x_off += letters['l'].shape[1] * other_letters_w[l] * x_scrunch
+        xs1.append(int(x_off))
     
-    whitespace = []
-    last_black = True
-    for i in range(len(column_mean)):
-        f = 11*255/5 # need at least 12 pixels in column white...
-        if column_mean[i] > f and last_black:
-            whitespace.append(i)
-        elif column_mean[i] <= f and not last_black:
-            whitespace.append(i)
-        last_black = column_mean[i] <= f
-    #print(whitespace)
+    # determine vertical cutoffs to use
+    xs0_use = []
+    xs1_use = []
+    spacing_needed = int(width * 0.008)
+    #print("sp " + str(spacing_needed))
+    for i,l in enumerate(cave_name):
+        if l not in letters:
+            xs0_use.append(xs0[i])
+            xs1_use.append(xs1[i])
+            continue
+        x0 = max(xs0[i]+1, xs1[i-1]-int((letters[cave_name[i-1]].shape[1]-letters_xoff[cave_name[i-1]]-letters_width[cave_name[i-1]])*x_scrunch)+spacing_needed if i>0 and cave_name[i-1] in letters else 0)
+        x1 = min(xs1[i]-1, xs0[i+1]+int(letters_xoff[cave_name[i+1]]*x_scrunch)-spacing_needed if i+1<len(xs0) and cave_name[i+1] in letters else width)
+        if i+1<len(xs0) and cave_name[i+1]=="'":
+            x1 -= spacing_needed
+        if x0 + 4 >= x1:
+            diff = (x0 + 4 - x1) // 2
+            x0 -= diff
+            x1 += diff
+        xs0_use.append(x0)
+        xs1_use.append(x1)
+        if args.images:
+            sum_img[0:height//2,x0,0] = 255
+            sum_img[0:height//2,x1,0] = 255
 
-    spaces_between = []
-    cur_space_count = 0
-    word_shape = ""
-    for i in range(0,len(whitespace),2):
-        black_dist = whitespace[i] - whitespace[i-1] if i > 0 else 0
-        if black_dist/width > 20/1280:
-            cur_space_count += 1
-            word_shape += ' '
-        word_shape += "x"
-        spaces_between.append(cur_space_count)
+            #falling_img[0:height//2,x0,0] = 255
+            #falling_img[0:height//2,x1,0] = 255
+            #if l in letters:
+            #    sum_img[y_off+letters_yoff[l]:y_off+letters_yoff[l]+letters_height[l],x0+letters_xoff[l]:x0+letters_xoff[l]+letters_width[l],1]=155
+    
 
-    # try to error correct the name by joining pieces (solves for separated H)
-    #print(word_shape)
-    cave_name = ""
-    for s in legal_names:
-        if len(s) == len(word_shape):
-            match=True
-            for i in range(len(s)):
-                if (word_shape[i]==' ') != (s[i]==' '):
-                    match=False
-            if match:
-                cave_name = s
-                break
-    if cave_name == "": # try to error correct a mistake...
-        #print("trying to error correct")
-        for s in legal_names_mistakes:
-            #print(s)
-            if len(s) == len(word_shape):
-                #print("len match")
-                match=True
-                for i in range(len(s)):
-                    if (word_shape[i]==' ') != (s[i]==' '):
-                        match=False
-                if match:
-                    #print("match")
-                    print("correction match" + s)
-                    cave_name = s.replace("!","")
-                    for i in range(len(s)-1,-1,-1):
-                        if s[i] == "!":
-                            #print("bad i " + str(i))
-                            whitespace.pop(2*i-1-spaces_between[i]*2)
-                            whitespace.pop(2*i-1-spaces_between[i]*2)
-                            spaces_between.pop(i)
-                    break
-        #print(whitespace)
-        #print(spaces_between)
-
-    story_frame_count = 0
-    info_string = []
     
     # for each frame with a falling letter, compute the location of the falling letter
-    for frame in story_frames[0:50]:
-        story_frame_count += 1
+    locs = np.zeros((len(cave_name), 45))
+    for story_frame_count,frame in enumerate(story_frames[0:45]):
 
         #print("storyenter " + str(story_frame_count), flush=True)
-        img = frame.copy()
-        _,img = cv2.threshold(img,15,255,cv2.THRESH_BINARY)
-        for i in range(0,len(whitespace),2):
-            section_img = img[0:max_row_for_falling,whitespace[i]:whitespace[i+1],2]
-            row_means = section_img.mean(axis=1)
+        #_,img = cv2.threshold(frame,13,255,cv2.THRESH_BINARY) # may need to change this for wii
+        for i,l in enumerate(cave_name):
+            if l not in letters: continue
+            #print(f"{l} {xs0_use[i]} {xs1_use[i]} {img.shape}")
+            section_img = frame[0:max_row_for_falling,xs0_use[i]:xs1_use[i],:]
+            row_means = section_img.max(axis=2).max(axis=1)
             #print(row_means)
             last_nonzero = -1
+            num_rows_with_stuff = 0
             for j,r in enumerate(row_means):
-                if r > 5:
+                if r > 13:
+                    num_rows_with_stuff += 1
                     last_nonzero = j
-            if last_nonzero != -1 and last_nonzero < max_row_for_falling-1:
+            if last_nonzero >= 4 and last_nonzero < max_row_for_falling-1 and num_rows_with_stuff > min(last_nonzero*.75, letters_height[l]*.75):
+                locs[i][story_frame_count] = last_nonzero 
                 #print(str(i//2) + " " + str(last_nonzero))
-                info_string.append(str(i//2+spaces_between[i//2])+","+str(last_nonzero)+",")
-                union_img[last_nonzero,whitespace[i]:whitespace[i+1],:]=0
-                union_img[last_nonzero,whitespace[i]:whitespace[i+1],2]=255
-                falling_img[last_nonzero,whitespace[i]:whitespace[i+1],:]=0
-                falling_img[last_nonzero,whitespace[i]:whitespace[i+1],2]=255
-                #img[last_nonzero,whitespace[i]:whitespace[i+1],:]=0
-                #img[last_nonzero,whitespace[i]:whitespace[i+1],2]=255
+                #info_string.append(str(i//2+spaces_between[i//2])+","+str(last_nonzero)+",")
+                #union_img[last_nonzero,xs0_use[i]:xs1_use[i],:]=0
+                #union_img[last_nonzero,xs0_use[i]:xs1_use[i],2]=255
+                if args.images:
+                    falling_img[last_nonzero,xs0_use[i]:xs1_use[i],:]=0
+                    falling_img[last_nonzero,xs0_use[i]:xs1_use[i],2]=255
+                    #img[last_nonzero,whitespace[i]:whitespace[i+1],:]=0
+                    #img[last_nonzero,whitespace[i]:whitespace[i+1],2]=255
+                    if num_letters_info == 10:
+                        ims = frame[0:max_row_for_falling,xs0_use[i]:xs1_use[i],2]
+                        imgs = ims.copy()
+                        imgs[last_nonzero,:] = 255
+                        cv2.imwrite("im/" + str(i) + str(l) + str(story_frame_count) + ".png", imgs)
+                
         if args.images:
             pass
             #cv2.imwrite("im/" + str(count) + "s" + str(story_frame_count) + ".png", img)
-        info_string.append(";")
+        #info_string.append(";")
 
-    # compute the height/bottom of each char for offsetting
-    offset_info = ""
-    char_heights = []
-    for i in range(0,len(whitespace),2):
-        section_img = avg_thresh_img[min_row_for_columns:max_row_for_columns,whitespace[i]:whitespace[i+1],2]
-        row_means = section_img.mean(axis=1)
-        last_nonzero = -1
-        first_nonzero = -1
-        for j,r in enumerate(row_means):
-            if r > 5:
-                last_nonzero = j
-                if first_nonzero == -1:
-                    first_nonzero = j
-        last_nonzero += min_row_for_columns
-        first_nonzero += min_row_for_columns
-        if i > 0 and spaces_between[i//2] - spaces_between[i//2-1] > 0:
-            offset_info += ",-1"
-        if last_nonzero != -1 and last_nonzero < max_row_for_columns-1:
-            offset_info += "," + str(last_nonzero)
-            avg_thresh_img[last_nonzero,whitespace[i]:whitespace[i+1],:]=0
-            avg_thresh_img[last_nonzero,whitespace[i]:whitespace[i+1],1:2]=255
-            avg_thresh_img[first_nonzero,whitespace[i]:whitespace[i+1],:]=0
-            avg_thresh_img[first_nonzero,whitespace[i]:whitespace[i+1],1:2]=255
-        else:
-            offset_info += ",-2"
-        char_heights.append(last_nonzero-first_nonzero)
+    for x in locs:
+        print(x)
 
-    #print(char_heights)
-    if cave_name == "Hole of Beasts" and char_heights[-3] * 1.2 >= char_heights[-2]:
-        cave_name = "Hole of Heroes"
+    # try to do some sanity checking on the output...
+    # each non space char should have 3-6 entries, all consecutive, and the diffs should be around a certain value
+    # otherwise, zero out
+    num_bad_char = 0
+    for i,l in enumerate(cave_name):
+        nonzero = []
+        nonzero_idx = []
+        for j,y in enumerate(locs[i]):
+            if y>0:
+                nonzero.append(y)
+                nonzero_idx.append(j)
+        if len(nonzero) == 0: continue
+        good = len(nonzero) >= 3 and len(nonzero) <= 6 and nonzero_idx[-1]-nonzero_idx[0] == len(nonzero)-1
+        for j in range(len(nonzero)-1):
+            diff = nonzero[j+1]-nonzero[j]
+            if diff/height < 10/720 or diff/height > 35/720:
+                good=False
+        if not good:
+            num_bad_char += 1
+            locs[i,:] = 0
 
-    print("lettersinfo," + cave_name.replace(" ","_") + "," + str(height) + "," + str(len(whitespace)//2+cur_space_count) + offset_info + ";" + "".join(info_string), flush=True)    
+    # if still good, create the info string. If bad but still seems like a cave entry, write out an empty infostring
+    # otherwise, do nothing (this case shouldn't be hit hopefully)
+
+    if num_bad_char > len(cave_name)/2:
+        return
+    elif num_bad_char > 2:
+        num_letters_info += 1
+        default_cave_index += 1
+        print("lettersinfo,,100,0;;;", flush=True)
+    else:
+        num_letters_info += 1
+        default_cave_index += 1
+        # compute & write out the info string...
+        info_string = []
+        offset_info = []
+        for i,l in enumerate(cave_name):
+            if l in letters:
+                offset_info.append(str(letters[l].shape[0]-letters_height[l]-letters_yoff[l]))
+            else:
+                offset_info.append(str(-1))
+
+        for j in range(len(locs[0])):
+            s = ""
+            for i in range(len(locs)):
+                if locs[i][j] > 0:
+                    s += str(i) + "," + str(int(locs[i][j])) + ","
+            s += ";"
+            info_string.append(s)
+
+        print("lettersinfo," + cave_name.replace(" ","_") + "," + str(height) 
+            + "," + str(len(cave_name)) + "," + ",".join(offset_info) + ";" + "".join(info_string), flush=True)    
+    
+
+
+    # # compute the height/bottom of each char for offsetting
+    # offset_info = ""
+    # char_heights = []
+    # for i in range(0,len(whitespace),2):
+    #     section_img = avg_thresh_img[min_row_for_columns:max_row_for_columns,whitespace[i]:whitespace[i+1],2]
+    #     row_means = section_img.mean(axis=1)
+    #     last_nonzero = -1
+    #     first_nonzero = -1
+    #     for j,r in enumerate(row_means):
+    #         if r > 5:
+    #             last_nonzero = j
+    #             if first_nonzero == -1:
+    #                 first_nonzero = j
+    #     last_nonzero += min_row_for_columns
+    #     first_nonzero += min_row_for_columns
+    #     if i > 0 and spaces_between[i//2] - spaces_between[i//2-1] > 0:
+    #         offset_info += ",-1"
+    #     if last_nonzero != -1 and last_nonzero < max_row_for_columns-1:
+    #         offset_info += "," + str(last_nonzero)
+    #         avg_thresh_img[last_nonzero,whitespace[i]:whitespace[i+1],:]=0
+    #         avg_thresh_img[last_nonzero,whitespace[i]:whitespace[i+1],1:2]=255
+    #         avg_thresh_img[first_nonzero,whitespace[i]:whitespace[i+1],:]=0
+    #         avg_thresh_img[first_nonzero,whitespace[i]:whitespace[i+1],1:2]=255
+    #     else:
+    #         offset_info += ",-2"
+    #     char_heights.append(last_nonzero-first_nonzero)
+
+    # #print(char_heights)
+    # if cave_name == "Hole of Beasts" and char_heights[-3] * 1.2 >= char_heights[-2]:
+    #     cave_name = "Hole of Heroes"
+
+    # print("lettersinfo," + cave_name.replace(" ","_") + "," + str(height) + "," + str(len(whitespace)//2+cur_space_count) + offset_info + ";" + "".join(info_string), flush=True)    
     
     if args.images:
-        avg_thresh_img[min_row_for_columns,:,:] = 255
-        avg_thresh_img[max_row_for_columns,:,:] = 255
-        union_img[max_row_for_falling,:,:] = 0 
-        union_img[max_row_for_falling,:,0] = 155
+        sum_img[min_row_for_columns,:,:] = 255
+        sum_img[max_row_for_columns,:,:] = 255
+        # union_img[max_row_for_falling,:,:] = 0 
+        # union_img[max_row_for_falling,:,0] = 155
         falling_img[max_row_for_falling,:,:] = 0 
         falling_img[max_row_for_falling,:,0] = 155
-        for x in whitespace:
-            avg_thresh_img[0:max_row_for_columns,x,:] = 0
-            avg_thresh_img[0:max_row_for_columns,x,2] = 255
-            union_img[0:max_row_for_columns,x,:] = 0
-            union_img[0:max_row_for_columns,x,2] = 255
-            falling_img[0:max_row_for_columns,x,:] = 0
-            falling_img[0:max_row_for_columns,x,2] = 255
+    #     for x in whitespace:
+    #         avg_thresh_img[0:max_row_for_columns,x,:] = 0
+    #         avg_thresh_img[0:max_row_for_columns,x,2] = 255
+    #         union_img[0:max_row_for_columns,x,:] = 0
+    #         union_img[0:max_row_for_columns,x,2] = 255
+    #         falling_img[0:max_row_for_columns,x,:] = 0
+    #         falling_img[0:max_row_for_columns,x,2] = 255
 
-        cv2.imwrite("im/" + str(count) + "!avg" + ".png", sum_image)
-        cv2.imwrite("im/" + str(count) + "!avg_th" + ".png", avg_thresh_img)
-        cv2.imwrite("im/" + str(count) + "!union" + ".png", union_img)
+        cv2.imwrite("im/" + str(count) + "!avg" + ".png", sum_img)
+        #cv2.imwrite("im/" + str(count) + "!avg_th" + ".png", avg_thresh_img)
+        #cv2.imwrite("im/" + str(count) + "!union" + ".png", union_img)
         cv2.imwrite("im/" + str(count) + "!union_p" + ".png", falling_img)
 
 
@@ -437,9 +730,18 @@ skip = 0
 count = 0
 last_frame_was_digit = False
 
-while(cap.isOpened()):
+frame_for_save_count = 0
+frames_to_output_anyways = 0
+
+# while(cap.isOpened()):
+#     ret, frame = cap.read()
+
+while True:
+    frame_for_save_count += 1
+    frame = cv2.imread('im_save/' + str(frame_for_save_count) + '.png', cv2.IMREAD_COLOR)
+    ret = True
+
     count += 1
-    ret, frame = cap.read()
     frames_since_first_story += 1
     frames_since_last_story += 1
     
@@ -449,17 +751,17 @@ while(cap.isOpened()):
         skip -= 1
         continue
 
-    if count < 30*60*8: continue
+    #if count < 30*60*8: continue
     
     height,width = frame.shape[:2]
-    if count == 1:
-        print(f"height {height} width {width}")
+    #if count == 1:
+    #    print(f"height {height} width {width}")
     #frame = cv2.resize(frame, (853,480), interpolation=cv2.INTER_NEAREST)
     #frame = frame[:,66:786,:] # crop to 720x480
-    frame = frame[:,360:,:]
+    #rame = frame[:,360:,:]
     
     frame_type = is_levelenter_screen(frame)
-
+    
     if frame_type == 'fadeout':
         print("fadeout",flush=True)
     elif frame_type == 'chenter':
@@ -473,25 +775,25 @@ while(cap.isOpened()):
         kernel = np.ones((3, 3), np.uint8) 
         img = cv2.erode(img, kernel) 
         if frames_since_last_story > 10:
-            falling_img = img.copy()
-            union_img = img.copy()
-            falling_img[:,:,:] = 0
-            union_img[:,:,:] = 0
+            falling_img = np.zeros(frame.shape)
+            union_img = np.zeros(frame.shape)
             frames_since_first_story = 0
             story_frames = []
             story_frames.append(img)
             story_frames_processed = False
-        if frames_since_first_story <= 50:
-            falling_img = falling_img + random_colorize(img)
-            union_img = union_img + img/5
+        if frames_since_first_story <= 45:
+            if args.images:
+                falling_img = falling_img + random_colorize(img)/4
+            #union_img = union_img + img/5
         frames_since_last_story = 0
 
-        if frames_since_first_story >= 80 and len(story_frames) >= 80:
+        frames_to_output_anyways = 90
+
+        if frames_since_first_story >= (60 if not args.images else 80) and len(story_frames) >= (60 if not args.images else 80):
             if not story_frames_processed:
                 story_frames_processed = True
-                process_story_frames()
+                process_story_frames_name_known()
 
-        
     elif is_chresult_screen(frame):
         if args.generate_new_templates:
             generate_new_templates(frame)
@@ -504,6 +806,17 @@ while(cap.isOpened()):
         else:
             skip = 5
         last_frame_was_digit = False
+
+    if frames_to_output_anyways > 0:
+        frames_to_output_anyways -= 1
+        # frame_for_save_count += 1
+        # cv2.imwrite("im_save/" + str(frame_for_save_count) + ".png", frame)
+        # if frames_to_output_anyways == 0:
+        #     for jjj in range(40):
+        #         jjjj = frame.copy()
+        #         jjjj[:,:,:]=0
+        #         frame_for_save_count += 1
+        #         cv2.imwrite("im_save/" + str(frame_for_save_count) + ".png", jjjj)
 
     
     if args.images:

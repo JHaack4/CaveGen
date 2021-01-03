@@ -1,6 +1,7 @@
 import java.io.*;
 import java.time.format.DateTimeFormatter;  
 import java.time.LocalDateTime;  
+import java.util.*;
 
 // this class computes various statistics
 // this class can be modified in order to collect the desired statistics
@@ -88,6 +89,24 @@ class Stats {
 
         if (CaveGen.judgeActive && CaveGen.judgeCombine) {
             judge.printSortedCombinedList();
+        }
+
+        if (CaveGen.judgeActive && CaveGen.judgeVsAvg) {
+            println("Judge overall score: " + String.format("%.2f",judge.judgeVsAvgCumScore));
+            Arrays.sort(judge.judgeVsAvgCumScores);
+            int rank = 0;
+            for (; rank < judge.judgeVsAvgCumScores.length; rank++) {
+                if (judge.judgeVsAvgCumScore < judge.judgeVsAvgCumScores[rank])
+                    break;
+            }
+            println("Judge overall rank: " + String.format("%.2f%%", rank*100.0/judge.judgeVsAvgCumScores.length));
+            print("Distribution:");
+            for (int i = 0; i < 100; i++) {
+                print(" " + String.format("%.2f", judge.judgeVsAvgCumScores[(int)((i+0.5)*judge.judgeVsAvgCumScores.length / 100)]));
+            }
+            println("");
+            System.out.println("Judge overall score: " + String.format("%.2f",judge.judgeVsAvgCumScore));
+            System.out.println("Judge overall rank: " + String.format("%.2f%%", rank*100.0/judge.judgeVsAvgCumScores.length));
         }
 
         // report about sublevel objects

@@ -316,6 +316,10 @@ public class CaveViewer {
                         argMap.get("sublevel").jComboBox.setSelectedItem("All");
                     }
                 }
+                if (a.equalsIgnoreCase("combine") || a.equalsIgnoreCase("vsavg")) {
+                    argMap.get("additionalargs").jTextField.setText(argMap.get("additionalargs").jTextField.getText() + " -judge " + a);
+                    continue;
+                }
                 if (!argMap.containsKey(a) && !argMap.containsKey(a.substring(1))) {
                     argMap.get("additionalargs").jTextField.setText(argMap.get("additionalargs").jTextField.getText() + " " + a);
                     continue;

@@ -17,9 +17,9 @@ public class CaveGen {
         drawEnemyScores, drawUnitHoleScores, drawUnitItemScores,
         findGoodLayouts, requireMapUnits, expectTest, noWayPointGraph,
         writeMemo, readMemo, aggregator, aggFirst, aggRooms, aggHalls,
-        judgeActive, judgeCombine, judgeRankFile;
+        judgeActive, judgeCombine, judgeRankFile, judgeVsAvg;
     static double findGoodLayoutsRatio, judgeFilterScore, judgeFilterScoreSign, judgeFilterRank;
-    static String requireMapUnitsConfig;
+    static String requireMapUnitsConfig, seedFile;
     static boolean shortCircuitMap, imageToggle;
 
     static Drawer drawer;
@@ -45,9 +45,9 @@ public class CaveGen {
         drawEnemyScores = false; drawUnitHoleScores = false; drawUnitItemScores = false;
         findGoodLayouts = false; requireMapUnits = false; expectTest = false; noWayPointGraph = false;
         writeMemo = false; readMemo = false; aggregator = false; aggFirst = false; aggRooms = false; aggHalls = false;
-        judgeActive = false; judgeCombine = false; judgeRankFile = false;
+        judgeActive = false; judgeCombine = false; judgeRankFile = false; judgeVsAvg = false;
         findGoodLayoutsRatio = 0.01; judgeFilterScore = 0; judgeFilterRank = 0; judgeFilterScoreSign = 0;
-        requireMapUnitsConfig = ""; judgeType = "default";
+        requireMapUnitsConfig = ""; judgeType = "default"; seedFile = "";
         firstGenSeed = 0; numToGenerate = 1; indexBeingGenerated = 0;
         imageToggle = true;
         seedCalc = new Seed();
@@ -234,6 +234,9 @@ public class CaveGen {
                     else if (s.equalsIgnoreCase("-count")) {
                         countObject = args[++i].toLowerCase();
                     }
+                    else if (s.equalsIgnoreCase("-seedFile")) {
+                        seedFile = args[++i];
+                    }
                     else if (s.equalsIgnoreCase("-judge")) {
                         judgeActive = true;
                         while (i < args.length-1) {
@@ -242,6 +245,8 @@ public class CaveGen {
                                 judgeCombine = true;
                             } else if (args[i].equalsIgnoreCase("rankfile")) {
                                 judgeRankFile = true;
+                            } else if (args[i].equalsIgnoreCase("vsavg")) {
+                                judgeVsAvg = true;
                             } else if (args[i].equalsIgnoreCase("pod")) {
                                 judgeType = "pod";
                             } else if (args[i].equalsIgnoreCase("colossal")) {
@@ -268,7 +273,7 @@ public class CaveGen {
                                 i--;
                                 break;
                             } else {
-                                System.out.println("Bad argument: " + args[i]);
+                                System.out.println("Bad judge argument: " + args[i]);
                                 throw new Exception();
                             }
                         }
@@ -335,52 +340,62 @@ public class CaveGen {
             caveArg = "both";
         }
 
-        int maxStory = p251 ? 16 : 14;
-        if (allStoryMode) {
-            int upperBound = caveArg.equals("pod") ? 9 : maxStory;
-            for (int j = 0; j < upperBound; j++) {
-                caveInfoName = Parser.all[j] + ".txt";
-                for (int k = 0; k < 10000; k++) {
-                    sublevel = k+1;
-                    CaveGen g = new CaveGen();
-                    if (g.isFinalFloor) break;
-                }
-            }
-        }
-        if (allChallengeMode) {
-            for (int j = maxStory; j < maxStory+30; j++) {
-                caveInfoName = Parser.all[j] + ".txt";
-                for (int k = 0; k < 10000; k++) {
-                    sublevel = k+1;
-                    CaveGen g = new CaveGen();
-                    if (g.isFinalFloor) break;
-                }
-            }
-        }
-        if (!allChallengeMode && !allStoryMode) {
-            int sublevelArg = sublevel;
-            String[] caveStrings = caveArg.split(",");
-            for (String cs: caveStrings) {
-                if (cs.contains("-")) {
-                    String[] csSplit = cs.split("-");
-                    caveInfoName = Parser.fromSpecial(csSplit[0]);
-                    sublevel = Integer.parseInt(csSplit[1]);
-                    new CaveGen();
-                }
-                else {
-                    caveInfoName = Parser.fromSpecial(cs);
-                    if (sublevelArg == 0) {
-                        for (int i = 0; i < 10000; i++) {
-                            sublevel = i+1;
-                            CaveGen g = new CaveGen();
-                            if (g.isFinalFloor) break;
-                        }
+        if (seedFile.equals("")) {
+            int maxStory = p251 ? 16 : 14;
+            if (allStoryMode) {
+                int upperBound = caveArg.equals("pod") ? 9 : maxStory;
+                for (int j = 0; j < upperBound; j++) {
+                    caveInfoName = Parser.all[j] + ".txt";
+                    for (int k = 0; k < 10000; k++) {
+                        sublevel = k+1;
+                        CaveGen g = new CaveGen();
+                        if (g.isFinalFloor) break;
                     }
-                    else {
-                        sublevel = sublevelArg;
+                }
+            }
+            if (allChallengeMode) {
+                for (int j = maxStory; j < maxStory+30; j++) {
+                    caveInfoName = Parser.all[j] + ".txt";
+                    for (int k = 0; k < 10000; k++) {
+                        sublevel = k+1;
+                        CaveGen g = new CaveGen();
+                        if (g.isFinalFloor) break;
+                    }
+                }
+            }
+            if (!allChallengeMode && !allStoryMode) {
+                int sublevelArg = sublevel;
+                String[] caveStrings = caveArg.split(",");
+                for (String cs: caveStrings) {
+                    if (cs.contains("-")) {
+                        String[] csSplit = cs.split("-");
+                        caveInfoName = Parser.fromSpecial(csSplit[0]);
+                        sublevel = Integer.parseInt(csSplit[1]);
                         new CaveGen();
                     }
+                    else {
+                        caveInfoName = Parser.fromSpecial(cs);
+                        if (sublevelArg == 0) {
+                            for (int i = 0; i < 10000; i++) {
+                                sublevel = i+1;
+                                CaveGen g = new CaveGen();
+                                if (g.isFinalFloor) break;
+                            }
+                        }
+                        else {
+                            sublevel = sublevelArg;
+                            new CaveGen();
+                        }
+                    }
                 }
+            }
+        } else { // user provided a list of sublevel/seed pairs.
+            ArrayList<String> seedArgs = Parser.parseSeedFile(seedFile);
+            for (int i = 0; i < seedArgs.size(); i += 3) {
+                caveInfoName = Parser.fromSpecial(seedArgs.get(i));
+                sublevel = Integer.parseInt(seedArgs.get(i+1));
+                firstGenSeed = (int)(Long.decode("0x"+seedArgs.get(i+2)).longValue());
+                new CaveGen();
             }
         }
 

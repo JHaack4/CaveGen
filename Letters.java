@@ -5,6 +5,8 @@ import javax.swing.*;
 
 public class Letters {
 
+    int nearbySearchDist = 100000;
+
     Seed seedCalc;
     Letters(Seed s) {
         seedCalc = s;
@@ -124,6 +126,7 @@ public class Letters {
             return -1;
         }
 
+        // pull the letter locations from the python code
         int[][] locs = new int[num_chars][300];
         int[] offsets = new int[num_chars];
         for (int i = 0; i < num_chars; i++)
@@ -141,6 +144,7 @@ public class Letters {
             }
         }
 
+        // shift the locs by delay time and adjust for the height of each char
         int[][] shifted_locs = new int[num_chars][400];
         int minc = 401, maxc = -1;
         for (int i = 0; i < num_chars; i++) {
@@ -155,7 +159,7 @@ public class Letters {
                 if (c >= 0 && c < 300) {
                     shifted_locs[i][j] = locs[i][c];
                     if (shifted_locs[i][j] > 0) {
-                        shifted_locs[i][j] += (offsets[i] > 0 ? height*35/100 - offsets[i] : 0);
+                        shifted_locs[i][j] += (offsets[i] > 0 ? offsets[i] : 0);
                         minc = Math.min(minc,j);
                         maxc = Math.max(maxc,j);
                     }
@@ -175,7 +179,7 @@ public class Letters {
             //System.out.println();
         }
 
-        // compute when we crossed y=h/24
+        // compute when we crossed y=h*6/100
         int cross_point = height*6/100;
         System.out.println("Cross point:" + cross_point);
         float[] cross_points = new float[num_chars]; // in frames
@@ -232,7 +236,16 @@ public class Letters {
         long bestSeed = -1;
         float bestDisutil = 100000;
 
-        
+        // try faster method first...
+        if (seedLastRead != -1 && bestSeed == -1) {
+            System.out.println("starting nearby search " + nearbySearchDist);
+            bestSeed = searchForLowDisutilNear(seedLastRead, min_vels, is_space, 0.3f, nearbySearchDist);
+            System.out.println("nearby serach done");
+            if (bestSeed != -1) {
+                System.out.println("found via close seeds");
+                bestDisutil = out_disutil_for_near;
+            }
+        }
 
         if (bestSeed == -1) {
             System.out.println("starting lattice search");
@@ -259,16 +272,7 @@ public class Letters {
             System.out.println("lattice search done");
         }
 
-        // try faster method first...
-        if (seedLastRead != -1 && bestSeed == -1) {
-            System.out.println("starting nearby search");
-            bestSeed = searchForLowDisutilNear(seedLastRead, min_vels, is_space, 0.3f, true, false, 1000000);
-            System.out.println("nearby serach done");
-            if (bestSeed != -1) {
-                System.out.println("found via close seeds");
-                bestDisutil = out_disutil_for_near;
-            }
-        }
+        
 
         System.out.println("bvs " + velString(seedCalc.seed_to_vel_vector(seedCalc.clamp(bestSeed), num_chars)));
         System.out.println("best: " + Drawer.seedToString(bestSeed) + " (disutil " + bestDisutil + ")" + " (n " + seedCalc.nth_inv(bestSeed) + ")");
@@ -326,13 +330,34 @@ public class Letters {
         return (pos - 200 + f * (f+1) / 2) / f;
     }
 
+    int lastSearchSeedForPrecompute = -1;
+    float[] precomputeVs = new float[1];
+    void precomputeExpectedFutureVs(long searchSeed, int len) {
+        int seed = seedCalc.clamp(searchSeed);
+        if (lastSearchSeedForPrecompute == seed)
+            return;
+        lastSearchSeedForPrecompute = seed;
+
+        len += 50;
+        System.out.println("precompute vs for " + Drawer.seedToString(searchSeed) + " " + len);
+        
+        precomputeVs = new float[len];
+        for (int j = 0; j < len; j++) {
+            seed = seed * 0x41c64e6d + 0x3039;
+            int ret = (seed >>> 0x10) & 0x7fff;
+            precomputeVs[j] = ret * 5.0f / 32768.0f;
+        }
+        System.out.println("done precompute vs");
+        
+    }
+
     float out_disutil_for_near;
-    long searchForLowDisutilNear(long searchSeed, float[] vtarg, boolean[] is_space, float tolerance, boolean forward, boolean backward, int range) {
+    long searchForLowDisutilNear(long searchSeed, float[] vtarg, boolean[] is_space, float tolerance, int range) {
 
         long bestSeed = -1;
-        double bestDisutil = 100000;
+        float bestDisutil = 100000;
 
-        double targsum = 0;
+        float targsum = 0;
         int cnt = 0;
         for (int j = 0; j < vtarg.length; j++) {
             if (is_space[j]) continue;
@@ -340,63 +365,45 @@ public class Letters {
             cnt++;
         }
 
-        for (int i = 1; i < range; i++) {
-            if (i == 100000 && bestDisutil < 0.15 * cnt) break;
-            if (i == 250000 && bestDisutil < 0.2 * cnt) break;
-            if (forward) {
-                long check = seedCalc.next_seed(seed,i);
+        precomputeExpectedFutureVs(searchSeed, range);
+        int seed = seedCalc.clamp(searchSeed);
 
-                float[] vs = seedCalc.seed_to_vel_vector(seedCalc.clamp(check), vtarg.length);
+        for (int i = 0; i < range; i++) {
 
-                double vssum = 0;
-                for (int j = 0; j < vtarg.length; j++) {
-                    if (is_space[j]) continue;
-                    vssum += vs[j];
+            float vssum = 0;
+            for (int j = 0; j < vtarg.length; j++) {
+                if (is_space[j]) continue;
+                vssum += precomputeVs[j+i];
+            }
+            float adjustment = (targsum-vssum)/cnt;
+
+            float disutil = 0;
+            boolean good = true;
+            for (int j = 0; j < vtarg.length; j++) {
+                if (is_space[j]) continue;
+                float dis = Math.abs(vtarg[j]-precomputeVs[j+i]-adjustment);
+                if (dis > tolerance) {
+                    good = false;
+                    break;
                 }
-
-                double disutil = 0;
-                for (int j = 0; j < vtarg.length; j++) {
-                    if (is_space[j]) continue;
-                    disutil += Math.abs(vtarg[j]-vs[j]-(targsum-vssum)/cnt);
-                }
-
-                if (disutil < tolerance*cnt) {
-                    //System.out.println(disutil + " " + Drawer.seedToString(check) + " " + velString(vs));
-                    if (disutil < bestDisutil) {
-                        bestDisutil = disutil;
-                        bestSeed = check;
-                    }
-                }
+                disutil += dis;
             }
 
-            if (backward) {
-                long check = seedCalc.next_seed(seed,-i);
-
-                float[] vs = seedCalc.seed_to_vel_vector(seedCalc.clamp(check), vtarg.length);
-
-                double vssum = 0;
-                for (int j = 0; j < vtarg.length; j++) {
-                    if (is_space[j]) continue;
-                    vssum += vs[j];
+            if (good) {
+                //System.out.println(disutil + " " + Drawer.seedToString(check) + " " + velString(vs));
+                if (disutil < bestDisutil) {
+                    bestDisutil = disutil;
+                    bestSeed = seed;
                 }
-
-                double disutil = 0;
-                for (int j = 0; j < vtarg.length; j++) {
-                    if (is_space[j]) continue;
-                    disutil += Math.abs(vtarg[j]-vs[j]-(targsum-vssum)/cnt);
-                }
-
-                if (disutil < tolerance*cnt) {
-                    //System.out.println(disutil + " " + Drawer.seedToString(check) + " " + velString(vs));
-                    if (disutil < bestDisutil) {
-                        bestDisutil = disutil;
-                        bestSeed = check;
-                    }
+                if (bestDisutil <= 0.1*cnt) {
+                    break; //good enough
                 }
             }
+            
+            seed = seed * 0x41c64e6d + 0x3039;
 
         }
-        out_disutil_for_near = (float)bestDisutil;
+        out_disutil_for_near = bestDisutil;
         return bestSeed;
     
     }

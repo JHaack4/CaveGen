@@ -44,6 +44,8 @@ pod breadbugs/high treasures
     HashMap<String, Double> seedAggregatedScoreMap = new HashMap<String, Double>();
     HashSet<String> seeds = new HashSet<String>();
 
+    double judgeVsAvgCumScores[] = new double[10000], judgeVsAvgCumScore = 0;
+
     void judge(CaveGen g) {
 
         // calculate score... (in this function, "score" is based on jhawk's heuristics, not the game's version of score)
@@ -709,12 +711,16 @@ pod breadbugs/high treasures
             seedAggregatedScoreMap.put(seedStr, score);
         }
 
+        if (CaveGen.judgeVsAvg) {
+            judgeVsAvgCumScore += score;
+        }
+
         // check if the image passes the filter
         if (filter(score, rank)) {
             if (CaveGen.numToGenerate < 4096 || CaveGen.judgeFilterRank != 0 || CaveGen.judgeFilterScore != 0) {
-                stats.println(String.format("Judge: %s -> %.2f (%.1f%%)", s, score, rank));
+                stats.println(String.format("Judge: %s -> %.2f (%.1f%%, %s)", s, score, rank, rankBreakPoints==null?"?":""+(int)(score-rankBreakPoints[500])));
                 if (CaveGen.prints)
-                    System.out.println(String.format("Judge: %s -> %.2f (%.1f%%)", s, score, rank));
+                    System.out.println(String.format("Judge: %s -> %.2f (%.1f%%, %s)", s, score, rank,rankBreakPoints==null?"?":""+(int)(score-rankBreakPoints[500])));
             }
             CaveGen.imageToggle = true;
         }
@@ -808,6 +814,13 @@ pod breadbugs/high treasures
 
     void setupJudge(CaveGen g) {
         readRankFile();
+
+        if (CaveGen.judgeVsAvg && rankBreakPoints != null) {
+            for (int i = 0; i < judgeVsAvgCumScores.length; i++) {
+                int r = (int)(Math.random() * rankBreakPoints.length);
+                judgeVsAvgCumScores[i] += rankBreakPoints[r];
+            }
+        }
 
         sublevelId = CaveGen.specialCaveInfoName + "-" + CaveGen.sublevel;
 
@@ -979,7 +992,8 @@ pod breadbugs/high treasures
 
         ArrayList<ScoredSeed> ss = new ArrayList<ScoredSeed>(seeds.size());
         for (String s: seeds) {
-            ss.add(new ScoredSeed(s, scoreMap.get(sublevelString + " " + s)));
+            if (scoreMap.containsKey(sublevelString + " " + s))
+                ss.add(new ScoredSeed(s, scoreMap.get(sublevelString + " " + s)));
         }
 
         Collections.sort(ss, new Comparator<ScoredSeed>() {

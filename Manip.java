@@ -275,15 +275,16 @@ public class Manip {
                         }
                     }
                     if (s[0].length() >= 11 && s[0].substring(0,11).equals("lettersinfo") && storyMode) {
+                        System.out.println();
                         System.out.println(s[0]);
                         System.out.println("reading story seed");
 
                         long sd = seed.letters.letters(s[0],lastReadSeed);
 
-                        if (curCave.equals("Hole of Heroes")||curCave.equals("Dream Den")||curCave.equals("Cavern of Chaos")) {
-                            if (seed.letters.out_cave.equals("Hole of Beasts"))
-                                seed.letters.out_cave = "Hole of Heroes";
-                        }
+                        //if (curCave.equals("Hole of Heroes")||curCave.equals("Dream Den")||curCave.equals("Cavern of Chaos")) {
+                        //    if (seed.letters.out_cave.equals("Hole of Beasts"))
+                        //        seed.letters.out_cave = "Hole of Heroes";
+                        //}
                         if (!seed.letters.out_cave.equals(curCave) && !seed.letters.out_cave.equals(""))
                             curSublevel = 1;
                         else curSublevel += 1;
@@ -292,14 +293,14 @@ public class Manip {
 
                         if (sd == -1) {
                             jtext.setText("Failed to read story seed");
-                            lastReadSeed = -1;
+                            //lastReadSeed = -1;
                         }
                         else {
                             
                             sd = seed.next_seed(sd, curCave.length());
                             lastReadSeed = sd;
                             String curCaveSp = Parser.fullNameToSpecial(curCave);
-                            System.out.println(curCaveSp + "-" + curSublevel);
+                            System.out.println("Success: " + curCaveSp + "-" + curSublevel + " " + Drawer.seedToString(sd));
                             jtext.setText(curCaveSp + " " + curSublevel + "\n" + Drawer.seedToString(sd));
                             seedOut(curCaveSp + "-" + curSublevel + " " + Drawer.seedToString(sd) + "\n");
 
@@ -350,6 +351,9 @@ public class Manip {
                                 for (int j = 0; j < gX; j++) jTextGrid.get(gX*i+j).setText("");
                             }
                             repaintManip();
+
+
+                            seed.letters.precomputeExpectedFutureVs(lastReadSeed, seed.letters.nearbySearchDist);
                         }
                     }
                 }
