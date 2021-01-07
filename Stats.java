@@ -92,8 +92,8 @@ class Stats {
         }
 
         if (CaveGen.judgeActive && CaveGen.judgeVsAvg) {
-            println("Judge overall score: " + String.format("%.2f",judge.judgeVsAvgCumScore));
             Arrays.sort(judge.judgeVsAvgCumScores);
+            println("Judge overall score: " + String.format("%.2f",judge.judgeVsAvgCumScore) + " (avg " + String.format("%.2f",judge.judgeVsAvgCumScore-judge.judgeVsAvgCumScores[judge.judgeVsAvgCumScores.length/2])+")");
             int rank = 0;
             for (; rank < judge.judgeVsAvgCumScores.length; rank++) {
                 if (judge.judgeVsAvgCumScore < judge.judgeVsAvgCumScores[rank])
@@ -105,7 +105,7 @@ class Stats {
                 print(" " + String.format("%.2f", judge.judgeVsAvgCumScores[(int)((i+0.5)*judge.judgeVsAvgCumScores.length / 100)]));
             }
             println("");
-            System.out.println("Judge overall score: " + String.format("%.2f",judge.judgeVsAvgCumScore));
+            System.out.println("Judge overall score: " + String.format("%.2f",judge.judgeVsAvgCumScore) + " (avg " + String.format("%.2f",judge.judgeVsAvgCumScore-judge.judgeVsAvgCumScores[judge.judgeVsAvgCumScores.length/2])+")");
             System.out.println("Judge overall rank: " + String.format("%.2f%%", rank*100.0/judge.judgeVsAvgCumScores.length));
         }
 

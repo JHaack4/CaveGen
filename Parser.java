@@ -103,6 +103,13 @@ class Parser {
         return s;
     }
 
+    static String specialToFullName(String s) {
+        for (int i = 0; i < fullNames.length; i++) {
+            if (s.equalsIgnoreCase(special[i])) return fullNames[i];
+        }
+        return s;
+    }
+
     static String fromSpecial(String s) {
         if (CaveGen.colossal) {
             return "colossal.txt";

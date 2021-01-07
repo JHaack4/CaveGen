@@ -44,7 +44,7 @@ pod breadbugs/high treasures
     HashMap<String, Double> seedAggregatedScoreMap = new HashMap<String, Double>();
     HashSet<String> seeds = new HashSet<String>();
 
-    double judgeVsAvgCumScores[] = new double[10000], judgeVsAvgCumScore = 0;
+    double judgeVsAvgCumScores[] = new double[100000], judgeVsAvgCumScore = 0;
 
     void judge(CaveGen g) {
 

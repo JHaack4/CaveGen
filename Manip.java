@@ -24,6 +24,9 @@ public class Manip {
     String curCave = "";
     int curSublevel = 0;
 
+    String caveListPod = "EC,2,HoB,5,WFG,5,SH,7,BK,7,SCx,8,FC,7,CoS,5,GK,6";
+    String caveListAt = "EC,2,WFG,5,HoB,5,SCx,9,FC,8,CoS,5,GK,6,SC,5,SR,7,BK,7,SH,7,CoC,10,DD,14,HoH,15";
+
     PrintWriter out = null;
 
     void manip(String mode) {
@@ -36,7 +39,6 @@ public class Manip {
             System.out.println("Bad mode.");
             return;
         }
-
 
         // Set up the Manip UI
         jfr.getContentPane().setLayout(null);
@@ -178,6 +180,29 @@ public class Manip {
         }
         System.out.println("stdevs: " + Arrays.toString(lateStageStdevs) +"\n\n");
 
+        ArrayList<String> storyLevelsOrder = new ArrayList<String>();
+        int storyLevelsIndex = 0;
+        if (pod_mode || at_mode) {
+            String s = pod_mode ? caveListPod : at_mode ? caveListAt : "";
+            String[] sa = s.split(",");
+            for (int i = 0; i < sa.length; i+=2) {
+                String cv = sa[i];
+                int sb = Integer.parseInt(sa[i+1]);
+                for (int j = 1; j <= sb; j++)
+                    storyLevelsOrder.add(cv + "-" + j);
+            }
+            try {
+                PrintWriter pout = new PrintWriter(new BufferedWriter(new FileWriter("files/cave_name.txt")));
+                for (int i = storyLevelsIndex; i < storyLevelsOrder.size(); i++) {
+                    pout.print(Parser.specialToFullName(storyLevelsOrder.get(i).split("-")[0])+"\n");
+                }
+                pout.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            jtext2.setText("Next expect:\n" + storyLevelsOrder.get(storyLevelsIndex));
+        }
+
         try {
             RandomAccessFile raf = realTimeAttackMode ? new RandomAccessFile("files/times_table_" + mode + ".txt", "r") : null;
 
@@ -281,27 +306,29 @@ public class Manip {
 
                         long sd = seed.letters.letters(s[0],lastReadSeed);
 
-                        //if (curCave.equals("Hole of Heroes")||curCave.equals("Dream Den")||curCave.equals("Cavern of Chaos")) {
-                        //    if (seed.letters.out_cave.equals("Hole of Beasts"))
-                        //        seed.letters.out_cave = "Hole of Heroes";
-                        //}
-                        if (!seed.letters.out_cave.equals(curCave) && !seed.letters.out_cave.equals(""))
-                            curSublevel = 1;
-                        else curSublevel += 1;
-                        if (!seed.letters.out_cave.equals(""))
-                            curCave = seed.letters.out_cave;
+                        curCave = storyLevelsOrder.get(storyLevelsIndex).split("-")[0];
+                        curSublevel = Integer.parseInt(storyLevelsOrder.get(storyLevelsIndex).split("-")[1]);
+
+                        storyLevelsIndex += 1;
+                        if (storyLevelsIndex >= storyLevelsOrder.size()) storyLevelsIndex = 0;
+                        jtext2.setText("Next expect:\n" + storyLevelsOrder.get(storyLevelsIndex).replace("-",""));
+                        
+                        if (!seed.letters.out_cave.equalsIgnoreCase(Parser.specialToFullName(curCave))) {
+                            System.out.println("err, disagree about current cave... expected " + curCave + " got " + seed.letters.out_cave);
+                        }
 
                         if (sd == -1) {
-                            jtext.setText("Failed to read story seed");
+                            jtext.setText("Failed to read story seed on " + curCave + curSublevel);
+                            System.out.println("Failed to read story seed " + curCave + "-" + curSublevel);
                             //lastReadSeed = -1;
                         }
                         else {
                             
-                            sd = seed.next_seed(sd, curCave.length());
+                            sd = seed.next_seed(sd, seed.letters.out_num_chars);
                             lastReadSeed = sd;
-                            String curCaveSp = Parser.fullNameToSpecial(curCave);
+                            String curCaveSp = curCave;
                             System.out.println("Success: " + curCaveSp + "-" + curSublevel + " " + Drawer.seedToString(sd));
-                            jtext.setText(curCaveSp + " " + curSublevel + "\n" + Drawer.seedToString(sd));
+                            jtext.setText(curCaveSp + "" + curSublevel + "\n" + Drawer.seedToString(sd));
                             seedOut(curCaveSp + "-" + curSublevel + " " + Drawer.seedToString(sd) + "\n");
 
                             CaveViewer.guiOnly = true;
