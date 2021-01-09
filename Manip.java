@@ -2,6 +2,7 @@ import java.util.*;
 import java.io.*;
 import java.awt.*;
 import javax.swing.*;
+import java.awt.event.*;
 
 import java.time.format.DateTimeFormatter;  
 import java.time.LocalDateTime;  
@@ -20,16 +21,20 @@ public class Manip {
     JTextPane jtext2 = new JTextPane();
     JTextPane jtextplay = new JTextPane();
     ArrayList<JTextPane> jTextGrid = new ArrayList<JTextPane>();
+    KeyListener keyListener;
 
     String curCave = "";
     int curSublevel = 0;
-
-    String caveListPod = "EC,2,HoB,5,WFG,5,SH,7,BK,7,SCx,8,FC,7,CoS,5,GK,6";
-    String caveListAt = "EC,2,WFG,5,HoB,5,SCx,9,FC,8,CoS,5,GK,6,SC,5,SR,7,BK,7,SH,7,CoC,10,DD,14,HoH,15";
+    ArrayList<String> storyLevelsOrder = new ArrayList<String>();
+    int storyLevelsIndex = 0;
 
     PrintWriter out = null;
 
+    static Manip thisManip = null;
+
     void manip(String mode) {
+
+        thisManip = this;
 
         boolean pod_mode = mode.equals("pod");
         boolean at_mode = mode.equals("at");
@@ -72,6 +77,22 @@ public class Manip {
         jtextplay.setBounds(5,5,40,100);
         jfr.add(jtextplay);
 
+        keyListener = new KeyAdapter() {
+			public void keyPressed(KeyEvent e) {
+                System.out.println("key pressed");
+                if (e.getKeyCode() == KeyEvent.VK_OPEN_BRACKET || e.getKeyCode() == KeyEvent.VK_BRACELEFT) {
+                    Manip.thisManip.nextStoryModeLevel(-1);                  
+                }
+                if (e.getKeyCode() == KeyEvent.VK_CLOSE_BRACKET || e.getKeyCode() == KeyEvent.VK_BRACERIGHT) {
+                    Manip.thisManip.nextStoryModeLevel(1);                   
+                }
+            }
+        };
+        jfr.addKeyListener(keyListener);
+        jtext.addKeyListener(keyListener);
+        jtext2.addKeyListener(keyListener);
+        jtextplay.addKeyListener(keyListener);
+
         int cwidth = 9;
         int[] gA = {2,4,5,4,3,8,3,5,4};
         int gX = gA.length, gY = 30;
@@ -86,6 +107,7 @@ public class Manip {
                 jg.setBackground(null);
                 //jg.putClientProperty(JEditorPane.HONOR_DISPLAY_PROPERTIES, true);
                 jg.setBounds(x + 5,125 + 16*i,gA[j]*cwidth,16);
+                jg.addKeyListener(keyListener);
                 jfr.add(jg);
                 jTextGrid.add(jg);
                 x += gA[j]*cwidth+5;
@@ -180,8 +202,10 @@ public class Manip {
         }
         System.out.println("stdevs: " + Arrays.toString(lateStageStdevs) +"\n\n");
 
-        ArrayList<String> storyLevelsOrder = new ArrayList<String>();
-        int storyLevelsIndex = 0;
+        storyLevelsOrder = new ArrayList<String>();
+        storyLevelsIndex = 0;
+        String caveListPod = params.get("podCaveOrder");
+        String caveListAt = params.get("atCaveOrder");
         if (pod_mode || at_mode) {
             String s = pod_mode ? caveListPod : at_mode ? caveListAt : "";
             String[] sa = s.split(",");
@@ -1324,6 +1348,21 @@ public class Manip {
         }
         out.write(s);
         out.flush();
+    }
+
+    void nextStoryModeLevel(int num) {
+        if (storyLevelsOrder.size() == 0) return;
+        storyLevelsIndex = (storyLevelsIndex + num + storyLevelsOrder.size()*10) % storyLevelsOrder.size();
+        try {
+            PrintWriter pout = new PrintWriter(new BufferedWriter(new FileWriter("files/cave_name.txt")));
+            for (int i = storyLevelsIndex; i < storyLevelsOrder.size(); i++) {
+                pout.print(Parser.specialToFullName(storyLevelsOrder.get(i).split("-")[0])+"\n");
+            }
+            pout.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        jtext2.setText("Next expect:\n" + storyLevelsOrder.get(storyLevelsIndex));
     }
 
 }

@@ -208,6 +208,10 @@ public class Drawer {
 
     void draw(CaveGen g, boolean drawAsReport, Aggregator aggregator) throws Exception {
 
+        if (!CaveGen.rotateForDraw.equals("") && aggregator==null && !drawAsReport) {
+            rotateForDraw(g);
+        }
+
         BufferedImage img = new BufferedImage(N*g.mapMaxX, N*g.mapMaxZ,
                                                         BufferedImage.TYPE_INT_RGB);
         Graphics G = img.getGraphics();  
@@ -1306,6 +1310,127 @@ public class Drawer {
                 G.drawImage(im, ox+10, oz+10, null);
             } catch (Exception e) {}
         }
+    }
+
+    // this function rotates everything in the map...
+    void rotateForDraw(CaveGen g) {
+        int rotation = 0;
+        if (CaveGen.rotateForDraw.equals("1")) rotation = 1;
+        if (CaveGen.rotateForDraw.equals("2")) rotation = 2;
+        if (CaveGen.rotateForDraw.equals("3")) rotation = 3;
+        if (CaveGen.rotateForDraw.equalsIgnoreCase("pod")) {
+            rotation = (int)((((g.placedStart.ang + Math.PI/4 + Math.PI*10) % (2*Math.PI))) / (Math.PI/2));
+        }
+        if (rotation == 0) return;
+
+        if (rotation == 1 || rotation == 3) {
+            int x = g.mapMaxX;
+            int z = g.mapMaxZ;
+            g.mapMaxX = z;
+            g.mapMaxZ = x;
+        }
+        //if (1>0) return;
+        for (MapUnit m: g.placedMapUnits) {
+            m.rotation = (m.rotation + rotation) % 4;
+            int x = m.offsetX;
+            int z = m.offsetZ;
+            if (rotation == 1 || rotation == 3) {
+                int xx = m.dX;
+                int zz = m.dZ;
+                m.dX = zz;
+                m.dZ = xx;
+            }
+            if (rotation == 1) {
+                m.offsetX = g.mapMaxX - z - m.dX;
+                m.offsetZ = x;
+            }
+            if (rotation == 2) {
+                m.offsetX = g.mapMaxX - x - m.dX;
+                m.offsetZ = g.mapMaxZ - z - m.dZ;
+            }
+            if (rotation == 3) {
+                m.offsetX = z;
+                m.offsetZ = g.mapMaxZ - x - m.dZ;
+            }
+            for (SpawnPoint sp: m.spawnPoints) {
+                m.spawnPointPos(sp);
+            }
+            for (Door d: m.doors) {
+                    int r = rotation;
+                    switch(d.dirSide) {
+                    case 0:
+                    case 2:
+                        if (r == 2 || r == 3)
+                            d.offsetSide = m.dX - 1 - d.offsetSide;
+                        break;
+                    case 1: 
+                    case 3:
+                        if (r == 1 || r == 2)
+                            d.offsetSide = m.dZ - 1 - d.offsetSide;
+                    }
+                    d.dirSide = (d.dirSide + r) % 4;
+                
+                m.doorOffset(d);
+                m.doorPos(d);
+                d.spawnPoint.spawnPointPos();
+            }
+            for (WayPoint w: m.wayPoints) {
+                m.wayPointPos(w);
+            }
+            //m.waterBoxes = m.waterBoxPos();
+        }
+        for (Teki t: g.placedTekis) {
+            float x = t.posX;
+            float z = t.posZ;
+            if (rotation == 1) {
+                t.posX = g.mapMaxX * 170.0f - z;
+                t.posZ = x;
+            }
+            if (rotation == 2) {
+                t.posX = g.mapMaxX * 170.0f - x;
+                t.posZ = g.mapMaxZ * 170.0f - z;
+            }
+            if (rotation == 3) {
+                t.posX = z;
+                t.posZ = g.mapMaxZ * 170.0f - x;
+            }
+            t.ang = (float)((t.ang - Math.PI*rotation/2 + 10*Math.PI) % (2*Math.PI));
+        }
+        for (Gate t: g.placedGates) {
+            float x = t.posX;
+            float z = t.posZ;
+            if (rotation == 1) {
+                t.posX = g.mapMaxX * 170.0f - z;
+                t.posZ = x;
+            }
+            if (rotation == 2) {
+                t.posX = g.mapMaxX * 170.0f - x;
+                t.posZ = g.mapMaxZ * 170.0f - z;
+            }
+            if (rotation == 3) {
+                t.posX = z;
+                t.posZ = g.mapMaxZ * 170.0f - x;
+            }
+            t.ang = (float)((t.ang - Math.PI*rotation/2 + 10*Math.PI) % (2*Math.PI));
+        }
+        for (Item t: g.placedItems) {
+            float x = t.posX;
+            float z = t.posZ;
+            if (rotation == 1) {
+                t.posX = g.mapMaxX * 170.0f - z;
+                t.posZ = x;
+            }
+            if (rotation == 2) {
+                t.posX = g.mapMaxX * 170.0f - x;
+                t.posZ = g.mapMaxZ * 170.0f - z;
+            }
+            if (rotation == 3) {
+                t.posX = z;
+                t.posZ = g.mapMaxZ * 170.0f - x;
+            }
+            t.ang = (float)((t.ang - Math.PI*rotation/2 + 10*Math.PI) % (2*Math.PI));
+        }
+
     }
 
 }

@@ -2,7 +2,7 @@
  "camera":"find",
  "video_path":"C:\\Users\\Jordan\\Videos\\",
  "playback":True,
- "images":False,
+ "images":True,
  "verbose":True,
  "crop":True,
  "crop_y1":0,

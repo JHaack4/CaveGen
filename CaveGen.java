@@ -19,7 +19,7 @@ public class CaveGen {
         writeMemo, readMemo, aggregator, aggFirst, aggRooms, aggHalls,
         judgeActive, judgeCombine, judgeRankFile, judgeVsAvg;
     static double findGoodLayoutsRatio, judgeFilterScore, judgeFilterScoreSign, judgeFilterRank;
-    static String requireMapUnitsConfig, seedFile;
+    static String requireMapUnitsConfig, seedFile, rotateForDraw;
     static boolean shortCircuitMap, imageToggle;
 
     static Drawer drawer;
@@ -47,7 +47,7 @@ public class CaveGen {
         writeMemo = false; readMemo = false; aggregator = false; aggFirst = false; aggRooms = false; aggHalls = false;
         judgeActive = false; judgeCombine = false; judgeRankFile = false; judgeVsAvg = false;
         findGoodLayoutsRatio = 0.01; judgeFilterScore = 0; judgeFilterRank = 0; judgeFilterScoreSign = 0;
-        requireMapUnitsConfig = ""; judgeType = "default"; seedFile = "";
+        requireMapUnitsConfig = ""; judgeType = "default"; seedFile = ""; rotateForDraw = "";
         firstGenSeed = 0; numToGenerate = 1; indexBeingGenerated = 0;
         imageToggle = true;
         seedCalc = new Seed();
@@ -236,6 +236,9 @@ public class CaveGen {
                     }
                     else if (s.equalsIgnoreCase("-seedFile")) {
                         seedFile = args[++i];
+                    }
+                    else if (s.equalsIgnoreCase("-rotate")) {
+                        rotateForDraw = args[++i];
                     }
                     else if (s.equalsIgnoreCase("-judge")) {
                         judgeActive = true;

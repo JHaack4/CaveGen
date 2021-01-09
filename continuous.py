@@ -12,51 +12,6 @@ import random
 default_cave_order = "Emergence Cave,Emergence Cave,Hole of Beasts,Hole of Beasts,Hole of Beasts,Hole of Beasts,Hole of Beasts,White Flower Garden,White Flower Garden,White Flower Garden,White Flower Garden,White Flower Garden,Snagret Hole,Snagret Hole,Snagret Hole,Snagret Hole,Snagret Hole,Snagret Hole,Snagret Hole,Bulblax Kingdom,Bulblax Kingdom,Bulblax Kingdom,Bulblax Kingdom,Bulblax Kingdom,Bulblax Kingdom,Bulblax Kingdom,Subterranean Complex,Subterranean Complex,Subterranean Complex,Subterranean Complex,Subterranean Complex,Subterranean Complex,Subterranean Complex,Subterranean Complex,Frontier Cavern,Frontier Cavern,Frontier Cavern,Frontier Cavern,Frontier Cavern,Frontier Cavern,Frontier Cavern,Citadel of Spiders,Citadel of Spiders,Citadel of Spiders,Citadel of Spiders,Citadel of Spiders,Glutton's Kitchen,Glutton's Kitchen,Glutton's Kitchen,Glutton's Kitchen,Glutton's Kitchen,Glutton's Kitchen".split(",")
 default_cave_index = 0
 
-# def RepresentsInt(s):
-#     try: 
-#         int(s)
-#         return True
-#     except ValueError:
-#         return False
-
-# def RepresentsFloat(s):
-#     try: 
-#         float(s)
-#         return True
-#     except ValueError:
-#         return False
-
-# def parseArg(a):
-#     if RepresentsInt(a):
-#         return int(a)
-#     elif RepresentsFloat(a):
-#         return float(a)
-#     elif a == "True":
-#         return True
-#     elif a == "False":
-#         return False
-#     else:
-#         return a
-
-# args_dict = {}
-# with open("files/continuous_config.txt", "r") as f:
-#     for line in f:
-#         spl = line.split(":")
-#         args_dict[spl[0].strip()] = parseArg(":".join(spl[1:]).strip())
-# args = Namespace(**args_dict)
-# if args.verbose:
-#     print(args)
-# y: 157
-# x: 257
-# s: 39
-# w: 40
-# h: 40
-# camera: find
-# templates: files/digits/templates/
-# video_path: C:\Users\Jordan\Videos\
-# images: True
-# verbose: True
-
 with open("continuous_config.txt", "r") as f:
     args = Namespace(**ast.literal_eval(f.read()))
 print(args)
@@ -456,8 +411,9 @@ def process_story_frames_name_known():
             #cv2.imwrite("im/" + str(count) + "s" + str(story_frame_count) + ".png", img)
         #info_string.append(";")
 
-    for x in locs:
-        print(x)
+    if args.verbose:
+        for x in locs:
+            print(x)
 
     # try to do some sanity checking on the output...
     # each non space char should have 3-6 entries, all consecutive, and the diffs should be around a certain value
@@ -572,13 +528,9 @@ while(cap.isOpened()):
     #    continue
  
     height,width = frame.shape[:2]
-    #if count == 1:
-    #    print(f"height {height} width {width}")
+    if count == 1:
+       print(f"height {height} width {width}")
     #frame = cv2.resize(frame, (853,480), interpolation=cv2.INTER_NEAREST)
-    #frame = frame[:,66:786,:] # crop to 720x480
-    #frame = frame[25:720-25,248:1280-32,:] # iid
-    #frame = frame[:,330:,:] # urban/kap
-    #frame = frame[:,320:,:] # ice
     if args.crop:
         frame = frame[args.crop_y1:args.crop_y2,args.crop_x1:args.crop_x2,:]
     

@@ -128,7 +128,30 @@ public class CaveViewer {
 
         keyListener = new KeyAdapter() {
 			public void keyPressed(KeyEvent e) {
-				if (e.getKeyCode() == KeyEvent.VK_PLUS || e.getKeyCode() == KeyEvent.VK_EQUALS) {
+                if (e.getKeyCode() == KeyEvent.VK_OPEN_BRACKET || e.getKeyCode() == KeyEvent.VK_BRACELEFT) {
+                    if (currentImage >= 0 && currentImage < nameBuffer.size() && Manip.thisManip != null) {
+                        Manip.thisManip.nextStoryModeLevel(-1);
+                    }                    
+                }
+                if (e.getKeyCode() == KeyEvent.VK_CLOSE_BRACKET || e.getKeyCode() == KeyEvent.VK_BRACERIGHT) {
+                    if (currentImage >= 0 && currentImage < nameBuffer.size() && Manip.thisManip != null) {
+                        Manip.thisManip.nextStoryModeLevel(1);
+                    }                    
+				}
+				if (e.getKeyCode() == KeyEvent.VK_MINUS) {
+                    if (currentImage >= 0 && currentImage < nameBuffer.size()) {
+                        String[] ss = nameBuffer.get(currentImage).split(" ");
+                        if (ss.length == 2 && !ss[0].contains("Agg") && !ss[0].contains("Report")) {
+                            CaveViewer.manipKeepImages = true;
+                            String args2 = "cave " + ss[0] + " -noprints -drawpodangle "
+                            + "-seed 0x" + Drawer.seedToString(new Seed().next_seed(Long.decode("0x"+ss[1]), -1));
+                            CaveGen.main(args2.split(" "));
+                            CaveViewer.manipKeepImages = false;
+                            lastImg();
+                        }
+                    } 
+                }
+                if (e.getKeyCode() == KeyEvent.VK_PLUS || e.getKeyCode() == KeyEvent.VK_EQUALS) {
                     if (currentImage >= 0 && currentImage < nameBuffer.size()) {
                         String[] ss = nameBuffer.get(currentImage).split(" ");
                         if (ss.length == 2 && !ss[0].contains("Agg") && !ss[0].contains("Report")) {
