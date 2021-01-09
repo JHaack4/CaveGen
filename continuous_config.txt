@@ -1,5 +1,5 @@
 {"___________________camera_params___________":"",
- "camera":"find",
+ "camera":1,
  "video_path":"C:\\Users\\Jordan\\Videos\\",
  "playback":True,
  "images":True,

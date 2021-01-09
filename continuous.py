@@ -27,6 +27,9 @@ if videoFile == 'find':
     videoFile = max(list_of_files, key=os.path.getctime)
     print("Using: %s" % videoFile)
 cap = cv2.VideoCapture(videoFile)
+if isinstance(args.camera, int):
+    cap.set(cv2.CAP_PROP_FRAME_WIDTH, 1280)
+    cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 720)
 
 if (cap.isOpened() == False): 
     print("Failure - error opening video stream")
@@ -475,17 +478,9 @@ def process_story_frames_name_known():
         # union_img[max_row_for_falling,:,0] = 155
         falling_img[max_row_for_falling,:,:] = 0 
         falling_img[max_row_for_falling,:,0] = 155
-    #     for x in whitespace:
-    #         avg_thresh_img[0:max_row_for_columns,x,:] = 0
-    #         avg_thresh_img[0:max_row_for_columns,x,2] = 255
-    #         union_img[0:max_row_for_columns,x,:] = 0
-    #         union_img[0:max_row_for_columns,x,2] = 255
-    #         falling_img[0:max_row_for_columns,x,:] = 0
-    #         falling_img[0:max_row_for_columns,x,2] = 255
+
 
         cv2.imwrite("im/" + str(count) + "!avg" + ".png", sum_img)
-        #cv2.imwrite("im/" + str(count) + "!avg_th" + ".png", avg_thresh_img)
-        #cv2.imwrite("im/" + str(count) + "!union" + ".png", union_img)
         cv2.imwrite("im/" + str(count) + "!union_p" + ".png", falling_img)
 
 
@@ -513,6 +508,8 @@ save_to_im_save = False
 
 while(cap.isOpened()):
     ret, frame = cap.read()
+    print(frame.shape)
+    print(np.max(frame,axis=2).max(axis=1))
 
     count += 1
     frames_since_first_story += 1
@@ -529,8 +526,10 @@ while(cap.isOpened()):
  
     height,width = frame.shape[:2]
     if count == 1:
-       print(f"height {height} width {width}")
-    #frame = cv2.resize(frame, (853,480), interpolation=cv2.INTER_NEAREST)
+        print(f"height {height} width {width}")
+    if height != 720 or width != 1280:
+        frame = cv2.resize(frame, (1280,720), interpolation=cv2.INTER_NEAREST)
+        height,width = frame.shape[:2]
     if args.crop:
         frame = frame[args.crop_y1:args.crop_y2,args.crop_x1:args.crop_x2,:]
     
@@ -578,7 +577,7 @@ while(cap.isOpened()):
         if last_frame_was_digit:
             print("donedigit",flush=True)
         else:
-            skip = 10
+            skip = 0
         last_frame_was_digit = False
 
     if frames_to_output_anyways > 0 and save_to_im_save and args.images:

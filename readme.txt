@@ -187,8 +187,8 @@ REAL TIME CONTINOUS CHALLENGE MODE MANIPULATION:
 
 
 SEED DETECTION FROM LETTERS:
-1) Install: Git, Java, Python 3.6+ (with numpy & opencv), and OBS Studio (latest patch, otherwise with VirtualCam).
-2) Use Git to download CaveGen from GitHub (this way, you can easily pull updates)
+1) Install: Git, Java, Python 3.6+ (with numpy & opencv-python), and OBS Studio (latest patch, otherwise with VirtualCam).
+2) Use Git to download CaveGen from GitHub (git clone https://github.com/jhaack4/CaveGen) (this way, you can easily pull updates)
 3) Test that VirtualCam works from OBS (can use Google hangouts or some other way to read your camera)
 4) Configure OBS in some reasonable way, and record a video of letters falling. Try to capture an example of both HoB and WFG.
 5) Modify continouous_config.py so that camera is find, and the video path points to your video directory. Set playback and images to True.

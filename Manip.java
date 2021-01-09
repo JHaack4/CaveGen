@@ -79,12 +79,15 @@ public class Manip {
 
         keyListener = new KeyAdapter() {
 			public void keyPressed(KeyEvent e) {
-                System.out.println("key pressed");
+                //System.out.println("key pressed");
                 if (e.getKeyCode() == KeyEvent.VK_OPEN_BRACKET || e.getKeyCode() == KeyEvent.VK_BRACELEFT) {
                     Manip.thisManip.nextStoryModeLevel(-1);                  
                 }
                 if (e.getKeyCode() == KeyEvent.VK_CLOSE_BRACKET || e.getKeyCode() == KeyEvent.VK_BRACERIGHT) {
                     Manip.thisManip.nextStoryModeLevel(1);                   
+                }
+                if (e.getKeyCode() == KeyEvent.VK_C && e.isControlDown()) {
+                    System.exit(0);
                 }
             }
         };
