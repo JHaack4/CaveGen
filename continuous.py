@@ -275,16 +275,14 @@ def process_story_frames_name_known():
 
     global default_cave_index
     global num_letters_info
+    read_from_cave_name_file = False
     with open("files/cave_name.txt") as f:
         cave_name = f.readline().strip()
     if cave_name == "":
         cave_name = default_cave_order[default_cave_index]
         default_cave_index += 1
     else:
-        with open('files/cave_name.txt', 'r') as fin:
-            data = fin.read().splitlines(True)
-        with open('files/cave_name.txt', 'w') as fout:
-            fout.writelines(data[1:])
+        read_from_cave_name_file = True
     #print("cave=" + cave_name)
 
     height,width = story_frames[0].shape[:2]
@@ -444,31 +442,36 @@ def process_story_frames_name_known():
 
     if num_bad_char > len(cave_name)/2:
         print("too many bad chars")
-    elif num_bad_char > 2:
-        num_letters_info += 1
-        print("lettersinfo,,100,0;;;", flush=True)
     else:
+        if read_from_cave_name_file:
+            with open('files/cave_name.txt', 'r') as fin:
+                data = fin.read().splitlines(True)
+            with open('files/cave_name.txt', 'w') as fout:
+                fout.writelines(data[1:])
         num_letters_info += 1
-        # compute & write out the info string...
-        info_string = []
-        offset_info = []
-        for i,l in enumerate(cave_name):
-            if l in letters:
-                offset_info.append(str(letters[l].shape[0]-letters_height[l]-letters_yoff[l]))
-            else:
-                offset_info.append(str(-1))
+        if num_bad_char > 2:
+            print("lettersinfo,,100,0;;;", flush=True)
+        else:
+            # compute & write out the info string...
+            info_string = []
+            offset_info = []
+            for i,l in enumerate(cave_name):
+                if l in letters:
+                    offset_info.append(str(letters[l].shape[0]-letters_height[l]-letters_yoff[l]))
+                else:
+                    offset_info.append(str(-1))
 
-        for j in range(len(locs[0])):
-            s = ""
-            for i in range(len(locs)):
-                if locs[i][j] > 0:
-                    s += str(i) + "," + str(int(locs[i][j])) + ","
-            s += ";"
-            info_string.append(s)
+            for j in range(len(locs[0])):
+                s = ""
+                for i in range(len(locs)):
+                    if locs[i][j] > 0:
+                        s += str(i) + "," + str(int(locs[i][j])) + ","
+                s += ";"
+                info_string.append(s)
 
-        print("lettersinfo," + cave_name.replace(" ","_") + "," + str(height) 
-            + "," + str(len(cave_name)) + "," + ",".join(offset_info) + ";" + "".join(info_string), flush=True)    
-    
+            print("lettersinfo," + cave_name.replace(" ","_") + "," + str(height) 
+                + "," + str(len(cave_name)) + "," + ",".join(offset_info) + ";" + "".join(info_string), flush=True)    
+        
     if args.images:
         min_row_for_columns = 26*height//100
         max_row_for_columns = 35*height//100

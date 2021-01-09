@@ -187,15 +187,16 @@ REAL TIME CONTINOUS CHALLENGE MODE MANIPULATION:
 
 
 SEED DETECTION FROM LETTERS:
-1) Install: Git, Java, Python 3.6+ (with numpy & opencv-python), and OBS Studio (latest patch, otherwise with VirtualCam).
+1) Install: Git, Java, Python 3.6+ (with numpy & opencv-python), and OBS Studio (version 25.0+, with VirtualCam plugin https://obsproject.com/forum/resources/obs-virtualcam.949/).
 2) Use Git to download CaveGen from GitHub (git clone https://github.com/jhaack4/CaveGen) (this way, you can easily pull updates)
 3) Test that VirtualCam works from OBS (can use Google hangouts or some other way to read your camera)
-4) Configure OBS in some reasonable way, and record a video of letters falling. Try to capture an example of both HoB and WFG.
-5) Modify continouous_config.py so that camera is find, and the video path points to your video directory. Set playback and images to True.
+4) Configure OBS in some reasonable way, perferrably with 720x1280 resolution. 
+5) Record/download a video of letters falling. Ideally, this video starts on EC1 and goes through at least WFG1.
+5) Modify continouous_config.py so that camera is "find", and the video path points to your video directory. Set playback and images to True.
 6) Adjust the crop parameters until you've cropped out just the gameplay from the video.
 7) Adjust the fadeout_frame_intensity parameter until it detects fadeouts correctly (can use paint to find the darkness of a fadeout in your video, set this param to slightly larger than that)
 8) Adjust the letters_* parameters until the debug images in the im/ folder match for HoB.
 9) Adjust the x_scrunch_limit parameter until WFG matches up.
 10) Adjust letter_intensity_thresh until the debug images correctly pick out letters.
 11) Run the command "seed manip pod", and test if it now correctly reads the seeds. From the GUI, use "[" and "]" to change the expected sublevel.
-12) If you want to run from a live OBS feed, use virtual cam, and set the camera in the config to 1, 2, ... until you find the right camera.
+12) If you want to run from a live OBS feed, use virtual cam, and set the camera in the config to 1, 2, ... until you find the right camera. To use the virtual camera, go to tools > camera.
