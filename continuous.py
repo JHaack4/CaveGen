@@ -173,12 +173,12 @@ def is_levelenter_screen(frame):
     average3 = window3.mean(axis=0).mean(axis=0)
     average4 = window4.mean(axis=0).mean(axis=0)
     average5 = window5.mean(axis=0).mean(axis=0)
-    # print()
-    # print(average1)
-    # print(average2)
-    # print(average3)
-    # print(average4)
-    # print(average5)
+    print()
+    print(average1)
+    print(average2)
+    print(average3)
+    print(average4)
+    print(average5)
     # frame[4*y,:,:] = 255
     # frame[8*y,:,:] = 255
     # frame[10*y,:,:] = 255
