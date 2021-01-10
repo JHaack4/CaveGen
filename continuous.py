@@ -157,7 +157,9 @@ def is_fadeout_screen(frame):
     average = frame.mean(axis=0).mean(axis=0)
     return average[0] < 5 and average[1] < 5 and average[2] < 5
 
+last_fadeout_avg = 0
 def is_levelenter_screen(frame):
+    global last_fadeout_avg
     height,width = frame.shape[:2]
     x = width
     y = height//20
@@ -209,6 +211,7 @@ def is_levelenter_screen(frame):
         average3[0] < f and average3[1] < f and average3[2] < f and \
         average4[0] < f and average4[1] < f and average4[2] < f and \
         average5[0] < f and average5[1] < f and average5[2] < f and abs(average4[2]-average5[2])<2:
+        last_fadeout_avg = (average3[0]+average3[1]+average3[2])/3
         return 'fadeout'
     if  average1[0] < f and average1[1] < f and average1[2] < f and \
         average2[0] < f+45 and average2[1] < f+45 and average2[2] > f+10 and average2[2] < f+65 and abs(average2[0] - average2[2]) > f+5 and \
@@ -537,7 +540,7 @@ while(cap.isOpened()):
     frame_type = is_levelenter_screen(frame)
     
     if frame_type == 'fadeout':
-        print("fadeout " + str(count),flush=True)
+        print("fadeout " + str(count) + " " + str(int(last_fadeout_avg)),flush=True)
     elif frame_type == 'chenter':
         print("levelenter", flush=True)
     elif frame_type == 'storyenter':
