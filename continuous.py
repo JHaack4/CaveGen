@@ -545,6 +545,7 @@ while(cap.isOpened()):
         print("levelenter", flush=True)
     elif frame_type == 'storyenter':
         print("storyenter " + str(count), flush=True)
+        cv2.imwrite("im/" + str(count) + "test.png",frame)
         img = frame.copy()
         story_frames.append(img)
         _,img = cv2.threshold(img,args.letter_intensity_thresh,255,cv2.THRESH_BINARY)
