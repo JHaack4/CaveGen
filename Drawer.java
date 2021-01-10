@@ -1319,7 +1319,7 @@ public class Drawer {
         if (CaveGen.rotateForDraw.equals("2")) rotation = 2;
         if (CaveGen.rotateForDraw.equals("3")) rotation = 3;
         if (CaveGen.rotateForDraw.equalsIgnoreCase("pod")) {
-            rotation = (int)((((g.placedStart.ang + Math.PI/4 + Math.PI*10) % (2*Math.PI))) / (Math.PI/2));
+            rotation = (int)((((g.placedStart.ang + Math.PI/4 + Math.PI + Math.PI*10) % (2*Math.PI))) / (Math.PI/2));
         }
         if (rotation == 0) return;
 
