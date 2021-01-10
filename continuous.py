@@ -511,8 +511,6 @@ save_to_im_save = False
 
 while(cap.isOpened()):
     ret, frame = cap.read()
-    print(frame.shape)
-    print(np.max(frame,axis=2).max(axis=1))
 
     count += 1
     frames_since_first_story += 1
