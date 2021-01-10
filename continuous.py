@@ -30,7 +30,8 @@ cap = cv2.VideoCapture(videoFile)
 if isinstance(args.camera, int):
     cap.set(cv2.CAP_PROP_FRAME_WIDTH, 1280)
     cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 720)
-    cap.set(cv2.CAP_PROP_FPS, 30)
+    #cap.set(cv2.CAP_PROP_FPS, 30)
+    #print(cap.get(cv2.CAP_PROP_FPS))
 
 if (cap.isOpened() == False): 
     print("Failure - error opening video stream")
@@ -174,12 +175,12 @@ def is_levelenter_screen(frame):
     average3 = window3.mean(axis=0).mean(axis=0)
     average4 = window4.mean(axis=0).mean(axis=0)
     average5 = window5.mean(axis=0).mean(axis=0)
-    print()
-    print(average1)
-    print(average2)
-    print(average3)
-    print(average4)
-    print(average5)
+    # print()
+    # print(average1)
+    # print(average2)
+    # print(average3)
+    # print(average4)
+    # print(average5)
     # frame[4*y,:,:] = 255
     # frame[8*y,:,:] = 255
     # frame[10*y,:,:] = 255
@@ -546,7 +547,7 @@ while(cap.isOpened()):
         print("levelenter", flush=True)
     elif frame_type == 'storyenter':
         print("storyenter " + str(count), flush=True)
-        cv2.imwrite("im/" + str(count) + "test.png",frame)
+        #cv2.imwrite("im/" + str(count) + "test.png",frame)
         img = frame.copy()
         story_frames.append(img)
         _,img = cv2.threshold(img,args.letter_intensity_thresh,255,cv2.THRESH_BINARY)
