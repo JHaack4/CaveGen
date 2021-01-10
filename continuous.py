@@ -8,6 +8,7 @@ import sys
 import time
 import ast
 import random
+import time
 
 default_cave_order = "Emergence Cave,Emergence Cave,Hole of Beasts,Hole of Beasts,Hole of Beasts,Hole of Beasts,Hole of Beasts,White Flower Garden,White Flower Garden,White Flower Garden,White Flower Garden,White Flower Garden,Snagret Hole,Snagret Hole,Snagret Hole,Snagret Hole,Snagret Hole,Snagret Hole,Snagret Hole,Bulblax Kingdom,Bulblax Kingdom,Bulblax Kingdom,Bulblax Kingdom,Bulblax Kingdom,Bulblax Kingdom,Bulblax Kingdom,Subterranean Complex,Subterranean Complex,Subterranean Complex,Subterranean Complex,Subterranean Complex,Subterranean Complex,Subterranean Complex,Subterranean Complex,Frontier Cavern,Frontier Cavern,Frontier Cavern,Frontier Cavern,Frontier Cavern,Frontier Cavern,Frontier Cavern,Citadel of Spiders,Citadel of Spiders,Citadel of Spiders,Citadel of Spiders,Citadel of Spiders,Glutton's Kitchen,Glutton's Kitchen,Glutton's Kitchen,Glutton's Kitchen,Glutton's Kitchen,Glutton's Kitchen".split(",")
 default_cave_index = 0
@@ -417,9 +418,9 @@ def process_story_frames_name_known():
             #cv2.imwrite("im/" + str(count) + "s" + str(story_frame_count) + ".png", img)
         #info_string.append(";")
 
-    if args.verbose:
-        for x in locs:
-            print(x)
+    # if args.verbose:
+    #     for x in locs:
+    #         print(x)
 
     # try to do some sanity checking on the output...
     # each non space char should have 3-6 entries, all consecutive, and the diffs should be around a certain value
@@ -504,6 +505,7 @@ def random_colorize(img):
 skip = 0
 count = 0
 last_frame_was_digit = False
+last_perf_time = time.perf_counter()
 
 frame_for_save_count = 0
 frames_to_output_anyways = 0
@@ -604,6 +606,11 @@ while(cap.isOpened()):
         key_press = cv2.waitKey(1)
         if key_press & 0xFF == ord('q'):
             break
+
+    this_time = time.perf_counter()
+    if args.verbose and count<10:
+        print(f"timer: {this_time-last_perf_time:.4f}")
+    last_perf_time = this_time
 
 cap.release()
 cv2.destroyAllWindows()
