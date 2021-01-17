@@ -5,6 +5,7 @@
  "images":True,
  "verbose":True,
  "crop":True,
+ "resize":True,
  "crop_y1":0,
  "crop_y2":720,
  "crop_x1":320,

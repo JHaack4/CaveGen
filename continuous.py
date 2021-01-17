@@ -535,7 +535,7 @@ while(cap.isOpened()):
     height,width = frame.shape[:2]
     if count == 1:
         print(f"height {height} width {width}")
-    if height != 720 or width != 1280:
+    if (height != 720 or width != 1280) and args.resize:
         frame = cv2.resize(frame, (1280,720), interpolation=cv2.INTER_NEAREST)
         height,width = frame.shape[:2]
     if args.crop:
