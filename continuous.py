@@ -19,6 +19,8 @@ print(args)
 
 try:
     os.mkdir(args.templates)
+    os.mkdir("output/")
+    os.mkdir("output/im/")
 except FileExistsError:
     pass
 
