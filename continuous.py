@@ -19,7 +19,13 @@ print(args)
 
 try:
     os.mkdir(args.templates)
+except FileExistsError:
+    pass
+try:
     os.mkdir("output/")
+except FileExistsError:
+    pass
+try:
     os.mkdir("output/im/")
 except FileExistsError:
     pass
