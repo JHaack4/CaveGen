@@ -594,7 +594,7 @@ while(cap.isOpened()):
         if last_frame_was_digit:
             print("donedigit",flush=True)
         else:
-            skip = 0
+            skip = 10
         last_frame_was_digit = False
 
     if frames_to_output_anyways > 0 and save_to_im_save and args.images:
