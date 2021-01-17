@@ -411,11 +411,11 @@ def process_story_frames_name_known():
                         ims = frame[0:max_row_for_falling,xs0_use[i]:xs1_use[i],2]
                         imgs = ims.copy()
                         imgs[last_nonzero,:] = 255
-                        cv2.imwrite("im/" + str(i) + str(l) + str(story_frame_count) + ".png", imgs)
+                        cv2.imwrite("output/im/" + str(i) + str(l) + str(story_frame_count) + ".png", imgs)
                 
         if args.images:
             pass
-            #cv2.imwrite("im/" + str(count) + "s" + str(story_frame_count) + ".png", img)
+            #cv2.imwrite("output/im/" + str(count) + "s" + str(story_frame_count) + ".png", img)
         #info_string.append(";")
 
     # if args.verbose:
@@ -489,8 +489,8 @@ def process_story_frames_name_known():
         falling_img[max_row_for_falling,:,0] = 155
 
 
-        cv2.imwrite("im/" + str(count) + "!avg" + ".png", sum_img)
-        cv2.imwrite("im/" + str(count) + "!union_p" + ".png", falling_img)
+        cv2.imwrite("output/im/" + str(count) + "!avg" + ".png", sum_img)
+        cv2.imwrite("output/im/" + str(count) + "!union_p" + ".png", falling_img)
 
 
 def random_colorize(img):
@@ -549,7 +549,7 @@ while(cap.isOpened()):
         print("levelenter", flush=True)
     elif frame_type == 'storyenter':
         print("storyenter " + str(count), flush=True)
-        #cv2.imwrite("im/" + str(count) + "test.png",frame)
+        #cv2.imwrite("output/im/" + str(count) + "test.png",frame)
         img = frame.copy()
         story_frames.append(img)
         _,img = cv2.threshold(img,args.letter_intensity_thresh,255,cv2.THRESH_BINARY)
