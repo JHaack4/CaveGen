@@ -951,7 +951,7 @@ pod breadbugs/high treasures
     }
 
     double scoreToRank(double score) {
-        //score = Double.parseDouble(String.format("%.2f", score));
+        score = Math.round(100*score)/100.0; // Double.parseDouble(String.format("%.2f", score));
         // calculate rank from rank file using binary search
         if (rankBreakPoints == null)
             return 50;
