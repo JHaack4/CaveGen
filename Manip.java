@@ -80,10 +80,10 @@ public class Manip {
         keyListener = new KeyAdapter() {
 			public void keyPressed(KeyEvent e) {
                 //System.out.println("key pressed");
-                if (e.getKeyCode() == KeyEvent.VK_OPEN_BRACKET || e.getKeyCode() == KeyEvent.VK_BRACELEFT) {
+                if (e.getKeyCode() == KeyEvent.VK_OPEN_BRACKET || e.getKeyCode() == KeyEvent.VK_BRACELEFT || (e.getKeyCode() == KeyEvent.VK_B && e.isShiftDown())) {
                     Manip.thisManip.nextStoryModeLevel(-1);                  
                 }
-                if (e.getKeyCode() == KeyEvent.VK_CLOSE_BRACKET || e.getKeyCode() == KeyEvent.VK_BRACERIGHT) {
+                if (e.getKeyCode() == KeyEvent.VK_CLOSE_BRACKET || e.getKeyCode() == KeyEvent.VK_BRACERIGHT || (e.getKeyCode() == KeyEvent.VK_N && e.isShiftDown())) {
                     Manip.thisManip.nextStoryModeLevel(1);                   
                 }
                 if (e.getKeyCode() == KeyEvent.VK_C && e.isControlDown()) {
