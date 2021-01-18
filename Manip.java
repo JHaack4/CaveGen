@@ -366,8 +366,8 @@ public class Manip {
                             storyLevels.add(0, curCaveSp + "-" + curSublevel);
                             storySeeds.add(0, sd);
                             for (int i = 0; i < 1; i++) {
-                                String args2 = "cave " + curCaveSp + "-" + curSublevel + " -noprints -drawpodangle "
-                                + "-seed 0x" + Drawer.seedToString(sd) + " -judge " + mode ;
+                                String args2 = "cave " + curCaveSp + "-" + curSublevel + " -noprints " + params.get("storyAdditionalArgs")
+                                + " -seed 0x" + Drawer.seedToString(sd) + " -judge " + mode ;
                                 CaveGen.main(args2.split(" "));
                                 if (i == 0)  {
                                     caveViewer.lastSSeed = 0;
@@ -717,8 +717,8 @@ public class Manip {
                         
                         for (int i = 0; i < numOptionsShow; i++) {
                             Option o = options.get(i);
-                            String args2 = "cave CH" + o.level + "-1 -noprints -drawpodangle "
-                            + "-seed 0x" + seedStr[o.seed];
+                            String args2 = "cave CH" + o.level + "-1 -noprints " + params.get("attkAdditionalArgs")
+                            + " -seed 0x" + seedStr[o.seed];
                             CaveGen.main(args2.split(" "));
                             if (i == 0)  {
                                 caveViewer.lastSSeed = 0;
@@ -728,8 +728,8 @@ public class Manip {
                         }
 
                         if (specialTargetLevel > 0) {
-                            String args2 = "cave CH" + specialTargetLevel + "-1 -noprints -drawpodangle "
-                            + "-seed 0x" + Drawer.seedToString(specialTargetSeed);
+                            String args2 = "cave CH" + specialTargetLevel + "-1 -noprints " + params.get("attkAdditionalArgs")
+                            + " -seed 0x" + Drawer.seedToString(specialTargetSeed);
                             CaveGen.main(args2.split(" "));
                         }
 
