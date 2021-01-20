@@ -26,7 +26,7 @@ try:
 except FileExistsError:
     pass
 try:
-    os.mkdir("output/im/")
+    os.mkdir("output/!im/")
 except FileExistsError:
     pass
 
@@ -289,6 +289,7 @@ def process_story_frames_name_known():
 
     global default_cave_index
     global num_letters_info
+    global falling_img
     read_from_cave_name_file = False
     with open("files/cave_name.txt") as f:
         cave_name = f.readline().strip()
@@ -379,12 +380,6 @@ def process_story_frames_name_known():
             sum_img[0:height//2,x0,0] = 255
             sum_img[0:height//2,x1,0] = 255
 
-            #falling_img[0:height//2,x0,0] = 255
-            #falling_img[0:height//2,x1,0] = 255
-            #if l in letters:
-            #    sum_img[y_off+letters_yoff[l]:y_off+letters_yoff[l]+letters_height[l],x0+letters_xoff[l]:x0+letters_xoff[l]+letters_width[l],1]=155
-    
-
     
     # for each frame with a falling letter, compute the location of the falling letter
     locs = np.zeros((len(cave_name), 45))
@@ -419,11 +414,11 @@ def process_story_frames_name_known():
                         ims = frame[0:max_row_for_falling,xs0_use[i]:xs1_use[i],2]
                         imgs = ims.copy()
                         imgs[last_nonzero,:] = 255
-                        cv2.imwrite("output/im/" + str(i) + str(l) + str(story_frame_count) + ".png", imgs)
+                        cv2.imwrite("output/!im/" + str(i) + str(l) + str(story_frame_count) + ".png", imgs)
                 
         if args.images:
-            pass
-            #cv2.imwrite("output/im/" + str(count) + "s" + str(story_frame_count) + ".png", img)
+            falling_img = falling_img + frame/5
+            #cv2.imwrite("output/!im/" + str(count) + "s" + str(story_frame_count) + ".png", img)
         #info_string.append(";")
 
     # if args.verbose:
@@ -497,8 +492,8 @@ def process_story_frames_name_known():
         falling_img[max_row_for_falling,:,0] = 155
 
 
-        cv2.imwrite("output/im/" + str(count) + "!avg" + ".png", sum_img)
-        cv2.imwrite("output/im/" + str(count) + "!union_p" + ".png", falling_img)
+        cv2.imwrite("output/!im/" + str(count) + "!avg" + ".png", sum_img)
+        cv2.imwrite("output/!im/" + str(count) + "!union_p" + ".png", falling_img)
 
 
 def random_colorize(img):
@@ -543,8 +538,8 @@ while(cap.isOpened()):
     height,width = frame.shape[:2]
     if count == 1:
         print(f"height {height} width {width}")
-    if (height != 720 or width != 1280) and args.resize:
-        frame = cv2.resize(frame, (1280,720), interpolation=cv2.INTER_NEAREST)
+    if (height != args.resize_y or width != args.resize_x) and args.resize:
+        frame = cv2.resize(frame, (args.resize_x,args.resize_y), interpolation=cv2.INTER_NEAREST)
         height,width = frame.shape[:2]
     if args.crop:
         frame = frame[args.crop_y1:args.crop_y2,args.crop_x1:args.crop_x2,:]
@@ -557,13 +552,12 @@ while(cap.isOpened()):
         print("levelenter", flush=True)
     elif frame_type == 'storyenter':
         print("storyenter " + str(count), flush=True)
-        #cv2.imwrite("output/im/" + str(count) + "test.png",frame)
+        #cv2.imwrite("output/!im/" + str(count) + "test.png",frame)
         img = frame.copy()
         story_frames.append(img)
-        _,img = cv2.threshold(img,args.letter_intensity_thresh,255,cv2.THRESH_BINARY)
-        # Creating kernel 
-        kernel = np.ones((3, 3), np.uint8) 
-        img = cv2.erode(img, kernel) 
+        #_,img = cv2.threshold(img,args.letter_intensity_thresh,255,cv2.THRESH_BINARY)
+        #kernel = np.ones((3, 3), np.uint8) 
+        #img = cv2.erode(img, kernel) 
         if frames_since_last_story > 10:
             falling_img = np.zeros(frame.shape)
             union_img = np.zeros(frame.shape)
@@ -571,15 +565,10 @@ while(cap.isOpened()):
             story_frames = []
             story_frames.append(img)
             story_frames_processed = False
-        if frames_since_first_story <= 45:
-            if args.images:
-                falling_img = falling_img + random_colorize(img)/4
-            #union_img = union_img + img/5
         frames_since_last_story = 0
-
         frames_to_output_anyways = 40
 
-        if frames_since_first_story >= (60 if not args.images else 75) and len(story_frames) >= (60 if not args.images else 75):
+        if frames_since_first_story >= (75 if args.images else 60) and len(story_frames) >= (70 if args.images else 60):
             if not story_frames_processed:
                 story_frames_processed = True
                 process_story_frames_name_known()
