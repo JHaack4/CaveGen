@@ -10,7 +10,7 @@ public class CaveGen {
         folderSeed, folderCave, showCaveInfo, drawSpawnPoints,
         drawWayPoints, drawWayPointVertDists, drawWayPointEdgeDists,
         drawScores, drawAngles, drawPodAngle, drawTreasureGauge,
-        drawNoPlants, drawNoFallType, drawWaterBox,
+        drawNoPlants, drawNoFallType, drawWaterBox, drawQuickGlance,
         drawDoorLinks, drawDoorIds, drawSpawnOrder, drawNoObjects, 
         drawNoBuriedItems, drawNoItems, drawNoTeki, drawNoGates, drawNoOnions,
         drawNoGateLife, drawNoHoles, drawHoleProbs, p251, colossal, ultraRandomizer,
@@ -38,7 +38,7 @@ public class CaveGen {
         folderSeed = true; folderCave = true; showCaveInfo = false; drawSpawnPoints = false;
         drawWayPoints = false; drawWayPointVertDists = false; drawWayPointEdgeDists = false;
         drawScores = false; drawAngles = false; drawTreasureGauge = false; drawPodAngle = false;
-        drawNoPlants = false; drawNoFallType = false; drawWaterBox = true;
+        drawNoPlants = false; drawNoFallType = false; drawWaterBox = true; drawQuickGlance = false;
         drawDoorLinks = false; drawDoorIds = false; drawSpawnOrder = false; drawNoObjects = false;
         drawNoBuriedItems = false; drawNoItems = false; drawNoTeki = false; drawNoGates = false; drawNoOnions = false;
         drawNoGateLife = false; drawNoHoles = false; drawHoleProbs = false; p251 = false; colossal = false; ultraRandomizer = false;
@@ -193,6 +193,8 @@ public class CaveGen {
                         drawNoGates = true;
                     else if (s.equalsIgnoreCase("-drawNoHoles"))
                         drawNoHoles = true;
+                    else if (s.equalsIgnoreCase("-quickglance"))
+                        drawQuickGlance = true;
                     else if (s.equalsIgnoreCase("-caveInfoReport"))
                         showCaveInfo = true;
                     else if (s.equalsIgnoreCase("-drawNoGateLife"))

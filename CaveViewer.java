@@ -41,6 +41,8 @@ public class CaveViewer {
     static boolean guiOnly = false;
     boolean autoLaunch = false;
 
+    static float cvMaxXSize = 1180, cvMaxYSize = 780;
+
     public static void main(String args[]) {
         caveViewer = new CaveViewer();
         caveViewer.run(args);
@@ -128,12 +130,12 @@ public class CaveViewer {
 
         keyListener = new KeyAdapter() {
 			public void keyPressed(KeyEvent e) {
-                if (e.getKeyCode() == KeyEvent.VK_OPEN_BRACKET || e.getKeyCode() == KeyEvent.VK_BRACELEFT) {
+                if (e.getKeyCode() == KeyEvent.VK_OPEN_BRACKET || e.getKeyCode() == KeyEvent.VK_BRACELEFT || (e.getKeyCode() == KeyEvent.VK_B && e.isShiftDown())) {
                     if (currentImage >= 0 && currentImage < nameBuffer.size() && Manip.thisManip != null) {
                         Manip.thisManip.nextStoryModeLevel(-1);
                     }                    
                 }
-                if (e.getKeyCode() == KeyEvent.VK_CLOSE_BRACKET || e.getKeyCode() == KeyEvent.VK_BRACERIGHT) {
+                if (e.getKeyCode() == KeyEvent.VK_CLOSE_BRACKET || e.getKeyCode() == KeyEvent.VK_BRACERIGHT || (e.getKeyCode() == KeyEvent.VK_N && e.isShiftDown())) {
                     if (currentImage >= 0 && currentImage < nameBuffer.size() && Manip.thisManip != null) {
                         Manip.thisManip.nextStoryModeLevel(1);
                     }                    
@@ -410,7 +412,7 @@ public class CaveViewer {
                         int w = img.getWidth();
                         int h = img.getHeight();
                         //System.out.println(w + " " + h);
-                        float scale = Math.min(790.0f / h, Math.min(1190.0f / w, 1));
+                        float scale = Math.min(cvMaxYSize / h, Math.min(cvMaxXSize / w, 1));
                         jfrView.setSize((int)(w * scale) + 14, (int)(h * scale) + 37);
                         jfrView.setVisible(true);
                         jfrView.setTitle(nameBuffer.get(currentImage) + " (" + (currentImage+1) + "/" + nameBuffer.size() + ")");

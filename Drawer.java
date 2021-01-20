@@ -356,6 +356,30 @@ public class Drawer {
             bgt = new Color(0,0,0);
         }
 
+        if (CaveGen.drawQuickGlance) {
+            int r = 100;
+            int a = 100;
+            G.setColor(new Color(255,30,30, a));
+            G.fillOval((int)(g.placedStart.posX/M*N-r/2), (int)(g.placedStart.posZ/M*N-r/2), r, r);
+            
+            G.setColor(new Color(colorsSP[2].getRed(),colorsSP[2].getGreen(),colorsSP[2].getBlue(), a));
+            for (Item t: g.placedItems) {
+                G.fillOval((int)(t.posX/M*N-r/2), (int)(t.posZ/M*N-r/2), r, r);
+            }
+            for (Teki t: g.placedTekis) {
+                if (t.itemInside != null)
+                    G.fillOval((int)(t.posX/M*N-r/2), (int)(t.posZ/M*N-r/2), r, r);
+            }
+
+            G.setColor(new Color(colorsSP[4].getRed(),colorsSP[4].getGreen(),colorsSP[4].getBlue(), a));
+            if (g.placedHole != null) {
+                G.fillOval((int)(g.placedHole.posX/M*N-r/2), (int)(g.placedHole.posZ/M*N-r/2), r, r);
+            }
+            if (g.placedGeyser != null) {
+                G.fillOval((int)(g.placedGeyser.posX/M*N-r/2), (int)(g.placedGeyser.posZ/M*N-r/2), r, r);
+            }
+        }
+
         if (CaveGen.drawSpawnPoints
              || CaveGen.drawAngles) {
             alpha1 = 0.65f;
@@ -521,10 +545,11 @@ public class Drawer {
             if (!g.drawNoTeki) {
                 for (Teki t: g.placedTekis) {
                     if (g.drawNoPlants && plantNames.contains(t.tekiName.toLowerCase())) continue;
-                    int yaddn = t.spawnPoint.type == 9 && t.fallType > 0 ? -12: 0;
+                    int yaddn = t.spawnPoint.type == 9 && t.fallType > 0 ? -18: 0;
+                    int xaddn = t.spawnPoint.type == 9 && t.fallType > 0 ? -10: 0;
                     try {
                         Image im = getTeki(t);
-                        int x = (int)(t.posX/M*N - im.getWidth(null)/2);
+                        int x = (int)(t.posX/M*N + xaddn - im.getWidth(null)/2);
                         int z = (int)(t.posZ/M*N + yaddn - im.getHeight(null)/2); 
                         G.drawImage(im, x, z, null);
                         if (g.drawAngles)
@@ -554,15 +579,16 @@ public class Drawer {
                     } catch(Exception e) {
                         System.out.println("Failed Img: " + t.tekiName);
                         String st = String.format("T%4.4s", t.tekiName);
-                        G.drawString(st, (int)(t.posX/M*N), (int)(t.posZ/M*N + yaddn));
+                        G.drawString(st, (int)(t.posX/M*N + xaddn), (int)(t.posZ/M*N + yaddn));
                     }
                 }
                 for (Teki t: g.placedTekis) {
-                    int yaddn = t.spawnPoint.type == 9 && t.fallType > 0 ? -12: 0;
+                    int yaddn = t.spawnPoint.type == 9 && t.fallType > 0 ? -18: 0;
+                    int xaddn = t.spawnPoint.type == 9 && t.fallType > 0 ? -10: 0;
                     if (t.itemInside != null) {
                         try {
                             Image im = getItem(null, t.itemInside, g.region);
-                            int x = (int)(t.posX/M*N - im.getWidth(null)/2 + 5);
+                            int x = (int)(t.posX/M*N + xaddn - im.getWidth(null)/2 + 5);
                             int z = (int)(t.posZ/M*N + yaddn - im.getHeight(null)/2 + 5);
                             G.drawImage(im, x, z, null);
                         } catch (Exception e) {

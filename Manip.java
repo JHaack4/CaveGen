@@ -950,6 +950,8 @@ public class Manip {
         } catch(Exception e) {
             e.printStackTrace();
         }
+        CaveViewer.cvMaxXSize = Float.parseFloat(params.get("caveViewerMaxXSize"));
+        CaveViewer.cvMaxYSize = Float.parseFloat(params.get("caveViewerMaxYSize"));
     }
 
     ArrayList<String> messages = new ArrayList<String>();
