@@ -139,7 +139,11 @@ public class CaveViewer {
                     if (currentImage >= 0 && currentImage < nameBuffer.size() && Manip.thisManip != null) {
                         Manip.thisManip.nextStoryModeLevel(1);
                     }                    
-				}
+                }
+                if (e.getKeyCode() == KeyEvent.VK_K && e.isShiftDown()) {
+                    if (Manip.thisManip != null)
+                        Manip.thisManip.toggleCaptain();               
+                }
 				if (e.getKeyCode() == KeyEvent.VK_MINUS) {
                     if (currentImage >= 0 && currentImage < nameBuffer.size()) {
                         String[] ss = nameBuffer.get(currentImage).split(" ");

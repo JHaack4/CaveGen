@@ -27,6 +27,7 @@ public class Manip {
     int curSublevel = 0;
     ArrayList<String> storyLevelsOrder = new ArrayList<String>();
     int storyLevelsIndex = 0;
+    boolean captainOlimar = true;
 
     PrintWriter out = null;
 
@@ -85,6 +86,9 @@ public class Manip {
                 }
                 if (e.getKeyCode() == KeyEvent.VK_CLOSE_BRACKET || e.getKeyCode() == KeyEvent.VK_BRACERIGHT || (e.getKeyCode() == KeyEvent.VK_N && e.isShiftDown())) {
                     Manip.thisManip.nextStoryModeLevel(1);                   
+                }
+                if (e.getKeyCode() == KeyEvent.VK_K && e.isShiftDown()) {
+                    toggleCaptain();              
                 }
                 if (e.getKeyCode() == KeyEvent.VK_C && e.isControlDown()) {
                     System.exit(0);
@@ -227,7 +231,7 @@ public class Manip {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            jtext2.setText("Next expect:\n" + storyLevelsOrder.get(storyLevelsIndex));
+            jtext2.setText("Next expect:\n" + storyLevelsOrder.get(storyLevelsIndex).replace("-","") + "\n" + (captainOlimar ? "Olimar" : "Louie/Pres"));
         }
 
         try {
@@ -338,7 +342,7 @@ public class Manip {
 
                         storyLevelsIndex += 1;
                         if (storyLevelsIndex >= storyLevelsOrder.size()) storyLevelsIndex = 0;
-                        jtext2.setText("Next expect:\n" + storyLevelsOrder.get(storyLevelsIndex).replace("-",""));
+                        jtext2.setText("Next expect:\n" + storyLevelsOrder.get(storyLevelsIndex).replace("-","") + "\n" + (captainOlimar ? "Olimar" : "Louie/Pres"));
                         
                         if (!seed.letters.out_cave.equalsIgnoreCase(Parser.specialToFullName(curCave))) {
                             System.out.println("err, disagree about current cave... expected " + curCave + " got " + seed.letters.out_cave);
@@ -1367,7 +1371,13 @@ public class Manip {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        jtext2.setText("Next expect:\n" + storyLevelsOrder.get(storyLevelsIndex));
+        jtext2.setText("Next expect:\n" + storyLevelsOrder.get(storyLevelsIndex).replace("-","") + "\n" + (captainOlimar ? "Olimar" : "Louie/Pres"));
     }
+
+    void toggleCaptain() {
+        Manip.thisManip.captainOlimar = !Manip.thisManip.captainOlimar;    
+        jtext2.setText("Next expect:\n" + storyLevelsOrder.get(storyLevelsIndex).replace("-","") + "\n" + (captainOlimar ? "Olimar" : "Louie/Pres"));
+    }
+
 
 }

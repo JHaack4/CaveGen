@@ -1347,6 +1347,9 @@ public class Drawer {
         if (CaveGen.rotateForDraw.equalsIgnoreCase("pod")) {
             rotation = (int)((((g.placedStart.ang + Math.PI/4 + Math.PI + Math.PI*10) % (2*Math.PI))) / (Math.PI/2));
         }
+        if (CaveGen.rotateForDraw.equalsIgnoreCase("cap") && Manip.thisManip != null) {
+            rotation = Manip.thisManip.captainOlimar ? 3 : 2;
+        }
         if (rotation == 0) return;
 
         if (rotation == 1 || rotation == 3) {
