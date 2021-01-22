@@ -136,6 +136,7 @@ public class Letters {
         // pull the letter locations from the python code
         int[][] locs = new int[num_chars][300];
         int[] offsets = new int[num_chars];
+        int num_char_readings = 0;
         for (int i = 0; i < num_chars; i++)
             offsets[i] = Integer.parseInt(info10[i+4]);
 
@@ -148,7 +149,13 @@ public class Letters {
                 int ch = Integer.parseInt(info20[j]);
                 int lc = Integer.parseInt(info20[j+1]);
                 locs[ch][i] = lc+1;
+                num_char_readings += 1;
             }
+        }
+
+        if (num_char_readings < 2) {
+            System.out.println("too few char readings :(");
+            return -1;
         }
 
         // shift the locs by delay time and adjust for the height of each char
@@ -174,7 +181,7 @@ public class Letters {
             }
         }
 
-        int[][] clamped_locs = new int[num_chars][maxc-minc+1];
+        int[][] clamped_locs = new int[num_chars][Math.max(1,maxc-minc+1)];
         for (int i = 0; i < num_chars; i++) {
             for (int j = 0; j < clamped_locs[0].length; j++) {
                 clamped_locs[i][j] = shifted_locs[i][j+minc];
