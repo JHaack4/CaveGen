@@ -8,12 +8,13 @@ public class CaveGen {
     static int sublevel, firstGenSeed, numToGenerate, indexBeingGenerated;
     static boolean hardMode, challengeMode, images, prints, showStats, seedOrder, storyModeOverride, challengeModeOverride,
         folderSeed, folderCave, showCaveInfo, drawSpawnPoints,
-        drawWayPoints, drawWayPointVertDists, drawWayPointEdgeDists,
+        drawWayPoints, drawWayPointVertDists, drawWayPointEdgeDists, drawWPEdges,
         drawScores, drawAngles, drawPodAngle, drawTreasureGauge,
         drawNoPlants, drawNoFallType, drawWaterBox, drawQuickGlance,
         drawDoorLinks, drawDoorIds, drawSpawnOrder, drawNoObjects, 
         drawNoBuriedItems, drawNoItems, drawNoTeki, drawNoGates, drawNoOnions,
         drawNoGateLife, drawNoHoles, drawHoleProbs, p251, colossal, ultraRandomizer,
+        drawSH6Bulborb, drawFlowPaths, drawTreasurePaths, drawAllPaths,
         drawEnemyScores, drawUnitHoleScores, drawUnitItemScores,
         findGoodLayouts, requireMapUnits, expectTest, noWayPointGraph,
         writeMemo, readMemo, aggregator, aggFirst, aggRooms, aggHalls,
@@ -36,12 +37,13 @@ public class CaveGen {
         hardMode = true; challengeMode = false; images = true; prints = true; showStats = true; seedOrder = false;
         storyModeOverride = false; challengeModeOverride = false;
         folderSeed = true; folderCave = true; showCaveInfo = false; drawSpawnPoints = false;
-        drawWayPoints = false; drawWayPointVertDists = false; drawWayPointEdgeDists = false;
+        drawWayPoints = false; drawWayPointVertDists = false; drawWayPointEdgeDists = false; drawWPEdges = false;
         drawScores = false; drawAngles = false; drawTreasureGauge = false; drawPodAngle = false;
         drawNoPlants = false; drawNoFallType = false; drawWaterBox = true; drawQuickGlance = false;
         drawDoorLinks = false; drawDoorIds = false; drawSpawnOrder = false; drawNoObjects = false;
         drawNoBuriedItems = false; drawNoItems = false; drawNoTeki = false; drawNoGates = false; drawNoOnions = false;
         drawNoGateLife = false; drawNoHoles = false; drawHoleProbs = false; p251 = false; colossal = false; ultraRandomizer = false;
+        drawSH6Bulborb = false; drawFlowPaths = false; drawTreasurePaths = false; drawAllPaths = false;
         drawEnemyScores = false; drawUnitHoleScores = false; drawUnitItemScores = false;
         findGoodLayouts = false; requireMapUnits = false; expectTest = false; noWayPointGraph = false;
         writeMemo = false; readMemo = false; aggregator = false; aggFirst = false; aggRooms = false; aggHalls = false;
@@ -158,6 +160,8 @@ public class CaveGen {
                         drawWayPointVertDists = true;
                     else if (s.equalsIgnoreCase("-drawWPEdgeDists"))
                         drawWayPointEdgeDists = true;
+                    else if (s.equalsIgnoreCase("-drawWPEdges"))
+                        drawWPEdges = true;
                     else if (s.equalsIgnoreCase("-drawAllWayPoints")) {
                         drawWayPoints = true;
                         drawWayPointVertDists = true;
@@ -199,6 +203,14 @@ public class CaveGen {
                         showCaveInfo = true;
                     else if (s.equalsIgnoreCase("-drawNoGateLife"))
                         drawNoGateLife = true;
+                    else if (s.equalsIgnoreCase("-drawSH6Bulborb"))
+                        drawSH6Bulborb = true;
+                    else if (s.equalsIgnoreCase("-drawFlowPaths"))
+                        drawFlowPaths = true;
+                    else if (s.equalsIgnoreCase("-drawTreasurePaths"))
+                        drawTreasurePaths = true;
+                    else if (s.equalsIgnoreCase("-drawAllPaths"))
+                        drawAllPaths = true;
                     else if (s.equalsIgnoreCase("-drawHoleProbs"))
                         drawHoleProbs = true;
                     else if (s.equalsIgnoreCase("-findGoodLayouts")) {
@@ -2365,6 +2377,7 @@ public class CaveGen {
         return null;
     }
 
+    // note, this function was just an incorrect guess of how the waypoints work
     WayPoint closestWayPoint(SpawnPoint a) {
         if (a.closestWayPoint != null) return a.closestWayPoint;
         float minDist = INF;
@@ -2382,6 +2395,7 @@ public class CaveGen {
         return a.closestWayPoint;
     }
 
+    // note, this function was just an incorrect guess of how the waypoints work
     float spawnPointDistToStart(SpawnPoint a) {
         if (a.distToStart != -1) return a.distToStart;
         WayPoint minWp = closestWayPoint(a);
@@ -2575,6 +2589,98 @@ public class CaveGen {
         int index = i / 2048 + (odd_exponent ? 16 : 0);
         vali |= (long)(expected_base[index] - expected_dec[index] * (i % 2048)) << 26;
         return Double.longBitsToDouble(vali);
+    }
+
+    // -------- Everything below is for the game's waypoint algorithm ---------
+
+    boolean isInnerBox(float x1, float y1, float w1, float h1, float x2, float y2, float w2, float h2) {
+        // checks if two boxes overlap
+        if (x1 + w1 <= x2 || x2 + w2 <= x1) return false;
+        if (y1 + h1 <= y2 || y2 + h2 <= y1) return false;
+        return true;
+    }
+
+    float pointToPointDist(Vec3 p1, Vec3 p2) {
+        return p1.subtract(p2).length();
+    }
+
+    Vec3 normVector(Vec3 p1, Vec3 p2) {
+        Vec3 diff = p2.subtract(p1);
+        float len = diff.length();
+        if (len <= 0) return null;
+        return diff.scale(1.0f/len);
+    }
+    
+    float pointToSegmentDist(Vec3 p, Vec3 l1, Vec3 l2, float r1, float r2) {
+        float lenL = l2.subtract(l1).length();
+        if (lenL <= 0) return 128001;
+        Vec3 norm = normVector(l1, l2);
+        float t = norm.dot(p.subtract(l1)) / lenL;
+        if (t <= 0) {
+            pointToSegmentDist_outCloserVec = 1;
+            return p.subtract(l1).length() - r1;
+        } else if (t >= 1) {
+            pointToSegmentDist_outCloserVec = 2;
+            return p.subtract(l2).length() - r2;
+        } else {
+            pointToSegmentDist_outCloserVec = p.subtract(l1).length() - r1 < p.subtract(l2).length() - r2 ? 1 : 2;
+            return norm.scale(lenL * t).add(l1).subtract(p).length() - (1-t)*r1 - t*r2;
+        }
+    }
+    int pointToSegmentDist_outCloserVec = 0;
+
+    ArrayList<WayPoint> makePathToGoal(Vec3 p) {
+        
+        for (MapUnit m: placedMapUnits) {
+            for (WayPoint wp: m.wayPoints) {
+                if (wp.vec == null) {
+                    wp.vec = new Vec3(wp.posX, wp.posY, wp.posZ);
+                } else {
+                    break;
+                }
+            }
+        }
+
+        // find the edge on the waypoint graph that's closest to this point, then take the closer
+        // point on that edge as the start of the path.
+        float bestDist = 128000;
+        WayPoint bestWp = null;
+        for (MapUnit m: placedMapUnits) {
+            if (!isInnerBox(m.offsetX*170.0f, m.offsetZ*170.0f, m.dX*170.0f, m.dZ*170.0f, p.x-5, p.z-5, 10, 10))
+                continue;
+            for (WayPoint wp: m.wayPoints) {
+                for (WayPoint wp2: wp.adj) {
+                    if (wp.idx < wp2.idx || !wp2.adj.contains(wp)) {
+                        float d = pointToSegmentDist(p, wp.vec, wp2.vec, wp.radius, wp2.radius);
+                        if (d < bestDist) {
+                            bestDist = d;
+                            bestWp = pointToSegmentDist_outCloserVec == 1 ? wp : wp2;
+                        }
+                    }
+                }
+            }
+        }
+        ArrayList<WayPoint> ret = new ArrayList<WayPoint>();
+        while (bestWp != null) {
+            ret.add(bestWp);
+            bestWp = bestWp.backWp;
+        }
+        return ret;
+    }
+
+    ArrayList<Vec3> drawPathToGoal(Vec3 p, float speed, int maxNumIter) {
+        ArrayList<Vec3> ret = new ArrayList<Vec3>();
+
+        ArrayList<WayPoint> path = makePathToGoal(p);
+
+        ret.add(p);
+        
+        //System.out.println(path.size());
+        for (int i = 0; i < path.size(); i++) {
+            ret.add(path.get(i).vec);
+        }
+
+        return ret;
     }
 
 }
