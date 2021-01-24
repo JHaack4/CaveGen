@@ -8,8 +8,8 @@ public class CaveGen {
     static int sublevel, firstGenSeed, numToGenerate, indexBeingGenerated;
     static boolean hardMode, challengeMode, images, prints, showStats, seedOrder, storyModeOverride, challengeModeOverride,
         folderSeed, folderCave, showCaveInfo, drawSpawnPoints,
-        drawWayPoints, drawWayPointVertDists, drawWayPointEdgeDists, drawWPEdges,
-        drawScores, drawAngles, drawPodAngle, drawTreasureGauge,
+        drawWayPoints, drawWayPointVertDists, drawWayPointEdgeDists, drawWPEdges, drawWPVertices,
+        drawScores, drawAngles, drawPodAngle, drawTreasureGauge, drawPathDists,
         drawNoPlants, drawNoFallType, drawWaterBox, drawQuickGlance,
         drawDoorLinks, drawDoorIds, drawSpawnOrder, drawNoObjects, 
         drawNoBuriedItems, drawNoItems, drawNoTeki, drawNoGates, drawNoOnions,
@@ -37,8 +37,8 @@ public class CaveGen {
         hardMode = true; challengeMode = false; images = true; prints = true; showStats = true; seedOrder = false;
         storyModeOverride = false; challengeModeOverride = false;
         folderSeed = true; folderCave = true; showCaveInfo = false; drawSpawnPoints = false;
-        drawWayPoints = false; drawWayPointVertDists = false; drawWayPointEdgeDists = false; drawWPEdges = false;
-        drawScores = false; drawAngles = false; drawTreasureGauge = false; drawPodAngle = false;
+        drawWayPoints = false; drawWayPointVertDists = false; drawWayPointEdgeDists = false; drawWPEdges = false; drawWPVertices = false;
+        drawScores = false; drawAngles = false; drawTreasureGauge = false; drawPodAngle = false; drawPathDists = false;
         drawNoPlants = false; drawNoFallType = false; drawWaterBox = true; drawQuickGlance = false;
         drawDoorLinks = false; drawDoorIds = false; drawSpawnOrder = false; drawNoObjects = false;
         drawNoBuriedItems = false; drawNoItems = false; drawNoTeki = false; drawNoGates = false; drawNoOnions = false;
@@ -162,6 +162,10 @@ public class CaveGen {
                         drawWayPointEdgeDists = true;
                     else if (s.equalsIgnoreCase("-drawWPEdges"))
                         drawWPEdges = true;
+                    else if (s.equalsIgnoreCase("-drawPathDists"))
+                        drawPathDists = true;
+                    else if (s.equalsIgnoreCase("-drawWPVertices"))
+                        drawWPVertices = true;
                     else if (s.equalsIgnoreCase("-drawAllWayPoints")) {
                         drawWayPoints = true;
                         drawWayPointVertDists = true;
@@ -2607,7 +2611,7 @@ public class CaveGen {
     Vec3 normVector(Vec3 p1, Vec3 p2) {
         Vec3 diff = p2.subtract(p1);
         float len = diff.length();
-        if (len <= 0) return null;
+        if (len <= 0) return new Vec3(0,0,0);
         return diff.scale(1.0f/len);
     }
     
@@ -2665,7 +2669,25 @@ public class CaveGen {
             ret.add(bestWp);
             bestWp = bestWp.backWp;
         }
+
+        for (int i = 0; i < ret.size()-1; i++) {
+            if (ret.get(i).posX == ret.get(i+1).posX && ret.get(i).posZ == ret.get(i+1).posZ) {
+                ret.remove(i+1);
+                i--;
+            }
+        }
+
         return ret;
+    }
+
+    Vec3 CRSplineTangent(float d, Vec3 t0, Vec3 t1, Vec3 t2, Vec3 t3) {
+        float r0 = -1.5f * d * d + 2 * d - 0.5f;
+        float r1 = 4.5f * d * d - 5 * d;
+        float r2 = 0.5f - 4.5f * d * d + 4 * d;
+        float r3 = 1.5f * d * d - d;
+        return new Vec3(r0 * t0.x + r1 * t1.x + r2 * t2.x + r3 * t3.x,
+                        r0 * t0.y + r1 * t1.y + r2 * t2.y + r3 * t3.y,
+                        r0 * t0.z + r1 * t1.z + r2 * t2.z + r3 * t3.z);
     }
 
     ArrayList<Vec3> drawPathToGoal(Vec3 p, float speed, int maxNumIter) {
@@ -2674,11 +2696,166 @@ public class CaveGen {
         ArrayList<WayPoint> path = makePathToGoal(p);
 
         ret.add(p);
-        
+        if (path.size() == 0) return ret;
         //System.out.println(path.size());
-        for (int i = 0; i < path.size(); i++) {
-            ret.add(path.get(i).vec);
+        //for (int i = 0 ; i < path.size(); i++) {
+        //    System.out.println(path.get(i).posX + " " + path.get(i).posZ);
+        //}
+
+        int curPathNode = -1;
+        boolean goalMode = false;
+        Vec3 curPos = p.copy();
+        Vec3 curVel = new Vec3(0,0,0);
+
+        Vec3 goalPos = path.get(path.size()-1).vec;
+        Vec3 t0, t1, t2, t3;
+
+        // Initial logic
+        {
+            if (path.size() <= 1) {
+                // CRMakeRefs
+                t0 = curPathNode-1 <= -1 ? curPos.copy() : curPathNode-1 >= path.size() ? goalPos : path.get(curPathNode-1).vec;
+                t1 = curPathNode   <= -1 ? curPos.copy() : curPathNode   >= path.size() ? goalPos : path.get(curPathNode  ).vec;
+                t2 = curPathNode+1 <= -1 ? curPos.copy() : curPathNode+1 >= path.size() ? goalPos : path.get(curPathNode+1).vec;
+                t3 = curPathNode+2 <= -1 ? curPos.copy() : curPathNode+2 >= path.size() ? goalPos : path.get(curPathNode+2).vec;
+            } else {
+                Vec3 curVec = path.get(0).vec;
+                Vec3 nextVec = path.get(1).vec;
+                Vec3 d = normVector(curVec, nextVec);
+                float lenNextCur = curVec.dist(nextVec);
+
+                float t = curPos.subtract(curVec).dot(d) / lenNextCur;
+                
+                float curRadius = path.get(0).radius;
+                float nextRadius = path.get(1).radius;
+                float adjRadius = (1-t)*curRadius + t*nextRadius;
+
+                Vec3 n_full = d.scale(t * lenNextCur).add(curVec).subtract(curPos);
+                //System.out.println("nf" + n_full.string());
+                float lenN = n_full.length();
+                if (lenN == 0) lenN = 0.0001f;
+
+                // tube collides
+                if (t >= 0 && t <= 1 && lenN <= adjRadius) {
+                    // CRMakeRefs with -1 -1 1 2
+                    curPathNode = 0;
+                    t0 = curPos.copy();
+                    t1 = curPos.copy();
+                    t2 = 1 >= path.size() ? goalPos : path.get(1).vec;
+                    t3 = 2 >= path.size() ? goalPos : path.get(2).vec;
+                } else {
+                    // CRMakeRefs with t2 overwritten
+                    t0 = curPathNode-1 <= -1 ? curPos.copy() : curPathNode-1 >= path.size() ? goalPos : path.get(curPathNode-1).vec;
+                    t1 = curPathNode   <= -1 ? curPos.copy() : curPathNode   >= path.size() ? goalPos : path.get(curPathNode  ).vec;
+                    t3 = curPathNode+2 <= -1 ? curPos.copy() : curPathNode+2 >= path.size() ? goalPos : path.get(curPathNode+2).vec;
+                    
+                    if (t >= 0 && t <= 1) {
+                        t2 = d.scale(t * lenNextCur).add(curVec);
+                    } else if (t < 0) {
+                        t2 = path.get(0).vec;
+                    } else {
+                        t2 = path.get(1).vec;
+                    }
+                }
+            }
         }
+
+        // Normal logic
+        for (int iter = 0; iter < maxNumIter; iter++) {
+            //System.out.println(curPathNode + " " + curPos.string());
+            Vec3 curVec = curPathNode == -1 ? curPos : curPathNode >= path.size() ? goalPos : path.get(curPathNode).vec;
+            //Vec3 nextVec = curPathNode == -1 ? path.get(1).vec : curPathNode+1 >= path.size() ? goalPos : path.get(curPathNode+1).vec;
+            Vec3 nextVec = t2;
+
+            Vec3 use = null;
+            if (goalMode) {
+                Vec3 diff = goalPos.subtract(curPos);
+                if (diff.length() < 20) break;
+                use = diff.normalize();
+                
+                //System.out.println("goal");
+            }
+            else if (nextVec.dist2(curPos) < 6) {
+                if (curPathNode < path.size() - 2) {
+                    curPathNode += 1;
+                    // CRMakeRefs
+                    t0 = curPathNode-1 <= -1 ? curPos.copy() : curPathNode-1 >= path.size() ? goalPos : path.get(curPathNode-1).vec;
+                    t1 = curPathNode   <= -1 ? curPos.copy() : curPathNode   >= path.size() ? goalPos : path.get(curPathNode  ).vec;
+                    t2 = curPathNode+1 <= -1 ? curPos.copy() : curPathNode+1 >= path.size() ? goalPos : path.get(curPathNode+1).vec;
+                    t3 = curPathNode+2 <= -1 ? curPos.copy() : curPathNode+2 >= path.size() ? goalPos : path.get(curPathNode+2).vec;
+                    Vec3 vel = CRSplineTangent(0, t0, t1, t2, t3).normalize();
+                    use = vel; //System.out.println("close add");
+                } else {
+                    goalMode = true;
+                    Vec3 vel = CRSplineTangent(1, t0, t1, t2, t3).normalize();
+                    use = vel; //System.out.println("close goal");
+                }
+
+            } else { 
+                Vec3 d = normVector(curVec, nextVec);
+                float lenNextCur = curVec.dist(nextVec);
+
+                float t = curPos.subtract(curVec).dot(d) / lenNextCur;
+                //System.out.println("t=" +t  + " d=" + d.string() + " lenNC" + lenNextCur);
+                if (t < 0) t = 0;
+                if (t > 1) t = 1;
+                
+                float curRadius = curPathNode == -1 ? 10 : curPathNode >= path.size() ? 50 : path.get(curPathNode).radius;
+                float nextRadius = curPathNode+1 >= path.size() ? 50 : path.get(curPathNode+1).radius;
+                float adjRadius = (1-t)*curRadius + t*nextRadius;
+                if (adjRadius == 0) adjRadius = 1;
+
+                Vec3 n_full = d.scale(t * lenNextCur).add(curVec).subtract(curPos);
+                float lenN = n_full.length();
+                Vec3 n = n_full.normalize();
+                //System.out.println(d.scale(t * lenNextCur).string() + " " + d.scale(t * lenNextCur).add(curVec).string());
+                //System.out.println("rad" + adjRadius + " nf" + n_full.string());
+
+                float awayRatio = lenN / adjRadius;
+                if (awayRatio < 0.3f) awayRatio = 0;
+
+                if (awayRatio <= 2 || lenN <= 130) {
+                    float useN = 1;
+                    if (awayRatio <= 1) {
+                        useN = Math.max(0, awayRatio);
+                    }
+
+                    if (t < 1) {
+                        Vec3 vel = CRSplineTangent(t, t0, t1, t2, t3).normalize();
+                        //System.out.println(" --- " + vel.string() + " " + n.string() + " " +useN);
+                        use = vel.scale(1-useN).add(n.scale(useN)); //System.out.println("normal comb");
+                        if (use.x * d.x + use.z * d.z <= 0) {
+                            // System.out.println(use.x * d.x + use.z * d.z);
+                            use = d; //System.out.println("normal dx" + p.string());
+                        }
+                    }
+                    else {
+                        if (curPathNode < path.size() - 2) {
+                            curPathNode += 1;
+                            // CRMakeRefs
+                            t0 = curPathNode-1 <= -1 ? curPos.copy() : curPathNode-1 >= path.size() ? goalPos : path.get(curPathNode-1).vec;
+                            t1 = curPathNode   <= -1 ? curPos.copy() : curPathNode   >= path.size() ? goalPos : path.get(curPathNode  ).vec;
+                            t2 = curPathNode+1 <= -1 ? curPos.copy() : curPathNode+1 >= path.size() ? goalPos : path.get(curPathNode+1).vec;
+                            t3 = curPathNode+2 <= -1 ? curPos.copy() : curPathNode+2 >= path.size() ? goalPos : path.get(curPathNode+2).vec;
+                            Vec3 vel = CRSplineTangent(0, t0, t1, t2, t3).normalize();
+                            use = vel; //System.out.println("add");
+                        } else {
+                            goalMode = true;
+                            Vec3 vel = CRSplineTangent(t, t0, t1, t2, t3).normalize();
+                            use = vel; //System.out.println("to goal");
+                        }
+                    }
+                } else {
+                    // use pure normal ?? Idk.
+                    use = n;
+                }
+            }
+            //System.out.println("use " + use.string());
+            curVel = curVel.add(use.normalize().scale(0.05f));
+            if (curVel.length() > 1) curVel = curVel.normalize();
+            curPos = curPos.add(curVel.scale(speed));
+            ret.add(curPos.copy());
+        } 
 
         return ret;
     }

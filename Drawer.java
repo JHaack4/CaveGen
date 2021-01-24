@@ -364,17 +364,19 @@ public class Drawer {
             for (int k = 0; k < img.getHeight(); k++)
                 for (int j = 0; j < img.getWidth(); j++) 
                     imgp[k][j] = img.getRGB(j, k);
-            G.setColor(new Color(170,100,255,200));
+            
             int d = 10;
             for (int k = 1; k < g.mapMaxX*d; k++) {
                 for (int j = 1; j < g.mapMaxZ*d; j++) {
+                    //if (k != 35 || j != 47) continue;
                     Color c = new Color(imgp[j*img.getHeight()/g.mapMaxZ/d][k*img.getWidth()/g.mapMaxX/d]);
                     if (c.getRed() < 5 && c.getBlue() < 5 && c.getGreen() < 5) continue;
                     float x = k * 170.0f / d;
                     float z = j * 170.0f / d;
-                    ArrayList<Vec3> path = g.drawPathToGoal(new Vec3(x,0,z), 1, 100);
+                    ArrayList<Vec3> path = g.drawPathToGoal(new Vec3(x,0,z), 1, 200);
                     for (int i = 0; i < path.size() - 1; i++) {
                         //System.out.println(path.get(i).x + " " + path.get(i).z);
+                        G.setColor(new Color(170,100,255,201-i));
                         G.drawLine((int)(path.get(i).x/M*N), (int)(path.get(i).z/M*N), (int)(path.get(i+1).x/M*N), (int)(path.get(i+1).z/M*N));
                     }
                 }
@@ -419,7 +421,7 @@ public class Drawer {
             G.setColor(new Color(170,100,255,200));
             for (Teki t: g.placedTekis) {
                 if ((CaveGen.drawAllPaths && !noCarcassNames.contains(t.tekiName.toLowerCase()) && !plantNames.contains(t.tekiName.toLowerCase()) && !g.isPomGroup(t)) || t.itemInside != null) {
-                    ArrayList<Vec3> path = g.drawPathToGoal(new Vec3(t.posX,t.posY,t.posZ), 1, 100);
+                    ArrayList<Vec3> path = g.drawPathToGoal(new Vec3(t.posX,t.posY,t.posZ), 1, 10001);
                     for (int i = 0; i < path.size() - 1; i++) {
                         //System.out.println(path.get(i).x + " " + path.get(i).z);
                         G.drawLine((int)(path.get(i).x/M*N), (int)(path.get(i).z/M*N), (int)(path.get(i+1).x/M*N), (int)(path.get(i+1).z/M*N));
@@ -429,7 +431,7 @@ public class Drawer {
             }
             for (Item t: g.placedItems) {
                 if (true) {
-                    ArrayList<Vec3> path = g.drawPathToGoal(new Vec3(t.posX,t.posY,t.posZ), 1, 100);
+                    ArrayList<Vec3> path = g.drawPathToGoal(new Vec3(t.posX,t.posY,t.posZ), 1, 10001);
                     for (int i = 0; i < path.size() - 1; i++) {
                         G.drawLine((int)(path.get(i).x/M*N), (int)(path.get(i).z/M*N), (int)(path.get(i+1).x/M*N), (int)(path.get(i+1).z/M*N));
                         //G.drawLine((int)(path.get(i).x/M*N), (int)(path.get(i).z/M*N)+1, (int)(path.get(i+1).x/M*N), (int)(path.get(i+1).z/M*N)+1);
@@ -437,7 +439,6 @@ public class Drawer {
                 }
             }
         }
-        
         
 
         if (CaveGen.drawSpawnPoints
@@ -796,15 +797,15 @@ public class Drawer {
             }
         }
 
-        if (g.drawWayPoints || g.drawWayPointEdgeDists || g.drawWayPointVertDists || g.drawWPEdges) {
+        if (g.drawWayPoints || g.drawWayPointEdgeDists || g.drawWayPointVertDists || g.drawWPEdges || g.drawWPVertices) {
             G.setFont(new Font("Serif", Font.BOLD, 12));
             for (MapUnit m: g.placedMapUnits) {
                 for (WayPoint wp: m.wayPoints) {
                     int x = (int)(wp.posX/M*N);
                     int z = (int)(wp.posZ/M*N);
-                    int rad = (int)(wp.radius/M*N) + 12;
+                    int rad = (int)(wp.radius/M*N)+1;
                     G.setColor(new Color(153,153,0,wp.idx<m.doors.size()?20:40));
-                    if (g.drawWayPoints || g.drawWayPointVertDists)
+                    if (g.drawWayPoints || g.drawWayPointVertDists || g.drawWPVertices)
                         G.fillOval(x-rad/2, z-rad/2, rad, rad);
                     if (g.drawWayPointEdgeDists || g.drawWPEdges) {
                         for (WayPoint owp: wp.adj) {
@@ -824,7 +825,7 @@ public class Drawer {
                         }
                     }
                     G.setColor(new Color(80,80,0,150));
-                    if (wp.backWp != null) {
+                    if (wp.backWp != null && (g.drawWayPoints)) {
                         int ox = (int)(wp.backWp.posX/M*N);
                         int oz = (int)(wp.backWp.posZ/M*N);
                         G.drawLine(x,z,ox,oz);
@@ -870,6 +871,24 @@ public class Drawer {
                                         (5*dx+ox)/6-5-(l.dist>=1000?4:0), (5*dz+oz)/6+5,
                                         new Color(255,0,255), bgt);
                     }
+                }
+            }
+        }
+
+        if (CaveGen.drawPathDists) {
+            G.setFont(new Font("Serif", Font.BOLD, 16));
+            for (Teki t: g.placedTekis) {
+                if ((CaveGen.drawAllPaths && !noCarcassNames.contains(t.tekiName.toLowerCase()) && !plantNames.contains(t.tekiName.toLowerCase()) && !g.isPomGroup(t)) || t.itemInside != null) {
+                    ArrayList<Vec3> path = g.drawPathToGoal(new Vec3(t.posX,t.posY,t.posZ), 1, 10001);
+                    int l = path.size()/10 > 999 ? 999 : path.size()/10;
+                    drawTextOutline(G, ""+l, (int)(t.posX/M*N+3), (int)(t.posZ/M*N-3), new Color(170,100,255), bgt);
+                }
+            }
+            for (Item t: g.placedItems) {
+                if (true) {
+                    ArrayList<Vec3> path = g.drawPathToGoal(new Vec3(t.posX,t.posY,t.posZ), 1, 10001);
+                    int l = path.size()/10 > 999 ? 999 : path.size()/10;
+                    drawTextOutline(G, ""+l, (int)(t.posX/M*N+3), (int)(t.posZ/M*N-3), new Color(170,100,255), bgt);
                 }
             }
         }
