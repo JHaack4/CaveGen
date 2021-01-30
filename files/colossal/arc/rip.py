@@ -8,4 +8,4 @@ for path, subdirs, files in os.walk(root):
 
         if '.szs' in fullpath:
             print(fullpath)
-            os.system("WSZST Extract %s" % fullpath) 
+            os.system('"WSZST Decompress %s"' % fullpath) 

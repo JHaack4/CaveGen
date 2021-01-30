@@ -892,7 +892,7 @@ public class CaveGen {
                 }
             }
 
-            randBacks(ms);
+            randBacks(ms, 4);
 
             for (MapUnit m: ms) {
                 queueRoom.add(m);
@@ -2508,6 +2508,12 @@ public class CaveGen {
             a.add(a.remove(r));
         }
     }
+    <T> void randBacks(List<T> a, int num) {
+        for (int i = 0; i < num; i++) {
+            int r = randInt(a.size());
+            a.add(a.remove(r));
+        }
+    }
     <T> void randSwaps(List<T> a) {
         for (int i = 0; i < a.size(); i++) {
             int r = randInt(a.size());
@@ -2517,12 +2523,6 @@ public class CaveGen {
         }
     }
 
-    <T> void randBacks_Ultra(List<T> a) {
-        for (int i = 0; i < 0x5000; i++) {
-            int r = randInt(a.size());
-            a.add(a.remove(r));
-        }
-    }
     
     public static float sqrt(float x) {
         return (float)(x * ApproximateReciprocalSquareRoot((double)x));

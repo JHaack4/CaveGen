@@ -914,8 +914,8 @@ public class Drawer {
                 int z = (int)(m.offsetZ*N);
                 int w = (int)(m.dX*N);
                 int h = (int)(m.dZ*N);
-                G.setColor(new Color(0,225,225));
-                G.drawRect(x,z,w,h);
+                G.setColor(new Color(0,225,225,150));
+                G.drawRect(x,z,w,h);                
                 drawTextOutline(G, "" + (i++), x+2, z+h-2, new Color(0,255,255), bgt);
             }
             if (!g.drawNoObjects) {
