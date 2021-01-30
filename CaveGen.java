@@ -2516,6 +2516,13 @@ public class CaveGen {
             a.set(r, temp);
         }
     }
+
+    <T> void randBacks_Ultra(List<T> a) {
+        for (int i = 0; i < 0x5000; i++) {
+            int r = randInt(a.size());
+            a.add(a.remove(r));
+        }
+    }
     
     public static float sqrt(float x) {
         return (float)(x * ApproximateReciprocalSquareRoot((double)x));
@@ -2617,7 +2624,7 @@ public class CaveGen {
     
     float pointToSegmentDist(Vec3 p, Vec3 l1, Vec3 l2, float r1, float r2) {
         float lenL = l2.subtract(l1).length();
-        if (lenL <= 0) return 128001;
+        if (lenL <= 0) return 128000;
         Vec3 norm = normVector(l1, l2);
         float t = norm.dot(p.subtract(l1)) / lenL;
         if (t <= 0) {
@@ -2655,6 +2662,7 @@ public class CaveGen {
             for (WayPoint wp: m.wayPoints) {
                 for (WayPoint wp2: wp.adj) {
                     if (wp.idx < wp2.idx || !wp2.adj.contains(wp)) {
+                        // note, the details here about exactly which edges get considered is probably wrong.
                         float d = pointToSegmentDist(p, wp.vec, wp2.vec, wp.radius, wp2.radius);
                         if (d < bestDist) {
                             bestDist = d;

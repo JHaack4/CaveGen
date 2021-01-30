@@ -434,7 +434,7 @@ class Parser {
             }
 
             Scanner sc2 = read("files/" + g.fileSystem + "/" + "arc/" + m.name + "/texts.d/layout.txt");
-
+            
             int numSpawnPoints = nextInt(sc2);
 
             m.spawnPoints = new ArrayList<SpawnPoint>();
