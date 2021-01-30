@@ -264,9 +264,10 @@ class Parser {
             default: System.out.println("Unknown param: " + id + " "
                                         + inter + " -> " + nextString(sc));
             }
-
-            
         }
+
+        if (g.colossal && g.colossalExtraUnits)
+            g.caveUnitFile = "all_units251.txt";
 
         g.spawnMapUnits = new ArrayList<MapUnit>();
         g.spawnMapUnitsSorted = new ArrayList<MapUnit>();
@@ -434,7 +435,7 @@ class Parser {
             }
 
             Scanner sc2 = read("files/" + g.fileSystem + "/" + "arc/" + m.name + "/texts.d/layout.txt");
-            
+
             int numSpawnPoints = nextInt(sc2);
 
             m.spawnPoints = new ArrayList<SpawnPoint>();

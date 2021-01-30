@@ -13,7 +13,8 @@ public class CaveGen {
         drawNoPlants, drawNoFallType, drawWaterBox, drawQuickGlance,
         drawDoorLinks, drawDoorIds, drawSpawnOrder, drawNoObjects, 
         drawNoBuriedItems, drawNoItems, drawNoTeki, drawNoGates, drawNoOnions,
-        drawNoGateLife, drawNoHoles, drawHoleProbs, p251, colossal, ultraRandomizer,
+        drawNoGateLife, drawNoHoles, drawHoleProbs, p251, 
+        colossal, colossalUltraRandomizer, colossalExtraUnits,
         drawSH6Bulborb, drawFlowPaths, drawTreasurePaths, drawAllPaths,
         drawEnemyScores, drawUnitHoleScores, drawUnitItemScores,
         findGoodLayouts, requireMapUnits, expectTest, noWayPointGraph,
@@ -42,7 +43,8 @@ public class CaveGen {
         drawNoPlants = false; drawNoFallType = false; drawWaterBox = true; drawQuickGlance = false;
         drawDoorLinks = false; drawDoorIds = false; drawSpawnOrder = false; drawNoObjects = false;
         drawNoBuriedItems = false; drawNoItems = false; drawNoTeki = false; drawNoGates = false; drawNoOnions = false;
-        drawNoGateLife = false; drawNoHoles = false; drawHoleProbs = false; p251 = false; colossal = false; ultraRandomizer = false;
+        drawNoGateLife = false; drawNoHoles = false; drawHoleProbs = false; p251 = false; 
+        colossal = false; colossalUltraRandomizer = false; colossalExtraUnits = false;
         drawSH6Bulborb = false; drawFlowPaths = false; drawTreasurePaths = false; drawAllPaths = false;
         drawEnemyScores = false; drawUnitHoleScores = false; drawUnitItemScores = false;
         findGoodLayouts = false; requireMapUnits = false; expectTest = false; noWayPointGraph = false;
@@ -121,7 +123,10 @@ public class CaveGen {
                         fileSystem = "251";
                     }
                     else if (s.equalsIgnoreCase("-ultraRandomizer")) {
-                        ultraRandomizer = true;
+                        colossalUltraRandomizer = true;
+                    }
+                    else if (s.equalsIgnoreCase("-extraUnits")) {
+                        colossalExtraUnits = true;
                     }
                     else if (s.equalsIgnoreCase("-challengeMode"))
                         challengeModeOverride = true;
@@ -683,6 +688,13 @@ public class CaveGen {
             case 1: queueRoom.add(m); break;
             case 2: queueCorridor.add(m); break;
             }
+        }
+
+        if (colossal && colossalUltraRandomizer) { // only for colossal caverns ultra randomizer
+            randBacks(queueCap,0x5000);
+            randBacks(queueRoom,0x5000);
+            randBacks(queueCorridor,0x5000);
+            return;
         }
 
         randBacks(queueCap);
