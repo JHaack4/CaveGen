@@ -86,7 +86,7 @@ public class Drawer {
         special.put("ooinu_s", "ooinu_s");
         special.put("wakame_s", "wakame_s");
         special.put("chiyogami", "chiyogami");
-        for (int i = 0; i < 3; i++)
+        for (int i = 0; i < 5; i++)
             special.put("onion"+i, "onion"+i);
 
     }
@@ -400,11 +400,22 @@ public class Drawer {
             
             G.setColor(new Color(colorsSP[2].getRed(),colorsSP[2].getGreen(),colorsSP[2].getBlue(), a));
             for (Item t: g.placedItems) {
-                G.fillOval((int)(t.posX/M*N-r/2), (int)(t.posZ/M*N-r/2), r, r);
+                if (!g.colossal)
+                    G.fillOval((int)(t.posX/M*N-r/2), (int)(t.posZ/M*N-r/2), r, r);
             }
             for (Teki t: g.placedTekis) {
                 if (t.itemInside != null)
                     G.fillOval((int)(t.posX/M*N-r/2), (int)(t.posZ/M*N-r/2), r, r);
+            }
+            for (Onion t: g.placedOnions) {
+                switch(t.type) {
+                    case 0: G.setColor(new Color(0,0,255,a)); break;
+                    case 1: G.setColor(new Color(255,0,0,a)); break;
+                    case 2: G.setColor(new Color(255,255,0,a)); break;
+                    case 3: G.setColor(new Color(160,0,255,a)); break;
+                    case 4: G.setColor(new Color(60,60,60,a)); break;
+                }
+                G.fillOval((int)(t.posX/M*N-r/2), (int)(t.posZ/M*N-r/2), r, r);
             }
 
             G.setColor(new Color(colorsSP[4].getRed(),colorsSP[4].getGreen(),colorsSP[4].getBlue(), a));

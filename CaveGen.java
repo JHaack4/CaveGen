@@ -14,7 +14,7 @@ public class CaveGen {
         drawDoorLinks, drawDoorIds, drawSpawnOrder, drawNoObjects, 
         drawNoBuriedItems, drawNoItems, drawNoTeki, drawNoGates, drawNoOnions,
         drawNoGateLife, drawNoHoles, drawHoleProbs, p251, 
-        colossal, colossalUltraRandomizer, colossalExtraUnits,
+        colossal, colossalUltraRandomizer, colossalExtraUnits, colossal5Onion,
         drawSH6Bulborb, drawFlowPaths, drawTreasurePaths, drawAllPaths,
         drawEnemyScores, drawUnitHoleScores, drawUnitItemScores,
         findGoodLayouts, requireMapUnits, expectTest, noWayPointGraph,
@@ -44,7 +44,7 @@ public class CaveGen {
         drawDoorLinks = false; drawDoorIds = false; drawSpawnOrder = false; drawNoObjects = false;
         drawNoBuriedItems = false; drawNoItems = false; drawNoTeki = false; drawNoGates = false; drawNoOnions = false;
         drawNoGateLife = false; drawNoHoles = false; drawHoleProbs = false; p251 = false; 
-        colossal = false; colossalUltraRandomizer = false; colossalExtraUnits = false;
+        colossal = false; colossalUltraRandomizer = false; colossalExtraUnits = false; colossal5Onion = false;
         drawSH6Bulborb = false; drawFlowPaths = false; drawTreasurePaths = false; drawAllPaths = false;
         drawEnemyScores = false; drawUnitHoleScores = false; drawUnitItemScores = false;
         findGoodLayouts = false; requireMapUnits = false; expectTest = false; noWayPointGraph = false;
@@ -127,6 +127,9 @@ public class CaveGen {
                     }
                     else if (s.equalsIgnoreCase("-extraUnits")) {
                         colossalExtraUnits = true;
+                    }
+                    else if (s.equalsIgnoreCase("-5onion")) {
+                        colossal5Onion = true;
                     }
                     else if (s.equalsIgnoreCase("-challengeMode"))
                         challengeModeOverride = true;
@@ -2303,6 +2306,7 @@ public class CaveGen {
     }
 
     void placeOnionsColossal() {
+        int numOnions = colossal5Onion ? 5 : 3;
         int validRooms = 0;
         for (MapUnit m: placedMapUnits) {
             if (m.type == 1) {
@@ -2314,7 +2318,7 @@ public class CaveGen {
                 }
             }
         }
-        int roomInterval = validRooms/3;
+        int roomInterval = validRooms/numOnions;
         if (roomInterval == 0) roomInterval += 1;
         int colorID = 0, roomNum = 0;
         for (MapUnit m: placedMapUnits) {
@@ -2326,13 +2330,13 @@ public class CaveGen {
                         break;
                     }
                 }
-                if (sp != null && colorID < 3 && ++roomNum == (colorID + 1) * roomInterval) {
+                if (sp != null && colorID < numOnions && ++roomNum == (colorID + 1) * roomInterval) {
                     Onion o = new Onion();
                     o.posX = sp.posX;
                     o.posZ = sp.posZ;
                     o.posY = sp.posY;
                     o.spawnPoint = sp;
-                    o.type = 2-colorID;
+                    o.type = numOnions-1-colorID;
                     placedOnions.add(o);
                     colorID += 1;
                 }
