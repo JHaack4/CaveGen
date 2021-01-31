@@ -209,7 +209,7 @@ public class CaveGen {
                         drawNoGates = true;
                     else if (s.equalsIgnoreCase("-drawNoHoles"))
                         drawNoHoles = true;
-                    else if (s.equalsIgnoreCase("-quickglance"))
+                    else if (s.equalsIgnoreCase("-quickGlance"))
                         drawQuickGlance = true;
                     else if (s.equalsIgnoreCase("-caveInfoReport"))
                         showCaveInfo = true;

@@ -12,16 +12,9 @@ public class Seed {
     Letters letters;
 
     String helpString = "Usage:\n  Seed nth n\n  Seed nthinv seed\n  Seed dist seed1 seed2\n  Seed next seed [n]\n  Seed seed2seq seed\n  Seed seq2seed seq\n  Seed ieee hex\n  Seed digit seed\n  Seed frames seed\n  Seed window cave seed\n" +
-        //"  python videodigits.py find - read the newest video in seed_video_path folder,\n" +
-        //"                               and parse the digits on the result screen\n" +
-        //"  Seed chresult - read from seed_digits_parsed and infer the seed\n" +
-        //"  Seed titleloop [n] - advance the last known seed by 4505 * n\n" +
-        //"  Seed caveviewer cave [additional_args] - read from last_known_seed and open cave viewer to see reachable seeds \n                                           for sublevel cave. (Press s to select seed)\n" +
-        //"  Seed timer cave [desired_list] - create a countdown timer to reach the closest seed in seed_desired\n" + 
-        //"                                   or, pass in a space separated list of target seeds\n" +
-        "  python continuous.py - used to setup the real time seed finder\n" +
+        "  python setup_seed_detect.py - used to setup the real time seed finder\n" +
         "  Seed manip key|cmat|700k|attk - run real time manip";
-    //Long.decode(args[++i]).longValue()
+
     void run(String args[]) {
         manip = new Manip(this);
         letters = new Letters(this);
@@ -86,7 +79,7 @@ public class Seed {
             else if (args[0].equalsIgnoreCase("timestable") && args.length >= 2) {
                 manip.timesTable(args[1]);
             }
-            else if (args[0].equalsIgnoreCase("manip") && args.length >= 2) {
+            else if ((args[0].equalsIgnoreCase("manip") || args[0].equalsIgnoreCase("detect")) && args.length >= 2) {
                 manip.manip(args[1]);
             }
             else if (args[0].equalsIgnoreCase("lettersim") && args.length >= 1) {

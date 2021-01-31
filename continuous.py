@@ -13,8 +13,12 @@ import time
 default_cave_order = "Emergence Cave,Emergence Cave,Hole of Beasts,Hole of Beasts,Hole of Beasts,Hole of Beasts,Hole of Beasts,White Flower Garden,White Flower Garden,White Flower Garden,White Flower Garden,White Flower Garden,Snagret Hole,Snagret Hole,Snagret Hole,Snagret Hole,Snagret Hole,Snagret Hole,Snagret Hole,Bulblax Kingdom,Bulblax Kingdom,Bulblax Kingdom,Bulblax Kingdom,Bulblax Kingdom,Bulblax Kingdom,Bulblax Kingdom,Subterranean Complex,Subterranean Complex,Subterranean Complex,Subterranean Complex,Subterranean Complex,Subterranean Complex,Subterranean Complex,Subterranean Complex,Frontier Cavern,Frontier Cavern,Frontier Cavern,Frontier Cavern,Frontier Cavern,Frontier Cavern,Frontier Cavern,Citadel of Spiders,Citadel of Spiders,Citadel of Spiders,Citadel of Spiders,Citadel of Spiders,Glutton's Kitchen,Glutton's Kitchen,Glutton's Kitchen,Glutton's Kitchen,Glutton's Kitchen,Glutton's Kitchen".split(",")
 default_cave_index = 0
 
-with open("continuous_config.txt", "r") as f:
-    args = Namespace(**ast.literal_eval(f.read()))
+with open("config.txt", "r") as f:
+    config_args_string = f.read()
+    config_args_string = config_args_string[0:config_args_string.index("#####")]
+    config_args_string = "\n".join([x[0:x.index("#")] if "#" in x else x for x in config_args_string.split("\n")])
+    config_args_string = config_args_string.replace("\\","\\\\")
+    args = Namespace(**ast.literal_eval(config_args_string))
 print(args)
 
 try:
@@ -66,7 +70,7 @@ letters_width = {}
 letters_xoff = {}
 
 for l in 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ':
-    img = cv2.imread('files/letters/' + (l+l if l.isupper() else l) + ".png")
+    img = cv2.imread('files/templates/letters/' + (l+l if l.isupper() else l) + ".png")
     img = cv2.resize(img, (int(img.shape[1]*args.letters_xscale), int(img.shape[0]*args.letters_yscale) ), interpolation=cv2.INTER_NEAREST)
     letters[l] = np.uint8(img)
     row_mean = letters[l].max(axis=2).max(axis=1)
@@ -96,11 +100,11 @@ other_letters_w = {" ": args.space_mult, "'": args.apostrophe_mult}
 def read_digits_on_frame(image):
 
     if args.images:
-        comp_img = np.zeros((11*args.height,5*args.width,3), np.uint8)
+        comp_img = np.zeros((11*args.digits_height,5*args.digits_width,3), np.uint8)
     output_digits = []
     
     for i in range(5):
-        img = image[args.y:args.y+args.height, args.x+args.spacing*i:args.x+args.spacing*i+args.width, :]
+        img = image[args.digits_y:args.digits_y+args.digits_height, args.digits_x+args.spacing*i:args.digits_x+args.digits_spacing*i+args.digits_width, :]
         img = img.copy()
         #blur = cv2.GaussianBlur(img,(139,139),0) # this is too slow
         blur = np.zeros(img.shape, np.uint8)
@@ -124,11 +128,11 @@ def read_digits_on_frame(image):
         if args.images:
             for j in range(11):
                 temp_height,temp_width = templates[j].shape[:2]
-                temp_x = i*args.width+(args.width-temp_width)//2
-                temp_y = j*args.height+(args.height-temp_height)//2
-                comp_img[j*args.height:j*args.height+args.height, i*args.width:i*args.width+args.width, 0] = diff
-                comp_img[j*args.height:j*args.height+args.height, i*args.width:i*args.width+args.width, 1] = (0 if pred==j else diff)
-                comp_img[j*args.height:j*args.height+args.height, i*args.width:i*args.width+args.width, 2] = 128
+                temp_x = i*args.digits_width+(args.digits_width-temp_width)//2
+                temp_y = j*args.digits_height+(args.digits_height-temp_height)//2
+                comp_img[j*args.digits_height:j*args.digits_height+args.digits_height, i*args.digits_width:i*args.digits_width+args.digits_width, 0] = diff
+                comp_img[j*args.digits_height:j*args.digits_height+args.digits_height, i*args.digits_width:i*args.digits_width+args.digits_width, 1] = (0 if pred==j else diff)
+                comp_img[j*args.digits_height:j*args.digits_height+args.digits_height, i*args.digits_width:i*args.digits_width+args.digits_width, 2] = 128
                 comp_img[temp_y:temp_y+temp_height, temp_x:temp_x+temp_width, 2] = templates[j]
         
         output_digits.append(pred)
@@ -195,28 +199,7 @@ def is_levelenter_screen(frame):
     # frame[10*y,:,:] = 255
     # frame[13*y,:,:] = 255
 
-    # f = 7 jack
-    # if  average1[0] < f and average1[1] < f and average1[2] < f and \
-    #     average2[0] < f and average2[1] < f and average2[2] < f and \
-    #     average3[0] < f and average3[1] < f and average3[2] < f and \
-    #     average4[0] < f and average4[1] < f and average4[2] < f and \
-    #     average5[0] < f and average5[1] < f and average5[2] < f and abs(average4[2]-average5[2])<2:
-    #     return 'fadeout'
-    # if  average1[0] < f and average1[1] < f and average1[2] < f and \
-    #     average2[0] < 50 and average2[1] < 50 and average2[2] > 15 and average2[2] < 70 and abs(average2[0] - average2[2]) > 10 and \
-    #     average3[0] < f and average3[1] < f and average3[2] < f and \
-    #     average4[0] > f and average4[1] > f and average4[2] > f and \
-    #     average4[0] < 40 and average4[1] < 40 and average4[2] < 40 and \
-    #     average5[0] < f and average5[1] < f+1 and average5[2] < f+5:
-    #     return 'chenter'
-    # if  average1[0] < 25 and average1[1] < 25 and average1[2] < 25 and \
-    #     average2[0] < 40 and average2[1] < 40 and average2[2] < 40 and abs(average2[0] - average2[2]) < 6 and abs(average2[0] - average2[1]) < 6 and \
-    #     average3[0] < 25 and average3[1] < 25 and average3[2] < 25 and \
-    #     average4[0] > f and average4[1] > f and average4[2] > f and \
-    #     average4[0] < 40 and average4[1] < 40 and average4[2] < 40 and \
-    #     average5[0] < f and average5[1] < f+1 and average5[2] < f+5:
-    #     return 'storyenter'
-    f = args.fadeout_frame_intensity # ice
+    f = args.fadeout_frame_intensity
     if  average1[0] < f and average1[1] < f and average1[2] < f and \
         average2[0] < f and average2[1] < f and average2[2] < f and \
         average3[0] < f and average3[1] < f and average3[2] < f and \
@@ -238,7 +221,6 @@ def is_levelenter_screen(frame):
         average4[0] < f+40 and average4[1] < f+40 and average4[2] < f+40 and \
         average5[0] < f+5 and average5[1] < f+5 and average5[2] < f+5:
         return 'storyenter'
-
     
     return None
 

@@ -130,7 +130,7 @@ public class Manip {
             public void run() {
 
                 try {
-                    Process p = Runtime.getRuntime().exec("python continuous.py");
+                    Process p = Runtime.getRuntime().exec(params.get("pythonCommand"));
                     BufferedReader in = new BufferedReader(new InputStreamReader(p.getInputStream()));
                     BufferedReader err = new BufferedReader(new InputStreamReader(p.getErrorStream()));
 
@@ -876,9 +876,12 @@ public class Manip {
     void readParams() {
         try {
             params = new HashMap<String, String>();
-            BufferedReader br = new BufferedReader(new FileReader("manip_config.txt"));
+            BufferedReader br = new BufferedReader(new FileReader("config.txt"));
             String line;
+            boolean seenBreakLine = false;
             while ((line = br.readLine()) != null) {
+                if (line.contains("#####")) seenBreakLine = true;
+                if (!seenBreakLine) continue;
                 int hash = line.indexOf("#");
                 if (hash >= 0) line = line.substring(0,hash);
                 line = line.trim();
