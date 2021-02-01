@@ -125,42 +125,6 @@ public class Manip {
 		jfr.repaint();
         jfr.setVisible(true);
 
-        // launch the continuous digit parser
-        Thread thread = new Thread(new Runnable() {
-            public void run() {
-
-                try {
-                    Process p = Runtime.getRuntime().exec(params.get("pythonCommand"));
-                    BufferedReader in = new BufferedReader(new InputStreamReader(p.getInputStream()));
-                    BufferedReader err = new BufferedReader(new InputStreamReader(p.getErrorStream()));
-
-                    while (true) {
-                        String s = in.readLine();
-                        if (s != null && !s.equals("exit")) {
-                            message(false, s);
-                        } else {
-                            message(false, "exit");
-                            break;
-                        }
-                    }
-
-                    while (true) {
-                        String s = err.readLine();
-                        if (s != null) {
-                            System.out.println("continuous err: " + s);
-                        } else {
-                            break;
-                        }
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-
-            }
-        });
-        thread.start();
-
-
         final CaveViewer caveViewer = new CaveViewer();
         CaveViewer.caveViewer = caveViewer;
         caveViewer.run("gui ch1 1".split(" "));
@@ -233,6 +197,42 @@ public class Manip {
             }
             jtext2.setText("Next expect:\n" + storyLevelsOrder.get(storyLevelsIndex).replace("-","") + "\n" + (captainOlimar ? "Olimar" : "Louie/Pres"));
         }
+
+        // launch the continuous digit parser
+        Thread thread = new Thread(new Runnable() {
+            public void run() {
+
+                try {
+                    System.out.println(params.get("pythonCommand"));
+                    Process p = Runtime.getRuntime().exec(params.get("pythonCommand"));
+                    BufferedReader in = new BufferedReader(new InputStreamReader(p.getInputStream()));
+                    BufferedReader err = new BufferedReader(new InputStreamReader(p.getErrorStream()));
+
+                    while (true) {
+                        String s = in.readLine();
+                        if (s != null && !s.equals("exit")) {
+                            message(false, s);
+                        } else {
+                            message(false, "exit");
+                            break;
+                        }
+                    }
+
+                    while (true) {
+                        String s = err.readLine();
+                        if (s != null) {
+                            System.out.println("continuous err: " + s);
+                        } else {
+                            break;
+                        }
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+            }
+        });
+        thread.start();
 
         try {
             RandomAccessFile raf = realTimeAttackMode ? new RandomAccessFile("files/times_table_" + mode + ".txt", "r") : null;

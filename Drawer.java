@@ -407,6 +407,11 @@ public class Drawer {
                 if (t.itemInside != null)
                     G.fillOval((int)(t.posX/M*N-r/2), (int)(t.posZ/M*N-r/2), r, r);
             }
+            G.setColor(new Color(160,0,255,a));
+            for (Teki t: g.placedTekis) {
+                if (t.tekiName.equalsIgnoreCase("blackpom"))
+                    G.fillOval((int)(t.posX/M*N-r/2), (int)(t.posZ/M*N-r/2), r, r);
+            }
             for (Onion t: g.placedOnions) {
                 switch(t.type) {
                     case 0: G.setColor(new Color(0,0,255,a)); break;

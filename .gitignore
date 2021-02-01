@@ -18,8 +18,9 @@ files/times_table*
 im/*
 im_save/*
 
-manip_config.txt
-continuous_config.txt
+config_*
+
+files/templates/digits_*
 
 *~
 __pycache*

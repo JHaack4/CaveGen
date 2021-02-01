@@ -55,7 +55,7 @@ if (cap.isOpened() == False):
 
 templates = []
 
-if not args.generate_new_templates:
+if True:
     for i in range(10):
         temp = cv2.imread(args.templates + str(i) + ".png",cv2.IMREAD_UNCHANGED)
         templates.append(temp)
@@ -104,7 +104,7 @@ def read_digits_on_frame(image):
     output_digits = []
     
     for i in range(5):
-        img = image[args.digits_y:args.digits_y+args.digits_height, args.digits_x+args.spacing*i:args.digits_x+args.digits_spacing*i+args.digits_width, :]
+        img = image[args.digits_y:args.digits_y+args.digits_height, args.digits_x+args.digits_spacing*i:args.digits_x+args.digits_spacing*i+args.digits_width, :]
         img = img.copy()
         #blur = cv2.GaussianBlur(img,(139,139),0) # this is too slow
         blur = np.zeros(img.shape, np.uint8)
@@ -148,33 +148,46 @@ def read_digits_on_frame(image):
 
 ### check for frames of the challenge mode result screen
 
-# https://stackoverflow.com/questions/50899692/most-dominant-color-in-rgb-image-opencv-numpy-python
-def bincount_app(a):
-    a2D = a.reshape(-1,a.shape[-1])
-    a2D = np.floor_divide(a2D,64)
-    col_range = (4, 4, 4) # generically : a2D.max(0)+1
-    a1D = np.ravel_multi_index(a2D.T, col_range)
-    return np.unravel_index(np.bincount(a1D).argmax(), col_range)
+# # https://stackoverflow.com/questions/50899692/most-dominant-color-in-rgb-image-opencv-numpy-python
+# def bincount_app(a):
+#     a2D = a.reshape(-1,a.shape[-1])
+#     a2D = np.floor_divide(a2D,64)
+#     col_range = (4, 4, 4) # generically : a2D.max(0)+1
+#     a1D = np.ravel_multi_index(a2D.T, col_range)
+#     return np.unravel_index(np.bincount(a1D).argmax(), col_range)
     
-def is_chresult_screen(frame):
-    height,width = frame.shape[:2]
+# def is_chresult_screen(frame):
+#     height,width = frame.shape[:2]
+#     x = width//8
+#     y = height//25
+#     window = frame[0:y, 3*x:5*x, :]
+#     b,g,r = window.mean(axis=0).mean(axis=0)
+#     #print("frame: %d %d %d" % (b,g,r))
+#     return abs(b-252) + abs(g-11) + abs(r-1) < 15 or abs(b-128) + abs(g-0) + abs(r-0) < 5
+#     # b,g,r = bincount_app(frame)
+#     # if args.verbose:
+#     # return b==3 and g==2 and r==2
+
+# def is_fadeout_screen(frame):
+#     average = frame.mean(axis=0).mean(axis=0)
+#     return average[0] < 5 and average[1] < 5 and average[2] < 5
+
+def get_screen_type(frame):
+    if frame.max(axis=0).max(axis=0).max(axis=0) < args.fadeout_frame_intensity:
+        return "fadeout"
+
+    # look for challenge mode result screen
     x = width//8
-    y = height//25
-    window = frame[0:y, 3*x:5*x, :]
-    b,g,r = window.mean(axis=0).mean(axis=0)
-    #print("frame: %d %d %d" % (b,g,r))
-    return abs(b-252) + abs(g-11) + abs(r-1) < 15 or abs(b-128) + abs(g-0) + abs(r-0) < 5
-    # b,g,r = bincount_app(frame)
-    # if args.verbose:
-    # return b==3 and g==2 and r==2
-
-def is_fadeout_screen(frame):
-    average = frame.mean(axis=0).mean(axis=0)
-    return average[0] < 5 and average[1] < 5 and average[2] < 5
-
-last_fadeout_avg = 0
-def is_levelenter_screen(frame):
-    global last_fadeout_avg
+    y = height//100
+    window_top = frame[y:4*y, 3*x:5*x, :]
+    b,g,r = window_top.mean(axis=0).mean(axis=0)
+    if abs(b-args.chresult_color_b) < 20 and abs(g-args.chresult_color_g) + abs(r-args.chresult_color_r) < 10:
+        bM,gM,rM = window_top.max(axis=0).max(axis=0)
+        bm,gm,rm = window_top.min(axis=0).min(axis=0)
+        if bM-bm < 35 and gM-gm+rM-rm < 15:
+            return "chresult"
+        
+    # look for the word sublevel on the screen
     height,width = frame.shape[:2]
     x = width
     y = height//20
@@ -200,13 +213,7 @@ def is_levelenter_screen(frame):
     # frame[13*y,:,:] = 255
 
     f = args.fadeout_frame_intensity
-    if  average1[0] < f and average1[1] < f and average1[2] < f and \
-        average2[0] < f and average2[1] < f and average2[2] < f and \
-        average3[0] < f and average3[1] < f and average3[2] < f and \
-        average4[0] < f and average4[1] < f and average4[2] < f and \
-        average5[0] < f and average5[1] < f and average5[2] < f and abs(average4[2]-average5[2])<2:
-        last_fadeout_avg = max([average3[0],average3[1],average3[2]])
-        return 'fadeout'
+
     if  average1[0] < f and average1[1] < f and average1[2] < f and \
         average2[0] < f+45 and average2[1] < f+45 and average2[2] > f+10 and average2[2] < f+65 and abs(average2[0] - average2[2]) > f+5 and \
         average3[0] < f and average3[1] < f and average3[2] < f and \
@@ -224,36 +231,86 @@ def is_levelenter_screen(frame):
     
     return None
 
-def generate_new_templates(image):
+# def is_levelenter_screen(frame):
+#     height,width = frame.shape[:2]
+#     x = width
+#     y = height//20
+#     window1 = frame[0:4*y, 0:x, :]
+#     window2 = frame[4*y:8*y, 0:x, :]
+#     window3 = frame[8*y:10*y, 0:x, :]
+#     window4 = frame[10*y:13*y, x//4:3*x//4, :]
+#     window5 = frame[13*y:height, 0:x, :]
+#     average1 = window1.mean(axis=0).mean(axis=0)
+#     average2 = window2.mean(axis=0).mean(axis=0)
+#     average3 = window3.mean(axis=0).mean(axis=0)
+#     average4 = window4.mean(axis=0).mean(axis=0)
+#     average5 = window5.mean(axis=0).mean(axis=0)
+#     # print()
+#     # print(average1)
+#     # print(average2)
+#     # print(average3)
+#     # print(average4)
+#     # print(average5)
+#     # frame[4*y,:,:] = 255
+#     # frame[8*y,:,:] = 255
+#     # frame[10*y,:,:] = 255
+#     # frame[13*y,:,:] = 255
 
-    copy = image.copy()
+#     f = args.fadeout_frame_intensity
+#     if  average1[0] < f and average1[1] < f and average1[2] < f and \
+#         average2[0] < f and average2[1] < f and average2[2] < f and \
+#         average3[0] < f and average3[1] < f and average3[2] < f and \
+#         average4[0] < f and average4[1] < f and average4[2] < f and \
+#         average5[0] < f and average5[1] < f and average5[2] < f and abs(average4[2]-average5[2])<2:
+#         last_fadeout_avg = max([average3[0],average3[1],average3[2]])
+#         return 'fadeout'
+#     if  average1[0] < f and average1[1] < f and average1[2] < f and \
+#         average2[0] < f+45 and average2[1] < f+45 and average2[2] > f+10 and average2[2] < f+65 and abs(average2[0] - average2[2]) > f+5 and \
+#         average3[0] < f and average3[1] < f and average3[2] < f and \
+#         average4[0] > f and average4[1] > f and average4[2] > f and \
+#         average4[0] < f+35 and average4[1] < f+35 and average4[2] < f+35 and \
+#         average5[0] < f and average5[1] < f+1 and average5[2] < f+5:
+#         return 'chenter'
+#     if  average1[0] < f+20 and average1[1] < f+20 and average1[2] < f+20 and \
+#         average2[0] < f+40 and average2[1] < f+40 and average2[2] < f+40 and abs(average2[0] - average2[2]) < 6 and abs(average2[0] - average2[1]) < 8 and \
+#         average3[0] < f+25 and average3[1] < f+25 and average3[2] < f+25 and \
+#         (average4[0] > f or average4[1] > f or average4[2] > f) and \
+#         average4[0] < f+40 and average4[1] < f+40 and average4[2] < f+40 and \
+#         average5[0] < f+5 and average5[1] < f+5 and average5[2] < f+5:
+#         return 'storyenter'
     
-    for i in range(5):
-        img = image[args.y:args.y+args.height, args.x+args.spacing*i:args.x+args.spacing*i+args.width, :]
-        img = img.copy()
-        #blur = cv2.GaussianBlur(img,(139,139),0)
-        blur = np.zeros(img.shape, np.uint8)
-        blur[:,:] = frame.mean(axis=0).mean(axis=0)
-        diff = cv2.subtract(128 + cv2.subtract(img,blur),cv2.subtract(blur,img))
-        diff = cv2.cvtColor(diff, cv2.COLOR_BGR2GRAY)
+#     return None
 
-        cv2.imwrite(args.templates + str(count) + "-" + str(i) + ".png", diff)
+# def generate_new_templates(image):
 
-        if i % 2 == 0:
-            copy[args.y:args.y+args.height, args.x+args.spacing*i:args.x+args.spacing*i+args.width, 2] = 200
-        else:
-            copy[args.y:args.y+args.height, args.x+args.spacing*i:args.x+args.spacing*i+args.width, 1] = 200
+#     copy = image.copy()
     
-    cv2.imshow('Digit', copy)
-    cv2.waitKey(args.template_wait)
+#     for i in range(5):
+#         img = image[args.y:args.y+args.height, args.x+args.spacing*i:args.x+args.spacing*i+args.width, :]
+#         img = img.copy()
+#         #blur = cv2.GaussianBlur(img,(139,139),0)
+#         blur = np.zeros(img.shape, np.uint8)
+#         blur[:,:] = frame.mean(axis=0).mean(axis=0)
+#         diff = cv2.subtract(128 + cv2.subtract(img,blur),cv2.subtract(blur,img))
+#         diff = cv2.cvtColor(diff, cv2.COLOR_BGR2GRAY)
 
-    with open("files/continuous_config.txt", "r") as f:
-        updated = Namespace(**ast.literal_eval(f.read()))
-        args.x = updated.x
-        args.y = updated.y
-        args.spacing = updated.spacing
-        args.width = updated.width
-        args.height = updated.height
+#         cv2.imwrite(args.templates + str(count) + "-" + str(i) + ".png", diff)
+
+#         if i % 2 == 0:
+#             copy[args.y:args.y+args.height, args.x+args.spacing*i:args.x+args.spacing*i+args.width, 2] = 200
+#         else:
+#             copy[args.y:args.y+args.height, args.x+args.spacing*i:args.x+args.spacing*i+args.width, 1] = 200
+    
+#     cv2.imshow('Digit', copy)
+#     cv2.waitKey(args.template_wait)
+
+#     with open("files/continuous_config.txt", "r") as f:
+#         updated = Namespace(**ast.literal_eval(f.read()))
+#         args.x = updated.x
+#         args.y = updated.y
+#         args.spacing = updated.spacing
+#         args.width = updated.width
+#         args.height = updated.height
     
 falling_img = None
 union_img = None
@@ -313,18 +370,18 @@ def process_story_frames_name_known():
     # compute the letters postions, scrunching if necesary
     xs0 = []
     xs1 = []
-    x_off = int(width/2 - temp_w/2 + args.letters_xoffset)
+    x_off = int(width/2 - temp_w/2 + int(args.letters_xoffset*width))
     y_off = int(height*args.letters_yoffset)
     x_scrunch = 1
     x_scrunch_limit = args.x_scrunch_limit
     if temp_w > x_scrunch_limit * width:
         x_scrunch = x_scrunch_limit * width/temp_w
-        x_off = int(width * (1-x_scrunch_limit)//2)+args.letters_xoffset
+        x_off = int(width * (1-x_scrunch_limit)//2)+int(args.letters_xoffset*width)
         #print("x scr " + str(x_scrunch))
     if args.images:
         sum_img[:,:,0]=0
-        sum_img[:,int(width*(1-x_scrunch_limit)//2)+args.letters_xoffset,0] = 255
-        sum_img[:,int(width-width*(1-x_scrunch_limit)//2)+args.letters_xoffset,0] = 255
+        sum_img[:,int(width*(1-x_scrunch_limit)//2)+int(args.letters_xoffset*width),0] = 255
+        sum_img[:,int(width-width*(1-x_scrunch_limit)//2)+int(args.letters_xoffset*width),0] = 255
     for l in cave_name:
         xs0.append(int(x_off))
         if l in letters:
@@ -526,10 +583,10 @@ while(cap.isOpened()):
     if args.crop:
         frame = frame[args.crop_y1:args.crop_y2,args.crop_x1:args.crop_x2,:]
     
-    frame_type = is_levelenter_screen(frame)
+    frame_type = get_screen_type(frame)
     
     if frame_type == 'fadeout':
-        print("fadeout " + str(count) + " " + str(int(last_fadeout_avg)),flush=True)
+        print("fadeout " + str(count)),flush=True)
     elif frame_type == 'chenter':
         print("levelenter", flush=True)
     elif frame_type == 'storyenter':
@@ -555,17 +612,15 @@ while(cap.isOpened()):
                 story_frames_processed = True
                 process_story_frames_name_known()
 
-    elif is_chresult_screen(frame):
-        if args.generate_new_templates:
-            generate_new_templates(frame)
-        else:
-            read_digits_on_frame(frame)
+    elif frame_type == 'chresult':
+        read_digits_on_frame(frame)
         last_frame_was_digit = True
     else:
         if last_frame_was_digit:
             print("donedigit",flush=True)
         else:
             skip = 10
+            #cap.set(cv2.CAP_PROP_POS_FRAMES, cap.get(cv2.CAP_PROP_POS_FRAMES)+10)
         last_frame_was_digit = False
 
     if frames_to_output_anyways > 0 and save_to_im_save and args.images:
