@@ -302,7 +302,7 @@ public class Manip {
                             showTimers = true;
                         }
                     }
-                    if (s[0].equals("levelenter")) {
+                    if (s[0].equals("chlevelenter")) {
                         numConsecutiveLevelEnters += 1;
                         if (numConsecutiveLevelEnters >= 10) {
                             if (time - timeOfLastLevelEnter < 1000) {

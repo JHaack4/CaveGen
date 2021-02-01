@@ -39,6 +39,8 @@ if videoFile == 'find':
     list_of_files = glob.glob(args.video_path + "*")
     videoFile = max(list_of_files, key=os.path.getctime)
     print("Using: %s" % videoFile)
+if "/" not in videoFile and "\\" not in videoFile and not isinstance(args.camera, int):
+    videoFile = args.video_path + args.camera
 cap = cv2.VideoCapture(videoFile)
 if isinstance(args.camera, int):
     cap.set(cv2.CAP_PROP_FRAME_WIDTH, 1280)
@@ -123,8 +125,8 @@ def read_digits_on_frame(image):
         score = sorted(score, key=lambda x: x[1])
         pred = score[0][0] if score[0][1] < 0.18 else 10
 
-        if args.verbose:
-            print(",".join(["%d %.3f" % x for x in score]))
+        #if args.verbose:
+        #    print(",".join(["%d %.3f" % x for x in score]))
         if args.images:
             for j in range(11):
                 temp_height,temp_width = templates[j].shape[:2]
@@ -175,6 +177,7 @@ def read_digits_on_frame(image):
 def get_screen_type(frame):
     if frame.max(axis=0).max(axis=0).max(axis=0) < args.fadeout_frame_intensity:
         return "fadeout"
+    height,width = frame.shape[:2]
 
     # look for challenge mode result screen
     x = width//8
@@ -186,9 +189,7 @@ def get_screen_type(frame):
         bm,gm,rm = window_top.min(axis=0).min(axis=0)
         if bM-bm < 35 and gM-gm+rM-rm < 15:
             return "chresult"
-        
-    # look for the word sublevel on the screen
-    height,width = frame.shape[:2]
+    
     x = width
     y = height//20
     window1 = frame[0:4*y, 0:x, :]
@@ -200,7 +201,57 @@ def get_screen_type(frame):
     average2 = window2.mean(axis=0).mean(axis=0)
     average3 = window3.mean(axis=0).mean(axis=0)
     average4 = window4.mean(axis=0).mean(axis=0)
-    average5 = window5.mean(axis=0).mean(axis=0)
+    average5 = window5.max(axis=0).max(axis=0)
+
+    # check for rough brightness levels
+    f = args.fadeout_frame_intensity
+    if max(average5) >= f:
+        return None
+    a = 5
+    b = 45
+    if not (average1[0] < 2*f+a and average1[1] < 2*f+a and average1[2] < 2*f+a and \
+        average2[0] < 2*f+b and average2[1] < 2*f+b and \
+        average3[0] < 2*f+a and average3[1] < 2*f+a and average3[2] < 2*f+a and \
+        average4[0] < 2*f+b and average4[1] < 2*f+b and average4[2] < 2*f+b):
+        return None
+
+    # look for the word sublevel on the screen
+    window4 = frame[10*y:13*y, 0:x, :]
+    col_max = window4.max(axis=2).max(axis=0)
+    black_space = []
+    white_space = []
+    count = 0
+    white = True
+    for i in range(len(col_max)):
+        if col_max[i] > args.letter_intensity_thresh:
+            if not white:
+                black_space.append(count)
+                count = 0
+            white = True
+            count += 1
+        else:
+            if white and count > 0:
+                white_space.append(count)
+                count = 0
+            white = False
+            count += 1
+    black_space.append(count)
+
+    if len(white_space) >= 8 and len(white_space) <= 12 \
+        and max(white_space) > width * 25/960 and max(white_space) < width * 90/960 \
+        and black_space[0] > width/6 and black_space[-1] > width/6 \
+        and (black_space[-2] > white_space[1]/2 or black_space[-3] > white_space[1]/2):
+        # word sublevel is found
+
+        # check for red bg.
+        window2 = frame[4*y:8*y, width//4:3*width//4, :]
+        average2 = window2.mean(axis=0).mean(axis=0)
+        if average2[2]-average2[0] > args.chenter_redness:
+            return "chenter"
+        else:
+            return "storyenter"
+
+    return None
     # print()
     # print(average1)
     # print(average2)
@@ -212,24 +263,24 @@ def get_screen_type(frame):
     # frame[10*y,:,:] = 255
     # frame[13*y,:,:] = 255
 
-    f = args.fadeout_frame_intensity
+    # f = args.fadeout_frame_intensity
 
-    if  average1[0] < f and average1[1] < f and average1[2] < f and \
-        average2[0] < f+45 and average2[1] < f+45 and average2[2] > f+10 and average2[2] < f+65 and abs(average2[0] - average2[2]) > f+5 and \
-        average3[0] < f and average3[1] < f and average3[2] < f and \
-        average4[0] > f and average4[1] > f and average4[2] > f and \
-        average4[0] < f+35 and average4[1] < f+35 and average4[2] < f+35 and \
-        average5[0] < f and average5[1] < f+1 and average5[2] < f+5:
-        return 'chenter'
-    if  average1[0] < f+20 and average1[1] < f+20 and average1[2] < f+20 and \
-        average2[0] < f+40 and average2[1] < f+40 and average2[2] < f+40 and abs(average2[0] - average2[2]) < 6 and abs(average2[0] - average2[1]) < 8 and \
-        average3[0] < f+25 and average3[1] < f+25 and average3[2] < f+25 and \
-        (average4[0] > f or average4[1] > f or average4[2] > f) and \
-        average4[0] < f+40 and average4[1] < f+40 and average4[2] < f+40 and \
-        average5[0] < f+5 and average5[1] < f+5 and average5[2] < f+5:
-        return 'storyenter'
+    # if  average1[0] < f and average1[1] < f and average1[2] < f and \
+    #     average2[0] < f+45 and average2[1] < f+45 and average2[2] > f+10 and average2[2] < f+65 and abs(average2[0] - average2[2]) > f+5 and \
+    #     average3[0] < f and average3[1] < f and average3[2] < f and \
+    #     average4[0] > f and average4[1] > f and average4[2] > f and \
+    #     average4[0] < f+35 and average4[1] < f+35 and average4[2] < f+35 and \
+    #     average5[0] < f and average5[1] < f+1 and average5[2] < f+5:
+    #     return 'chenter'
+    # if  average1[0] < f+20 and average1[1] < f+20 and average1[2] < f+20 and \
+    #     average2[0] < f+40 and average2[1] < f+40 and average2[2] < f+40 and abs(average2[0] - average2[2]) < 6 and abs(average2[0] - average2[1]) < 8 and \
+    #     average3[0] < f+25 and average3[1] < f+25 and average3[2] < f+25 and \
+    #     (average4[0] > f or average4[1] > f or average4[2] > f) and \
+    #     average4[0] < f+40 and average4[1] < f+40 and average4[2] < f+40 and \
+    #     average5[0] < f+5 and average5[1] < f+5 and average5[2] < f+5:
+    #     return 'storyenter'
     
-    return None
+    # return None
 
 # def is_levelenter_screen(frame):
 #     height,width = frame.shape[:2]
@@ -453,11 +504,11 @@ def process_story_frames_name_known():
                         ims = frame[0:max_row_for_falling,xs0_use[i]:xs1_use[i],2]
                         imgs = ims.copy()
                         imgs[last_nonzero,:] = 255
-                        cv2.imwrite("output/!im/" + str(i) + str(l) + str(story_frame_count) + ".png", imgs)
+                        cv2.imwrite("output/!im/debug_" + str(i) + str(l) + str(story_frame_count) + ".png", imgs)
                 
         if args.images:
             falling_img = falling_img + frame/5
-            #cv2.imwrite("output/!im/" + str(count) + "s" + str(story_frame_count) + ".png", img)
+            #cv2.imwrite("output/!im/debug_" + str(count) + "s" + str(story_frame_count) + ".png", img)
         #info_string.append(";")
 
     # if args.verbose:
@@ -531,8 +582,8 @@ def process_story_frames_name_known():
         falling_img[max_row_for_falling,:,0] = 155
 
 
-        cv2.imwrite("output/!im/" + str(count) + "!avg" + ".png", sum_img)
-        cv2.imwrite("output/!im/" + str(count) + "!union_p" + ".png", falling_img)
+        cv2.imwrite("output/!im/debug_" + str(count) + "!avg" + ".png", sum_img)
+        cv2.imwrite("output/!im/debug_" + str(count) + "!union_p" + ".png", falling_img)
 
 
 def random_colorize(img):
@@ -549,9 +600,9 @@ count = 0
 last_frame_was_digit = False
 last_perf_time = time.perf_counter()
 
-frame_for_save_count = 0
-frames_to_output_anyways = 0
-save_to_im_save = False
+# frame_for_save_count = 0
+# frames_to_output_anyways = 0
+# save_to_im_save = False
 
 # while True:
 #     frame_for_save_count += 1
@@ -586,12 +637,12 @@ while(cap.isOpened()):
     frame_type = get_screen_type(frame)
     
     if frame_type == 'fadeout':
-        print("fadeout " + str(count)),flush=True)
+        print("fadeout " + str(count),flush=True)
     elif frame_type == 'chenter':
-        print("levelenter", flush=True)
+        print("chlevelenter", flush=True)
     elif frame_type == 'storyenter':
         print("storyenter " + str(count), flush=True)
-        #cv2.imwrite("output/!im/" + str(count) + "test.png",frame)
+        #cv2.imwrite("output/!im/debug_" + str(count) + "test.png",frame)
         img = frame.copy()
         story_frames.append(img)
         #_,img = cv2.threshold(img,args.letter_intensity_thresh,255,cv2.THRESH_BINARY)
@@ -605,7 +656,7 @@ while(cap.isOpened()):
             story_frames.append(img)
             story_frames_processed = False
         frames_since_last_story = 0
-        frames_to_output_anyways = 40
+        # frames_to_output_anyways = 40
 
         if frames_since_first_story >= (75 if args.images else 60) and len(story_frames) >= (70 if args.images else 60):
             if not story_frames_processed:
@@ -623,16 +674,16 @@ while(cap.isOpened()):
             #cap.set(cv2.CAP_PROP_POS_FRAMES, cap.get(cv2.CAP_PROP_POS_FRAMES)+10)
         last_frame_was_digit = False
 
-    if frames_to_output_anyways > 0 and save_to_im_save and args.images:
-        frames_to_output_anyways -= 1
-        frame_for_save_count += 1
-        cv2.imwrite("im_save/" + str(frame_for_save_count) + ".png", frame)
-        if frames_to_output_anyways == 0:
-            for jjj in range(40):
-                jjjj = frame.copy()
-                jjjj[:,:,:]=0
-                frame_for_save_count += 1
-                cv2.imwrite("im_save/" + str(frame_for_save_count) + ".png", jjjj)
+    # if frames_to_output_anyways > 0 and save_to_im_save and args.images:
+    #     frames_to_output_anyways -= 1
+    #     frame_for_save_count += 1
+    #     cv2.imwrite("im_save/" + str(frame_for_save_count) + ".png", frame)
+    #     if frames_to_output_anyways == 0:
+    #         for jjj in range(40):
+    #             jjjj = frame.copy()
+    #             jjjj[:,:,:]=0
+    #             frame_for_save_count += 1
+    #             cv2.imwrite("im_save/" + str(frame_for_save_count) + ".png", jjjj)
 
     
     if args.playback:

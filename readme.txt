@@ -168,35 +168,48 @@ SUBLEVEL KNOWLEDGE
 32. Why does the treasure sometimes not spawn on SCx7? SC4? GK3? CoS4? How are all of these cases different?
 
 
-REAL TIME CONTINOUS CHALLENGE MODE MANIPULATION:
-1) Install: Git, Python (with numpy & opencv), and OBS (with VirtualCam).
-2) Use Git to download CaveGen from GitHub (this way, you can easily pull updates)
-3) Test that VirtualCam works from OBS (can use Google hangouts or some other way to read your camera)
-4) Configure OBS in some reasonable way, and record a video of challenge mode result screen digits
-5) Modify continous_config.py so that images is True, "camera"="find", and video_path to the directory of your recorded video
-6) Run python continuous.py, and make sure it's reading the video you recorded
-7) Create a new directory and set templates to point there, and set generate_new_templates to True
-8) Tweak the parameters x,y,height,width,spacing until you crop out well shaped templates (important to make these as perfect as possible)
-9) Select a set of templates, and name them 0,1,...,9 and _.png. (similar to files/digits_wii)
-10) Set images and generate_new_templates back to False, and see if continuous can read the digits
-11) Once you're satisfied that continous.py can read digits, set camera back to 1 (or whatever port VirtualCam outputs to)
-12) Configure manip_config.txt to your desired parameters
-13) Run the score attack manip with: seed manip attk
-14) If you want to run the CMAL manip, you need a special file called a timestable. You can create one yourself with "seed timestable key|cmat|700k", 
-	but this will take ~30hr to run. See if someone on the discord has already uploaded it separately (it's ~4GB)
 
-
-SEED DETECTION FROM LETTERS:
-1) Install: Git, Java, Python 3.6+ (with numpy & opencv-python), and OBS Studio (version 25.0+, with VirtualCam plugin https://obsproject.com/forum/resources/obs-virtualcam.949/).
-2) Use Git to download CaveGen from GitHub (git clone https://github.com/jhaack4/CaveGen) (this way, you can easily pull updates)
-3) Test that VirtualCam works from OBS (can use Google hangouts or some other way to read your camera)
-4) Configure OBS in some reasonable way, perferrably with 720x1280 resolution. 
-5) Record/download a video of letters falling. Ideally, this video starts on EC1 and goes through at least WFG1.
-5) Modify continouous_config.py so that camera is "find", and the video path points to your video directory. Set playback and images to True.
-6) Adjust the crop parameters until you've cropped out just the gameplay from the video.
-7) Adjust the fadeout_frame_intensity parameter until it detects fadeouts correctly (can use paint to find the darkness of a fadeout in your video, set this param to slightly larger than that)
-8) Adjust the letters_* parameters until the debug images in the im/ folder match for HoB.
-9) Adjust the x_scrunch_limit parameter until WFG matches up.
-10) Adjust letter_intensity_thresh until the debug images correctly pick out letters.
-11) Run the command "seed manip pod", and test if it now correctly reads the seeds. From the GUI, use "[" and "]" to change the expected sublevel.
-12) If you want to run from a live OBS feed, use virtual cam, and set the camera in the config to 1, 2, ... until you find the right camera. To use the virtual camera, go to tools > camera.
+REAL TIME SEED DETECTION (FOR CHALLENGE MODE AND STORY MODE)
+1) Install Git (https://git-scm.com/downloads)
+2) Install python 3.6+ (https://www.python.org/downloads/)
+3) Use pip to install numpy and cv2
+4) Install Java (https://www.java.com/en/download/)
+5) Install OBS (https://obsproject.com/download)
+6) Install the virtual cam plugin for OBS (https://obsproject.com/forum/resources/obs-virtualcam.949/)
+7) Use Git to download CaveGen from GitHub (git clone https://github.com/jhaack4/CaveGen)
+8) Configure OBS in some reasonable way (unobstructed game feed). Once you've set up the configuration, you can't change your layout.
+9) Record a video of yourself playing. Make sure you get the letters from at least 2 different caves, one of which is WFG. 
+		Also, record yourself playing through a challenge mode level, where you get a score of exactly 1000 (including the results screen) (Red Chasm recommended)
+10) For the rest of the time, you will be editing the file "config.txt". This is the only text file you will edit.
+11) In the config, set video_path to the directory that your OBS videos are outputting to.
+12) Set camera to the name of your video (e.g. "vid.mp4")
+13) Run "python setup_seed_detect.py" from the command line, in the CaveGen folder. You should see a playback of your video.
+14) Use d/f/g to navigate through your video. Manually save frames using "s" for each of the following: Sublevel enter screens (after all of the letters have already fallen) (one per cave is fine),
+		a full fadeout, the challenge mode entry screen (text with red/orange background), and the challenge mode results screen (make sure to get a few instances of each possible digit)
+15) Navigate to output/!im. Here, you should see all of the images that you saved.
+16) Rename the images. For story mode enters, name them e.g. "Emergence_Cave.png". Call the fadeout "fadeout.png".
+		Call the challenge mode enter screen "challenge_mode_enter.png". For each screen with digits, name the image using the digits e.g. "1234.png".
+17) At this point, we will be editing the config so it can pull out important information from these pictures.
+		Whenever the config is edited, you will rerun "python setup_seed_detect.py", which will generate new images in output/!im called out_*
+18) In the config, edit the crop parameters until you have cropped out just the game feed.
+19) If the output from the setup_seed_detect recommends for you to change a parameter in the config, make that change.
+--STORY MODE
+20) Adjust the parameters letters_xscale/yscale/xoffset/yoffset until the letters line up in the output image.
+		Note, the story mode detection only works in English.
+21) Adjust the parameter x_scrunch_limit until WFG lines up in the output image.
+		For these two steps, you need the calibration to be pretty good, but not perfect. If it's off by <5 pixels, it's probably ok.
+22) Run "seed detect pod" from the command line. Hopefully, it can pick up seeds at this point.
+		Note, the tool needs to know what sublevel you are entering, it doesn't try to figure that out for you.
+		Use [ and ] until the Next expect is the sublevel you are about to enter, and Shift-K to switch the expected captain.
+--CHALLENGE MODE
+23) Tweak the parameters digits_x/y/height/width/spacing until you crop out well shaped template digits
+		(important to make these as perfect as possible)
+24) Select a set of templates, and name them 0,1,...,9 and _.png. Replace the templates in files/templates/digits.
+25) Run "seed manip attk" from the command line. Hopefully, it can pick up the seeds at this point.
+--RTA SETUP
+26) From OBS, go to tools -> virtual cam. Hit start.
+27) In the config, set the camera to 0,1,2,... and run "seed detect pod" or "seed manip attk" until you see your obs feed.
+		If everything is working, you should be able to detect seeds at this point.
+28) There are additional parameters in the config that you can play around with.
+29) If you want to run the CMAL manip, you'll need to ask jhawk for a special file (which is too large to keep in github)
+		You could generate it yourself with "seed timestable key|cmat|700k" but it would take ~2 days to compute.

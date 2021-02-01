@@ -21,6 +21,16 @@ def generate_args():
     args.images = True
 generate_args()
 
+templates = []
+def digit_templates():
+    global templates
+    templates = []
+
+    for i in range(10):
+        temp = cv2.imread(args.templates + str(i) + ".png",cv2.IMREAD_UNCHANGED)
+        templates.append(temp)
+    templates.append(cv2.imread(args.templates + "_.png",cv2.IMREAD_UNCHANGED))
+
 
 letters = {}
 letters_height = {}
@@ -82,6 +92,7 @@ def pull_numbers_from_image(frame, numbers):
     frame[4*y,3*x:5*x,:] = 255
 
     # crop out letters
+    output_digits = ""
     for i in range(5):
         img = frame[args.digits_y:args.digits_y+args.digits_height, args.digits_x+args.digits_spacing*i:args.digits_x+args.digits_spacing*i+args.digits_width, :]
         img = img.copy()
@@ -90,14 +101,73 @@ def pull_numbers_from_image(frame, numbers):
         blur[:,:] = frame.mean(axis=0).mean(axis=0)
         diff = cv2.subtract(128 + cv2.subtract(img,blur),cv2.subtract(blur,img))
         diff = cv2.cvtColor(diff, cv2.COLOR_BGR2GRAY)
-        cv2.imwrite("output/!im/out_z" + numbers.replace(" ","") + "_" + str(i+1) + "_" + numbers[i].replace(" ","_") + ".png", img)
+        
+        cv2.imwrite("output/!im/out_z" + numbers.replace(" ","") + "_" + str(i+1) + "_" + numbers[i].replace(" ","_") + ".png", diff)
         frame[args.digits_y, args.digits_x+args.digits_spacing*i:args.digits_x+args.digits_spacing*i+args.digits_width, :] = 255
         frame[args.digits_y+args.digits_height, args.digits_x+args.digits_spacing*i:args.digits_x+args.digits_spacing*i+args.digits_width, :] = 255
         frame[args.digits_y:args.digits_y+args.digits_height, args.digits_x+args.digits_spacing*i+args.digits_width, :] = 255
         frame[args.digits_y:args.digits_y+args.digits_height, args.digits_x+args.digits_spacing*i, :] = 255
 
+        score = []
+        #score_addn = [-0.02, 0.015, 0, 0.01, 0,  0, 0, 0.015, 0, 0,  0.07]
+        score_addn = [0,0.01,0,0.01,0, 0,0,0,0,0, 0.03]
+        for j in range(11):
+            template = templates[j]
+            res = cv2.matchTemplate(diff,template,cv2.TM_SQDIFF_NORMED)
+            score.append((j,res.min(axis=0).min(axis=0) + score_addn[j]))
+
+        score = sorted(score, key=lambda x: x[1])
+        pred = score[0][0] if score[0][1] < 0.18 else 10
+        output_digits += " " if pred == 10 else str(pred)
+
+    if output_digits != numbers:
+        print("Warning: digit reader failed on " + str(numbers) + " (read " + output_digits + ")")
+
     cv2.imwrite("output/!im/out_" + numbers.replace(" ","") + ".png", frame)
 
+def handle_chenter_image(frame):
+    height,width = frame.shape[:2]
+
+    x = width
+    y = height//20
+    window4 = frame[10*y:13*y, 0:x, :]
+    col_max = window4.max(axis=2).max(axis=0)
+    black_space = []
+    white_space = []
+    count = 0
+    white = True
+    for i in range(len(col_max)):
+        if col_max[i] > args.letter_intensity_thresh:
+            if not white:
+                black_space.append(count)
+                count = 0
+            white = True
+            count += 1
+        else:
+            if white and count > 0:
+                white_space.append(count)
+                count = 0
+            white = False
+            count += 1
+    black_space.append(count)
+
+    #if len(white_space) >= 8 and len(white_space) <= 12 and max(white_space) > width * 25/960 and max(white_space) < width * 90/960 and black_space[0] > width/6 and black_space[-1] > width/6 and (black_space[-2] > white_space[1]/2 or black_space[-3] > white_space[1]/2):
+    #    print("Sublevel")
+
+    #print(white_space)
+    #print(black_space)
+
+    window2 = frame[4*y:8*y, width//4:3*width//4, :]
+    average2 = window2.mean(axis=0).mean(axis=0)
+    #print(average2)
+
+    print("Recommend set chenter_redness=" + str(int((average2[2]-average2[0])*0.42)))
+
+    frame[4*height//20,:,:] = 255
+    frame[8*height//20,:,:] = 255
+    frame[10*height//20,:,:] = 255
+    frame[13*height//20,:,:] = 255
+    cv2.imwrite("output/!im/out_challenge_mode_enter.png", frame)
 
 
 def draw_letters_on_image(img_in, cave_name):
@@ -190,13 +260,14 @@ except FileExistsError:
 def process_align_frames():
     generate_args()
     letter_templates()
+    digit_templates()
     global recommend_chresult_color
     recommend_chresult_color = False
 
     file_names = glob.glob("output/!im/*.png")
 
     for file_name in file_names:
-        if "raw_" in file_name or "out_" in file_name: continue
+        if "raw_" in file_name or "out_" in file_name or "debug_" in file_name: continue
         #print(file_name)
 
         # resize and crop
@@ -234,6 +305,7 @@ def process_align_frames():
             pass
         elif comp_name == "challenge_mode_enter":
             # recommend more param changes
+            handle_chenter_image(frame)
             pass
         elif comp_name.isdigit():
             # pull out some digits and recommend color parameters
@@ -259,6 +331,8 @@ else:
     elif isinstance(args.camera, int):
         print("make sure camera is a video, not virtual cam")
         sys.exit(0)
+    elif "/" not in videoFile and "\\" not in videoFile:
+        videoFile = args.video_path + args.camera
     
 cap = cv2.VideoCapture(videoFile)
 
