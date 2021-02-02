@@ -39,7 +39,7 @@ if videoFile == 'find':
     list_of_files = glob.glob(args.video_path + "*")
     videoFile = max(list_of_files, key=os.path.getctime)
     print("Using: %s" % videoFile)
-if "/" not in videoFile and "\\" not in videoFile and not isinstance(args.camera, int):
+if not isinstance(args.camera, int) and "/" not in videoFile and "\\" not in videoFile:
     videoFile = args.video_path + args.camera
 cap = cv2.VideoCapture(videoFile)
 if isinstance(args.camera, int):
@@ -240,6 +240,8 @@ def get_screen_type(frame):
     if len(white_space) >= 8 and len(white_space) <= 12 \
         and max(white_space) > width * 25/960 and max(white_space) < width * 90/960 \
         and black_space[0] > width/6 and black_space[-1] > width/6 \
+        and black_space[0] < width/3 and black_space[-1] < width/3 \
+        and sum(white_space) > width * 280/960 \
         and (black_space[-2] > white_space[1]/2 or black_space[-3] > white_space[1]/2):
         # word sublevel is found
 
@@ -648,7 +650,7 @@ while(cap.isOpened()):
         #_,img = cv2.threshold(img,args.letter_intensity_thresh,255,cv2.THRESH_BINARY)
         #kernel = np.ones((3, 3), np.uint8) 
         #img = cv2.erode(img, kernel) 
-        if frames_since_last_story > 10:
+        if frames_since_last_story > 15:
             falling_img = np.zeros(frame.shape)
             union_img = np.zeros(frame.shape)
             frames_since_first_story = 0
@@ -670,7 +672,7 @@ while(cap.isOpened()):
         if last_frame_was_digit:
             print("donedigit",flush=True)
         else:
-            skip = 10
+            skip = 0 if isinstance(args.camera, int) else 10
             #cap.set(cv2.CAP_PROP_POS_FRAMES, cap.get(cv2.CAP_PROP_POS_FRAMES)+10)
         last_frame_was_digit = False
 

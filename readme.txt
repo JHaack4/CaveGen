@@ -176,34 +176,35 @@ REAL TIME SEED DETECTION (FOR CHALLENGE MODE AND STORY MODE)
 4) Install Java (https://www.java.com/en/download/)
 5) Install OBS (https://obsproject.com/download)
 6) Install the virtual cam plugin for OBS (https://obsproject.com/forum/resources/obs-virtualcam.949/)
-7) Use Git to download CaveGen from GitHub (git clone https://github.com/jhaack4/CaveGen)
+7) Use Git to download CaveGen from GitHub (git clone https://github.com/jhaack4/CaveGen from the command line)
 8) Configure OBS in some reasonable way (unobstructed game feed). Once you've set up the configuration, you can't change your layout.
 9) Record a video of yourself playing. Make sure you get the letters from at least 2 different caves, one of which is WFG. 
 		Also, record yourself playing through a challenge mode level, where you get a score of exactly 1000 (including the results screen) (Red Chasm recommended)
 10) For the rest of the time, you will be editing the file "config.txt". This is the only text file you will edit.
 11) In the config, set video_path to the directory that your OBS videos are outputting to.
-12) Set camera to the name of your video (e.g. "vid.mp4")
+12) Set camera to the name of your video in the video_path folder (e.g. "vid.mp4")
 13) Run "python setup_seed_detect.py" from the command line, in the CaveGen folder. You should see a playback of your video.
 14) Use d/f/g to navigate through your video. Manually save frames using "s" for each of the following: Sublevel enter screens (after all of the letters have already fallen) (one per cave is fine),
-		a full fadeout, the challenge mode entry screen (text with red/orange background), and the challenge mode results screen (make sure to get a few instances of each possible digit)
+		a full black fadeout, and the challenge mode results screen (make sure to get a few instances of each possible digit)
 15) Navigate to output/!im. Here, you should see all of the images that you saved.
 16) Rename the images. For story mode enters, name them e.g. "Emergence_Cave.png". Call the fadeout "fadeout.png".
-		Call the challenge mode enter screen "challenge_mode_enter.png". For each screen with digits, name the image using the digits e.g. "1234.png".
+		For each screen with digits, name the image using the digits e.g. "1234.png".
 17) At this point, we will be editing the config so it can pull out important information from these pictures.
 		Whenever the config is edited, you will rerun "python setup_seed_detect.py", which will generate new images in output/!im called out_*
-18) In the config, edit the crop parameters until you have cropped out just the game feed.
+18) In the config, edit the resize/crop parameters until you have cropped out just the game feed. Resizing to 1280x720 is recommended.
 19) If the output from the setup_seed_detect recommends for you to change a parameter in the config, make that change.
 --STORY MODE
-20) Adjust the parameters letters_xscale/yscale/xoffset/yoffset until the letters line up in the output image.
+20) Adjust the parameters letters_xscale/yscale/xoffset/yoffset until the letters line up in the output image e.g. output/!im/out_Emergence_Cave.png.
+		You should be able to figure out the correct numbers via trial and error.
 		Note, the story mode detection only works in English.
 21) Adjust the parameter x_scrunch_limit until WFG lines up in the output image.
 		For these two steps, you need the calibration to be pretty good, but not perfect. If it's off by <5 pixels, it's probably ok.
-22) Run "seed detect pod" from the command line. Hopefully, it can pick up seeds at this point.
+22) Run "seed detect pod" from the command line. Hopefully, it can pick up seeds from the video at this point.
 		Note, the tool needs to know what sublevel you are entering, it doesn't try to figure that out for you.
-		Use [ and ] until the Next expect is the sublevel you are about to enter, and Shift-K to switch the expected captain.
+		Use [ and ] until the Next expect is the sublevel you are about to enter. (use Shift-K to switch the expected captain)
 --CHALLENGE MODE
 23) Tweak the parameters digits_x/y/height/width/spacing until you crop out well shaped template digits
-		(important to make these as perfect as possible)
+		(it's important to make these as perfectly spaced as possible. A digit should look the same regardless of its position)
 24) Select a set of templates, and name them 0,1,...,9 and _.png. Replace the templates in files/templates/digits.
 25) Run "seed manip attk" from the command line. Hopefully, it can pick up the seeds at this point.
 --RTA SETUP

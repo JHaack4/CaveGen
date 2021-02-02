@@ -1,7 +1,7 @@
 {"___________________camera_params___________":"",
  "camera":"find", # Use a path to a video for a video. Use 0/1/2... for OBS virtual camera. Use "find" to use the most recent video in the video path folder.
  "video_path":"C:\Users\Jordan\Videos\",
- "playback":True,
+ "playback":True, # shows the captured gameplay feed/video
  "images":False, # creates additional debug images in output/!im
  "verbose":True,
  "resize":False,
@@ -10,19 +10,19 @@
  "crop":True,
  "crop_y1":0,
  "crop_y2":720,
- "crop_x1":320,
- "crop_x2":1280,
+ "crop_x1":160,
+ "crop_x2":1120,
  "___________________digits_params___________":"",
- "digits_y": 237,
+ "digits_y": 237,         # defines the location of the cropped out digits
  "digits_x": 345,
- "digits_spacing":58,
- "digits_width":56,
+ "digits_spacing":58,     # defines the space between the cropped out digits
+ "digits_width":56,       # defines the size of the cropped out digits
  "digits_height":56,
- "chresult_color_b":242,
+ "chresult_color_b":242,  # defines the color used to detect the results screen
  "chresult_color_g":0,
  "chresult_color_r":1,
  "chenter_redness":15,
- "templates":"files/templates/digits/",
+ "templates":"files/templates/digits/",  # folder used for template digits
  "___________________letters_params___________":"",
  "fadeout_frame_intensity":6,   # controls the darkness used to detect a fadeout
  "letter_intensity_thresh":11,  # controls the darkness used to detect a fadeout

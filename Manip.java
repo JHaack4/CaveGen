@@ -40,6 +40,7 @@ public class Manip {
         boolean pod_mode = mode.equals("pod");
         boolean at_mode = mode.equals("at");
         boolean storyMode = pod_mode || at_mode;
+        String attkMode = storyMode ? "attk" : mode;
 
         if (!(mode.equals("key") || mode.equals("cmat") || mode.equals("700k") || mode.equals("attk") || mode.equals("pod") || mode.equals("at"))) {
             System.out.println("Bad mode.");
@@ -171,7 +172,7 @@ public class Manip {
             }
             lateStageStdevs[i] = Math.sqrt(lateStageStdevs[i]);
         }
-        System.out.println("stdevs: " + Arrays.toString(lateStageStdevs) +"\n\n");
+        // System.out.println("stdevs: " + Arrays.toString(lateStageStdevs) +"\n\n");
 
         storyLevelsOrder = new ArrayList<String>();
         storyLevelsIndex = 0;
@@ -255,8 +256,10 @@ public class Manip {
                             }
                             repaintManip();
                             for (int i = 1; i <= 30; i++) {
-                                if (levelsToPlay[i]) levelsPlayed[i] = false;
-                                else if (levelsToIgnore[i]) levelsPlayed[i] = true;
+                                if (!realTimeAttackMode) {
+                                    if (levelsToPlay[i]) levelsPlayed[i] = false;
+                                    else if (levelsToIgnore[i]) levelsPlayed[i] = true;
+                                }
                             }
                         }
                         if (numDigitsRead < 3000) {
@@ -272,7 +275,7 @@ public class Manip {
                                 System.out.println("Failed to detect seed, you are on your own");
                                 readyToGenerate = true;
                             } else if (seedRead) {
-                                System.out.println("Detected seed: " + Drawer.seedToString(lastReadSeed) + " " + seed.nth_inv(lastReadSeed));
+                                System.out.println("Detected seed: " + Drawer.seedToString(lastReadSeed) + " n" + seed.nth_inv(lastReadSeed));
                                 readyToGenerate = true;
                             }
                         }
@@ -451,7 +454,7 @@ public class Manip {
                         + "CH11-1,CH12-1,CH13-1,CH14-1,CH15-1,CH16-1,CH17-1,CH18-1,CH19-1,CH20-1,CH21-1,"
                         + "CH22-1,CH23-1,CH24-1,CH25-1,CH26-1,CH27-1,CH28-1,CH29-1,CH30-1 "
                         + "-consecutiveseeds -seed 0x" + Drawer.seedToString(firstSeedToConsider) 
-                        + " -num " + numSeedsToConsider + " -judge " + mode;
+                        + " -num " + numSeedsToConsider + " -judge " + attkMode;
                     System.out.println("Generating levels...");
                     CaveGen.main(args.split(" "));
                     System.out.println("Done generating levels.");
@@ -513,24 +516,29 @@ public class Manip {
                         }
 
                         text1.append("Seed: " + (unknownSeed ? "???" : Drawer.seedToString(lastReadSeed)) + "\n");
-                        text1.append("Seed: " + (unknownSeed ? "???" : seed.nth_inv(lastReadSeed)) + "\n");
+                        text1.append("Seed: " + (unknownSeed ? "???" : "n"+seed.nth_inv(lastReadSeed)) + "\n");
                         System.out.println("num played level " + numLevelsPlayed +"/30");
                         System.out.println("last played level " + lastStagePlayed);
                         System.out.printf("run duration: %dm%ds \n", (int)((time-runStartTime)/60000), (int)((time-runStartTime)/1000)%60);
                         text1.append(numLevelsPlayed +"/30" + " last=" + lastStagePlayed + "\n");
                         System.out.println("delta: " + (int)((time-runStartTime)/1000 - splitsSum));
                         if (runStartTime > 0)
-                            text1.append(String.format("%dm%ds\n%d\n", (int)((time-runStartTime)/60000), (int)((time-runStartTime)/1000)%60, (int)((time-runStartTime)/1000 - splitsSum)));
+                            text1.append(String.format("time=%dm%ds\n%d\n", (int)((time-runStartTime)/60000), (int)((time-runStartTime)/1000)%60, (int)((time-runStartTime)/1000 - splitsSum)));
                     } else {
                         if (runStartTime > 0)
-                            text1.append(String.format("%dm%ds\n", (int)((time-runStartTime)/60000), (int)((time-runStartTime)/1000)%60));
-                        text1.append(numLevelsPlayed +"" + " last=" + lastStagePlayed + "\n");
+                            text1.append(String.format("time=%dm%ds\n", (int)((time-runStartTime)/60000), (int)((time-runStartTime)/1000)%60));
+                        text1.append("num=" + numLevelsPlayed +"" + " last=" + lastStagePlayed + "\n");
                     }
 
                     StringBuilder textPlay = new StringBuilder();
                     for (int i = 1; i <= 30; i++) {
-                        System.out.print(levelsToPlay[i] ? "P" : levelsToIgnore[i] ? "I" : levelsPlayed[i] ? "X" : "O");
-                        textPlay.append(levelsToPlay[i] ? "P" : levelsToIgnore[i] ? "I" : levelsPlayed[i] ? "X" : "O");
+                        if (realTimeAttackMode) {
+                            System.out.print(levelsPlayed[i] ? "X" : "O");
+                            textPlay.append(levelsPlayed[i] ? "X" : "O");
+                        } else {
+                            System.out.print(levelsToPlay[i] ? "P" : levelsToIgnore[i] ? "I" : levelsPlayed[i] ? "X" : "O");
+                            textPlay.append(levelsToPlay[i] ? "P" : levelsToIgnore[i] ? "I" : levelsPlayed[i] ? "X" : "O");
+                        }
                         if (i%5 == 0) {
                             System.out.println();
                             textPlay.append("\n");
@@ -769,7 +777,7 @@ public class Manip {
                     dt = Math.max(0,Math.min(30*9.9,dt));
                     text.append(Drawer.seedToString(timerCurSeed) + " " + seed.dist(timerStartSeed,timerCurSeed) + " " 
                             + String.format("%3.1f", dt/30.0) + "\n");
-                    text.append(String.format("fd=%d le=%d,tl=%d\n",  numFadeouts, numLevelEnters, numTitleLoops));
+                    text.append(String.format("fd=%d,en=%d,lp=%d\n",  numFadeouts, numLevelEnters, numTitleLoops));
 
                     if (specialTargetSeed > 0) {
                         text.append("special target:\n CH" + specialTargetLevel + " " + Drawer.seedToString(specialTargetSeed) + "\n ");
@@ -918,7 +926,7 @@ public class Manip {
                             splitsSum += 60*Math.floor(splits[i]) + 100*(splits[i]-Math.floor(splits[i]));
                         //}
                     }
-                    System.out.println("Splits time: " + (splitsSum/60) + "m" + (splitsSum%60) + "s");
+                    System.out.println("Config reloaded (splits=" + (splitsSum/60) + "m" + (splitsSum%60) + "s)");
                     sc2.close();
                 }
                 if (a.equals("attkRankThreshold")) {
@@ -927,7 +935,7 @@ public class Manip {
                     for (int i = 0; i < 30; i++) {
                         rankCutoffs[i+1] = Double.parseDouble(sc2.next().trim());
                     }
-                    System.out.println("Rank cutoffs: " + Arrays.toString(rankCutoffs));
+                    //System.out.println("Rank cutoffs: " + Arrays.toString(rankCutoffs));
                     sc2.close();
                 }
                 if (a.equals("levelsToPlay")) {
@@ -938,7 +946,7 @@ public class Manip {
                         int p = Integer.parseInt(sc2.next().trim());
                         levelsToPlay[p] = true;
                     }
-                    System.out.println("Override levels to play: " + Arrays.toString(levelsToPlay));
+                    //System.out.println("Override levels to play: " + Arrays.toString(levelsToPlay));
                     sc2.close();
                 }
                 if (a.equals("levelsToIgnore")) {
@@ -949,7 +957,7 @@ public class Manip {
                         int p = Integer.parseInt(sc2.next().trim());
                         levelsToIgnore[p] = true;
                     }
-                    System.out.println("Override levels to ignore: " + Arrays.toString(levelsToIgnore));
+                    //System.out.println("Override levels to ignore: " + Arrays.toString(levelsToIgnore));
                     sc2.close();
                 }
             }
@@ -1247,7 +1255,7 @@ public class Manip {
                     columnBlanks += "X";
                 }
             }
-            System.out.println(columnBlanks + " (" + numBlankColumns + " blank)");
+            System.out.print(columnBlanks + " (" + numBlankColumns + " blank) ");
         }
 
         // see if we are on the final frame where any advance happens
