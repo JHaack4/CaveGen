@@ -384,25 +384,25 @@ def process_align_frames():
             print("Recommend set letter_intensity_thresh=" + str(int(darkness+9.99)))
             cv2.imwrite("output/!im/out_"+comp_name+".png", frame)
             if "fadeout" != get_screen_type(frame):
-                print("Warning, fadeout not detected as type fadeout")
+                print("Warning, fadeout not detected as type fadeout, was " + get_screen_type(frame))
             pass
         elif comp_name == "challenge_mode_enter":
             # recommend more param changes
             handle_chenter_image(frame)
             if "chenter" != get_screen_type(frame):
-                print("Warning, challenge_mode_enter not detected as type chenter")
+                print("Warning, challenge_mode_enter not detected as type chenter, was " + get_screen_type(frame))
             pass
         elif comp_name.isdigit():
             # pull out some digits and recommend color parameters
             pull_numbers_from_image(frame, comp_name)
             recommend_chresult_color = True
             if "chresult" != get_screen_type(frame):
-                print("Warning, " + comp_name + " not detected as type chresult")
+                print("Warning, " + comp_name + " not detected as type chresult, was " + get_screen_type(frame))
             pass
         else:
             cv2.imwrite("output/!im/out_"+comp_name+".png", draw_letters_on_image(frame, comp_name.replace("_"," ")))
             if "storyenter" != get_screen_type(frame):
-                print("Warning, " + comp_name + " not detected as type storyenter")
+                print("Warning, " + comp_name + " not detected as type storyenter, was " + get_screen_type(frame))
             pass
 
 
