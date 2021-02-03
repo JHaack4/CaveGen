@@ -71,6 +71,87 @@ def letter_templates():
     other_letters_w = {" ": args.space_mult, "'": args.apostrophe_mult}
 
 
+def get_screen_type(frame):
+    if frame.max(axis=0).max(axis=0).max(axis=0) < args.fadeout_frame_intensity:
+        return "fadeout"
+    height,width = frame.shape[:2]
+
+    # look for challenge mode result screen
+    x = width//8
+    y = height//100
+    window_top = frame[y:4*y, 3*x:5*x, :]
+    b,g,r = window_top.mean(axis=0).mean(axis=0)
+    if abs(b-args.chresult_color_b) < 20 and abs(g-args.chresult_color_g) + abs(r-args.chresult_color_r) < 10:
+        bM,gM,rM = window_top.max(axis=0).max(axis=0)
+        bm,gm,rm = window_top.min(axis=0).min(axis=0)
+        if bM-bm < 35 and gM-gm+rM-rm < 15:
+            return "chresult"
+    
+    x = width
+    y = height//20
+    window1 = frame[0:4*y, 0:x, :]
+    window2 = frame[4*y:8*y, 0:x, :]
+    window3 = frame[8*y:10*y, 0:x, :]
+    window4 = frame[10*y:13*y, x//4:3*x//4, :]
+    window5 = frame[13*y:height, 0:x, :]
+    average1 = window1.mean(axis=0).mean(axis=0)
+    average2 = window2.mean(axis=0).mean(axis=0)
+    average3 = window3.mean(axis=0).mean(axis=0)
+    average4 = window4.mean(axis=0).mean(axis=0)
+    average5 = window5.max(axis=0).max(axis=0)
+
+    # check for rough brightness levels
+    f = args.fadeout_frame_intensity
+    if max(average5) >= f:
+        return None
+    a = 5
+    b = 45
+    if not (average1[0] < 2*f+a and average1[1] < 2*f+a and average1[2] < 2*f+a and \
+        average2[0] < 2*f+b and average2[1] < 2*f+b and \
+        average3[0] < 2*f+a and average3[1] < 2*f+a and average3[2] < 2*f+a and \
+        average4[0] < 2*f+b and average4[1] < 2*f+b and average4[2] < 2*f+b):
+        return None
+
+    # look for the word sublevel on the screen
+    window4 = frame[10*y:13*y, 0:x, :]
+    col_max = window4.max(axis=2).max(axis=0)
+    black_space = []
+    white_space = []
+    count = 0
+    white = True
+    for i in range(len(col_max)):
+        if col_max[i] > args.letter_intensity_thresh:
+            if not white:
+                black_space.append(count)
+                count = 0
+            white = True
+            count += 1
+        else:
+            if white and count > 0:
+                white_space.append(count)
+                count = 0
+            white = False
+            count += 1
+    black_space.append(count)
+
+    if len(white_space) >= 8 and len(white_space) <= 12 \
+        and max(white_space) > width * 25/960 and max(white_space) < width * 90/960 \
+        and black_space[0] > width/6 and black_space[-1] > width/6 \
+        and black_space[0] < width/3 and black_space[-1] < width/3 \
+        and sum(white_space) > width * 280/960 \
+        and (black_space[-2] > white_space[1]/2 or black_space[-3] > white_space[1]/2):
+        # word sublevel is found
+
+        # check for red bg.
+        window2 = frame[4*y:8*y, width//4:3*width//4, :]
+        average2 = window2.mean(axis=0).mean(axis=0)
+        if average2[2]-average2[0] > args.chenter_redness:
+            return "chenter"
+        else:
+            return "storyenter"
+
+    return None
+
 recommend_chresult_color = False
 def pull_numbers_from_image(frame, numbers):
     height,width = frame.shape[:2]
@@ -299,21 +380,29 @@ def process_align_frames():
         if comp_name == "fadeout":
             # detect fadeout darkness and recommend parameter changes
             darkness = frame.max(axis=0).max(axis=0).max(axis=0)
-            print("Recommend set fadeout_frame_intensity=" + str(int(darkness+2.99)))
+            print("Recommend set fadeout_frame_intensity=" + str(int(darkness+3.99)))
             print("Recommend set letter_intensity_thresh=" + str(int(darkness+9.99)))
             cv2.imwrite("output/!im/out_"+comp_name+".png", frame)
+            if "fadeout" != get_screen_type(frame):
+                print("Warning, fadeout not detected as type fadeout")
             pass
         elif comp_name == "challenge_mode_enter":
             # recommend more param changes
             handle_chenter_image(frame)
+            if "chenter" != get_screen_type(frame):
+                print("Warning, challenge_mode_enter not detected as type chenter")
             pass
         elif comp_name.isdigit():
             # pull out some digits and recommend color parameters
             pull_numbers_from_image(frame, comp_name)
             recommend_chresult_color = True
+            if "chresult" != get_screen_type(frame):
+                print("Warning, " + comp_name + " not detected as type chresult")
             pass
         else:
             cv2.imwrite("output/!im/out_"+comp_name+".png", draw_letters_on_image(frame, comp_name.replace("_"," ")))
+            if "storyenter" != get_screen_type(frame):
+                print("Warning, " + comp_name + " not detected as type storyenter")
             pass
 
 
