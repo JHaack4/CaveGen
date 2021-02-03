@@ -412,10 +412,10 @@ def process_align_frames():
                 print("Warning, " + comp_name + " not detected as type storyenter, was " + str(get_screen_type(frame)))
             pass
 
-        if recommend_chresult_color:
-            print("Recommend set chresult_color_b=" + str(int(np.mean(bs))))
-            print("Recommend set chresult_color_g=" + str(int(np.mean(gs))))
-            print("Recommend set chresult_color_r=" + str(int(np.mean(rs))))
+    if recommend_chresult_color:
+        print("Recommend set chresult_color_b=" + str(int(np.mean(bs))))
+        print("Recommend set chresult_color_g=" + str(int(np.mean(gs))))
+        print("Recommend set chresult_color_r=" + str(int(np.mean(rs))))
 
 
 
