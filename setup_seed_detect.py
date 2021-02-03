@@ -390,32 +390,33 @@ def process_align_frames():
 
         comp_name = file_name.replace("output/!im","").replace(".png","").replace("/","").replace("\\","")
         #print(comp_name)
+        frame_type = str(get_screen_type(frame))
         if comp_name == "fadeout":
             # detect fadeout darkness and recommend parameter changes
             darkness = frame.max(axis=0).max(axis=0).max(axis=0)
             print("Recommend set fadeout_frame_intensity=" + str(int(darkness+5.99)))
             print("Recommend set letter_intensity_thresh=" + str(int(darkness+10.99)))
             cv2.imwrite("output/!im/out_"+comp_name+".png", frame)
-            if "fadeout" != get_screen_type(frame):
-                print("Warning, fadeout not detected as type fadeout, was " + str(get_screen_type(frame)))
+            if "fadeout" != frame_type:
+                print("Warning, fadeout not detected as type fadeout, was " + frame_type)
             pass
         elif comp_name == "challenge_mode_enter":
             # recommend more param changes
             handle_chenter_image(frame)
-            if "chenter" != get_screen_type(frame):
-                print("Warning, challenge_mode_enter not detected as type chenter, was " + str(get_screen_type(frame)))
+            if "chenter" != frame_type:
+                print("Warning, challenge_mode_enter not detected as type chenter, was " + frame_type)
             pass
         elif comp_name.isdigit():
             # pull out some digits and recommend color parameters
             pull_numbers_from_image(frame, comp_name)
             recommend_chresult_color = True
-            if "chresult" != get_screen_type(frame):
-                print("Warning, " + comp_name + " not detected as type chresult, was " + str(get_screen_type(frame)))
+            if "chresult" != frame_type:
+                print("Warning, " + comp_name + " not detected as type chresult, was " + frame_type)
             pass
         else:
             cv2.imwrite("output/!im/out_"+comp_name+".png", draw_letters_on_image(frame, comp_name.replace("_"," ")))
-            if "storyenter" != get_screen_type(frame):
-                print("Warning, " + comp_name + " not detected as type storyenter, was " + str(get_screen_type(frame)))
+            if "storyenter" != frame_type:
+                print("Warning, " + comp_name + " not detected as type storyenter, was " + frame_type)
             pass
 
     if recommend_chresult_color:
