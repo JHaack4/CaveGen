@@ -1,6 +1,6 @@
 {"___________________camera_params___________":"",
  "camera":"find", # Use a path to a video for a video. Use 0/1/2... for OBS virtual camera. Use "find" to use the most recent video in the video path folder.
- "video_path":"C:\Users\Jordan\Videos\",
+ "video_path":"C:\Users\Jordan\Videos\", # make sure to include a trailing slash here
  "playback":True, # shows the captured gameplay feed/video
  "images":False, # creates additional debug images in output/!im
  "verbose":True,
