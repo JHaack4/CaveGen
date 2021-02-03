@@ -81,13 +81,10 @@ def get_screen_type(frame):
     y = height//100
     window_top = frame[y:4*y, 3*x:5*x, :]
     b,g,r = window_top.mean(axis=0).mean(axis=0)
-    print(b)
-    print(g)
-    print(r)
-    if abs(b-args.chresult_color_b) < 20 and abs(g-args.chresult_color_g) + abs(r-args.chresult_color_r) < 10:
+    if abs(b-args.chresult_color_b) < 20 and abs(g-args.chresult_color_g) + abs(r-args.chresult_color_r) < 30:
         bM,gM,rM = window_top.max(axis=0).max(axis=0)
         bm,gm,rm = window_top.min(axis=0).min(axis=0)
-        if bM-bm < 35 and gM-gm+rM-rm < 15:
+        if bM-bm < 35 and gM-gm+rM-rm < 35:
             return "chresult"
     
     x = width
@@ -156,6 +153,9 @@ def get_screen_type(frame):
     return None
 
 recommend_chresult_color = False
+bs = []
+gs = []
+rs = []
 def pull_numbers_from_image(frame, numbers):
     height,width = frame.shape[:2]
 
@@ -165,10 +165,10 @@ def pull_numbers_from_image(frame, numbers):
     y = height//100
     window_top = frame[y:4*y, 3*x:5*x, :]
     b,g,r = window_top.mean(axis=0).mean(axis=0)
-    if not recommend_chresult_color:
-        print("Recommend set chresult_color_b=" + str(int(b)))
-        print("Recommend set chresult_color_g=" + str(int(g)))
-        print("Recommend set chresult_color_r=" + str(int(r)))
+    global bs,gs,rs
+    bs.append(b)
+    gs.append(g)
+    rs.append(r)
 
     frame[y:4*y,3*x,:] = 255
     frame[y:4*y,5*x,:] = 255
@@ -346,7 +346,10 @@ def process_align_frames():
     generate_args()
     letter_templates()
     digit_templates()
-    global recommend_chresult_color
+    global recommend_chresult_color, bs, gs, rs
+    bs = []
+    gs = []
+    rs = []
     recommend_chresult_color = False
 
     file_names = glob.glob("output/!im/*.png")
@@ -408,6 +411,11 @@ def process_align_frames():
             if "storyenter" != get_screen_type(frame):
                 print("Warning, " + comp_name + " not detected as type storyenter, was " + str(get_screen_type(frame)))
             pass
+
+        if recommend_chresult_color:
+            print("Recommend set chresult_color_b=" + str(int(np.mean(b))))
+            print("Recommend set chresult_color_g=" + str(int(np.mean(g))))
+            print("Recommend set chresult_color_r=" + str(int(np.mean(r))))
 
 
 
