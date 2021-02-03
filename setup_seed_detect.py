@@ -339,6 +339,7 @@ except FileExistsError:
 # function to process all of the existing files...
 
 def process_align_frames():
+    print()
     generate_args()
     letter_templates()
     digit_templates()
