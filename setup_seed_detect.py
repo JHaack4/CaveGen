@@ -72,7 +72,7 @@ def letter_templates():
 
 
 def get_screen_type(frame):
-    if frame.mean(axis=0).mean(axis=0).mean(axis=0) < args.fadeout_frame_intensity:
+    if frame.max(axis=0).max(axis=0).max(axis=0) < args.fadeout_frame_intensity:
         return "fadeout"
     height,width = frame.shape[:2]
 
@@ -385,9 +385,9 @@ def process_align_frames():
         comp_name = file_name.replace("output/!im","").replace(".png","").replace("/","").replace("\\","")
         #print(comp_name)
         frame_type = str(get_screen_type(frame))
-        if comp_name == "fadeout":
+        if comp_name.lower() == "fadeout":
             # detect fadeout darkness and recommend parameter changes
-            darkness = frame.mean(axis=0).mean(axis=0).mean(axis=0)
+            darkness = frame.max(axis=0).max(axis=0).max(axis=0)
             print("Recommend set fadeout_frame_intensity=" + str(int(darkness+5.99)))
             print("Recommend set letter_intensity_thresh=" + str(int(darkness+10.99)))
             cv2.imwrite("output/!im/out_"+comp_name+".png", frame)

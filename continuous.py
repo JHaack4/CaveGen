@@ -175,7 +175,7 @@ def read_digits_on_frame(image):
 #     return average[0] < 5 and average[1] < 5 and average[2] < 5
 
 def get_screen_type(frame):
-    if frame.mean(axis=0).mean(axis=0).mean(axis=0) < args.fadeout_frame_intensity:
+    if frame.max(axis=0).max(axis=0).max(axis=0) < args.fadeout_frame_intensity:
         return "fadeout"
     height,width = frame.shape[:2]
 
