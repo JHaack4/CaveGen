@@ -81,6 +81,9 @@ def get_screen_type(frame):
     y = height//100
     window_top = frame[y:4*y, 3*x:5*x, :]
     b,g,r = window_top.mean(axis=0).mean(axis=0)
+    print(b)
+    print(g)
+    print(r)
     if abs(b-args.chresult_color_b) < 20 and abs(g-args.chresult_color_g) + abs(r-args.chresult_color_r) < 10:
         bM,gM,rM = window_top.max(axis=0).max(axis=0)
         bm,gm,rm = window_top.min(axis=0).min(axis=0)
@@ -381,8 +384,8 @@ def process_align_frames():
         if comp_name == "fadeout":
             # detect fadeout darkness and recommend parameter changes
             darkness = frame.max(axis=0).max(axis=0).max(axis=0)
-            print("Recommend set fadeout_frame_intensity=" + str(int(darkness+3.99)))
-            print("Recommend set letter_intensity_thresh=" + str(int(darkness+9.99)))
+            print("Recommend set fadeout_frame_intensity=" + str(int(darkness+5.99)))
+            print("Recommend set letter_intensity_thresh=" + str(int(darkness+10.99)))
             cv2.imwrite("output/!im/out_"+comp_name+".png", frame)
             if "fadeout" != get_screen_type(frame):
                 print("Warning, fadeout not detected as type fadeout, was " + str(get_screen_type(frame)))
