@@ -413,9 +413,9 @@ def process_align_frames():
             pass
 
         if recommend_chresult_color:
-            print("Recommend set chresult_color_b=" + str(int(np.mean(b))))
-            print("Recommend set chresult_color_g=" + str(int(np.mean(g))))
-            print("Recommend set chresult_color_r=" + str(int(np.mean(r))))
+            print("Recommend set chresult_color_b=" + str(int(np.mean(bs))))
+            print("Recommend set chresult_color_g=" + str(int(np.mean(gs))))
+            print("Recommend set chresult_color_r=" + str(int(np.mean(rs))))
 
 
 
