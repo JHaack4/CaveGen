@@ -81,13 +81,10 @@ def get_screen_type(frame):
     y = height//100
     window_top = frame[y:4*y, 3*x:5*x, :]
     b,g,r = window_top.mean(axis=0).mean(axis=0)
-    print(b)
-    print(g)
-    print(r)
-    if abs(b-args.chresult_color_b) < 20 and abs(g-args.chresult_color_g) + abs(r-args.chresult_color_r) < 30:
+    if abs(b-args.chresult_color_b) < 20 and abs(g-args.chresult_color_g) + abs(r-args.chresult_color_r) < 20:
         bM,gM,rM = window_top.max(axis=0).max(axis=0)
         bm,gm,rm = window_top.min(axis=0).min(axis=0)
-        if bM-bm < 35 and gM-gm+rM-rm < 35:
+        if bM-bm < 35 and gM-gm+rM-rm < 25:
             return "chresult"
     
     x = width
@@ -169,9 +166,6 @@ def pull_numbers_from_image(frame, numbers):
     window_top = frame[y:4*y, 3*x:5*x, :]
     b,g,r = window_top.mean(axis=0).mean(axis=0)
     global bs,gs,rs
-    print(b)
-    print(g)
-    print(r)
     bs.append(b)
     gs.append(g)
     rs.append(r)
