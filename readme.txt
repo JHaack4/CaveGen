@@ -214,3 +214,4 @@ REAL TIME SEED DETECTION (FOR CHALLENGE MODE AND STORY MODE)
 28) There are additional parameters in the config that you can play around with.
 29) If you want to run the CMAL manip, you'll need to ask jhawk for a special file (which is too large to keep in github)
 		You could generate it yourself with "seed timestable key|cmat|700k" but it would take ~2 days to compute.
+30) To get updates, run "git stash && git pull && git stash pop". After you do this, double check config.txt for any conflicts.

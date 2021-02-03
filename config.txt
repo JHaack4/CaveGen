@@ -42,6 +42,7 @@
 
 pythonCommand = python continuous.py
 wii = False
+language = English  # only English supported for story mode detection so far
 
 # cave viewer output box default display size
 caveViewerMaxXSize = 1180
