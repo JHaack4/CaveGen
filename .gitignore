@@ -19,6 +19,7 @@ im/*
 im_save/*
 
 config_*
+files/cave_name.txt
 
 files/templates/digits_*
 

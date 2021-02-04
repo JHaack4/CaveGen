@@ -383,8 +383,11 @@ def process_story_frames_name_known():
     global num_letters_info
     global falling_img
     read_from_cave_name_file = False
-    with open("files/cave_name.txt") as f:
-        cave_name = f.readline().strip()
+    try:
+        with open("files/cave_name.txt") as f:
+            cave_name = f.readline().strip()
+    except:
+        pass
     if cave_name == "":
         cave_name = default_cave_order[default_cave_index]
         default_cave_index += 1
