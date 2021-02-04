@@ -259,7 +259,6 @@ public class Letters {
                 System.out.println("found via close seeds");
                 bestDisutil = out_disutil_for_near;
             }
-            bestSeed = -1;
         }
 
         if (bestSeed == -1) {
