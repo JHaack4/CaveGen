@@ -476,7 +476,7 @@ def process_story_frames_name_known():
     # for each frame with a falling letter, compute the location of the falling letter
     locs = np.zeros((len(cave_name), 45))
     for story_frame_count,frame in enumerate(story_frames[0:45]):
-        cv2.imwrite("output/!im/debug_a" + str(story_frame_count)+".png",frame)
+        #cv2.imwrite("output/!im/debug_a" + str(story_frame_count)+".png",frame)
 
         #print("storyenter " + str(story_frame_count), flush=True)
         #_,img = cv2.threshold(frame,13,255,cv2.THRESH_BINARY) # may need to change this for wii
