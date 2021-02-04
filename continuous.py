@@ -144,9 +144,9 @@ def read_digits_on_frame(image):
     # cv2.imwrite(sss, image)
 
     print("digits " + "".join([str(i) if i < 10 else '_' for i in output_digits]), flush=True)
-    if args.images:
-        cv2.imshow('Digit', comp_img)
-        cv2.waitKey(500)
+    # if args.images:
+    #     cv2.imshow('Digit', comp_img)
+    #     cv2.waitKey(500)
 
 ### check for frames of the challenge mode result screen
 
@@ -476,6 +476,7 @@ def process_story_frames_name_known():
     # for each frame with a falling letter, compute the location of the falling letter
     locs = np.zeros((len(cave_name), 45))
     for story_frame_count,frame in enumerate(story_frames[0:45]):
+        cv2.imwrite("output/!im/debug_a" + str(story_frame_count)+".png",frame)
 
         #print("storyenter " + str(story_frame_count), flush=True)
         #_,img = cv2.threshold(frame,13,255,cv2.THRESH_BINARY) # may need to change this for wii
@@ -502,7 +503,7 @@ def process_story_frames_name_known():
                     falling_img[last_nonzero,xs0_use[i]:xs1_use[i],2]=255
                     #img[last_nonzero,whitespace[i]:whitespace[i+1],:]=0
                     #img[last_nonzero,whitespace[i]:whitespace[i+1],2]=255
-                    if num_letters_info == 1:
+                    if num_letters_info == 0:
                         ims = frame[0:max_row_for_falling,xs0_use[i]:xs1_use[i],2]
                         imgs = ims.copy()
                         imgs[last_nonzero,:] = 255
@@ -611,6 +612,10 @@ count = 0
 last_frame_was_digit = False
 last_perf_time = time.perf_counter()
 
+ring_buffer_size = 10
+ring_buffer_idx = 0
+ring_buffer = [None for i in range(ring_buffer_size)]
+
 # frame_for_save_count = 0
 # frames_to_output_anyways = 0
 # save_to_im_save = False
@@ -647,6 +652,10 @@ while(cap.isOpened()):
     if args.gamma != 1:
         frame = adjust_gamma(frame, args.gamma)
     
+    # ring_buffer[ring_buffer_idx] = frame
+    # ring_buffer_idx = (ring_buffer_idx + 1) % ring_buffer_size
+    # print(ring_buffer_idx)
+
     frame_type = get_screen_type(frame)
     
     if frame_type == 'fadeout':
@@ -671,7 +680,7 @@ while(cap.isOpened()):
         frames_since_last_story = 0
         # frames_to_output_anyways = 40
 
-        if frames_since_first_story >= (75 if args.images else 60) and len(story_frames) >= (70 if args.images else 60):
+        if frames_since_first_story >= 60 and len(story_frames) >= 60:
             if not story_frames_processed:
                 story_frames_processed = True
                 process_story_frames_name_known()

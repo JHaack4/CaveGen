@@ -2,7 +2,7 @@
  "camera":"vid.mp4", # Use a path to a video for a video. Use 0/1/2... for OBS virtual camera. Use "find" to use the most recent video in the video path folder.
  "video_path":"C:\Users\Jordan\Videos\", # make sure to include a trailing slash here
  "playback":True, # shows the captured gameplay feed/video
- "images":False, # creates additional debug images in output/!im
+ "images":True, # creates additional debug images in output/!im
  "verbose":True,
  "resize":False,
  "resize_y":720,
@@ -26,13 +26,13 @@
  "templates":"files/templates/digits/",  # folder used for template digits
  "___________________letters_params___________":"",
  "fadeout_frame_intensity":6,   # controls the darkness used to detect a fadeout
- "letter_intensity_thresh":11,  # controls the darkness used to detect a fadeout
+ "letter_intensity_thresh":13,  # controls the darkness used to detect a fadeout
  "max_for_falling":0.1,
  "letters_xscale":1.5,          # controls the X size of the letters
  "letters_yscale":1.5,          # controls the Y size of the letters
  "letters_xoffset":-0.0032,     # controls the horizonal shift of the letters
- "letters_yoffset":0.265,       # controls the vertical shift of the letters
- "x_scrunch_limit":0.748,       # controls the bounds for sublevels with long names (e.g. WFG)
+ "letters_yoffset":0.275,       # controls the vertical shift of the letters
+ "x_scrunch_limit":0.756,       # controls the bounds for sublevels with long names (e.g. WFG)
  "space_mult":1.34,
  "apostrophe_mult":0.6875
 }
