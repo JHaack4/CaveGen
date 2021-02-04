@@ -1,5 +1,5 @@
 {"___________________camera_params___________":"",
- "camera":"find", # Use a path to a video for a video. Use 0/1/2... for OBS virtual camera. Use "find" to use the most recent video in the video path folder.
+ "camera":"vid.mp4", # Use a path to a video for a video. Use 0/1/2... for OBS virtual camera. Use "find" to use the most recent video in the video path folder.
  "video_path":"C:\Users\Jordan\Videos\", # make sure to include a trailing slash here
  "playback":True, # shows the captured gameplay feed/video
  "images":False, # creates additional debug images in output/!im
@@ -10,8 +10,9 @@
  "crop":True,
  "crop_y1":0,
  "crop_y2":720,
- "crop_x1":320,
- "crop_x2":1280,
+ "crop_x1":160,
+ "crop_x2":1120,
+ "gamma":1.0, # do a gamma correction to adjust the brightness (smaller = darker)
  "___________________digits_params___________":"",
  "digits_y": 237,         # defines the location of the cropped out digits
  "digits_x": 345,

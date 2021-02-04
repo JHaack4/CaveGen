@@ -939,8 +939,16 @@ public class Seed {
 		}
 
 		// iterate over the set of possibilities contained in min/max. (we're checking all of them)
-		ArrayList<Long> candidates = new ArrayList<Long>();		
+        ArrayList<Long> candidates = new ArrayList<Long>();		
+        ArrayList<Long> ret = new ArrayList<Long>();
+        int num_attempts = 0;
+
 		while(true) {
+            num_attempts += 1;
+            if (num_attempts > 200000000) {
+                System.out.println("lattice timeout");
+                break;
+            }
 
 			// check if the current v vector falls in the desired region
 			boolean isInRegion = true;
@@ -972,10 +980,9 @@ public class Seed {
 			}
 			if (done)
 				break;
-		}
+        }
 		
 		// Verify the candidates and return the ones that match
-        ArrayList<Long> ret = new ArrayList<Long>();
         out_disutil_for_vs_array = new ArrayList<Float>();
 		for (int i = 0; i < candidates.size(); i++) {
             Long s = candidates.get(i);

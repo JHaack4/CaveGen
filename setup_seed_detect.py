@@ -326,6 +326,15 @@ def draw_letters_on_image(img_in, cave_name):
     sum_img[13*height//20,:,:] = 255
     return sum_img
 
+def adjust_gamma(image, gamma=1.0):
+	# build a lookup table mapping the pixel values [0, 255] to
+	# their adjusted gamma values
+	invGamma = 1.0 / gamma
+	table = np.array([((i / 255.0) ** invGamma) * 255
+		for i in np.arange(0, 256)]).astype("uint8")
+	# apply gamma correction using the lookup table
+	return cv2.LUT(image, table)
+
 try:
     os.mkdir(args.templates)
 except FileExistsError:
@@ -366,6 +375,8 @@ def process_align_frames():
         height,width = frame.shape[:2]
         if args.crop:
             frame = frame[args.crop_y1:args.crop_y2,args.crop_x1:args.crop_x2,:]
+        if args.gamma != 1:
+            frame = adjust_gamma(frame, args.gamma)
 
         # get stats about the image
         x = width
