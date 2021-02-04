@@ -12,6 +12,7 @@
  "crop_y2":720,
  "crop_x1":320,
  "crop_x2":1280,
+ "gamma":1.0, # do a gamma correction to adjust the brightness (smaller = darker)
  "___________________digits_params___________":"",
  "digits_y": 237,         # defines the location of the cropped out digits
  "digits_x": 345,
