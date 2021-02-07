@@ -4,6 +4,7 @@
  "playback":True, # shows the captured gameplay feed/video
  "images":False, # creates additional debug images in output/!im
  "verbose":True,
+ "skip_seconds":0, # start the video this many seconds in (useful for debugging)
  "resize":False,
  "resize_y":720,
  "resize_x":1280,
