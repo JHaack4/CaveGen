@@ -28,6 +28,7 @@ public class Manip {
     ArrayList<String> storyLevelsOrder = new ArrayList<String>();
     int storyLevelsIndex = 0;
     boolean captainOlimar = true;
+    static boolean dontHighlightSkipPodTreasures = false;
 
     PrintWriter out = null;
 
@@ -46,6 +47,7 @@ public class Manip {
             System.out.println("Bad mode.");
             return;
         }
+        if (pod_mode) dontHighlightSkipPodTreasures = true;
 
         // Set up the Manip UI
         jfr.getContentPane().setLayout(null);
@@ -289,6 +291,12 @@ public class Manip {
                                 levelsPlayed[options.get(caveViewer.lastSSeed).level] = true;
                             }
                         }
+                    }
+                    if (s[0].equals("shortened")) {
+                        System.out.println(r.trim());
+                    }
+                    if (s[0].equals("storyfailed")) {
+                        System.out.println(r.trim());
                     }
                     if (s[0].equals("fadeout")) { // count fadeouts
                         numDigitsRead = 0;
@@ -884,7 +892,8 @@ public class Manip {
     void readParams() {
         try {
             params = new HashMap<String, String>();
-            BufferedReader br = new BufferedReader(new FileReader("config.txt"));
+            String fileName = new File("config_use.txt").exists() ? "config_use.txt" : "config.txt";
+            BufferedReader br = new BufferedReader(new FileReader(fileName));
             String line;
             boolean seenBreakLine = false;
             while ((line = br.readLine()) != null) {

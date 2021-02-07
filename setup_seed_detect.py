@@ -12,7 +12,7 @@ import time
 args = None
 def generate_args():
     global args
-    with open("config.txt", "r") as f:
+    with open("config_use.txt" if os.path.exists("config_use.txt") else "config.txt", "r") as f:
         config_args_string = f.read()
         config_args_string = config_args_string[0:config_args_string.index("#####")]
         config_args_string = "\n".join([x[0:x.index("#")] if "#" in x else x for x in config_args_string.split("\n")])
@@ -102,10 +102,10 @@ def get_screen_type(frame):
 
     # check for rough brightness levels
     f = args.fadeout_frame_intensity
-    if max(average5) >= f:
-        return None
     a = 5
     b = 45
+    if max(average5) >= f+a:
+        return None
     if not (average1[0] < 2*f+a and average1[1] < 2*f+a and average1[2] < 2*f+a and \
         average2[0] < 2*f+b and average2[1] < 2*f+b and \
         average3[0] < 2*f+a and average3[1] < 2*f+a and average3[2] < 2*f+a and \
@@ -120,7 +120,7 @@ def get_screen_type(frame):
     count = 0
     white = True
     for i in range(len(col_max)):
-        if col_max[i] > args.letter_intensity_thresh:
+        if col_max[i] > args.letter_intensity_thresh and i > width/40 and i < width*39/40:
             if not white:
                 black_space.append(count)
                 count = 0
@@ -133,13 +133,13 @@ def get_screen_type(frame):
             white = False
             count += 1
     black_space.append(count)
-
-    if len(white_space) >= 8 and len(white_space) <= 12 \
+    
+    if len(white_space) >= 8 and sum([1 if x>width*10/960 else 0 for x in white_space]) <= 12 \
         and max(white_space) > width * 25/960 and max(white_space) < width * 90/960 \
         and black_space[0] > width/6 and black_space[-1] > width/6 \
         and black_space[0] < width/3 and black_space[-1] < width/3 \
         and sum(white_space) > width * 280/960 \
-        and (black_space[-2] > white_space[1]/2 or black_space[-3] > white_space[1]/2):
+        and (black_space[-2] > min(white_space[0:3])/2 or black_space[-3] > min(white_space[0:3])/2):
         # word sublevel is found
 
         # check for red bg.
@@ -150,7 +150,7 @@ def get_screen_type(frame):
         else:
             return "storyenter"
 
-    return None
+    return "nearfadeout"
 
 recommend_chresult_color = False
 bs = []
@@ -430,7 +430,9 @@ def process_align_frames():
         print("Recommend set chresult_color_r=" + str(int(np.mean(rs))))
 
 
-
+# test_frame = cv2.imread("output/!im/Hole_of_Beasts.png")
+# window5 = test_frame[13*720//20:720, :, :]
+# print(window5.max(axis=2).max(axis=0))
 
 
 # use the current video

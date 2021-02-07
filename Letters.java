@@ -244,7 +244,8 @@ public class Letters {
         System.out.println("max " + velString(max_vels));
 
 
-        float tolerance = num_chars >= 10 ? 0.2f : 0.15f;
+        float tolerance = num_chars >= 10 ? 0.2f : num_chars >= 8 ? 0.16f : 0.13f;
+        float toleranceLax = num_chars >= 10 ? 0.5f : num_chars >= 8 ? 0.35f : 0.25f;
         float range = max_vels[0] - min_vels[0];
 
         long bestSeed = -1;
@@ -253,7 +254,7 @@ public class Letters {
         // try faster method first...
         if (seedLastRead != -1 && bestSeed == -1) {
             System.out.println("starting nearby search " + nearbySearchDist);
-            bestSeed = searchForLowDisutilNear(seedLastRead, min_vels, is_space, 0.5f, nearbySearchDist);
+            bestSeed = searchForLowDisutilNear(seedLastRead, min_vels, is_space, toleranceLax, nearbySearchDist);
             System.out.println("nearby serach done");
             if (bestSeed != -1) {
                 System.out.println("found via close seeds");
@@ -261,7 +262,7 @@ public class Letters {
             }
         }
 
-        if (bestSeed == -1) {
+        if (bestSeed == -1 && num_chars >= 6 && !is_space[0] && !is_space[1] && !is_space[2] && !is_space[3]) {
             System.out.println("starting lattice search");
             for (float offs = -tolerance/2; offs <= range + tolerance/2; offs += tolerance / 4) {
                 float[] vs = new float[num_chars];
@@ -292,7 +293,7 @@ public class Letters {
         // error correction via allowing one mistake
         if (seedLastRead != -1 && bestSeed == -1) {
             System.out.println("starting nearby generous search " + nearbySearchDist);
-            bestSeed = searchForLowDisutilNearGenerous(seedLastRead, min_vels, is_space, 0.35f, nearbySearchDist);
+            bestSeed = searchForLowDisutilNearGenerous(seedLastRead, min_vels, is_space, toleranceLax*.7f, nearbySearchDist);
             System.out.println("nearby generous serach done");
             if (bestSeed != -1) {
                 System.out.println("found via close seeds generous");

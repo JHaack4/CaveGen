@@ -24,6 +24,7 @@ public class Drawer {
     HashSet<String> plantNames = Parser.hashSet("ooinu_s,ooinu_l,wakame_s,wakame_l,kareooinu_s,kareooinu_l,daiodored,daiodogreen,clover,hikarikinoko,tanpopo,zenmai,nekojarashi,tukushi,magaret,watage");
     HashSet<String> purple20 = Parser.hashSet("EC2,FC1,HoB2,CoS2,GK2,SR2"), white20 = Parser.hashSet("WFG3,BK1,SH2,SR1");
     HashSet<String> noCarcassNames = Parser.hashSet("wealthy,fart,kogane,mar,hanachirashi,damagumo,bigfoot,bigtreasure,qurione,baby,bomb,egg,kurage,onikurage,bombotakara,blackman,tyre,houdai,ooinu_s,ooinu_l,wakame_s,wakame_l,kareooinu_s,kareooinu_l,daiodored,daiodogreen,clover,hikarikinoko,tanpopo,zenmai,nekojarashi,tukushi,magaret,watage,chiyogami,gashiba,hiba,elechiba,rock,bluepom,redpom,yellowpom,blackpom,whitepom,randpom,pom");
+    HashSet<String> ignoreTreasuresPoD = Parser.hashSet("kinoko_doku,bird_hane,flower_blue,g_futa_kyodo,chocolate,tape_blue");
     
 
     Color[] colorsFT = new Color[] {
@@ -384,12 +385,17 @@ public class Drawer {
         }
 
 
-        if (CaveGen.drawSH6Bulborb && CaveGen.specialCaveInfoName.equalsIgnoreCase("SH") && CaveGen.sublevel == 6) {
-            int r = 1000;
-            G.setColor(new Color(colorsSP[0].getRed(),colorsSP[0].getGreen(),colorsSP[0].getBlue(), 50));
+        if (CaveGen.drawSH6Bulborb) {
+            G.setColor(new Color(colorsSP[0].getRed(),colorsSP[0].getGreen(),colorsSP[0].getBlue(),150));
             for (Teki t: g.placedTekis) {
-                if (t.itemInside != null && t.tekiName.contains("chappy"))
-                    G.fillOval((int)((t.posX-r/2)/M*N), (int)((t.posZ-r/2)/M*N), (int)(r*N/M), (int)(r*N/M));
+                if (t.itemInside != null && (t.tekiName.equalsIgnoreCase("bluechappy") || t.tekiName.equalsIgnoreCase("bluekochappy"))) {
+                    int r = 1000, d = 8;
+                    G.drawOval((int)((t.posX-r/2)/M*N), (int)((t.posZ-r/2)/M*N), (int)(r*N/M), (int)(r*N/M)); r-=d;
+                    G.drawOval((int)((t.posX-r/2)/M*N), (int)((t.posZ-r/2)/M*N), (int)(r*N/M), (int)(r*N/M)); r-=d;
+                    G.drawOval((int)((t.posX-r/2)/M*N), (int)((t.posZ-r/2)/M*N), (int)(r*N/M), (int)(r*N/M)); r-=d;
+                    G.drawOval((int)((t.posX-r/2)/M*N), (int)((t.posZ-r/2)/M*N), (int)(r*N/M), (int)(r*N/M)); r-=d;
+                    G.drawOval((int)((t.posX-r/2)/M*N), (int)((t.posZ-r/2)/M*N), (int)(r*N/M), (int)(r*N/M)); r-=d;
+                }
             } 
         }
         if (CaveGen.drawQuickGlance) {
@@ -397,19 +403,24 @@ public class Drawer {
             int a = 100;
             G.setColor(new Color(255,30,30, a));
             G.fillOval((int)(g.placedStart.posX/M*N-r/2), (int)(g.placedStart.posZ/M*N-r/2), r, r);
-            
+            //Manip.dontHighlightSkipPodTreasures = true;
             G.setColor(new Color(colorsSP[2].getRed(),colorsSP[2].getGreen(),colorsSP[2].getBlue(), a));
             for (Item t: g.placedItems) {
-                if (!g.colossal)
+                if (!g.colossal && (!Manip.dontHighlightSkipPodTreasures || !ignoreTreasuresPoD.contains(t.itemName.toLowerCase())) )
                     G.fillOval((int)(t.posX/M*N-r/2), (int)(t.posZ/M*N-r/2), r, r);
             }
             for (Teki t: g.placedTekis) {
-                if (t.itemInside != null)
+                if (t.itemInside != null && (!Manip.dontHighlightSkipPodTreasures || !ignoreTreasuresPoD.contains(t.itemInside.toLowerCase())) )
                     G.fillOval((int)(t.posX/M*N-r/2), (int)(t.posZ/M*N-r/2), r, r);
             }
             G.setColor(new Color(160,0,255,a));
             for (Teki t: g.placedTekis) {
                 if (t.tekiName.equalsIgnoreCase("blackpom"))
+                    G.fillOval((int)(t.posX/M*N-r/2), (int)(t.posZ/M*N-r/2), r, r);
+            }
+            G.setColor(new Color(60,60,60,a));
+            for (Teki t: g.placedTekis) {
+                if (t.tekiName.equalsIgnoreCase("whitepom"))
                     G.fillOval((int)(t.posX/M*N-r/2), (int)(t.posZ/M*N-r/2), r, r);
             }
             for (Onion t: g.placedOnions) {

@@ -215,7 +215,7 @@ public class CaveGen {
                         showCaveInfo = true;
                     else if (s.equalsIgnoreCase("-drawNoGateLife"))
                         drawNoGateLife = true;
-                    else if (s.equalsIgnoreCase("-drawSH6Bulborb"))
+                    else if (s.equalsIgnoreCase("-drawSH6Bulborb") || s.equalsIgnoreCase("-drawOrangeBulborbRadius"))
                         drawSH6Bulborb = true;
                     else if (s.equalsIgnoreCase("-drawFlowPaths"))
                         drawFlowPaths = true;

@@ -13,7 +13,7 @@ import time
 default_cave_order = "Emergence Cave,Emergence Cave,Hole of Beasts,Hole of Beasts,Hole of Beasts,Hole of Beasts,Hole of Beasts,White Flower Garden,White Flower Garden,White Flower Garden,White Flower Garden,White Flower Garden,Snagret Hole,Snagret Hole,Snagret Hole,Snagret Hole,Snagret Hole,Snagret Hole,Snagret Hole,Bulblax Kingdom,Bulblax Kingdom,Bulblax Kingdom,Bulblax Kingdom,Bulblax Kingdom,Bulblax Kingdom,Bulblax Kingdom,Subterranean Complex,Subterranean Complex,Subterranean Complex,Subterranean Complex,Subterranean Complex,Subterranean Complex,Subterranean Complex,Subterranean Complex,Frontier Cavern,Frontier Cavern,Frontier Cavern,Frontier Cavern,Frontier Cavern,Frontier Cavern,Frontier Cavern,Citadel of Spiders,Citadel of Spiders,Citadel of Spiders,Citadel of Spiders,Citadel of Spiders,Glutton's Kitchen,Glutton's Kitchen,Glutton's Kitchen,Glutton's Kitchen,Glutton's Kitchen,Glutton's Kitchen".split(",")
 default_cave_index = 0
 
-with open("config.txt", "r") as f:
+with open("config_use.txt" if os.path.exists("config_use.txt") else "config.txt", "r") as f:
     config_args_string = f.read()
     config_args_string = config_args_string[0:config_args_string.index("#####")]
     config_args_string = "\n".join([x[0:x.index("#")] if "#" in x else x for x in config_args_string.split("\n")])
@@ -205,10 +205,10 @@ def get_screen_type(frame):
 
     # check for rough brightness levels
     f = args.fadeout_frame_intensity
-    if max(average5) >= f:
-        return None
     a = 5
     b = 45
+    if max(average5) >= f+a:
+        return None
     if not (average1[0] < 2*f+a and average1[1] < 2*f+a and average1[2] < 2*f+a and \
         average2[0] < 2*f+b and average2[1] < 2*f+b and \
         average3[0] < 2*f+a and average3[1] < 2*f+a and average3[2] < 2*f+a and \
@@ -223,7 +223,7 @@ def get_screen_type(frame):
     count = 0
     white = True
     for i in range(len(col_max)):
-        if col_max[i] > args.letter_intensity_thresh:
+        if col_max[i] > args.letter_intensity_thresh and i > width/40 and i < width*39/40:
             if not white:
                 black_space.append(count)
                 count = 0
@@ -237,12 +237,12 @@ def get_screen_type(frame):
             count += 1
     black_space.append(count)
 
-    if len(white_space) >= 8 and len(white_space) <= 12 \
+    if len(white_space) >= 8 and sum([1 if x>width*10/960 else 0 for x in white_space]) <= 12 \
         and max(white_space) > width * 25/960 and max(white_space) < width * 90/960 \
         and black_space[0] > width/6 and black_space[-1] > width/6 \
         and black_space[0] < width/3 and black_space[-1] < width/3 \
         and sum(white_space) > width * 280/960 \
-        and (black_space[-2] > white_space[1]/2 or black_space[-3] > white_space[1]/2):
+        and (black_space[-2] > min(white_space[0:3])/2 or black_space[-3] > min(white_space[0:3])/2):
         # word sublevel is found
 
         # check for red bg.
@@ -253,7 +253,7 @@ def get_screen_type(frame):
         else:
             return "storyenter"
 
-    return None
+    return "nearfadeout"
     # print()
     # print(average1)
     # print(average2)
@@ -525,6 +525,7 @@ def process_story_frames_name_known():
     # each non space char should have 3-6 entries, all consecutive, and the diffs should be around a certain value
     # otherwise, zero out
     num_bad_char = 0
+    num_good_char = 0
     for i,l in enumerate(cave_name):
         nonzero = []
         nonzero_idx = []
@@ -541,20 +542,17 @@ def process_story_frames_name_known():
         if not good:
             num_bad_char += 1
             locs[i,:] = 0
+        else:
+            num_good_char += 1
 
     # if still good, create the info string. If bad but still seems like a cave entry, write out an empty infostring
     # otherwise, do nothing (this case shouldn't be hit hopefully)
 
-    if num_bad_char > len(cave_name)/2:
-        print("too many bad chars")
+    if num_bad_char > len(cave_name)/2 and num_good_char < 5:
+        print("storyfailed good:"+str(num_good_char)+" bad:"+str(num_bad_char))
     else:
-        if read_from_cave_name_file:
-            with open('files/cave_name.txt', 'r') as fin:
-                data = fin.read().splitlines(True)
-            with open('files/cave_name.txt', 'w') as fout:
-                fout.writelines(data[1:])
         num_letters_info += 1
-        if num_bad_char > 2:
+        if num_bad_char > len(cave_name)/4 and False: #disable this now that we have a timeout
             print("lettersinfo,,100,0;;;", flush=True)
         else:
             # compute & write out the info string...
@@ -575,7 +573,13 @@ def process_story_frames_name_known():
                 info_string.append(s)
 
             print("lettersinfo," + cave_name.replace(" ","_") + "," + str(height) 
-                + "," + str(len(cave_name)) + "," + ",".join(offset_info) + ";" + "".join(info_string), flush=True)    
+                + "," + str(len(cave_name)) + "," + ",".join(offset_info) + ";" + "".join(info_string), flush=True) 
+        
+        if read_from_cave_name_file:
+            with open('files/cave_name.txt', 'r') as fin:
+                data = fin.read().splitlines(True)
+            with open('files/cave_name.txt', 'w') as fout:
+                fout.writelines(data[1:])   
         
     if args.images:
         min_row_for_columns = 26*height//100
@@ -590,6 +594,11 @@ def process_story_frames_name_known():
 
         cv2.imwrite("output/!im/debug_" + str(count) + "!avg" + ".png", sum_img)
         cv2.imwrite("output/!im/debug_" + str(count) + "!union_p" + ".png", falling_img)
+
+    # if args.verbose:
+    #     for x in locs:
+    #         print(x)
+
 
 
 def random_colorize(img):
@@ -641,8 +650,13 @@ while(cap.isOpened()):
         skip -= 1
         continue
 
-    #if count < 8*60*30:
-    #    continue
+    if count == 1 and not isinstance(args.camera, int): # skip ahead
+        try:
+            if args.skip_seconds > 0:
+                cap.set(cv2.CAP_PROP_POS_FRAMES, cap.get(cv2.CAP_PROP_POS_FRAMES)+args.skip_seconds*30)
+                continue
+        except:
+            pass
  
     height,width = frame.shape[:2]
     if count == 1:
@@ -673,7 +687,8 @@ while(cap.isOpened()):
         #_,img = cv2.threshold(img,args.letter_intensity_thresh,255,cv2.THRESH_BINARY)
         #kernel = np.ones((3, 3), np.uint8) 
         #img = cv2.erode(img, kernel) 
-        if frames_since_last_story > 15:
+        if frames_since_last_story > 80:
+            print("resetting storyenter")
             falling_img = np.zeros(frame.shape)
             union_img = np.zeros(frame.shape)
             frames_since_first_story = 0
@@ -687,6 +702,10 @@ while(cap.isOpened()):
             if not story_frames_processed:
                 story_frames_processed = True
                 process_story_frames_name_known()
+    elif frames_since_last_story >= 5 and not story_frames_processed and len(story_frames) >= 15:
+        print("shortened storyenter " + str(len(story_frames)))
+        story_frames_processed = True
+        process_story_frames_name_known()
 
     elif frame_type == 'chresult':
         read_digits_on_frame(frame)
@@ -694,7 +713,9 @@ while(cap.isOpened()):
     else:
         if last_frame_was_digit:
             print("donedigit",flush=True)
-        else:
+        elif frame_type == "nearfadeout":
+            print("nearfadeout " + str(count),flush=True)
+        elif frames_since_last_story > 60:
             skip = 0 if isinstance(args.camera, int) else 10
             #cap.set(cv2.CAP_PROP_POS_FRAMES, cap.get(cv2.CAP_PROP_POS_FRAMES)+10)
         last_frame_was_digit = False

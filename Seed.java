@@ -945,7 +945,7 @@ public class Seed {
 
 		while(true) {
             num_attempts += 1;
-            if (num_attempts > 150000000) {
+            if (num_attempts > 130000000) {
                 System.out.println("lattice timeout");
                 break;
             }
