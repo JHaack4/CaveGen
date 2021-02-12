@@ -264,6 +264,7 @@ public class Letters {
 
         if (bestSeed == -1 && num_chars >= 6 && !is_space[0] && !is_space[1] && !is_space[2] && !is_space[3]) {
             System.out.println("starting lattice search");
+            long startTime = System.currentTimeMillis();
             for (float offs = -tolerance/2; offs <= range + tolerance/2; offs += tolerance / 4) {
                 float[] vs = new float[num_chars];
                 
@@ -281,6 +282,11 @@ public class Letters {
                         bestDisutil = seedCalc.out_disutil_for_vs_array.get(i);
                         bestSeed = candidates.get(i);
                     }
+                }
+
+                if (System.currentTimeMillis() - startTime > 8000) {
+                    System.out.println("lattice timeout 8000");
+                    break;
                 }
 
             }
