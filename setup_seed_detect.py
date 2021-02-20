@@ -9,6 +9,7 @@ import ast
 import random
 import time
 
+
 args = None
 def generate_args():
     global args
@@ -364,8 +365,9 @@ def process_align_frames():
     file_names = glob.glob("output/!im/*.png")
 
     for file_name in file_names:
+        # file_name = file_name.replace("\\","/") # escape_unicode(file_name.replace("\\","/"))
         if "raw_" in file_name or "out_" in file_name or "debug_" in file_name: continue
-        #print(file_name)
+        # print(file_name)
 
         # resize and crop
         frame = cv2.imread(file_name)

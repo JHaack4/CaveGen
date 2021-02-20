@@ -91,6 +91,9 @@ public class Seed {
             else if (args[0].equalsIgnoreCase("search") && args.length >= 1) {
                 //letters.searchForLowDisutilNear();
             }
+            else if (args[0].equalsIgnoreCase("pretty") && args.length >= 1) {
+                new PrettyAlign().run();
+            }
             else {
                 System.out.println(helpString);
             }

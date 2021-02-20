@@ -94,6 +94,8 @@ public class Drawer {
 
     Image getMapUnit(MapUnit m) throws Exception {
         String loc = "files/" + CaveGen.fileSystem + "/" + "arc/" + m.name + "/arc.d/texture.bti.png";
+        String locPretty = "files/pretty/"+m.name+".png";
+        if (CaveGen.drawPretty && new File(locPretty).exists()) loc = locPretty;
         String hash = loc + m.rotation;
         if (IMG.containsKey(hash)) return IMG.get(hash);
 

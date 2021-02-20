@@ -44,7 +44,7 @@
 
 pythonCommand = python continuous.py
 wii = False
-language = English  # only English supported for story mode detection so far
+language = English  # should be English or Japanese
 
 # cave viewer output box default display size
 caveViewerMaxXSize = 1180
@@ -77,3 +77,18 @@ maxDistToConsider = 10000000 # for the special seeds below, how far ahead you ar
 storyAdditionalArgs = -drawpodangle -rotate cap -drawnoplants -quickglance -drawtreasurepaths -drawsh6bulborb
 podCaveOrder = EC,2,HoB,5,WFG,5,SH,7,BK,7,SCx,8,FC,7,CoS,5,GK,6
 atCaveOrder = EC,2,EC,2,WFG,5,HoB,5,SCx,9,FC,8,CoS,5,GK,6,SC,5,SR,7,BK,7,SH,7,CoC,10,DD,14,HoH,15
+
+# EC - _u59cb_u307e_u308a_u306e_u6d1e_u7a9f
+# HoB - _u3051_u3060_u3082_u306e_u306e_u7a74
+# CoS - _u30af_u30e2_u306e_u6839_u57ce
+# WFG - _u767d_u3044_u82b1_u5712
+# SCx - _u5730_u4e0b_u306e_u79d8_u5bc6_u57fa_u5730
+# FC - _u8fba_u5883_u306e_u6d1e_u7a9f
+# BK - _u30c7_u30e1_u30de_u30c0_u30e9_u306e_u738b_u56fd
+# GK - _u98df_u795e_u306e_u53f0_u6240
+# SR - _u30b7_u30e3_u30ef_u30fc_u30eb_u30fc_u30e0
+# SH - _u30d8_u30d3_u30ac_u30e9_u30b9_u306e_u7a74
+# SC - _u6c34_u4e2d_u306e_u57ce
+# CoC - _u6df7_u6c8c_u306e_u9b54_u7a9f
+# HoH - _u767e_u6226_u932c_u78e8_u306e_u7a74
+# DD - _u5922_u306e_u7a74

@@ -7,7 +7,7 @@ public class CaveGen {
     static String caveInfoName, specialCaveInfoName, region, fileSystem, countObject, judgeType;
     static int sublevel, firstGenSeed, numToGenerate, indexBeingGenerated;
     static boolean hardMode, challengeMode, images, prints, showStats, seedOrder, storyModeOverride, challengeModeOverride,
-        folderSeed, folderCave, showCaveInfo, drawSpawnPoints,
+        folderSeed, folderCave, showCaveInfo, drawSpawnPoints, drawPretty,
         drawWayPoints, drawWayPointVertDists, drawWayPointEdgeDists, drawWPEdges, drawWPVertices,
         drawScores, drawAngles, drawPodAngle, drawTreasureGauge, drawPathDists,
         drawNoPlants, drawNoFallType, drawWaterBox, drawQuickGlance,
@@ -36,7 +36,7 @@ public class CaveGen {
     static void resetParams() {
         region = "us"; fileSystem = "gc"; countObject = "";
         hardMode = true; challengeMode = false; images = true; prints = true; showStats = true; seedOrder = false;
-        storyModeOverride = false; challengeModeOverride = false;
+        storyModeOverride = false; challengeModeOverride = false; drawPretty = false;
         folderSeed = true; folderCave = true; showCaveInfo = false; drawSpawnPoints = false;
         drawWayPoints = false; drawWayPointVertDists = false; drawWayPointEdgeDists = false; drawWPEdges = false; drawWPVertices = false;
         drawScores = false; drawAngles = false; drawTreasureGauge = false; drawPodAngle = false; drawPathDists = false;
@@ -141,6 +141,8 @@ public class CaveGen {
                         prints = false;
                     else if (s.equalsIgnoreCase("-noStats"))
                         showStats = false;
+                    else if (s.equalsIgnoreCase("-pretty"))
+                        drawPretty = true;
                     else if (s.equalsIgnoreCase("-drawSpawnPoints"))
                         drawSpawnPoints = true;
                     else if (s.equalsIgnoreCase("-drawScores"))

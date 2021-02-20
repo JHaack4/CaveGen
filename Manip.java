@@ -192,7 +192,7 @@ public class Manip {
             try {
                 PrintWriter pout = new PrintWriter(new BufferedWriter(new FileWriter("files/cave_name.txt")));
                 for (int i = storyLevelsIndex; i < storyLevelsOrder.size(); i++) {
-                    pout.print(Parser.specialToFullName(storyLevelsOrder.get(i).split("-")[0])+"\n");
+                    pout.print(Parser.specialToFullName(storyLevelsOrder.get(i).split("-")[0], params.get("language"))+"\n");
                 }
                 pout.close();
             } catch (Exception e) {
@@ -355,7 +355,7 @@ public class Manip {
                         if (storyLevelsIndex >= storyLevelsOrder.size()) storyLevelsIndex = 0;
                         jtext2.setText("Next expect:\n" + storyLevelsOrder.get(storyLevelsIndex).replace("-","") + "\n" + (captainOlimar ? "Olimar" : "Louie/Pres"));
                         
-                        if (!seed.letters.out_cave.equalsIgnoreCase(Parser.specialToFullName(curCave))) {
+                        if (!seed.letters.out_cave.equalsIgnoreCase(Parser.specialToFullName(curCave, params.get("language")))) {
                             System.out.println("err, disagree about current cave... expected " + curCave + " got " + seed.letters.out_cave);
                         }
 
@@ -1385,7 +1385,7 @@ public class Manip {
         try {
             PrintWriter pout = new PrintWriter(new BufferedWriter(new FileWriter("files/cave_name.txt")));
             for (int i = storyLevelsIndex; i < storyLevelsOrder.size(); i++) {
-                pout.print(Parser.specialToFullName(storyLevelsOrder.get(i).split("-")[0])+"\n");
+                pout.print(Parser.specialToFullName(storyLevelsOrder.get(i).split("-")[0], params.get("language"))+"\n");
             }
             pout.close();
         } catch (Exception e) {

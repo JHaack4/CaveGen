@@ -238,7 +238,7 @@ def get_screen_type(frame):
     black_space.append(count)
 
     if len(white_space) >= 8 and sum([1 if x>width*10/960 else 0 for x in white_space]) <= 12 \
-        and max(white_space) > width * 25/960 and max(white_space) < width * 90/960 \
+        and max(white_space) > width * 25/960 and max(white_space) < width * 150/960 \
         and black_space[0] > width/6 and black_space[-1] > width/6 \
         and black_space[0] < width/3 and black_space[-1] < width/3 \
         and sum(white_space) > width * 280/960 \
@@ -252,6 +252,29 @@ def get_screen_type(frame):
             return "chenter"
         else:
             return "storyenter"
+    else:
+        if False and len(white_space) > 1:
+            print(white_space)
+            if not len(white_space) >= 8:
+                print("whitespace too short")
+            if not sum([1 if x>width*10/960 else 0 for x in white_space]) <= 12:
+                print("whitespace too long")
+            if not max(white_space) > width * 25/960:
+                print("whitespace too thin")
+            if not max(white_space) < width * 150/960:
+                print("whitespace too thick")
+            if not black_space[0] > width/6:
+                print("blackspace 0 too thin")
+            if not black_space[-1] > width/6:
+                print("blackspace -1 too thin")
+            if not black_space[0] < width/3:
+                print("blackspace 0 too thick")
+            if not black_space[-1] < width/3:
+                print("blackspace -1 too thick") 
+            if not sum(white_space) > width * 280/960:
+                print("sum whitespace too thin") 
+            if not (black_space[-2] > min(white_space[0:3])/2 or black_space[-3] > min(white_space[0:3])/2):
+                print("blackspace gap too thin")
 
     return "nearfadeout"
     # print()

@@ -103,9 +103,31 @@ class Parser {
         return s;
     }
 
-    static String specialToFullName(String s) {
+    static HashMap<String,String> fullNamesJP = null;
+    static String specialToFullName(String s, String language) {
+        if (fullNamesJP == null) {
+            fullNamesJP = new HashMap<String,String>();
+            try {
+                BufferedReader br = new BufferedReader(new FileReader("files/jp_cave_names.txt"));
+                String line;
+                while ((line = br.readLine()) != null) {
+                    Scanner sc = new Scanner(line);
+                    sc.useDelimiter("-");
+                    String id = sc.next().trim();
+                    String jp = sc.next().trim();
+                    fullNamesJP.put(id,jp);
+                    sc.close();
+                }
+                br.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
         for (int i = 0; i < fullNames.length; i++) {
-            if (s.equalsIgnoreCase(special[i])) return fullNames[i];
+            if (s.equalsIgnoreCase(special[i])) {
+                if (language.equalsIgnoreCase("japanese")) return fullNamesJP.get(special[i]);
+                return fullNames[i];
+            }
         }
         return s;
     }
