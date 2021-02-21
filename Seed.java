@@ -94,6 +94,21 @@ public class Seed {
             else if (args[0].equalsIgnoreCase("pretty") && args.length >= 1) {
                 new PrettyAlign().run();
             }
+            else if (args[0].equalsIgnoreCase("diffs") && args.length >= 2) {
+                try {
+                    BufferedReader br = new BufferedReader(new FileReader(args[1]));
+                    String line;
+                    long last_n = -1;
+                    while ((line = br.readLine()) != null) {
+                        String s = line.split(" ")[1];
+                        long n = nth_inv(Long.decode("0x"+s));
+                        if (last_n>0) System.out.println(n-last_n + "\t" + line.split(" ")[0]);
+                        last_n = n;
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
             else {
                 System.out.println(helpString);
             }

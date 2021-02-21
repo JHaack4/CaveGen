@@ -155,7 +155,7 @@ public class Letters {
             }
         }
 
-        if (num_char_readings < 2) {
+        if (num_char_readings < 3) {
             System.out.println("too few char readings :(");
             return -1;
         }
@@ -197,7 +197,6 @@ public class Letters {
 
         // compute when we crossed y=h*6/100
         int cross_point = height*6/100;
-        System.out.println("Cross point:" + cross_point);
         float[] cross_points = new float[num_chars]; // in frames
         boolean[] is_space = new boolean[num_chars];
         int min_cross_idx = -1, max_cross_idx = -1;
@@ -223,11 +222,14 @@ public class Letters {
                 is_space[i] = true;
             } 
         }
-        System.out.println("cross frames " + velString(cross_points));
+        
 
         // number between 0 and 200 corresponding to cross_point.
         // assumes 0 = 35/100 * h and 135 = 5/720 * h
         float cross_point_pos = (6.0f/100 - 35.0f/100) / (5.0f/720 - 35.0f/100) * 135;
+        
+        System.out.println("cross point " + cross_point + "  pos " + cross_point_pos);
+        System.out.println("cross frames " + velString(cross_points));
         //System.out.println(cross_point_pos);
 
         // assume the min_cross_idx is 0. then, what are the initial velocities?
@@ -309,15 +311,58 @@ public class Letters {
             }
         }
 
-        
+        float[] bvs = seedCalc.seed_to_vel_vector(seedCalc.clamp(bestSeed), num_chars);
 
-        System.out.println("bvs " + velString(seedCalc.seed_to_vel_vector(seedCalc.clamp(bestSeed), num_chars)));
-        System.out.println("best: " + Drawer.seedToString(bestSeed) + " (disutil " + bestDisutil + ")" + " (n " + seedCalc.nth_inv(bestSeed) + ")");
+        float bSum = 0, mSum = 0, ccnt = 0;
+        for (int i = 0; i < num_chars; i++) {
+            if (is_space[i]) continue;
+            bSum += bvs[i];
+            mSum += min_vels[i];
+            ccnt += 1;
+        }
+        float diffvs[] = new float[bvs.length];
+        float worst = 0;
+        for (int i = 0; i < bvs.length; i++) {
+            if (is_space[i]) continue;
+            diffvs[i] = bvs[i]-min_vels[i]-(bSum-mSum)/ccnt;
+            worst = Math.max(diffvs[i],worst);
+        }
+
+        System.out.println("bvs   " + velString(bvs));
+        System.out.println("diffs " + velString(diffvs));
+        System.out.println("best: " + Drawer.seedToString(bestSeed) + " (disutil " + bestDisutil/ccnt + ") (worst " + worst + ") (n " + seedCalc.nth_inv(bestSeed) + ")");
         
         
         //System.exit(0);
 
         out_disutil = bestDisutil;
+
+        // positions out
+        // if (true) {
+        //     float[] bvs = seedCalc.seed_to_vel_vector(seedCalc.clamp(bestSeed), num_chars);
+        //     int n = bvs.length;
+        //     int sum = 0;
+        //     int diff = 0;
+        //     for (int i = 0; i < n; i++) {
+        //         float[] p = new float[9];
+        //         int[] q = new int[9];
+        //         for (int j = 0; j < p.length; j++) {
+        //             p[j] = pos_in_terms_of_v_and_f(bvs[i], j+13);
+        //             q[j] = (int)((132.65-p[j])/480*height/1.248f);
+        //             if (is_space[i]) q[j] = 0;
+        //             else {
+        //                 q[j] -= clamped_locs[i][j];
+        //                 if (clamped_locs[i][j] == 0) q[j] = 0;
+        //                 sum += q[j];
+        //                 if (j > 0) diff += q[j]-q[j-1];
+        //             }  
+        //         }
+        //         //System.out.println(out_cave.substring(i*substr_mult,(i+1)*substr_mult) + " " + velString(p));
+        //         System.out.println(out_cave.substring(i*substr_mult,(i+1)*substr_mult) + " " + Arrays.toString(q));
+        //     }
+        //     System.out.println("sum " + sum + "  diff " + diff);
+        //     // if sum is big, take down the 135 number. if diff > 0, take down 1.25
+        // }
 
         /*out_cave = "";
         for (String s: Parser.fullNames) {
@@ -366,6 +411,10 @@ public class Letters {
     
     float v_in_terms_of_f_and_pos(float f, float pos) {
         return (pos - 200 + f * (f+1) / 2) / f;
+    }
+
+    float pos_in_terms_of_v_and_f(float v, float f) {
+        return 200 + (v - 0.5f) * f - f*f / 2;
     }
 
     int lastSearchSeedForPrecompute = -1;

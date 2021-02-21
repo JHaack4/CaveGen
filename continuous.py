@@ -33,6 +33,10 @@ try:
     os.mkdir("output/!im/")
 except FileExistsError:
     pass
+try:
+    os.mkdir("output/!im/chars/")
+except FileExistsError:
+    pass
 
 videoFile=args.camera
 if videoFile == 'find':
@@ -460,7 +464,7 @@ def process_story_frames_name_known():
                         ims = frame[0:max_row_for_falling,xs0_use[i]:xs1_use[i],2]
                         imgs = ims.copy()
                         imgs[last_nonzero,:] = 255
-                        cv2.imwrite("output/!im/debug_" + str(i) + str(l) + str(story_frame_count) + ".png", imgs)
+                        cv2.imwrite("output/!im/chars/debug_" + str(i) + str(l) + str(story_frame_count) + ".png", imgs)
                 
         if args.images:
             falling_img = falling_img + frame/5

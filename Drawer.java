@@ -87,6 +87,8 @@ public class Drawer {
         special.put("ooinu_s", "ooinu_s");
         special.put("wakame_s", "wakame_s");
         special.put("chiyogami", "chiyogami");
+        special.put("toy_bg", "toy_bg");
+        special.put("kusachi_bg", "kusachi_bg");
         for (int i = 0; i < 5; i++)
             special.put("onion"+i, "onion"+i);
 
@@ -110,7 +112,7 @@ public class Drawer {
             im.getGraphics().drawRect(0,0,m.dX*N, m.dZ*N);
         }
         im = rotateImage(im, m.rotation * 90);
-        Image im2 = im.getScaledInstance(m.dX*N, m.dZ*N, Image.SCALE_DEFAULT);
+        Image im2 = im.getScaledInstance(m.dX*N + (CaveGen.drawPretty?1:0), m.dZ*N + (CaveGen.drawPretty?1:0), Image.SCALE_DEFAULT);
             
         IMG.put(hash, im2);
         return im2;
@@ -169,13 +171,27 @@ public class Drawer {
             im.getGraphics().setColor(new Color(255,0,144));
             im.getGraphics().drawRect(0,0,1,1);
         }
+        float alpha1 = this.alpha1;
+        if (s.equals("toy_bg")) alpha1=1;
+        if (s.equals("kusachi_bg")) alpha1=1;
         modAlpha(im, alpha1);
         im = rotateImage(im, rotation * 90);
         int Tsize = this.Tsize;
         if (s.equals("gate")) Tsize = 80;
         if (s.equals("egg")) Tsize = Tsize * 3 / 5;
         if (s.equals("bomb")) Tsize = Tsize * 3 / 5;
+        if (s.equals("toy_bg")) Tsize = im.getWidth();
+        if (s.equals("kusachi_bg")) Tsize = im.getWidth();
         Image im2 = im.getScaledInstance((int)(Tsize * scale),(int)(Tsize * scale), Image.SCALE_DEFAULT);
+
+        if (s.equals("toy_bg")) {
+            im2 = PrettyAlign.toBufferedImage(im2).getSubimage(70,50,460,515);
+            im2 = im2.getScaledInstance(im2.getWidth(null)*2,im2.getHeight(null)*2, Image.SCALE_SMOOTH);
+        }
+        if (s.equals("kusachi_bg")) {
+            im2 = PrettyAlign.toBufferedImage(im2).getSubimage(50,50,532,532);
+            im2 = im2.getScaledInstance(im2.getWidth(null)*2,im2.getHeight(null)*2, Image.SCALE_SMOOTH);
+        }
 
         IMG.put(hash, im2);
         return im2;
@@ -220,6 +236,25 @@ public class Drawer {
         BufferedImage img = new BufferedImage(N*g.mapMaxX, N*g.mapMaxZ,
                                                         BufferedImage.TYPE_INT_RGB);
         Graphics G = img.getGraphics();  
+
+        if (CaveGen.drawPretty) {
+            if (g.placedMapUnits.get(0).name.contains("toy")) {
+                Image bg = getSpecial("toy_bg",0,1);
+                for (int i = 0; i < img.getWidth(); i += bg.getWidth(null)) {
+                    for (int j = 0; j < img.getHeight(); j += bg.getHeight(null)) {
+                        G.drawImage(bg, i, j, null);
+                    }
+                }
+            }
+            if (g.placedMapUnits.get(0).name.contains("kusachi")) {
+                Image bg = getSpecial("kusachi_bg",0,1);
+                for (int i = 0; i < img.getWidth(); i += bg.getWidth(null)) {
+                    for (int j = 0; j < img.getHeight(); j += bg.getHeight(null)) {
+                        G.drawImage(bg, i, j, null);
+                    }
+                }
+            }
+        }
 
         // Draw the map units
         for (MapUnit m: g.placedMapUnits) {
