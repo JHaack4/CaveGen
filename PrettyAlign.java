@@ -92,16 +92,16 @@ class PrettyAlign {
                     update();     
                 }
                 if (e.getKeyCode() == KeyEvent.VK_PERIOD) {
-                    y1-=1*(e.isShiftDown() ? 5 : 1);
+                    //y1-=1*(e.isShiftDown() ? 5 : 1);
                     y2+=1*(e.isShiftDown() ? 5 : 1);  
-                    x1-=1*(e.isShiftDown() ? 5 : 1);
+                    //x1-=1*(e.isShiftDown() ? 5 : 1);
                     x2+=1*(e.isShiftDown() ? 5 : 1);  
                     update();     
                 }
                 if (e.getKeyCode() == KeyEvent.VK_COMMA) {
-                    y1+=1*(e.isShiftDown() ? 5 : 1);
+                    //y1+=1*(e.isShiftDown() ? 5 : 1);
                     y2-=1*(e.isShiftDown() ? 5 : 1);  
-                    x1+=1*(e.isShiftDown() ? 5 : 1);
+                    //x1+=1*(e.isShiftDown() ? 5 : 1);
                     x2-=1*(e.isShiftDown() ? 5 : 1);  
                     update();     
                 }
