@@ -141,8 +141,10 @@ public class CaveGen {
                         prints = false;
                     else if (s.equalsIgnoreCase("-noStats"))
                         showStats = false;
-                    else if (s.equalsIgnoreCase("-pretty"))
+                    else if (s.equalsIgnoreCase("-pretty")) {
                         drawPretty = true;
+                        drawWaterBox = false;
+                    }
                     else if (s.equalsIgnoreCase("-drawSpawnPoints"))
                         drawSpawnPoints = true;
                     else if (s.equalsIgnoreCase("-drawScores"))
@@ -199,6 +201,8 @@ public class CaveGen {
                         drawNoObjects = true;
                     else if (s.equalsIgnoreCase("-drawNoWaterBox"))
                         drawWaterBox = false;
+                    else if (s.equalsIgnoreCase("-drawWaterBox"))
+                        drawWaterBox = true;
                     else if (s.equalsIgnoreCase("-drawNoBuriedItems"))
                         drawNoBuriedItems = true;
                     else if (s.equalsIgnoreCase("-drawNoItems"))

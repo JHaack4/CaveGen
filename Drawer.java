@@ -641,7 +641,7 @@ public class Drawer {
                 int z = (int)(g.placedStart.posZ/M*N - im.getHeight(null)/2);
                 G.drawImage(im, x, z, null);
                 if (g.drawAngles || g.drawPodAngle)
-                    drawAngle(G, g.placedStart.posX, g.placedStart.posZ, g.placedStart.ang);
+                    drawAngle(G, g.placedStart.posX/M*N, g.placedStart.posZ/M*N, g.placedStart.ang, 1.8f, new Color(0,0,0));
                 //G.drawString("S", (int)(pos[0]/M*N), (int)(pos[1]/M*N));
             }
             if (g.placedHole != null && !g.drawNoHoles) {
@@ -875,14 +875,15 @@ public class Drawer {
                         for (WayPoint owp: wp.adj) {
                             int ox = (int)(owp.posX/M*N);
                             int oz = (int)(owp.posZ/M*N);
-                            G.setColor(new Color(153,153,0,15));
+                            float dist = g.wayPointDist(wp,owp);
+                            String s = "" + (int)(dist/10);
+                            if (dist<10) continue;
+                            G.setColor(new Color(105,105,0,75));
                             if (drawAsReport)
                                 G.setColor(new Color(80,80,0,150));
                             if (g.drawWPEdges)
                                 G.setColor(new Color(80,80,0,150));
-                            G.drawLine(x,z,(ox*5+x)/6,(oz*5+z)/6);
-                            String s = "" + (int)(g.wayPointDist(wp,owp)/10);
-                            if (s.equals("0")) continue;
+                            drawAngle(G,x,z,(float)Math.atan2(ox-x,oz-z),(dist/M*N-8)/25.0f,null);
                             if (g.drawWayPointEdgeDists)
                                 drawTextOutline(G,s,(x+ox)/2-s.length()*5/2,(z+oz)/2+4,
                                               new Color(160,160,0), bgt);
@@ -890,9 +891,12 @@ public class Drawer {
                     }
                     G.setColor(new Color(80,80,0,150));
                     if (wp.backWp != null && (g.drawWayPoints)) {
+                        float dist = g.wayPointDist(wp,wp.backWp);
+                        if (dist<10) continue;
                         int ox = (int)(wp.backWp.posX/M*N);
                         int oz = (int)(wp.backWp.posZ/M*N);
-                        G.drawLine(x,z,ox,oz);
+                        //G.drawLine(x,z,ox,oz);
+                        drawAngle(G,x,z,(float)Math.atan2(ox-x,oz-z),(dist/M*N-8)/25.0f,null);
                     }
                     String s = "" + (int)(wp.distToStart/10);
                     if (g.drawWayPointVertDists && !drawAsReport)
@@ -1443,6 +1447,22 @@ public class Drawer {
                    (int)(x + len2*Math.sin(ang-angd) + 0.5), (int)(z + len2*Math.cos(ang-angd) + 0.5));
         G.drawLine((int)(x + len*Math.sin(ang) + 0.5), (int)(z + len*Math.cos(ang) + 0.5),
                    (int)(x + len2*Math.sin(ang+angd) + 0.5), (int)(z + len2*Math.cos(ang+angd) + 0.5));
+    }
+
+    public void drawAngle(Graphics G, float fx, float fz, float ang, float sz, Color color) {
+        if (color != null)
+            G.setColor(color);
+        int len = (int)(25 * sz);
+        int len2 = Math.min(8, (int)(5*sz));
+        float angd = 0.36f;
+        float x = fx;
+        float z = fz;
+        G.drawLine((int)x, (int)z, (int)(x + len*Math.sin(ang) + 0.5), (int)(z + len*Math.cos(ang) + 0.5));
+        G.drawLine((int)(x + len*Math.sin(ang) + 0.5), (int)(z + len*Math.cos(ang) + 0.5),
+                   (int)(x + len*Math.sin(ang) + len2*Math.sin(Math.PI+ang-angd) + 0.5), (int)(z + len*Math.cos(ang) + len2*Math.cos(Math.PI+ang-angd) + 0.5));
+        G.drawLine((int)(x + len*Math.sin(ang) + 0.5), (int)(z + len*Math.cos(ang) + 0.5),
+                   (int)(x + len*Math.sin(ang) + len2*Math.sin(Math.PI+ang+angd) + 0.5), (int)(z + len*Math.cos(ang) + len2*Math.cos(Math.PI+ang+angd) + 0.5));
+        
     }
 
     public void drawTeki(Graphics G, CaveGen g, Teki t, int x, int z) {

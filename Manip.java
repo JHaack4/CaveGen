@@ -96,6 +96,9 @@ public class Manip {
                 if (e.getKeyCode() == KeyEvent.VK_C && e.isControlDown()) {
                     System.exit(0);
                 }
+                if (e.getKeyCode() == KeyEvent.VK_R && e.isShiftDown()) {
+                    nextStoryModeLevel(-storyLevelsIndex);               
+                }
             }
         };
         jfr.addKeyListener(keyListener);
