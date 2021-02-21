@@ -32,6 +32,7 @@ def digit_templates():
         templates.append(temp)
     templates.append(cv2.imread(args.templates + "_.png",cv2.IMREAD_UNCHANGED))
 
+letters_raw_arr = "u3044_u3051_u3060_u306e_u307e_u3082_u308a_u30ac_u30af_u30b7_u30b9_u30c0_u30c7_u30d3_u30d8_u30de_u30e0_u30e1_u30e2_u30e3_u30e9_u30eb_u30ef_u30fc_u4e0b_u4e2d_u53f0_u56fd_u5712_u5730_u57ce_u57fa_u5883_u5922_u59cb_u5bc6_u6226_u6240_u6839_u6c34_u6c8c_u6d1e_u6df7_u738b_u767d_u767e_u78e8_u795e_u79d8_u7a74_u7a9f_u82b1_u8fba_u932c_u98df_u9b54".split("_") + [i for i in 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ']
 
 letters = {}
 letters_height = {}
@@ -47,7 +48,7 @@ def letter_templates():
     letters_width = {}
     letters_xoff = {}
 
-    for l in 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ':
+    for l in letters_raw_arr:
         img = cv2.imread('files/templates/letters/' + (l+l if l.isupper() else l) + ".png")
         img = cv2.resize(img, (int(img.shape[1]*args.letters_xscale), int(img.shape[0]*args.letters_yscale) ), interpolation=cv2.INTER_NEAREST)
         letters[l] = np.uint8(img)
@@ -135,11 +136,11 @@ def get_screen_type(frame):
             count += 1
     black_space.append(count)
     
-    if len(white_space) >= 8 and sum([1 if x>width*10/960 else 0 for x in white_space]) <= 12 \
+    if len(white_space) >= 3 and sum([1 if x>width*10/960 else 0 for x in white_space]) <= 12 \
         and max(white_space) > width * 25/960 and max(white_space) < width * 90/960 \
         and black_space[0] > width/6 and black_space[-1] > width/6 \
-        and black_space[0] < width/3 and black_space[-1] < width/3 \
-        and sum(white_space) > width * 280/960 \
+        and black_space[0] < width*7/16 and black_space[-1] < width*7/16 \
+        and sum(white_space) > width * 100/960 \
         and (black_space[-2] > min(white_space[0:3])/2 or black_space[-3] > min(white_space[0:3])/2):
         # word sublevel is found
 
@@ -150,6 +151,29 @@ def get_screen_type(frame):
             return "chenter"
         else:
             return "storyenter"
+    else:
+        if args.verbose and False and len(white_space) > 1:
+            print(white_space)
+            if not len(white_space) >= 3:
+                print("whitespace too short")
+            if not sum([1 if x>width*10/960 else 0 for x in white_space]) <= 12:
+                print("whitespace too long")
+            if not max(white_space) > width * 25/960:
+                print("whitespace too thin")
+            if not max(white_space) < width * 150/960:
+                print("whitespace too thick")
+            if not black_space[0] > width/6:
+                print("blackspace 0 too thin")
+            if not black_space[-1] > width/6:
+                print("blackspace -1 too thin")
+            if not black_space[0] < width*7/16:
+                print("blackspace 0 too thick")
+            if not black_space[-1] < width*7/16:
+                print("blackspace -1 too thick") 
+            if not sum(white_space) > width * 100/960:
+                print("sum whitespace too thin " + str(sum(white_space))) 
+            if not (black_space[-2] > min(white_space[0:3])/2 or black_space[-3] > min(white_space[0:3])/2):
+                print("blackspace gap too thin")
 
     return "nearfadeout"
 
@@ -421,9 +445,10 @@ def process_align_frames():
                 print("Warning, " + comp_name + " not detected as type chresult, was " + frame_type)
             pass
         else:
-            cv2.imwrite("output/!im/out_"+comp_name+".png", draw_letters_on_image(frame, comp_name.replace("_"," ")))
+            comp_name = comp_name.split("_")[1:] if comp_name[0]=="_" else [i for i in comp_name.replace("_"," ")]
+            cv2.imwrite("output/!im/out_"+"".join(comp_name)+".png", draw_letters_on_image(frame, comp_name))
             if "storyenter" != frame_type:
-                print("Warning, " + comp_name + " not detected as type storyenter, was " + frame_type)
+                print("Warning, " + "".join(comp_name) + " not detected as type storyenter, was " + frame_type)
             pass
 
     if recommend_chresult_color:

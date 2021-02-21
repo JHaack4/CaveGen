@@ -355,7 +355,7 @@ public class Manip {
                         if (storyLevelsIndex >= storyLevelsOrder.size()) storyLevelsIndex = 0;
                         jtext2.setText("Next expect:\n" + storyLevelsOrder.get(storyLevelsIndex).replace("-","") + "\n" + (captainOlimar ? "Olimar" : "Louie/Pres"));
                         
-                        if (!seed.letters.out_cave.equalsIgnoreCase(Parser.specialToFullName(curCave, params.get("language")))) {
+                        if (!seed.letters.out_cave.equalsIgnoreCase(Parser.specialToFullName(curCave, params.get("language")).replace(" ","_"))) {
                             System.out.println("err, disagree about current cave... expected " + curCave + " got " + seed.letters.out_cave);
                         }
 

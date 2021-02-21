@@ -125,7 +125,7 @@ class Parser {
         }
         for (int i = 0; i < fullNames.length; i++) {
             if (s.equalsIgnoreCase(special[i])) {
-                if (language.equalsIgnoreCase("japanese")) return fullNamesJP.get(special[i]);
+                if (language != null && language.equalsIgnoreCase("japanese")) return fullNamesJP.get(special[i]);
                 return fullNames[i];
             }
         }

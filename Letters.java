@@ -125,13 +125,15 @@ public class Letters {
         int height = Integer.parseInt(info10[2]);
         int num_chars = Integer.parseInt(info10[3]);
         out_num_chars = num_chars;
-        out_cave = info10[1].replace("_", " ");
+        out_cave = info10[1];
         System.out.println(out_cave + " h=" + height + " n=" + num_chars);
 
         if (out_cave.equals("")) {
             System.out.println("bad cave. :(");
             return -1;
         }
+
+        int substr_mult = out_cave.length() / num_chars;
 
         // pull the letter locations from the python code
         int[][] locs = new int[num_chars][300];
@@ -186,7 +188,7 @@ public class Letters {
             for (int j = 0; j < clamped_locs[0].length; j++) {
                 clamped_locs[i][j] = shifted_locs[i][j+minc];
             }
-            System.out.println(Arrays.toString(clamped_locs[i]));
+            System.out.println(out_cave.substring(i*substr_mult,(i+1)*substr_mult) + " " + Arrays.toString(clamped_locs[i]));
             //for (int j = 0; j < clamped_locs[0].length-1; j++) {
             //    System.out.print(" " + (clamped_locs[i][j+1]-clamped_locs[i][j]));
             //}
