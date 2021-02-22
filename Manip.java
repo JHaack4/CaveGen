@@ -204,6 +204,12 @@ public class Manip {
             jtext2.setText("Next expect:\n" + storyLevelsOrder.get(storyLevelsIndex).replace("-","") + "\n" + (captainOlimar ? "Olimar" : "Louie/Pres"));
         }
 
+        if (storyMode && params.containsKey("anchorSeed")) {
+            lastReadSeed = Long.decode("0x"+params.get("anchorSeed"));
+            seed.letters.precomputeExpectedFutureVsLong(lastReadSeed, seed.letters.nearbySearchDistLong);
+            seed.letters.nearbySearchLongSeed = seed.clamp(lastReadSeed);
+        }
+
         // launch the continuous digit parser
         Thread thread = new Thread(new Runnable() {
             public void run() {
@@ -767,6 +773,11 @@ public class Manip {
                     timerStartSeed = startSeed;
                     timerCurSeed = startSeed;
                     timerTargetFrame = 0;
+
+                    if (storyMode && lastReadSeed != -1) {
+                        seed.letters.precomputeExpectedFutureVsLong(lastReadSeed, seed.letters.nearbySearchDistLong);
+                        seed.letters.nearbySearchLongSeed = seed.clamp(lastReadSeed);
+                    }
                 }
 
                 // show the countdown timers
