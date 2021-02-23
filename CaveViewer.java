@@ -353,6 +353,10 @@ public class CaveViewer {
                     argMap.get("additionalargs").jTextField.setText(argMap.get("additionalargs").jTextField.getText() + " -judge " + a);
                     continue;
                 }
+                if (a.contains("<") || a.contains(">")) {
+                    argMap.get("judgefilter").jTextField.setText(a);
+                    continue;
+                }
                 if (!argMap.containsKey(a) && !argMap.containsKey(a.substring(1))) {
                     argMap.get("additionalargs").jTextField.setText(argMap.get("additionalargs").jTextField.getText() + " " + a);
                     continue;

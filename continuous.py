@@ -76,31 +76,38 @@ letters_height = {}
 letters_yoff = {}
 letters_width = {}
 letters_xoff = {}
+letters_y_addn = {}
 
 for l in letters_raw_arr:
     img = cv2.imread('files/templates/letters/' + (l+l if l.isupper() else l) + ".png")
-    img = cv2.resize(img, (int(img.shape[1]*args.letters_xscale), int(img.shape[0]*args.letters_yscale) ), interpolation=cv2.INTER_NEAREST)
+    img = cv2.resize(img, (int(img.shape[1]*args.letters_xscale), int(img.shape[0]*args.letters_yscale) ), interpolation=cv2.INTER_LINEAR_EXACT)
     letters[l] = np.uint8(img)
+    #cv2.imwrite("output/!im/debug_"+(l+l if l.isupper() else l)+".png",letters[l])
     row_mean = letters[l].max(axis=2).max(axis=1)
     min_idx = 1000
     max_idx = 0
     for i in range(len(row_mean)):
-        if row_mean[i] > 6:
+        if row_mean[i] > 70:
             min_idx = min(min_idx,i)
             max_idx = max(max_idx,i)
     letters_height[l] = max_idx-min_idx+1
     letters_yoff[l] = min_idx
+    shape_penalty = int((letters[l].shape[0] - letters['u3044'].shape[0])*args.letters_yscale + 0.5)
+    letters_y_addn[l] = -shape_penalty+letters[l].shape[0]-letters_height[l]-letters_yoff[l] # important. todo: how should height affect it? could switch letters[l] to letters['u3044'] to get the consensus size
+    
     col_mean = letters[l].max(axis=2).max(axis=0)
     min_idx = 1000
     max_idx = 0
     for i in range(len(col_mean)):
-        if col_mean[i] > 6:
+        if col_mean[i] > 70:
             min_idx = min(min_idx,i)
             max_idx = max(max_idx,i)
     letters_width[l] = max_idx-min_idx+1
     letters_xoff[l] = min_idx
-    #print(l + " " + str(img.shape) + " h" + str(letters_height[l]) + " y" + str(letters_yoff[l]) + " w" + str(letters_width[l]) + " x" + str(letters_xoff[l]))
-
+    #if l == 'l':
+    #    #print(l + " " + str(row_mean))
+    print(l + " " + str(img.shape) + " h" + str(letters_height[l]) + " y" + str(letters_yoff[l]) + " w" + str(letters_width[l]) + " x" + str(letters_xoff[l]))
+print(letters_y_addn)
 other_letters_w = {" ": args.space_mult, "'": args.apostrophe_mult}
 
 ### find and read the digits of a single frame
@@ -441,6 +448,13 @@ def process_story_frames_name_known():
             if l not in letters: continue
             #print(f"{l} {xs0_use[i]} {xs1_use[i]} {img.shape}")
             section_img = frame[0:max_row_for_falling,xs0_use[i]:xs1_use[i],:]
+            if section_img.max(axis=2).max(axis=1).max(axis=0) < args.fadeout_frame_intensity:
+                continue
+            section_img_blur = cv2.blur(section_img, (25,25))
+            section_img = cv2.subtract(section_img, section_img_blur)
+            if args.images and num_letters_info == 0:
+                cv2.imwrite("output/!im/chars/section_" + str(num_letters_info) + " " + str(i) + "_" + str(story_frame_count) + ".png", section_img)
+                #cv2.imwrite("output/!im/chars/section_" + str(num_letters_info) + " " + str(i) + "_" + str(story_frame_count) + "b.png", section_img_blur)
             row_means = section_img.max(axis=2).max(axis=1)
             #print(row_means)
             last_nonzero = -1
@@ -463,8 +477,8 @@ def process_story_frames_name_known():
                     if num_letters_info == 0:
                         ims = frame[0:max_row_for_falling,xs0_use[i]:xs1_use[i],2]
                         imgs = ims.copy()
-                        imgs[last_nonzero,:] = 255
-                        cv2.imwrite("output/!im/chars/debug_" + str(i) + str(l) + str(story_frame_count) + ".png", imgs)
+                        imgs[last_nonzero,::5] = 255
+                        cv2.imwrite("output/!im/chars/section_" + str(num_letters_info) + " " + str(i) + "_" + str(story_frame_count) + "c.png", imgs)
                 
         if args.images:
             falling_img = falling_img + frame/5
@@ -514,7 +528,7 @@ def process_story_frames_name_known():
             offset_info = []
             for i,l in enumerate(cave_name):
                 if l in letters:
-                    offset_info.append(str(letters[l].shape[0]-letters_height[l]-letters_yoff[l]))
+                    offset_info.append(str(letters_y_addn[l]))
                 else:
                     offset_info.append(str(-1))
 

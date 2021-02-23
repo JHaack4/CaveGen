@@ -265,13 +265,16 @@ public class Letters {
         //float toleranceLax = num_chars >= 10 ? 0.5f : num_chars >= 8 ? 0.35f : 0.25f;
 
         // these tolerances are all radius terms
-        float falsePositiveRate = num_good_chars >= 10 ? 0.99f : 0.95f;
-        float toleranceNearby = (float)(5.0/2 * Math.pow(1 - Math.pow(falsePositiveRate, 1.0/nearbySearchDist), 1.0/num_good_chars));
-        float toleranceAnchor = (float)(5.0/2 * Math.pow(1 - Math.pow(falsePositiveRate, 1.0/nearbySearchDistLong), 1.0/num_good_chars));
-        float toleranceLattice = (float)(5.0/2 * Math.pow(1 - Math.pow(falsePositiveRate, 1.0/Math.pow(2,31)), 1.0/num_good_chars));
+        float falsePositiveRate = num_good_chars >= 10 ? 0.995f : 0.95f;
+        float toleranceNearby = (float)(5.0/2 * Math.pow(1 - Math.pow(falsePositiveRate, 1.0/nearbySearchDist), 1.0/(num_good_chars-0.5)));
+        float toleranceAnchor = (float)(5.0/2 * Math.pow(1 - Math.pow(falsePositiveRate, 1.0/nearbySearchDistLong), 1.0/(num_good_chars-0.5)));
+        float toleranceLattice = (float)(5.0/2 * Math.pow(1 - Math.pow(falsePositiveRate, 1.0/Math.pow(2,31)), 1.0/(num_good_chars-0.5)));
         float toleranceGenerous = 0.7f * (float)(5.0/2 * Math.pow(1 - Math.pow(falsePositiveRate, 1.0/nearbySearchDist), 1.0/(num_good_chars-1)));
-        
         System.out.println(toleranceNearby + " " + toleranceAnchor + " " + toleranceLattice + " " + toleranceGenerous);
+        toleranceNearby = Math.min(toleranceNearby, 0.2f);
+        toleranceAnchor = Math.min(toleranceAnchor, 0.2f);
+        toleranceLattice = Math.min(toleranceLattice, 0.2f);
+        toleranceGenerous = Math.min(toleranceGenerous, 0.2f);
 
         
         float range = max_vels[min_cross_idx] - min_vels[min_cross_idx];
@@ -317,7 +320,7 @@ public class Letters {
 
         // next best method, an anchor seed has been set in challenge mode
         if (nearbySearchLongSeed != -1 && bestSeed == -1) {
-            System.out.println("starting anchor search " + nearbySearchDist);
+            System.out.println("starting anchor search " + nearbySearchDistLong);
 
             bestSeed = searchForLowDisutilNearLong(nearbySearchLongSeed, vtarg, vtargsums, is_space, toleranceAnchor, nearbySearchDistLong);
             System.out.println("anchor search done");
@@ -328,7 +331,7 @@ public class Letters {
             }
         }
 
-        if (bestSeed == -1 && num_good_chars >= 6 && !is_space[0] && !is_space[1] && !is_space[2] && !is_space[3]) {
+        if (bestSeed == -1 && num_good_chars >= 7 && !is_space[0] && !is_space[1] && !is_space[2] && !is_space[3]) {
             System.out.println("starting lattice search");
             long startTime = System.currentTimeMillis();
             for (float offs = -toleranceLattice/2; offs <= range + toleranceLattice/2; offs += toleranceLattice / 4) { // adds tol/8 error to each one...
@@ -365,7 +368,7 @@ public class Letters {
         }
 
         // error correction via allowing one mistake
-        if (seedLastRead != -1 && bestSeed == -1) {
+        if (seedLastRead != -1 && bestSeed == -1 && num_good_chars >= 8) {
             System.out.println("starting nearby generous search " + nearbySearchDist);
             bestSeed = searchForLowDisutilNearGenerous(seedLastRead, vtarg, vtargsums, is_space, toleranceGenerous, nearbySearchDist);
             System.out.println("nearby generous search done");

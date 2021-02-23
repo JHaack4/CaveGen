@@ -77,6 +77,7 @@ maxDistToConsider = 10000000 # for the special seeds below, how far ahead you ar
 storyAdditionalArgs = -drawpodangle -rotate cap -drawnoplants -quickglance -drawtreasurepaths -drawsh6bulborb
 podCaveOrder = EC,2,HoB,5,WFG,5,SH,7,BK,7,SCx,8,FC,7,CoS,5,GK,6
 atCaveOrder = EC,2,EC,2,WFG,5,HoB,5,SCx,9,FC,8,CoS,5,GK,6,SC,5,SR,7,BK,7,SH,7,CoC,10,DD,14,HoH,15
+# anchorSeed = FFFFFFFF
 
 # EC - _u59cb_u307e_u308a_u306e_u6d1e_u7a9f
 # SCx - _u5730_u4e0b_u306e_u79d8_u5bc6_u57fa_u5730

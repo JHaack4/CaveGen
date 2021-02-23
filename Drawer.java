@@ -447,7 +447,7 @@ public class Drawer {
                     G.fillOval((int)(t.posX/M*N-r/2), (int)(t.posZ/M*N-r/2), r, r);
             }
             for (Teki t: g.placedTekis) {
-                if (t.itemInside != null && (!Manip.dontHighlightSkipPodTreasures || !ignoreTreasuresPoD.contains(t.itemInside.toLowerCase())) )
+                if (t.itemInside != null && (!Manip.dontHighlightSkipPodTreasures || !ignoreTreasuresPoD.contains(t.itemInside.toLowerCase()) && (!t.tekiName.toLowerCase().equals("blackman")) || CaveGen.colossal) )
                     G.fillOval((int)(t.posX/M*N-r/2), (int)(t.posZ/M*N-r/2), r, r);
             }
             G.setColor(new Color(160,0,255,a));
