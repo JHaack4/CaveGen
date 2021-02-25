@@ -148,6 +148,10 @@ public class CaveViewer {
                     if (Manip.thisManip != null)
                         Manip.thisManip.nextStoryModeLevel(-Manip.thisManip.storyLevelsIndex);               
                 }
+                if (e.getKeyCode() == KeyEvent.VK_A && e.isShiftDown()) {
+                    if (Manip.thisManip != null)
+                        Manip.thisManip.setAnchor();              
+                }
 				if (e.getKeyCode() == KeyEvent.VK_MINUS) {
                     if (currentImage >= 0 && currentImage < nameBuffer.size()) {
                         String[] ss = nameBuffer.get(currentImage).split(" ");

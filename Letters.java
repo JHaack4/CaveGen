@@ -238,7 +238,8 @@ public class Letters {
         // assumes bottom of the cave name text is at 249/720
         // assumes 0 = 249/720 * h and 164.65 = top of screen
         float sublevel_start_ratio = 249.0f/720;
-        float cross_point_pos = (sublevel_start_ratio - cross_point*1.0f/height) / sublevel_start_ratio * 164.65f;
+        float pos_for_top_of_screen = Manip.thisManip.params.containsKey("letterPosOffset") ? Float.parseFloat(Manip.thisManip.params.get("letterPosOffset")) : 164.65f;
+        float cross_point_pos = (sublevel_start_ratio - cross_point*1.0f/height) / sublevel_start_ratio * pos_for_top_of_screen;
         
         System.out.println("cross point " + cross_point + "  pos " + cross_point_pos + "  good " + num_good_chars);
         System.out.println("cross frames " + velString(cross_points));
@@ -256,128 +257,260 @@ public class Letters {
             max_vels[i] = v_in_terms_of_f_and_pos(f_5 + cross_points[i] - cross_points[max_cross_idx], cross_point_pos);
             diff_vels[i] = max_vels[i] - min_vels[i];
         }
-
-        System.out.println("min " + velString(min_vels));
-        System.out.println("max " + velString(max_vels));
+        float range = max_vels[min_cross_idx] - min_vels[min_cross_idx];
+        
         //System.out.println("diff " + velString(diff_vels));
 
         //float tolerance = num_chars >= 10 ? 0.2f : num_chars >= 8 ? 0.16f : 0.13f;
         //float toleranceLax = num_chars >= 10 ? 0.5f : num_chars >= 8 ? 0.35f : 0.25f;
 
-        // these tolerances are all radius terms
-        float falsePositiveRate = num_good_chars >= 10 ? 0.995f : 0.95f;
-        float toleranceNearby = (float)(5.0/2 * Math.pow(1 - Math.pow(falsePositiveRate, 1.0/nearbySearchDist), 1.0/(num_good_chars-0.5)));
-        float toleranceAnchor = (float)(5.0/2 * Math.pow(1 - Math.pow(falsePositiveRate, 1.0/nearbySearchDistLong), 1.0/(num_good_chars-0.5)));
-        float toleranceLattice = (float)(5.0/2 * Math.pow(1 - Math.pow(falsePositiveRate, 1.0/Math.pow(2,31)), 1.0/(num_good_chars-0.5)));
-        float toleranceGenerous = 0.7f * (float)(5.0/2 * Math.pow(1 - Math.pow(falsePositiveRate, 1.0/nearbySearchDist), 1.0/(num_good_chars-1)));
-        System.out.println(toleranceNearby + " " + toleranceAnchor + " " + toleranceLattice + " " + toleranceGenerous);
-        toleranceNearby = Math.min(toleranceNearby, 0.2f);
-        toleranceAnchor = Math.min(toleranceAnchor, 0.2f);
-        toleranceLattice = Math.min(toleranceLattice, 0.2f);
-        toleranceGenerous = Math.min(toleranceGenerous, 0.2f);
+        boolean useAbsolute = num_good_chars <= 7;
 
-        
-        float range = max_vels[min_cross_idx] - min_vels[min_cross_idx];
-        
         long bestSeed = -1;
         float bestDisutil = 100000;
         float[] bestVs = new float[num_chars];
 
-        // generate vtarg array...
-        float[][] vtarg = new float[5001][num_chars];
-        float[] vtargsums = new float[vtarg.length];
-        for (int i = 0; i < vtargsums.length; i++) vtargsums[i] = -1;
-        for (float offs = -0.05f; offs <= range + 0.05f; offs += 0.00025f) {
-            float foffs = f_in_terms_of_v_and_pos(offs, cross_point_pos);
-            float[] vs = new float[num_chars];
-            float sum = 0;
-            for (int i = 0; i < num_chars; i++) {
-                if (is_space[i]) continue;
-                vs[i] = v_in_terms_of_f_and_pos(foffs + cross_points[i] - cross_points[min_cross_idx], cross_point_pos); //  offs + min_vels[i];
-                sum += vs[i];
-            }
-            sum /= num_good_chars;
-            int idx = (int)(sum * (vtarg.length-1) / 5);
-            float targetSumHere = (idx+0.5f) * 5 / (vtarg.length-1);
-            if (Math.abs(sum - targetSumHere) < Math.abs(vtargsums[idx] - targetSumHere)) {
-                vtarg[idx] = vs;
-                vtargsums[idx] = sum;
-            }
-        }
+        if (useAbsolute) {
 
-        // try fasteest method first, using a recent nearby seed
-        if (seedLastRead != -1 && bestSeed == -1) {
-            System.out.println("starting nearby search " + nearbySearchDist);
+            // these tolerances are all radius terms
+            float falsePositiveRate = num_good_chars >= 10 ? 0.995f : 0.95f;
+            float toleranceNearby = (float)(5.0/2 * Math.pow(1 - Math.pow(falsePositiveRate, 1.0/nearbySearchDist), 1.0/(num_good_chars)));
+            float toleranceAnchor = (float)(5.0/2 * Math.pow(1 - Math.pow(falsePositiveRate, 1.0/nearbySearchDistLong), 1.0/(num_good_chars)));
+            float toleranceLattice = (float)(5.0/2 * Math.pow(1 - Math.pow(falsePositiveRate, 1.0/Math.pow(2,31)), 1.0/(num_good_chars)));
+            toleranceNearby = Math.min(toleranceNearby, 0.2f);
+            toleranceAnchor = Math.min(toleranceAnchor, 0.2f);
+            toleranceLattice = Math.min(toleranceLattice, 0.2f);
+            if (num_good_chars <= 4) toleranceNearby = 0.07f;
+            System.out.println("tolerance:: near:" + String.format("%.2f",toleranceNearby) + " anchor:" 
+            + String.format("%.2f",toleranceAnchor) + " lattice:" + String.format("%.2f",toleranceLattice));
 
-            bestSeed = searchForLowDisutilNear(seedLastRead, vtarg, vtargsums, is_space, toleranceNearby, nearbySearchDist);
-            System.out.println("nearby search done");
-            if (bestSeed != -1) {
-                System.out.println("found via nearby search");
-                bestDisutil = out_disutil_for_near;
-                bestVs = out_vs_for_near;
-            }
-        }
+            // generate vtarg array...
+            float[][] vtarg = new float[5001][num_chars];
+            float[] vtargsums = new float[vtarg.length];
+            for (int i = 0; i < vtargsums.length; i++) vtargsums[i] = -1;
 
-        // next best method, an anchor seed has been set in challenge mode
-        if (nearbySearchLongSeed != -1 && bestSeed == -1) {
-            System.out.println("starting anchor search " + nearbySearchDistLong);
-
-            bestSeed = searchForLowDisutilNearLong(nearbySearchLongSeed, vtarg, vtargsums, is_space, toleranceAnchor, nearbySearchDistLong);
-            System.out.println("anchor search done");
-            if (bestSeed != -1) {
-                System.out.println("found via anchor search");
-                bestDisutil = out_disutil_for_near;
-                bestVs = out_vs_for_near;
-            }
-        }
-
-        if (bestSeed == -1 && num_good_chars >= 7 && !is_space[0] && !is_space[1] && !is_space[2] && !is_space[3]) {
-            System.out.println("starting lattice search");
-            long startTime = System.currentTimeMillis();
-            for (float offs = -toleranceLattice/2; offs <= range + toleranceLattice/2; offs += toleranceLattice / 4) { // adds tol/8 error to each one...
+            float[][] possibleVs = new float[10][num_chars];
+            int numPossible = 0;
+            for (int crossFrameOffset = 0; crossFrameOffset < 30; crossFrameOffset++) {
                 float[] vs = new float[num_chars];
-                
+                float min_v = 10, max_v = -5;
+                for (int i = 0; i < num_chars; i++) {
+                    if (is_space[i]) continue;
+
+                    vs[i] = v_in_terms_of_f_and_pos(cross_points[i]+crossFrameOffset, cross_point_pos);
+                    min_v = Math.min(min_v, vs[i]);
+                    max_v = Math.max(max_v, vs[i]);
+                }
+                //System.out.println(min_v + " " + max_v);
+                if (min_v < -3*toleranceNearby || max_v > 5+3*toleranceNearby) continue;
+
+                System.out.println("possible" + numPossible + " " + velString(vs));
+                possibleVs[numPossible] = vs;
+                numPossible += 1;
+            }
+
+            if (numPossible == 0) {
+                System.out.println("No possible velocities ??");
+                return -1; // should never happen?
+            }
+
+            int possIdx = 0;
+            for (int i = 0; i < vtarg.length; i++) {
+                float sum = 0;
+                for (int j = 0; j < num_chars; j++) {
+                    if (is_space[j]) continue;
+                    sum += possibleVs[possIdx][j];
+                }
+                sum /= num_good_chars;
+
+                if (sum-toleranceNearby > i*5.0f/vtarg.length) {
+                    continue;
+                } else if (sum+toleranceNearby < i*5.0f/vtarg.length) {
+                    if (possIdx+1 < numPossible) {
+                        possIdx += 1;
+                    } else {
+                        break;
+                    }
+                } else {
+                    for (int j = 0; j < num_chars; j++)
+                        vtarg[i][j] = possibleVs[possIdx][j];
+                    vtargsums[i] = sum;
+                }
+                //System.out.println(i + " " + velString(vtarg[i]) + " " + vtargsums[i]);
+            }
+            
+
+            // try fasteest method first, using a recent nearby seed
+            if (seedLastRead != -1 && bestSeed == -1) {
+                System.out.println("starting absolute nearby search " + nearbySearchDist);
+
+                bestSeed = searchForLowDisutilNear(seedLastRead, vtarg, vtargsums, is_space, toleranceNearby, nearbySearchDist);
+                System.out.println("absolute nearby search done");
+                if (bestSeed != -1) {
+                    System.out.println("found via absolute nearby search");
+                    bestDisutil = out_disutil_for_near;
+                    bestVs = out_vs_for_near;
+                }
+            }
+
+            // next best method, an anchor seed has been set in challenge mode
+            if (nearbySearchLongSeed != -1 && bestSeed == -1) {
+                System.out.println("starting absolute anchor search " + nearbySearchDistLong);
+
+                bestSeed = searchForLowDisutilNearLong(nearbySearchLongSeed, vtarg, vtargsums, is_space, toleranceAnchor, nearbySearchDistLong);
+                System.out.println("absolute anchor search done");
+                if (bestSeed != -1) {
+                    System.out.println("found via absolute anchor search");
+                    bestDisutil = out_disutil_for_near;
+                    bestVs = out_vs_for_near;
+                }
+            }
+
+            if (bestSeed == -1 && num_good_chars >= 7 && !is_space[0] && !is_space[1] && !is_space[2] && !is_space[3]) {
+                System.out.println("starting absolute lattice search");
+                long startTime = System.currentTimeMillis();
+                for (int ii = 0; ii < numPossible; ii++) { 
+                    float[] vs = possibleVs[ii];
+
+                    ArrayList<Long> candidates = seedCalc.vs_array_to_seed(vs, is_space, toleranceLattice);
+
+                    for (int i = 0; i < candidates.size(); i++) {
+                        if (seedCalc.out_disutil_for_vs_array.get(i) < bestDisutil) {
+                            bestDisutil = seedCalc.out_disutil_for_vs_array.get(i);
+                            bestSeed = candidates.get(i);
+                            bestVs = vs;
+                        }
+                    }
+
+                    if (System.currentTimeMillis() - startTime > 8000) {
+                        System.out.println("lattice timeout 8000");
+                        break;
+                    }
+
+                }
+                System.out.println("absolute lattice search done");
+                if (bestSeed != -1) {
+                    System.out.println("found via absolute lattice search");
+                }
+            }
+
+        } else {
+
+            System.out.println("min " + velString(min_vels));
+            System.out.println("max " + velString(max_vels));
+
+            // these tolerances are all radius terms
+            float falsePositiveRate = num_good_chars >= 10 ? 0.995f : 0.95f;
+            float toleranceNearby = (float)(5.0/2 * Math.pow(1 - Math.pow(falsePositiveRate, 1.0/nearbySearchDist), 1.0/(num_good_chars-0.5)));
+            float toleranceAnchor = (float)(5.0/2 * Math.pow(1 - Math.pow(falsePositiveRate, 1.0/nearbySearchDistLong), 1.0/(num_good_chars-0.5)));
+            float toleranceLattice = (float)(5.0/2 * Math.pow(1 - Math.pow(falsePositiveRate, 1.0/Math.pow(2,31)), 1.0/(num_good_chars-0.5)));
+            float toleranceGenerous = 0.7f * (float)(5.0/2 * Math.pow(1 - Math.pow(falsePositiveRate, 1.0/nearbySearchDist), 1.0/(num_good_chars-1)));
+            toleranceNearby = Math.min(toleranceNearby, 0.2f);
+            toleranceAnchor = Math.min(toleranceAnchor, 0.2f);
+            toleranceLattice = Math.min(toleranceLattice, 0.2f);
+            toleranceGenerous = Math.min(toleranceGenerous, 0.2f);
+
+            System.out.println("tolerance:: near:" + String.format("%.2f",toleranceNearby) + " anchor:" 
+                + String.format("%.2f",toleranceAnchor) + " lattice:" + String.format("%.2f",toleranceLattice)
+                + " generous:" + String.format("%.2f",toleranceGenerous));
+
+            // generate vtarg array...
+            float[][] vtarg = new float[5001][num_chars];
+            float[] vtargsums = new float[vtarg.length];
+            for (int i = 0; i < vtargsums.length; i++) vtargsums[i] = -1;
+            for (float offs = -0.05f; offs <= range + 0.05f; offs += 0.00025f) {
                 float foffs = f_in_terms_of_v_and_pos(offs, cross_point_pos);
+                float[] vs = new float[num_chars];
+                float sum = 0;
                 for (int i = 0; i < num_chars; i++) {
                     if (is_space[i]) continue;
                     vs[i] = v_in_terms_of_f_and_pos(foffs + cross_points[i] - cross_points[min_cross_idx], cross_point_pos); //  offs + min_vels[i];
+                    sum += vs[i];
                 }
+                sum /= num_good_chars;
+                int idx = (int)(sum * (vtarg.length-1) / 5);
+                float targetSumHere = (idx+0.5f) * 5 / (vtarg.length-1);
+                if (Math.abs(sum - targetSumHere) < Math.abs(vtargsums[idx] - targetSumHere)) {
+                    vtarg[idx] = vs;
+                    vtargsums[idx] = sum;
+                }
+            }
 
-                //System.out.println("checking: " + velString(vs));
+            // try fasteest method first, using a recent nearby seed
+            if (seedLastRead != -1 && bestSeed == -1) {
+                System.out.println("starting nearby search " + nearbySearchDist);
 
-                ArrayList<Long> candidates = seedCalc.vs_array_to_seed(vs, is_space, toleranceLattice);
+                bestSeed = searchForLowDisutilNear(seedLastRead, vtarg, vtargsums, is_space, toleranceNearby, nearbySearchDist);
+                System.out.println("nearby search done");
+                if (bestSeed != -1) {
+                    System.out.println("found via nearby search");
+                    bestDisutil = out_disutil_for_near;
+                    bestVs = out_vs_for_near;
+                }
+            }
 
-                for (int i = 0; i < candidates.size(); i++) {
-                    if (seedCalc.out_disutil_for_vs_array.get(i) < bestDisutil) {
-                        bestDisutil = seedCalc.out_disutil_for_vs_array.get(i);
-                        bestSeed = candidates.get(i);
-                        bestVs = vs;
+            // next best method, an anchor seed has been set in challenge mode
+            if (nearbySearchLongSeed != -1 && bestSeed == -1) {
+                System.out.println("starting anchor search " + nearbySearchDistLong);
+
+                bestSeed = searchForLowDisutilNearLong(nearbySearchLongSeed, vtarg, vtargsums, is_space, toleranceAnchor, nearbySearchDistLong);
+                System.out.println("anchor search done");
+                if (bestSeed != -1) {
+                    System.out.println("found via anchor search");
+                    bestDisutil = out_disutil_for_near;
+                    bestVs = out_vs_for_near;
+                }
+            }
+
+            if (bestSeed == -1 && num_good_chars >= 8 && !is_space[0] && !is_space[1] && !is_space[2] && !is_space[3]) {
+                System.out.println("starting lattice search");
+                long startTime = System.currentTimeMillis();
+                for (float offs = -toleranceLattice/2; offs <= range + toleranceLattice/2; offs += toleranceLattice / 4) { // adds tol/8 error to each one...
+                    float[] vs = new float[num_chars];
+                    
+                    float foffs = f_in_terms_of_v_and_pos(offs, cross_point_pos);
+                    for (int i = 0; i < num_chars; i++) {
+                        if (is_space[i]) continue;
+                        vs[i] = v_in_terms_of_f_and_pos(foffs + cross_points[i] - cross_points[min_cross_idx], cross_point_pos); //  offs + min_vels[i];
                     }
-                }
 
-                if (System.currentTimeMillis() - startTime > 8000) {
-                    System.out.println("lattice timeout 8000");
-                    break;
-                }
+                    //System.out.println("checking: " + velString(vs));
 
+                    ArrayList<Long> candidates = seedCalc.vs_array_to_seed(vs, is_space, toleranceLattice);
+
+                    for (int i = 0; i < candidates.size(); i++) {
+                        if (seedCalc.out_disutil_for_vs_array.get(i) < bestDisutil) {
+                            bestDisutil = seedCalc.out_disutil_for_vs_array.get(i);
+                            bestSeed = candidates.get(i);
+                            bestVs = vs;
+                        }
+                    }
+
+                    if (System.currentTimeMillis() - startTime > 8000) {
+                        System.out.println("lattice timeout 8000");
+                        break;
+                    }
+
+                }
+                System.out.println("lattice search done");
+                if (bestSeed != -1) {
+                    System.out.println("found via lattice search");
+                }
             }
-            System.out.println("lattice search done");
-            if (bestSeed != -1) {
-                System.out.println("found via lattice search");
+
+            // error correction via allowing one mistake
+            if (seedLastRead != -1 && bestSeed == -1 && num_good_chars >= 8) {
+                System.out.println("starting nearby generous search " + nearbySearchDist);
+                bestSeed = searchForLowDisutilNearGenerous(seedLastRead, vtarg, vtargsums, is_space, toleranceGenerous, nearbySearchDist);
+                System.out.println("nearby generous search done");
+                if (bestSeed != -1) {
+                    System.out.println("found via nearby generous search");
+                    bestDisutil = out_disutil_for_near;
+                    bestVs = out_vs_for_near;
+                }
             }
         }
-
-        // error correction via allowing one mistake
-        if (seedLastRead != -1 && bestSeed == -1 && num_good_chars >= 8) {
-            System.out.println("starting nearby generous search " + nearbySearchDist);
-            bestSeed = searchForLowDisutilNearGenerous(seedLastRead, vtarg, vtargsums, is_space, toleranceGenerous, nearbySearchDist);
-            System.out.println("nearby generous search done");
-            if (bestSeed != -1) {
-                System.out.println("found via nearby generous search");
-                bestDisutil = out_disutil_for_near;
-                bestVs = out_vs_for_near;
-            }
-        }
+        
 
         float[] bvs = seedCalc.seed_to_vel_vector(seedCalc.clamp(bestSeed), num_chars);
 
@@ -396,19 +529,13 @@ public class Letters {
             diffvs[i] = bvs[i]-bestVs[i];
             worst = Math.max(Math.abs(diffvs[i]),worst);
         }
-
-        System.out.println("seedVs " + velString(bvs));
-        System.out.println("useVs  " + velString(bestVs));
-        System.out.println("diffs  " + velString(diffvs));
-        System.out.println("best: " + Drawer.seedToString(bestSeed) + " (disutil " + bestDisutil/num_good_chars + ") (worst " + worst + ") (n " + seedCalc.nth_inv(bestSeed) + ")");
-        
         
         //System.exit(0);
 
         out_disutil = bestDisutil;
 
         //positions out
-        if (true) {
+        if (bestSeed != -1) {
             //float[] bvs = seedCalc.seed_to_vel_vector(seedCalc.clamp(bestSeed), num_chars);
             int n = bvs.length;
             int sum = 0;
@@ -420,7 +547,7 @@ public class Letters {
                 for (int j = 0; j < p.length; j++) {
                     p[j] = pos_in_terms_of_v_and_f(bvs[i], j+8);
                     //q[j] = (int)((175.5-p[j])/480*height); // dec -2 per. predictions not falling fast enough
-                    q[j] = (int)((164.65-p[j])/480*height); // dec .5 per. predictions not falling fast enough...
+                    q[j] = (int)((pos_for_top_of_screen-p[j])/480*height); // dec .5 per. predictions not falling fast enough...
                     //q[j] = (int)((152.5-p[j])/480*height); // inc ~1 per. predictions falling too fast.
                     //q[j] = (int)((132.5-p[j])/480*height/1.248f);
                     if (is_space[i]) q[j] = 0;
@@ -455,34 +582,24 @@ public class Letters {
                     disB += Math.abs(k[j]);
                     if (clamped_locs[i][j] != 0)
                         System.out.print(k[j] + ", ");
+                    if (j > 0 && clamped_locs[i][j] != 0 && clamped_locs[i][j-1] != 0) {
+                        diff += k[j] - k[j-1];
+                    }
                 }
                 System.out.println("]");
                 //System.out.println(out_cave.substring(i*substr_mult,(i+1)*substr_mult) + " " + velString(p));
                 //System.out.println(out_cave.substring(i*substr_mult,(i+1)*substr_mult) + " " + Arrays.toString(q) + " " + bestk);
                 
             }
-            System.out.println("sum " + sum + "  diff " + diff + "  dis " + disB);
+            System.out.println("offsetsum:" + sum + "  diff:" + diff + "  dis:" + disB);
             // if sum is big, take down the 135 number. if diff > 0, take down 1.25
+
+            System.out.println("seedVs " + velString(bvs));
+            System.out.println("useVs  " + velString(bestVs));
+            System.out.println("diffs  " + velString(diffvs));
+            System.out.println("best: " + Drawer.seedToString(bestSeed) + " (disutil " + bestDisutil/num_good_chars + ") (worst " + worst + ") (n " + seedCalc.nth_inv(bestSeed) + ")");
+
         }
-
-        /*out_cave = "";
-        for (String s: Parser.fullNames) {
-            if (s.length() == num_chars) {
-                boolean good = true;
-                for (int i = 0; i < num_chars; i++) {
-                    if (is_space[i] ^ (s.charAt(i)==' ')) {
-                        good = false;
-                    }
-                }
-                if (good) {
-                    out_cave = s;
-                    break;
-                }
-            }
-        }*/
-
-        
-        System.out.println("done checking");
 
         return bestSeed;
     }

@@ -27,7 +27,7 @@
  "templates":"files/templates/digits/",  # folder used for template digits
  "___________________letters_params___________":"",
  "fadeout_frame_intensity":6,   # controls the darkness used to detect a fadeout
- "letter_intensity_thresh":11,  # controls the darkness used to detect a fadeout
+ "letter_intensity_thresh":11,  # controls the darkness used to detect a letter
  "max_for_falling":0.1,
  "letters_xscale":1.5,          # controls the X size of the letters
  "letters_yscale":1.5,          # controls the Y size of the letters
@@ -77,6 +77,9 @@ maxDistToConsider = 10000000 # for the special seeds below, how far ahead you ar
 storyAdditionalArgs = -drawpodangle -rotate cap -drawnoplants -quickglance -drawtreasurepaths -drawsh6bulborb
 podCaveOrder = EC,2,HoB,5,WFG,5,SH,7,BK,7,SCx,8,FC,7,CoS,5,GK,6
 atCaveOrder = EC,2,EC,2,WFG,5,HoB,5,SCx,9,FC,8,CoS,5,GK,6,SC,5,SR,7,BK,7,SH,7,CoC,10,DD,14,HoH,15
+
+# story mode seed detect helper parameters
+letterPosOffset = 164.65 # if offsetsum is usually positive, take this down and vice versa.
 # anchorSeed = FFFFFFFF
 
 # EC - _u59cb_u307e_u308a_u306e_u6d1e_u7a9f

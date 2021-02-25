@@ -501,7 +501,10 @@ def process_story_frames_name_known():
             if y>0:
                 nonzero.append(y)
                 nonzero_idx.append(j)
-        if len(nonzero) == 0: continue
+        if len(nonzero) == 0: 
+            if not (l==" " or l =="'"):
+                num_bad_char += 1
+            continue
         good = len(nonzero) >= 3 and len(nonzero) <= 6 and nonzero_idx[-1]-nonzero_idx[0] == len(nonzero)-1
         for j in range(len(nonzero)-1):
             diff = nonzero[j+1]-nonzero[j]
@@ -516,7 +519,7 @@ def process_story_frames_name_known():
     # if still good, create the info string. If bad but still seems like a cave entry, write out an empty infostring
     # otherwise, do nothing (this case shouldn't be hit hopefully)
 
-    if num_bad_char > len(cave_name)/2 and num_good_char < 5:
+    if num_bad_char > num_good_char and num_good_char < 5:
         print("storyfailed good:"+str(num_good_char)+" bad:"+str(num_bad_char))
     else:
         num_letters_info += 1

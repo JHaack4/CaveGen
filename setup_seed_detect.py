@@ -425,8 +425,12 @@ def process_align_frames():
         if comp_name.lower() == "fadeout":
             # detect fadeout darkness and recommend parameter changes
             darkness = frame.max(axis=0).max(axis=0).max(axis=0)
-            print("Recommend set fadeout_frame_intensity=" + str(int(darkness+5.99)))
-            print("Recommend set letter_intensity_thresh=" + str(int(darkness+10.99)))
+            if darkness > 12:
+                print("Recommend take gamma down")
+            if darkness < 2:
+                print("Recommend take gamma up")
+            print("Recommend set fadeout_frame_intensity=" + str(int(darkness+2.99)))
+            print("Recommend set letter_intensity_thresh=" + str(int(11)))
             cv2.imwrite("output/!im/out_"+comp_name+".png", frame)
             if "fadeout" != frame_type:
                 print("Warning, fadeout not detected as type fadeout, was " + frame_type)

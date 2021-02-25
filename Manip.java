@@ -93,6 +93,9 @@ public class Manip {
                 if (e.getKeyCode() == KeyEvent.VK_K && e.isShiftDown()) {
                     toggleCaptain();              
                 }
+                if (e.getKeyCode() == KeyEvent.VK_A && e.isShiftDown()) {
+                    setAnchor();              
+                }
                 if (e.getKeyCode() == KeyEvent.VK_C && e.isControlDown()) {
                     System.exit(0);
                 }
@@ -1411,6 +1414,15 @@ public class Manip {
     void toggleCaptain() {
         Manip.thisManip.captainOlimar = !Manip.thisManip.captainOlimar;    
         jtext2.setText("Next expect:\n" + storyLevelsOrder.get(storyLevelsIndex).replace("-","") + "\n" + (captainOlimar ? "Olimar" : "Louie/Pres"));
+    }
+
+    void setAnchor() {
+        if (lastReadSeed != -1) {
+            System.out.println("Setting anchor seed");
+            seed.letters.nearbySearchDistLong = 5000000;
+            seed.letters.precomputeExpectedFutureVsLong(lastReadSeed, seed.letters.nearbySearchDistLong);
+            seed.letters.nearbySearchLongSeed = seed.clamp(lastReadSeed);
+        }
     }
 
 
