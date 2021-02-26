@@ -143,6 +143,12 @@ def get_screen_type(frame):
         and sum(white_space) > width * 100/960 \
         and (black_space[-2] > min(white_space[0:3])/2 or black_space[-3] > min(white_space[0:3])/2):
         # word sublevel is found
+        
+        # check for yellow text
+        window3 = frame[8*y:10*y, width//4:3*width//4, :]
+        average3 = window3.mean(axis=0).mean(axis=0)
+        if average3[2]-average3[0] and average3[1]-average3[0] > args.chenter_redness:
+            return "areaenter"
 
         # check for red bg.
         window2 = frame[4*y:8*y, width//4:3*width//4, :]
