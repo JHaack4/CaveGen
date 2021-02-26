@@ -8,6 +8,10 @@
 *.zip
 *.tar.gz
 *.rar
+*.szs
+*.bti
+*wszst-setup.txt
+*.bmd
 
 output/*/*.png
 output/*
