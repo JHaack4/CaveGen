@@ -548,7 +548,7 @@ def process_story_frames_name_known():
     # if still good, create the info string. If bad but still seems like a cave entry, write out an empty infostring
     # otherwise, do nothing (this case shouldn't be hit hopefully)
 
-    if num_bad_char > num_good_char and num_good_char < 5:
+    if num_bad_char > num_good_char and num_good_char < 4:
         print("storyfailed good:"+str(num_good_char)+" bad:"+str(num_bad_char))
     else:
         num_letters_info += 1

@@ -215,3 +215,16 @@ REAL TIME SEED DETECTION (FOR CHALLENGE MODE AND STORY MODE)
 29) If you want to run the CMAL manip, you'll need to ask jhawk for a special file (which is too large to keep in github)
 		You could generate it yourself with "seed timestable key|cmat|700k" but it would take ~2 days to compute.
 30) To get updates, run "git stash && git pull && git stash pop". After you do this, double check config.txt for any conflicts.
+--JP STORY MODE SEED DETECTION
+31) To set up a JP config (which will need to be separate to your English config), you should do the following:
+-Set language = Japanese
+-Add -region jpn to the storyArgs (to see the right treasures)
+-When running setup_seed_detect.py, Insead of naming images like "Emergence_Cave", you need to name them "_u59cb_u307e_u308a_u306e_u6d1e_u7a9f". 
+	You can copy these text strings from the bottom of the config file. You only need to test 1 cave for aligning characters. x_scrunch_limit does not matter.
+-Finally, you need to make sure that the parameter "letterPosOffset" is correct. Hopefully, the default value of 164 will work for most people. 
+	But if not, you need to adjust it. To do this, record a video of yourself playing through BK. Then, run "seed detect pod". 
+	Look at the value of "offsetsum" printed out on the Command prompt. This value should be close to zero on average (within ~20). 
+	If it's not, adjust letterPosOffset by small amounts until it is.
+-When doing runs, make sure to use Shift-A to set the anchor seed every so often.
+--FUTURE UPDATES
+32) Pull future updates with "cp config.txt config_backup.txt && git reset --hard && cp config_backup.txt config.txt"
