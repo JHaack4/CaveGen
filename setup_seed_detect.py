@@ -122,7 +122,7 @@ def get_screen_type(frame):
     count = 0
     white = True
     for i in range(len(col_max)):
-        if col_max[i] > args.letter_intensity_thresh and i > width/40 and i < width*39/40:
+        if col_max[i] > args.fadeout_frame_intensity+10 and i > width/40 and i < width*39/40:
             if not white:
                 black_space.append(count)
                 count = 0
@@ -245,32 +245,6 @@ def handle_chenter_image(frame):
 
     x = width
     y = height//20
-    window4 = frame[10*y:13*y, 0:x, :]
-    col_max = window4.max(axis=2).max(axis=0)
-    black_space = []
-    white_space = []
-    count = 0
-    white = True
-    for i in range(len(col_max)):
-        if col_max[i] > args.letter_intensity_thresh:
-            if not white:
-                black_space.append(count)
-                count = 0
-            white = True
-            count += 1
-        else:
-            if white and count > 0:
-                white_space.append(count)
-                count = 0
-            white = False
-            count += 1
-    black_space.append(count)
-
-    #if len(white_space) >= 8 and len(white_space) <= 12 and max(white_space) > width * 25/960 and max(white_space) < width * 90/960 and black_space[0] > width/6 and black_space[-1] > width/6 and (black_space[-2] > white_space[1]/2 or black_space[-3] > white_space[1]/2):
-    #    print("Sublevel")
-
-    #print(white_space)
-    #print(black_space)
 
     window2 = frame[4*y:8*y, width//4:3*width//4, :]
     average2 = window2.mean(axis=0).mean(axis=0)
@@ -431,7 +405,7 @@ def process_align_frames():
         if comp_name.lower() == "fadeout":
             # detect fadeout darkness and recommend parameter changes
             darkness = frame.max(axis=0).max(axis=0).max(axis=0)
-            if darkness > 12:
+            if darkness > 25:
                 print("Recommend take gamma down")
             if darkness < 2:
                 print("Recommend take gamma up")

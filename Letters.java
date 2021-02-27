@@ -5,7 +5,7 @@ import javax.swing.*;
 
 public class Letters {
 
-    int nearbySearchDist = 500000;
+    int nearbySearchDist = 600000;
     int nearbySearchDistLong = 12000000;
     long nearbySearchLongSeed = -1;
 
@@ -128,7 +128,7 @@ public class Letters {
         int num_chars = Integer.parseInt(info10[3]);
         out_num_chars = num_chars;
         out_cave = info10[1];
-        System.out.println(out_cave + " h=" + height + " n=" + num_chars);
+        System.out.println(out_cave + " height:" + height + " num:" + num_chars);
 
         if (out_cave.equals("")) {
             System.out.println("bad cave. :(");
@@ -138,8 +138,8 @@ public class Letters {
         int substr_mult = out_cave.length() / num_chars;
 
         // pull the letter locations from the python code
-        int[][] locs = new int[num_chars][300];
-        int[] offsets = new int[num_chars];
+        float[][] locs = new float[num_chars][300];
+        float[] offsets = new float[num_chars];
         int num_char_readings_frames = 0;
         for (int i = 0; i < num_chars; i++)
             offsets[i] = Integer.parseInt(info10[i+4]);
@@ -151,8 +151,8 @@ public class Letters {
 
             for (int j = 0; j < info20.length-1; j += 2) {
                 int ch = Integer.parseInt(info20[j]);
-                int lc = Integer.parseInt(info20[j+1]);
-                locs[ch][i] = lc+1;
+                float lc = Float.parseFloat(info20[j+1]);
+                locs[ch][i] = lc;
                 num_char_readings_frames += 1;
             }
         }
@@ -163,7 +163,7 @@ public class Letters {
         }
 
         // shift the locs by delay time and adjust for the height of each char
-        int[][] shifted_locs = new int[num_chars][400];
+        float[][] shifted_locs = new float[num_chars][400];
         int minc = 401, maxc = -1;
         for (int i = 0; i < num_chars; i++) {
             float delay_time = ((float)i) / num_chars;
@@ -185,12 +185,12 @@ public class Letters {
             }
         }
 
-        int[][] clamped_locs = new int[num_chars][Math.max(1,maxc-minc+1)];
+        float[][] clamped_locs = new float[num_chars][Math.max(1,maxc-minc+1)];
         for (int i = 0; i < num_chars; i++) {
             for (int j = 0; j < clamped_locs[0].length; j++) {
                 clamped_locs[i][j] = shifted_locs[i][j+minc];
             }
-            System.out.println(out_cave.substring(i*substr_mult,(i+1)*substr_mult) + " " + Arrays.toString(clamped_locs[i]));
+            System.out.println(out_cave.substring(i*substr_mult,(i+1)*substr_mult) + " " + velString0(clamped_locs[i]));
             //for (int j = 0; j < clamped_locs[0].length-1; j++) {
             //    System.out.print(" " + (clamped_locs[i][j+1]-clamped_locs[i][j]));
             //}
@@ -198,7 +198,16 @@ public class Letters {
         }
 
         // compute when we crossed y=h*6/100
-        int cross_point = height*6/100;
+        // assumes bottom of the cave name text is at 249/720
+        // assumes 0 = 249/720 * h and 164.65 = top of screen
+        float cross_point = (int)(height*(Manip.thisManip.params.containsKey("crossPoint") ? Double.parseDouble(Manip.thisManip.params.get("crossPoint")) : 0.06)); // IMPORTANT PARAM...
+        //float sublevel_start_ratio = 249.0f/720;
+        float pos_for_top_of_screen = Manip.thisManip.params.containsKey("letterPosOffset") ? Float.parseFloat(Manip.thisManip.params.get("letterPosOffset")) : 164.0f;
+        // number between 0 and 200 corresponding to cross_point.
+        //float cross_point_pos = (sublevel_start_ratio - cross_point*1.0f/height) / sublevel_start_ratio * pos_for_top_of_screen;
+        float cross_point_pos = pos_for_top_of_screen - cross_point*480.0f/height;
+
+
         float[] cross_points = new float[num_chars]; // in frames
         boolean[] is_space = new boolean[num_chars];
         int min_cross_idx = -1, max_cross_idx = -1;
@@ -229,21 +238,15 @@ public class Letters {
         for (int i = 0; i < num_chars; i++)
             if (!is_space[i])
                 num_good_chars += 1;
-        if (num_good_chars < 3) {
+        
+        System.out.println("cross_point:" + rnd(cross_point,1) + "  pos:" + rnd(cross_point_pos,1) + "  good:" + num_good_chars);
+        System.out.println("cross_frames:" + velString(cross_points));
+        //System.out.println(cross_point_pos);
+
+        if (num_good_chars < 4) {
             System.out.println("too few good char readings :(");
             return -1;
         }
-        
-        // number between 0 and 200 corresponding to cross_point.
-        // assumes bottom of the cave name text is at 249/720
-        // assumes 0 = 249/720 * h and 164.65 = top of screen
-        float sublevel_start_ratio = 249.0f/720;
-        float pos_for_top_of_screen = Manip.thisManip.params.containsKey("letterPosOffset") ? Float.parseFloat(Manip.thisManip.params.get("letterPosOffset")) : 164.65f;
-        float cross_point_pos = (sublevel_start_ratio - cross_point*1.0f/height) / sublevel_start_ratio * pos_for_top_of_screen;
-        
-        System.out.println("cross point " + cross_point + "  pos " + cross_point_pos + "  good " + num_good_chars);
-        System.out.println("cross frames " + velString(cross_points));
-        //System.out.println(cross_point_pos);
 
         // assume the min_cross_idx is 0. then, what are the initial velocities?
         float min_vels[] = new float[num_chars], max_vels[] = new float[num_chars], diff_vels[] = new float[num_chars];
@@ -291,7 +294,7 @@ public class Letters {
 
             float[][] possibleVs = new float[10][num_chars];
             int numPossible = 0;
-            for (int crossFrameOffset = 0; crossFrameOffset < 30; crossFrameOffset++) {
+            /*for (int crossFrameOffset = 0; crossFrameOffset < 30; crossFrameOffset++) {
                 float[] vs = new float[num_chars];
                 float min_v = 10, max_v = -5;
                 for (int i = 0; i < num_chars; i++) {
@@ -305,6 +308,41 @@ public class Letters {
                 if (min_v < -3*toleranceNearby || max_v > 5+3*toleranceNearby) continue;
 
                 System.out.println("possible" + numPossible + " " + velString(vs));
+                possibleVs[numPossible] = vs;
+                numPossible += 1;
+            }*/
+
+            for (int crossFrameOffset = 0; crossFrameOffset < 30; crossFrameOffset++) {
+                float[] vs = new float[num_chars];
+                float min_v = 10, max_v = -5;
+                for (int i = 0; i < num_chars; i++) {
+                    if (is_space[i]) continue;
+
+                    ArrayList<Float> vel_measured = new ArrayList<Float>();
+                    for (int q = 0; q < clamped_locs[i].length; q++) {
+                        if (clamped_locs[i][q] > 0) {
+                            //float posu = (sublevel_start_ratio - clamped_locs[i][q]*1.0f/height) / sublevel_start_ratio * pos_for_top_of_screen;
+                            float posu = pos_for_top_of_screen - clamped_locs[i][q]*480.0f/height;
+                            vel_measured.add(v_in_terms_of_f_and_pos(q+crossFrameOffset, posu));
+                        }
+                    }
+                    if (vel_measured.size() == 0) continue; // should never happen
+                    /*Collections.sort(vel_measured);
+                    if (vel_measured.size() >= 5) {
+                        vel_measured.remove(vel_measured.size()-1);
+                        vel_measured.remove(0);
+                    }*/
+                    float velsum = 0;
+                    for (float fff: vel_measured) velsum += fff;
+                    velsum /= vel_measured.size();
+                    vs[i] = velsum;
+                    min_v = Math.min(min_v, vs[i]);
+                    max_v = Math.max(max_v, vs[i]);
+                }
+                //System.out.println(min_v + " " + max_v);
+                if (min_v < -3*toleranceNearby || max_v > 5+3*toleranceNearby) continue;
+
+                System.out.println("possible" + (crossFrameOffset-8) + " " + velString(vs));
                 possibleVs[numPossible] = vs;
                 numPossible += 1;
             }
@@ -342,7 +380,7 @@ public class Letters {
 
             // try fasteest method first, using a recent nearby seed
             if (seedLastRead != -1 && bestSeed == -1) {
-                System.out.println("starting absolute nearby search " + nearbySearchDist);
+                System.out.println("starting absolute nearby search " + (precomputeVs.length-50));
 
                 bestSeed = searchForLowDisutilNear(seedLastRead, vtarg, vtargsums, is_space, toleranceNearby, nearbySearchDist);
                 System.out.println("absolute nearby search done");
@@ -355,7 +393,7 @@ public class Letters {
 
             // next best method, an anchor seed has been set in challenge mode
             if (nearbySearchLongSeed != -1 && bestSeed == -1) {
-                System.out.println("starting absolute anchor search " + nearbySearchDistLong);
+                System.out.println("starting absolute anchor search " + (precomputeVsLong.length-50));
 
                 bestSeed = searchForLowDisutilNearLong(nearbySearchLongSeed, vtarg, vtargsums, is_space, toleranceAnchor, nearbySearchDistLong);
                 System.out.println("absolute anchor search done");
@@ -438,7 +476,7 @@ public class Letters {
 
             // try fasteest method first, using a recent nearby seed
             if (seedLastRead != -1 && bestSeed == -1) {
-                System.out.println("starting nearby search " + nearbySearchDist);
+                System.out.println("starting nearby search " + (precomputeVs.length-50));
 
                 bestSeed = searchForLowDisutilNear(seedLastRead, vtarg, vtargsums, is_space, toleranceNearby, nearbySearchDist);
                 System.out.println("nearby search done");
@@ -451,7 +489,7 @@ public class Letters {
 
             // next best method, an anchor seed has been set in challenge mode
             if (nearbySearchLongSeed != -1 && bestSeed == -1) {
-                System.out.println("starting anchor search " + nearbySearchDistLong);
+                System.out.println("starting anchor search " + (precomputeVsLong.length-50));
 
                 bestSeed = searchForLowDisutilNearLong(nearbySearchLongSeed, vtarg, vtargsums, is_space, toleranceAnchor, nearbySearchDistLong);
                 System.out.println("anchor search done");
@@ -500,7 +538,7 @@ public class Letters {
 
             // error correction via allowing one mistake
             if (seedLastRead != -1 && bestSeed == -1 && num_good_chars >= 8) {
-                System.out.println("starting nearby generous search " + nearbySearchDist);
+                System.out.println("starting nearby generous search " + (precomputeVs.length-50));
                 bestSeed = searchForLowDisutilNearGenerous(seedLastRead, vtarg, vtargsums, is_space, toleranceGenerous, nearbySearchDist);
                 System.out.println("nearby generous search done");
                 if (bestSeed != -1) {
@@ -535,19 +573,20 @@ public class Letters {
         out_disutil = bestDisutil;
 
         //positions out
+        float predicted_locs[][] = new float[clamped_locs.length][clamped_locs[0].length];
         if (bestSeed != -1) {
             //float[] bvs = seedCalc.seed_to_vel_vector(seedCalc.clamp(bestSeed), num_chars);
             int n = bvs.length;
-            int sum = 0;
-            int diff = 0;
-            int disB = 0;
+            float sum = 0;
+            float diff = 0;
+            float disB = 0;
             for (int i = 0; i < n; i++) {
                 float[] p = new float[18];
-                int[] q = new int[p.length];
+                float[] q = new float[p.length];
                 for (int j = 0; j < p.length; j++) {
                     p[j] = pos_in_terms_of_v_and_f(bvs[i], j+8);
                     //q[j] = (int)((175.5-p[j])/480*height); // dec -2 per. predictions not falling fast enough
-                    q[j] = (int)((pos_for_top_of_screen-p[j])/480*height); // dec .5 per. predictions not falling fast enough...
+                    q[j] = (pos_for_top_of_screen-p[j])/480.0f*height; // dec .5 per. predictions not falling fast enough...
                     //q[j] = (int)((152.5-p[j])/480*height); // inc ~1 per. predictions falling too fast.
                     //q[j] = (int)((132.5-p[j])/480*height/1.248f);
                     if (is_space[i]) q[j] = 0;
@@ -575,13 +614,15 @@ public class Letters {
                      }
                 }
                 System.out.print(out_cave.substring(i*substr_mult,(i+1)*substr_mult) + " [");
-                int[] k = new int[clamped_locs[i].length];
+                float[] k = new float[clamped_locs[i].length];
                 for (int j = 0; j < k.length; j++) {
                     k[j] = clamped_locs[i][j] == 0 || is_space[i] ? 0 : q[j+bestk]-clamped_locs[i][j];
                     sum += k[j];
                     disB += Math.abs(k[j]);
-                    if (clamped_locs[i][j] != 0)
-                        System.out.print(k[j] + ", ");
+                    if (clamped_locs[i][j] != 0) {
+                        System.out.print(String.format("%2d, ", Math.round(k[j])));
+                        predicted_locs[i][j] = q[j+bestk];
+                    }
                     if (j > 0 && clamped_locs[i][j] != 0 && clamped_locs[i][j-1] != 0) {
                         diff += k[j] - k[j-1];
                     }
@@ -591,15 +632,55 @@ public class Letters {
                 //System.out.println(out_cave.substring(i*substr_mult,(i+1)*substr_mult) + " " + Arrays.toString(q) + " " + bestk);
                 
             }
-            System.out.println("offsetsum:" + sum + "  diff:" + diff + "  dis:" + disB);
+            System.out.println("offsetsum:" + rnd(sum,1) + "  diff:" + rnd(diff,1) + "  dis:" + rnd(disB,1));
             // if sum is big, take down the 135 number. if diff > 0, take down 1.25
 
             System.out.println("seedVs " + velString(bvs));
-            System.out.println("useVs  " + velString(bestVs));
-            System.out.println("diffs  " + velString(diffvs));
-            System.out.println("best: " + Drawer.seedToString(bestSeed) + " (disutil " + bestDisutil/num_good_chars + ") (worst " + worst + ") (n " + seedCalc.nth_inv(bestSeed) + ")");
+            System.out.println("calcVs " + velString(bestVs));
+            System.out.println("diffVs " + velString(diffvs));
+            System.out.println("best: " + Drawer.seedToString(bestSeed) + " (disutil " + rnd(bestDisutil/num_good_chars,3) + ") (worst " + rnd(worst,3) + ") (n " + seedCalc.nth_inv(bestSeed) + ") (dist " + (seedLastRead == -1 ? "?" : ""+seedCalc.dist(seedLastRead, bestSeed)) + ")");
 
         }
+
+        //System.out.println("predicted locs");
+        //for (int i = 0; i < num_chars; i++) {
+        //    System.out.println(out_cave.substring(i*substr_mult,(i+1)*substr_mult) + " " + velString1(predicted_locs[i]));
+       // }
+        /*{
+            float[][] possibleVs = new float[10][num_chars];
+            int numPossible = 0;
+
+            for (int crossFrameOffset = 0; crossFrameOffset < 30; crossFrameOffset++) {
+                float[] vs = new float[num_chars];
+                float min_v = 10, max_v = -5;
+                for (int i = 0; i < num_chars; i++) {
+                    if (is_space[i]) continue;
+
+                    ArrayList<Float> vel_measured = new ArrayList<Float>();
+                    for (int q = 0; q < clamped_locs[i].length; q++) {
+                        if (clamped_locs[i][q] > 0) {
+                            float posu = pos_for_top_of_screen - predicted_locs[i][q]*480.0f/height;
+                            vel_measured.add(v_in_terms_of_f_and_pos(q+crossFrameOffset, posu));
+                        }
+                    }
+                    if (vel_measured.size() == 0) continue; // should never happen
+
+                    float velsum = 0;
+                    for (float fff: vel_measured) velsum += fff;
+                    velsum /= vel_measured.size();
+                    vs[i] = velsum;
+                    min_v = Math.min(min_v, vs[i]);
+                    max_v = Math.max(max_v, vs[i]);
+                }
+                //System.out.println(min_v + " " + max_v);
+                if (min_v < -.1 || max_v > 5.1) continue;
+
+                System.out.println("possible" + crossFrameOffset + " " + velString(vs));
+                possibleVs[numPossible] = vs;
+                numPossible += 1;
+            }
+        }*/
+        
 
         return bestSeed;
     }
@@ -644,7 +725,7 @@ public class Letters {
         lastSearchSeedForPrecompute = seed;
 
         len += 50;
-        System.out.println("precompute vs for " + Drawer.seedToString(searchSeed) + " " + len);
+        System.out.print("precompute vs for " + Drawer.seedToString(searchSeed) + " " + len);
         
         precomputeVs = new float[len];
         for (int j = 0; j < len; j++) {
@@ -652,7 +733,7 @@ public class Letters {
             int ret = (seed >>> 0x10) & 0x7fff;
             precomputeVs[j] = ret * 5.0f / 32768.0f;
         }
-        System.out.println("done precompute vs");
+        System.out.println(" ...done");
         
     }
 
@@ -665,7 +746,7 @@ public class Letters {
         lastSearchSeedForPrecomputeLong = seed;
 
         len += 50;
-        System.out.println("precompute vs long for " + Drawer.seedToString(searchSeed) + " " + len);
+        System.out.print("precompute vs long for " + Drawer.seedToString(searchSeed) + " " + len);
         
         precomputeVsLong = new float[len];
         for (int j = 0; j < len; j++) {
@@ -673,7 +754,7 @@ public class Letters {
             int ret = (seed >>> 0x10) & 0x7fff;
             precomputeVsLong[j] = ret * 5.0f / 32768.0f;
         }
-        System.out.println("done precompute vs long");
+        System.out.println(" ...done");
     }
 
     float out_disutil_for_near;
@@ -693,7 +774,7 @@ public class Letters {
         precomputeExpectedFutureVs(searchSeed, range);
         int seed = seedCalc.clamp(searchSeed);
 
-        for (int i = 0; i < range; i++) {
+        for (int i = 0; i < range && i < precomputeVs.length - 50; i++) {
 
             float vssum = 0;
             for (int j = 0; j < n; j++) {
@@ -726,7 +807,7 @@ public class Letters {
                         for (int j = 0; j < n; j++)
                             out_vs_for_near[j] = vtarg[idx][j]; 
                     }
-                    if (bestDisutil <= 0.1*cnt) {
+                    if (n >= 5 && bestDisutil <= 0.02*cnt) {
                         break; //good enough
                     }
                 }
@@ -757,7 +838,7 @@ public class Letters {
         precomputeExpectedFutureVsLong(searchSeed, range);
         int seed = seedCalc.clamp(searchSeed);
 
-        for (int i = 0; i < range; i++) {
+        for (int i = 0; i < range && i < precomputeVsLong.length-50; i++) {
 
             float vssum = 0;
             for (int j = 0; j < n; j++) {
@@ -790,7 +871,7 @@ public class Letters {
                         for (int j = 0; j < n; j++)
                             out_vs_for_near[j] = vtarg[idx][j]; 
                     }
-                    if (bestDisutil <= 0.1*cnt) {
+                    if (n >= 5 && bestDisutil <= 0.02*cnt) {
                         break; //good enough
                     }
                 }
@@ -821,7 +902,7 @@ public class Letters {
         precomputeExpectedFutureVs(searchSeed, range);
         int seed = seedCalc.clamp(searchSeed);
 
-        for (int i = 0; i < range; i++) {
+        for (int i = 0; i < range && i < precomputeVs.length; i++) {
 
             float vssum = 0;
             for (int j = 0; j < n; j++) {
@@ -858,7 +939,7 @@ public class Letters {
                         for (int j = 0; j < n; j++)
                             out_vs_for_near[j] = vtarg[idx][j]; 
                     }
-                    if (bestDisutil <= 0.1*cnt) {
+                    if (n >= 5 && bestDisutil <= 0.02*cnt) {
                         break; //good enough
                     }
                 }
@@ -877,7 +958,7 @@ public class Letters {
         s.append("[");
         for (int i= 0; i < v.length; i++) {
             if (i > 0) s.append(", ");
-            s.append(String.format("%.2f",v[i]));
+            s.append(String.format("%5.2f",v[i]));
         }
         s.append("]");
         return s.toString();
@@ -887,10 +968,34 @@ public class Letters {
         s.append("[");
         for (int i= 0; i < v.length; i++) {
             if (i > 0) s.append(", ");
-            s.append(String.format("%.2f",v[i]));
+            s.append(String.format("%5.2f",v[i]));
         }
         s.append("]");
         return s.toString();
+    }
+    static String velString0(float[] v) {
+        StringBuilder s = new StringBuilder();
+        s.append("[");
+        for (int i= 0; i < v.length; i++) {
+            if (i > 0) s.append(", ");
+            s.append(String.format("%3d",(int)(v[i]+.5)));
+        }
+        s.append("]");
+        return s.toString();
+    }
+    static String velString1(float[] v) {
+        StringBuilder s = new StringBuilder();
+        s.append("[");
+        for (int i= 0; i < v.length; i++) {
+            if (i > 0) s.append(", ");
+            s.append(String.format("%6.1f",v[i]));
+        }
+        s.append("]");
+        return s.toString();
+    }
+
+    String rnd(double d, int i) {
+        return String.format("%."+i+"f", d);
     }
 
 }

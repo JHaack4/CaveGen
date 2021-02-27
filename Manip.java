@@ -96,6 +96,9 @@ public class Manip {
                 if (e.getKeyCode() == KeyEvent.VK_A && e.isShiftDown()) {
                     setAnchor();              
                 }
+                if (e.getKeyCode() == KeyEvent.VK_X && e.isShiftDown()) {
+                    lastReadSeed = -1;              
+                }
                 if (e.getKeyCode() == KeyEvent.VK_C && e.isControlDown()) {
                     System.exit(0);
                 }
@@ -249,6 +252,17 @@ public class Manip {
         });
         thread.start();
 
+        // open sample
+        CaveViewer.guiOnly = true;
+        CaveViewer.manipKeepImages = true;
+        String args_starter = "cave SR-7 -noprints -seed 0x31D70855 -drawnogatelife" ;
+        CaveGen.main(args_starter.split(" "));
+        caveViewer.lastSSeed = 0;
+        caveViewer.jfrView.setVisible(true);
+        caveViewer.lastImg();
+        CaveViewer.manipKeepImages = false;
+
+
         try {
             RandomAccessFile raf = realTimeAttackMode ? new RandomAccessFile("files/times_table_" + mode + ".txt", "r") : null;
 
@@ -375,6 +389,8 @@ public class Manip {
                             jtext.setText("Failed to read story seed on " + curCave + curSublevel);
                             System.out.println("Failed to read story seed " + curCave + "-" + curSublevel);
                             //lastReadSeed = -1;
+                            if (lastReadSeed != -1)
+                                seed.letters.precomputeExpectedFutureVs(lastReadSeed, seed.letters.nearbySearchDist);
                         }
                         else {
                             
@@ -433,8 +449,8 @@ public class Manip {
                             }
                             repaintManip();
 
-
-                            seed.letters.precomputeExpectedFutureVs(lastReadSeed, seed.letters.nearbySearchDist);
+                            int nextSublevel = Integer.parseInt(storyLevelsOrder.get(storyLevelsIndex).split("-")[1]);
+                            seed.letters.precomputeExpectedFutureVs(lastReadSeed, nextSublevel == 1 ? seed.letters.nearbySearchDist : seed.letters.nearbySearchDist/2);
                         }
                     }
                 }

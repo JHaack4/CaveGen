@@ -106,8 +106,8 @@ for l in letters_raw_arr:
     letters_xoff[l] = min_idx
     #if l == 'l':
     #    #print(l + " " + str(row_mean))
-    print(l + " " + str(img.shape) + " h" + str(letters_height[l]) + " y" + str(letters_yoff[l]) + " w" + str(letters_width[l]) + " x" + str(letters_xoff[l]))
-print(letters_y_addn)
+    #print(l + " " + str(img.shape) + " h" + str(letters_height[l]) + " y" + str(letters_yoff[l]) + " w" + str(letters_width[l]) + " x" + str(letters_xoff[l]))
+#print(letters_y_addn)
 other_letters_w = {" ": args.space_mult, "'": args.apostrophe_mult}
 
 ### find and read the digits of a single frame
@@ -218,7 +218,7 @@ def get_screen_type(frame):
 
     # check for rough brightness levels
     f = args.fadeout_frame_intensity
-    a = 5
+    a = 15
     b = 45
     if max(average5) >= f+a:
         return None
@@ -236,7 +236,7 @@ def get_screen_type(frame):
     count = 0
     white = True
     for i in range(len(col_max)):
-        if col_max[i] > args.letter_intensity_thresh and i > width/40 and i < width*39/40:
+        if col_max[i] > args.fadeout_frame_intensity+10 and i > width/40 and i < width*39/40:
             if not white:
                 black_space.append(count)
                 count = 0
@@ -249,6 +249,7 @@ def get_screen_type(frame):
             white = False
             count += 1
     black_space.append(count)
+    #print(col_max)
     
     if len(white_space) >= 3 and sum([1 if x>width*10/960 else 0 for x in white_space]) <= 12 \
         and max(white_space) > width * 25/960 and max(white_space) < width * 90/960 \
@@ -377,7 +378,8 @@ def process_story_frames_name_known():
         _,avg_thresh_img = cv2.threshold(sum_img,75,255,cv2.THRESH_BINARY)
 
     # important params
-    max_row_for_falling = int(height*args.max_for_falling)
+    max_for_falling = args.max_for_falling # IMPORTANT PARAM
+    max_row_for_falling = int(height*max_for_falling)
 
     # find the expected with of the image
     temp_w = 0
@@ -444,8 +446,8 @@ def process_story_frames_name_known():
 
     
     # for each frame with a falling letter, compute the location of the falling letter
-    locs = np.zeros((len(cave_name), 45))
-    for story_frame_count,frame in enumerate(story_frames[0:45]):
+    locs = np.zeros((len(cave_name), 48))
+    for story_frame_count,frame in enumerate(story_frames[0:48]):
         #cv2.imwrite("output/!im/debug_a" + str(story_frame_count)+".png",frame)
 
         #print("storyenter " + str(story_frame_count), flush=True)
@@ -458,18 +460,37 @@ def process_story_frames_name_known():
                 continue
             section_img_blur = cv2.blur(section_img, (25,25))
             section_img = cv2.subtract(section_img, section_img_blur)
-            if args.images and num_letters_info == 0:
-                cv2.imwrite("output/!im/chars/section_" + str(num_letters_info) + " " + str(i) + "_" + str(story_frame_count) + ".png", section_img)
+            #if args.images and num_letters_info == 0:
+                #cv2.imwrite("output/!im/chars/section_" + str(num_letters_info) + " " + str(i) + "_" + str(story_frame_count) + ".png", section_img)
                 #cv2.imwrite("output/!im/chars/section_" + str(num_letters_info) + " " + str(i) + "_" + str(story_frame_count) + "b.png", section_img_blur)
             row_means = section_img.max(axis=2).max(axis=1)
             #print(row_means)
+            first_nonzero = -1
             last_nonzero = -1
             num_rows_with_stuff = 0
             for j,r in enumerate(row_means):
                 if r > args.letter_intensity_thresh:
+                    if first_nonzero == -1:
+                        first_nonzero = j
                     num_rows_with_stuff += 1
                     last_nonzero = j
             if last_nonzero >= 4 and last_nonzero < max_row_for_falling-1 and num_rows_with_stuff > min(last_nonzero*.75, letters_height[l]*.75):
+                # print(str(i) + " " + str(story_frame_count))
+                # obs_means = section_img.max(axis=2).max(axis=1)
+                # temp_means = letters[l].max(axis=2).max(axis=1)
+                # print(",".join([str(int(x)) for x in obs_means]))
+                # print(",".join([str(int(x)) for x in temp_means]))
+                # obs_shift = []
+                # temp_shift = []
+                # for j in range(5, -letters_height[l] - 5, -1):
+                #     idx = last_nonzero + j
+                #     obs_shift.append(int(obs_means[idx]) if idx >= 0 and idx < len(obs_means) else -1)
+                #     idx = len(temp_means) - letters_y_addn[l] + j - 1
+                #     temp_shift.append(int(temp_means[idx]) if idx >= 0 and idx < len(temp_means) else -1)
+                # print(" ".join(["%3d" % x for x in obs_shift]))
+                # print(" ".join(["%3d" % x for x in temp_shift]))
+                #if first_nonzero > 0:
+                #    print(str(i) + " " + str(last_nonzero-first_nonzero) + " " + str(letters_height[l]))
                 locs[i][story_frame_count] = last_nonzero 
                 #print(str(i//2) + " " + str(last_nonzero))
                 #info_string.append(str(i//2+spaces_between[i//2])+","+str(last_nonzero)+",")
@@ -484,7 +505,9 @@ def process_story_frames_name_known():
                         ims = frame[0:max_row_for_falling,xs0_use[i]:xs1_use[i],2]
                         imgs = ims.copy()
                         imgs[last_nonzero,::5] = 255
-                        cv2.imwrite("output/!im/chars/section_" + str(num_letters_info) + " " + str(i) + "_" + str(story_frame_count) + "c.png", imgs)
+                        if first_nonzero > 0:
+                            imgs[first_nonzero,::5] = 255
+                        cv2.imwrite("output/!im/chars/section_" + str(num_letters_info) + "_" + str(i) + "_" + str(story_frame_count) + "c.png", imgs)
                 
         if args.images:
             falling_img = falling_img + frame/5
@@ -511,7 +534,7 @@ def process_story_frames_name_known():
             if not (l==" " or l =="'"):
                 num_bad_char += 1
             continue
-        good = len(nonzero) >= 3 and len(nonzero) <= 6 and nonzero_idx[-1]-nonzero_idx[0] == len(nonzero)-1
+        good = len(nonzero) >= 3 and len(nonzero) <= 7 and nonzero_idx[-1]-nonzero_idx[0] == len(nonzero)-1
         for j in range(len(nonzero)-1):
             diff = nonzero[j+1]-nonzero[j]
             if diff/height < 10/720 or diff/height > 35/720:
@@ -677,7 +700,7 @@ while(cap.isOpened()):
         frames_since_last_story = 0
         # frames_to_output_anyways = 40
 
-        if frames_since_first_story >= 60 and len(story_frames) >= 60:
+        if frames_since_first_story >= 48 and len(story_frames) >= 48:
             if not story_frames_processed:
                 story_frames_processed = True
                 process_story_frames_name_known()

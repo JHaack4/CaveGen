@@ -152,6 +152,10 @@ public class CaveViewer {
                     if (Manip.thisManip != null)
                         Manip.thisManip.setAnchor();              
                 }
+                if (e.getKeyCode() == KeyEvent.VK_X && e.isShiftDown()) {
+                    if (Manip.thisManip != null)
+                        Manip.thisManip.lastReadSeed = -1;              
+                }
 				if (e.getKeyCode() == KeyEvent.VK_MINUS) {
                     if (currentImage >= 0 && currentImage < nameBuffer.size()) {
                         String[] ss = nameBuffer.get(currentImage).split(" ");
@@ -224,9 +228,9 @@ public class CaveViewer {
 				if (e.getKeyCode() == KeyEvent.VK_D) {
 
                 }
-                if (e.getKeyCode() == KeyEvent.VK_X) {
-                    jfrView.setVisible(false);
-                }
+                //if (e.getKeyCode() == KeyEvent.VK_X && !e.isShiftDown() && e.isControlDown()) {
+                //    jfrView.setVisible(false);
+                //}
                 if (e.getKeyCode() == KeyEvent.VK_ENTER) {
                     runCaveGen();
                 }
