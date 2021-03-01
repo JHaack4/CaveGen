@@ -697,7 +697,7 @@ pod breadbugs/high treasures
                 + geyserBreak;
         }
 
-        else if (CaveGen.judgeType.equals("colossal")) {
+        else if (CaveGen.judgeType.equals("colossal")) { // this could definetly be improved someday.
             int treasureCount = g.placedItems.size() + placedTekisWithItemsInside.size();
 
             // compute pikmin*seconds required to collect all treasures
