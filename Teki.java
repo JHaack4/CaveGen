@@ -17,6 +17,8 @@ class Teki {
 
     Teki tekiInfoSpawnedFrom = null;
 
+    boolean isInTheWay = false;
+
     Teki spawn(MapUnit m, SpawnPoint sp) {
         Teki t = new Teki();
         t.tekiName = tekiName;

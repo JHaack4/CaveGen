@@ -11,6 +11,8 @@ class Gate {
 
     Gate gateInfoSpawnedFrom = null;
 
+    boolean isInTheWay = false;
+
     Gate spawn(MapUnit m, SpawnPoint sp) {
         Gate g = new Gate();
         g.gateName = gateName;

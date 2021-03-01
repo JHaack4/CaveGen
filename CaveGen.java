@@ -7,10 +7,10 @@ public class CaveGen {
     static String caveInfoName, specialCaveInfoName, region, fileSystem, countObject, judgeType;
     static int sublevel, firstGenSeed, numToGenerate, indexBeingGenerated;
     static boolean hardMode, challengeMode, images, prints, showStats, seedOrder, storyModeOverride, challengeModeOverride,
-        folderSeed, folderCave, showCaveInfo, drawSpawnPoints, drawPretty,
+        folderSeed, folderCave, showCaveInfo, drawSpawnPoints, drawPretty, drawSpawnPointDists,
         drawWayPoints, drawWayPointVertDists, drawWayPointEdgeDists, drawWPEdges, drawWPVertices,
         drawScores, drawAngles, drawPodAngle, drawTreasureGauge, drawPathDists,
-        drawNoPlants, drawNoFallType, drawWaterBox, drawQuickGlance,
+        drawNoPlants, drawNoFallType, drawWaterBox, drawQuickGlance, drawInTheWay,
         drawDoorLinks, drawDoorIds, drawSpawnOrder, drawNoObjects, 
         drawNoBuriedItems, drawNoItems, drawNoTeki, drawNoGates, drawNoOnions,
         drawNoGateLife, drawNoHoles, drawHoleProbs, p251, 
@@ -19,7 +19,7 @@ public class CaveGen {
         drawEnemyScores, drawUnitHoleScores, drawUnitItemScores,
         findGoodLayouts, requireMapUnits, expectTest, noWayPointGraph,
         writeMemo, readMemo, aggregator, aggFirst, aggRooms, aggHalls,
-        judgeActive, judgeCombine, judgeRankFile, judgeVsAvg;
+        judgeActive, judgeCombine, judgeRankFile, judgeVsAvg, dontStoreJudge;
     static double findGoodLayoutsRatio, judgeFilterScore, judgeFilterScoreSign, judgeFilterRank;
     static String requireMapUnitsConfig, seedFile, rotateForDraw;
     static boolean shortCircuitMap, imageToggle;
@@ -37,20 +37,20 @@ public class CaveGen {
         region = "us"; fileSystem = "gc"; countObject = "";
         hardMode = true; challengeMode = false; images = true; prints = true; showStats = true; seedOrder = false;
         storyModeOverride = false; challengeModeOverride = false; drawPretty = false;
-        folderSeed = true; folderCave = true; showCaveInfo = false; drawSpawnPoints = false;
+        folderSeed = true; folderCave = true; showCaveInfo = false; drawSpawnPoints = false; drawSpawnPointDists = false;
         drawWayPoints = false; drawWayPointVertDists = false; drawWayPointEdgeDists = false; drawWPEdges = false; drawWPVertices = false;
         drawScores = false; drawAngles = false; drawTreasureGauge = false; drawPodAngle = false; drawPathDists = false;
         drawNoPlants = false; drawNoFallType = false; drawWaterBox = true; drawQuickGlance = false;
-        drawDoorLinks = false; drawDoorIds = false; drawSpawnOrder = false; drawNoObjects = false;
+        drawDoorLinks = false; drawDoorIds = false; drawSpawnOrder = false; drawNoObjects = false; drawInTheWay = false;
         drawNoBuriedItems = false; drawNoItems = false; drawNoTeki = false; drawNoGates = false; drawNoOnions = false;
-        drawNoGateLife = false; drawNoHoles = false; drawHoleProbs = false; p251 = false; 
+        drawNoGateLife = false; drawNoHoles = false; drawHoleProbs = false; p251 = false;  
         colossal = false; colossalUltraRandomizer = false; colossalExtraUnits = false; colossal5Onion = false;
         drawSH6Bulborb = false; drawFlowPaths = false; drawTreasurePaths = false; drawAllPaths = false;
         drawEnemyScores = false; drawUnitHoleScores = false; drawUnitItemScores = false;
         findGoodLayouts = false; requireMapUnits = false; expectTest = false; noWayPointGraph = false;
         writeMemo = false; readMemo = false; aggregator = false; aggFirst = false; aggRooms = false; aggHalls = false;
         judgeActive = false; judgeCombine = false; judgeRankFile = false; judgeVsAvg = false;
-        findGoodLayoutsRatio = 0.01; judgeFilterScore = 0; judgeFilterRank = 0; judgeFilterScoreSign = 0;
+        findGoodLayoutsRatio = 0.01; judgeFilterScore = 0; judgeFilterRank = 0; judgeFilterScoreSign = 0; dontStoreJudge = false;
         requireMapUnitsConfig = ""; judgeType = "default"; seedFile = ""; rotateForDraw = "";
         firstGenSeed = 0; numToGenerate = 1; indexBeingGenerated = 0;
         imageToggle = true;
@@ -147,6 +147,10 @@ public class CaveGen {
                     }
                     else if (s.equalsIgnoreCase("-drawSpawnPoints"))
                         drawSpawnPoints = true;
+                    else if (s.equalsIgnoreCase("-drawSpawnPointDists")) {
+                        drawSpawnPointDists = true;
+                        drawSpawnPoints = true;
+                    }
                     else if (s.equalsIgnoreCase("-drawScores"))
                         drawScores = true;
                     else if (s.equalsIgnoreCase("-drawEnemyScores"))
@@ -187,6 +191,8 @@ public class CaveGen {
                         drawAngles = true;
                     else if (s.equalsIgnoreCase("-drawPodAngle"))
                         drawPodAngle = true;
+                    else if (s.equalsIgnoreCase("-drawInTheWay"))
+                        drawInTheWay = true;
                     else if (s.equalsIgnoreCase("-consecutiveSeeds"))
                         seedOrder = true;
                     else if (s.equalsIgnoreCase("-drawTreasureGauge"))
@@ -272,6 +278,9 @@ public class CaveGen {
                     else if (s.equalsIgnoreCase("-rotate")) {
                         rotateForDraw = args[++i];
                     }
+                    else if (s.equalsIgnoreCase("-dontstorejudge")) {
+                        dontStoreJudge = true;
+                    }
                     else if (s.equalsIgnoreCase("-judge")) {
                         judgeActive = true;
                         while (i < args.length-1) {
@@ -286,7 +295,9 @@ public class CaveGen {
                                 judgeType = "pod";
                             } else if (args[i].equalsIgnoreCase("colossal")) {
                                 judgeType = "colossal";
-                            }else if (args[i].equalsIgnoreCase("at")) {
+                            } else if (args[i].equalsIgnoreCase("mapunitcount")) {
+                                judgeType = "mapunitcount";
+                            } else if (args[i].equalsIgnoreCase("at")) {
                                 judgeType = "at";
                             } else if (args[i].equalsIgnoreCase("key")) {
                                 judgeType = "key";
@@ -333,8 +344,10 @@ public class CaveGen {
                     }
                 }
 
-                if (judgeActive && judgeType.equals("default"))
+                if (judgeActive && judgeType.equals("default")) {
+                    System.out.println("bad judge type");
                     throw new Exception();
+                }
 
                 if (caveArg.equalsIgnoreCase("colossal")) {
                     fileSystem = "colossal";
@@ -2309,6 +2322,12 @@ public class CaveGen {
                 }
             }
         }
+
+        for (MapUnit m: placedMapUnits) {
+            for (WayPoint wp: m.wayPoints) {
+                wp.vec = new Vec3(wp.posX, wp.posY, wp.posZ);
+            }
+        }
     }
 
     void placeOnionsColossal() {
@@ -2403,36 +2422,49 @@ public class CaveGen {
         return null;
     }
 
-    // note, this function was just an incorrect guess of how the waypoints work
     WayPoint closestWayPoint(SpawnPoint a) {
         if (a.closestWayPoint != null) return a.closestWayPoint;
-        float minDist = INF;
-        WayPoint minWp = null;
+        float bestDist = INF;
+        WayPoint bestWp = null;
+        Vec3 p = new Vec3(a.posX, a.posY, a.posZ);
         for (MapUnit m: placedMapUnits) {
+            if (!isInnerBox(m.offsetX*170.0f, m.offsetZ*170.0f, m.dX*170.0f, m.dZ*170.0f, p.x-5, p.z-5, 10, 10))
+                continue;
             for (WayPoint wp: m.wayPoints) {
-                float dist = spawnPointWayPointDist(a, wp);
-                if (dist < minDist) {
-                    minDist = dist;
-                    minWp = wp;
+                for (WayPoint wp2: wp.adj) {
+                    if (wp.idx < wp2.idx || !wp2.adj.contains(wp) || wp2.mapUnit != m) {
+                        // note, the details here about exactly which edges get considered is probably wrong.
+                        float d = pointToSegmentDist(p, wp.vec, wp2.vec, wp.radius, wp2.radius);
+                        if (d < bestDist) {
+                            bestDist = d;
+                            bestWp = pointToSegmentDist_outCloserVec == 1 ? wp : wp2;
+                        }
+                    }
                 }
             }
         }
-        a.closestWayPoint = minWp;
+        if (!bestWp.isStart && bestWp.backWp.posX == bestWp.posX && bestWp.backWp.posY == bestWp.posY && bestWp.backWp.posZ == bestWp.posZ) {
+            bestWp = bestWp.backWp;
+        }
+        a.closestWayPoint = bestWp;
         return a.closestWayPoint;
     }
 
-    // note, this function was just an incorrect guess of how the waypoints work
     float spawnPointDistToStart(SpawnPoint a) {
         if (a.distToStart != -1) return a.distToStart;
         WayPoint minWp = closestWayPoint(a);
-        float dist = spawnPointWayPointDist(a, minWp);
         if (minWp.isStart) {
-            a.distToStart = dist;
+            a.distToStart = spawnPointWayPointDist(a, minWp);
         } else {
-            float distBack = spawnPointWayPointDist(a, minWp.backWp) + minWp.backWp.distToStart;
-            if (distBack < minWp.distToStart)
-                a.distToStart = distBack;
-            else a.distToStart = dist + minWp.distToStart;
+            float dist = pointToSegmentDist(new Vec3(a.posX, a.posY, a.posZ), minWp.vec, minWp.backWp.vec, minWp.radius, minWp.backWp.radius);
+            float t = pointToSegmentDist_outT;
+            if (t < 0) {
+                a.distToStart = (dist + minWp.radius) + minWp.distToStart;
+            } else if (t > 1) {
+                a.distToStart = (dist + minWp.backWp.radius) + minWp.backWp.distToStart;
+            } else {
+                a.distToStart = (dist + (1-t) * minWp.radius + t * minWp.backWp.radius) + minWp.backWp.distToStart + (1-t) * (minWp.distToStart - minWp.backWp.distToStart);
+            }
         }
         return a.distToStart;
     }
@@ -2649,6 +2681,7 @@ public class CaveGen {
         if (lenL <= 0) return 128000;
         Vec3 norm = normVector(l1, l2);
         float t = norm.dot(p.subtract(l1)) / lenL;
+        pointToSegmentDist_outT = t;
         if (t <= 0) {
             pointToSegmentDist_outCloserVec = 1;
             return p.subtract(l1).length() - r1;
@@ -2661,18 +2694,9 @@ public class CaveGen {
         }
     }
     int pointToSegmentDist_outCloserVec = 0;
+    float pointToSegmentDist_outT = 0;
 
     ArrayList<WayPoint> makePathToGoal(Vec3 p) {
-        
-        for (MapUnit m: placedMapUnits) {
-            for (WayPoint wp: m.wayPoints) {
-                if (wp.vec == null) {
-                    wp.vec = new Vec3(wp.posX, wp.posY, wp.posZ);
-                } else {
-                    break;
-                }
-            }
-        }
 
         // find the edge on the waypoint graph that's closest to this point, then take the closer
         // point on that edge as the start of the path.

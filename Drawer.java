@@ -589,6 +589,7 @@ public class Drawer {
                 int z = (int)(sp.posZ/M*N - rad/2);
                 //G.drawString("5", (int)(pos[0]/M*N), (int)(pos[1]/M*N));
                 G.fillOval(x,z,rad,rad);
+                if (g.drawSpawnPointDists) drawTextOutline(G, ""+(int)(g.spawnPointDistToStart(sp)/10), x+5, z+5, G.getColor(), bgt);
                 if (g.drawAngles)
                     drawAngle(G,sp.posX,sp.posZ,sp.ang);
             }
@@ -630,6 +631,7 @@ public class Drawer {
                             G.drawOval(x,z,rad,rad);
                         }
                     }
+                    if (g.drawSpawnPointDists) drawTextOutline(G, ""+(int)(g.spawnPointDistToStart(sp)/10), x+5, z+5, G.getColor(), bgt);
                     if (g.drawAngles)
                         drawAngle(G,sp.posX,sp.posZ,sp.ang);
                 }
@@ -706,6 +708,12 @@ public class Drawer {
                             String bmt = g.waterwraithTimer + "";
                             drawTextOutline(G, "t"+bmt, x+2, z+5, spc, spc2);
                         }
+                        if (t.isInTheWay && g.drawInTheWay) {
+                            String tgs = (int)Parser.tekiDifficultyJudgeSec.get(t.tekiName.toLowerCase())+"";
+                            if (!tgs.equals("0"))
+                                drawTextOutline(G, tgs, (int)(t.posX/M*N + xaddn + 0), 
+                                                (int)(t.posZ/M*N + xaddn + 0), new Color(255, 130, 180), bgt);
+                        }
                     } catch(Exception e) {
                         System.out.println("Failed Img: " + t.tekiName);
                         String st = String.format("T%4.4s", t.tekiName);
@@ -752,7 +760,7 @@ public class Drawer {
                     G.drawImage(im, x, z, null);
                     G.setColor(spc);
                     String st = "" + (int)t.life;
-                    if (!g.drawNoGateLife) drawTextOutline(G,st,x+39-3*st.length(),z+45,spc,spc2);//G.drawString(st,x+39-3*st.length(),z+45);
+                    if (!g.drawNoGateLife) drawTextOutline(G,st,x+39-3*st.length(),z+45,(t.isInTheWay && g.drawInTheWay) ? new Color(255, 130, 180) : spc,spc2);//G.drawString(st,x+39-3*st.length(),z+45);
                     //G.drawString(st, (int)(t.posX/M*N), (int)(t.posZ/M*N));
                 }
             }
@@ -874,6 +882,7 @@ public class Drawer {
                     int z = (int)(wp.posZ/M*N);
                     int rad = (int)(wp.radius/M*N)+1;
                     G.setColor(new Color(153,153,0,wp.idx<m.doors.size()?20:40));
+                    if (wp.hasCarryableBehind && g.drawInTheWay) G.setColor(new Color(255,140,190,40));
                     if (g.drawWayPoints || g.drawWayPointVertDists || g.drawWPVertices)
                         G.fillOval(x-rad/2, z-rad/2, rad, rad);
                     if (g.drawWayPointEdgeDists || g.drawWPEdges) {
