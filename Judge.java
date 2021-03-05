@@ -622,6 +622,37 @@ pod breadbugs/high treasures
         }
 
         else if (CaveGen.judgeType.equals("colossal")) {
+            // travel time to globe (including gates)
+            // + time for globe to return to ship fastest carry
+            float tripKeyGates = 0;
+            if (g.placedGates.size() > 0) {
+                computeWaypointCarryableGraph(g, "m"); // globe
+                for (Gate t: g.placedGates) {
+                    if (g.closestWayPoint(t.spawnPoint).hasCarryableBehind) {
+                        float wallCount = pikiCount;
+                        tripKeyGates += Math.max(6, 3 + t.life * gateLifeMultiplier / (pikiAttackValue * wallCount));
+                    }
+                }
+            }
+            float keyWalk = 0;
+            float keyCarry = 0;
+            boolean keyFound = false;
+            for (Teki t: g.placedTekis) {
+                if (t.itemInside != null && t.itemInside.equals("map01")) {
+                    int carry = Math.min(pikiCount, 3);
+                    keyWalk = g.spawnPointDistToStart(t.spawnPoint) / olimarSpeedCm
+                            + Parser.tekiDifficultyJudgeSec.get(t.tekiName.toLowerCase());
+                    keyCarry = g.spawnPointDistToStart(t.spawnPoint)
+                        * carryMultiplier / (220.0f + 180.0f * (fastestPikiCarryValue * carry - 40 + 1) / 100);
+                    keyFound = true;
+                    break;
+                }
+            }
+            if (!keyFound) {
+                keyWalk = 100000;
+            }
+            
+            
             int treasureCount = g.placedItems.size() + placedTekisWithItemsInside.size();
 
             // compute pikmin*seconds required to collect all treasures
@@ -646,7 +677,7 @@ pod breadbugs/high treasures
                 pikminSeconds += 
                         carry * loadTimeSecondsStory + dig + // loading + digging
                         carry * g.spawnPointDistToStart(t.spawnPoint) // carry cost
-                           * carryMultiplier / (220.0f + 180.0f * (pikiCarryValue * carry - minCarry + 1) / maxCarry);
+                           * carryMultiplier / (220.0f + 180.0f * (pikiCarryValue * carry - minCarry + 1) / maxCarry) / 1.3f;
             }
 
             for (Teki t: placedTekisWithItemsInside) {
@@ -662,7 +693,7 @@ pod breadbugs/high treasures
                 pikminSeconds += 
                         carry * loadTimeSecondsStory + dig + // loading + digging
                         carry * g.spawnPointDistToStart(t.spawnPoint) // carry cost
-                           * carryMultiplier / (220.0f + 180.0f * (pikiCarryValue * carry - minCarry + 1) / maxCarry);
+                           * carryMultiplier / (220.0f + 180.0f * (pikiCarryValue * carry - minCarry + 1) / maxCarry) / 1.3f;
             }
 
             float carrySeconds = pikminSeconds == 0 ? 0 : pikminSeconds / Math.min(pikiCount, activePikmin);
@@ -688,11 +719,14 @@ pod breadbugs/high treasures
                 }
             }
 
-            float treasurePenalty = treasureCount < expectedNumTreasures ? 1000 * (expectedNumTreasures - treasureCount): 0;
+            float treasurePenalty = treasureCount < expectedNumTreasures ? 10000 * (expectedNumTreasures - treasureCount): 0;
 
             //System.out.println("carry" + carrySeconds + " walk" + walkingSeconds + " haz" + hazardSeconds + " gate" + gateSeconds);
             //System.out.println("tpen" + treasurePenalty + " ppen" + purpPenalty);
-            score = carrySeconds + hazardSeconds + gateSeconds
+            //System.out.println("kWalk" + keyWalk + " kCarry" + keyCarry);
+            //stats.println("kWalk" + keyWalk + " kCarry" + keyCarry);
+            score = tripKeyGates + keyWalk + keyCarry
+                        + carrySeconds + hazardSeconds + gateSeconds
                         + treasurePenalty;
             
         } 
@@ -1087,10 +1121,10 @@ pod breadbugs/high treasures
             }
         });
 
+        String rankFileCreate = "";
         for (ScoredSeed s: ss) {
             stats.println(String.format("%s -> %.2f", s.seed, s.score));
         }
-
     }
 
     double[] rankBreakPoints = null;
@@ -1150,6 +1184,15 @@ pod breadbugs/high treasures
             for (Teki t: g.placedTekis)
                 if (t.itemInside != null)
                     if (t.itemInside.equalsIgnoreCase("key"))
+                        g.closestWayPoint(t.spawnPoint).hasCarryableBehind = true;
+        }
+        if (config.contains("m")) { // map01
+            for (Item t: g.placedItems)
+                if (t.itemName.equalsIgnoreCase("map01"))
+                    g.closestWayPoint(t.spawnPoint).hasCarryableBehind = true;
+            for (Teki t: g.placedTekis)
+                if (t.itemInside != null)
+                    if (t.itemInside.equalsIgnoreCase("map01"))
                         g.closestWayPoint(t.spawnPoint).hasCarryableBehind = true;
         }
         if (config.contains("p")) { // purple candypops
