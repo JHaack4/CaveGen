@@ -1214,7 +1214,6 @@ pod breadbugs/high treasures
             }
         });
 
-        String rankFileCreate = "";
         for (ScoredSeed s: ss) {
             stats.println(String.format("%s -> %.2f", s.seed, s.score));
         }
