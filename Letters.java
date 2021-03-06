@@ -902,7 +902,7 @@ public class Letters {
         precomputeExpectedFutureVs(searchSeed, range);
         int seed = seedCalc.clamp(searchSeed);
 
-        for (int i = 0; i < range && i < precomputeVs.length; i++) {
+        for (int i = 0; i < range && i < precomputeVs.length-50; i++) {
 
             float vssum = 0;
             for (int j = 0; j < n; j++) {
