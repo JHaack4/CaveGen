@@ -25,6 +25,7 @@ public class Drawer {
     HashSet<String> purple20 = Parser.hashSet("EC2,FC1,HoB2,CoS2,GK2,SR2"), white20 = Parser.hashSet("WFG3,BK1,SH2,SR1");
     HashSet<String> noCarcassNames = Parser.hashSet("wealthy,fart,kogane,mar,hanachirashi,damagumo,bigfoot,bigtreasure,qurione,baby,bomb,egg,kurage,onikurage,bombotakara,blackman,tyre,houdai,ooinu_s,ooinu_l,wakame_s,wakame_l,kareooinu_s,kareooinu_l,daiodored,daiodogreen,clover,hikarikinoko,tanpopo,zenmai,nekojarashi,tukushi,magaret,watage,chiyogami,gashiba,hiba,elechiba,rock,bluepom,redpom,yellowpom,blackpom,whitepom,randpom,pom");
     HashSet<String> ignoreTreasuresPoD = Parser.hashSet("kinoko_doku,bird_hane,flower_blue,g_futa_kyodo,chocolate,tape_blue");
+    HashSet<String> buriedItemNames = Parser.hashSet("diamond_blue,gum_tape,makigai,momiji_kare,tel_dial,toy_ring_a_red,toy_ring_a_green,toy_ring_b_blue,xmas_item,yoyo_red,teala_dia_a,teala_dia_c,bane_yellow,leaf_yellow,akagai,sinjyu,donutswhite_s");
     
 
     Color[] colorsFT = new Color[] {
@@ -445,12 +446,22 @@ public class Drawer {
             for (Item t: g.placedItems) {
                 if (!g.colossal && (!Manip.dontHighlightSkipPodTreasures || !ignoreTreasuresPoD.contains(t.itemName.toLowerCase())) )
                     G.fillOval((int)(t.posX/M*N-r/2), (int)(t.posZ/M*N-r/2), r, r);
+                else if (g.colossal && buriedItemNames.contains(t.itemName.toLowerCase())) {
+                    G.setColor(new Color(60,255,120,a));
+                    G.fillOval((int)(t.posX/M*N-r/2), (int)(t.posZ/M*N-r/2), r, r);
+                    G.setColor(new Color(colorsSP[2].getRed(),colorsSP[2].getGreen(),colorsSP[2].getBlue(), a));
+                }
             }
             for (Teki t: g.placedTekis) {
-                if (t.itemInside != null && (!Manip.dontHighlightSkipPodTreasures || !ignoreTreasuresPoD.contains(t.itemInside.toLowerCase())) && (!t.tekiName.toLowerCase().equals("blackman") || CaveGen.colossal) )
+                if ((t.itemInside != null && (!Manip.dontHighlightSkipPodTreasures || !ignoreTreasuresPoD.contains(t.itemInside.toLowerCase())) && (!t.tekiName.toLowerCase().equals("blackman") || CaveGen.colossal)) || t.tekiName.toLowerCase().equals("bigtreasure"))
                     G.fillOval((int)(t.posX/M*N-r/2), (int)(t.posZ/M*N-r/2), r, r);
-                else if (t.tekiName.toLowerCase().contains("houdai")) {
+                else if (t.tekiName.toLowerCase().equals("minihoudai") || (CaveGen.colossal && t.tekiName.toLowerCase().equals("kumachappy"))) {
                     G.setColor(new Color(colorsSP[0].getRed(),colorsSP[0].getGreen(),colorsSP[0].getBlue(), a));
+                    G.fillOval((int)(t.posX/M*N-r/2), (int)(t.posZ/M*N-r/2), r, r);
+                    G.setColor(new Color(colorsSP[2].getRed(),colorsSP[2].getGreen(),colorsSP[2].getBlue(), a));
+                }
+                else if (CaveGen.colossal && t.tekiName.toLowerCase().equals("leafchappy")) {
+                    G.setColor(new Color(60,255,120,a));
                     G.fillOval((int)(t.posX/M*N-r/2), (int)(t.posZ/M*N-r/2), r, r);
                     G.setColor(new Color(colorsSP[2].getRed(),colorsSP[2].getGreen(),colorsSP[2].getBlue(), a));
                 }
