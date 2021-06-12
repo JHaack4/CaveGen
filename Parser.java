@@ -239,7 +239,7 @@ class Parser {
     }
 
     void parseAll(CaveGen g) {
-        String jpn = (CaveGen.fileSystem.equals("gc") && CaveGen.region.equals("jpn")) ? "-jpn" : "";
+        String jpn = (CaveGen.fileSystem.equals("gc") && CaveGen.region.equals("jpn")) ? "-jpn" : "" ; //(CaveGen.fileSystem.equals("gc") && CaveGen.region.equals("pal")) ? "-pal" : "";
         Scanner sc = read("files/" + g.fileSystem + "/" + "caveinfo" + jpn + "/" + g.caveInfoName);
 
         nextCloseBrace(sc);
