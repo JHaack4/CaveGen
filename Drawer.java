@@ -1597,6 +1597,7 @@ public class Drawer {
             }
             for (WayPoint w: m.wayPoints) {
                 m.wayPointPos(w);
+                w.vec = new Vec3(w.posX,w.posY,w.posZ);
             }
             //m.waterBoxes = m.waterBoxPos();
         }

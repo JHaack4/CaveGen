@@ -2706,14 +2706,17 @@ public class CaveGen {
             if (!isInnerBox(m.offsetX*170.0f, m.offsetZ*170.0f, m.dX*170.0f, m.dZ*170.0f, p.x-5, p.z-5, 10, 10))
                 continue;
             for (WayPoint wp: m.wayPoints) {
+                //System.out.println("wayp: " + wp.posX + " " + wp.posY + " "+  wp.posZ);
                 for (WayPoint wp2: wp.adj) {
                     if (wp.idx < wp2.idx || !wp2.adj.contains(wp)) {
+                        //System.out.println("  wayp2: " + wp2.posX + " " + wp2.posY + " "+  wp2.posZ);
                         // note, the details here about exactly which edges get considered is probably wrong.
                         float d = pointToSegmentDist(p, wp.vec, wp2.vec, wp.radius, wp2.radius);
                         if (d < bestDist) {
                             bestDist = d;
                             bestWp = pointToSegmentDist_outCloserVec == 1 ? wp : wp2;
                         }
+                        //System.out.println("  " + d + " " + pointToSegmentDist_outCloserVec);
                     }
                 }
             }
@@ -2751,10 +2754,11 @@ public class CaveGen {
 
         ret.add(p);
         if (path.size() == 0) return ret;
-        //System.out.println(path.size());
-        //for (int i = 0 ; i < path.size(); i++) {
+        // System.out.println(path.size());
+        // System.out.println(p.x + " " + p.y + " " + p.z);
+        // for (int i = 0 ; i < path.size(); i++) {
         //    System.out.println(path.get(i).posX + " " + path.get(i).posZ);
-        //}
+        // }
 
         int curPathNode = -1;
         boolean goalMode = false;
