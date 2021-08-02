@@ -9,35 +9,35 @@ class Parser {
                                         "forest_2","forest_3","forest_4","yakushima_1",
                                         "yakushima_2","yakushima_3","yakushima_4",
                                         "last_1","last_2","last_3",
-                                        "ch_ABEM_tutorial", 
-                                        "ch_NARI_07whitepurple", 
-                                        "ch_NARI_03toy", 
-                                        "ch_NARI_01kusachi", 
-                                        "ch_ABEM_LeafChappy", 
-                                        "ch_NARI_05start3easy", 
-                                        "ch_MUKI_metal", 
-                                        "ch_MAT_limited_time", 
-                                        "ch_MAT_t_hunter_hana", 
-                                        "ch_MUKI_damagumo", 
-                                        "ch_MAT_t_hunter_enemy", 
-                                        "ch_MAT_conc_cave", 
-                                        "ch_NARI_04series", 
-                                        "ch_MAT_t_hunter_otakara", 
-                                        "ch_MUKI_bigfoot", 
-                                        "ch_MIYA_oopan", 
-                                        "ch_MAT_yellow_purple_white", 
-                                        "ch_MUKI_redblue", 
-                                        "ch_NARI_08tobasare", 
-                                        "ch_NARI_02tile", 
-                                        "ch_MAT_crawler", 
-                                        "ch_MAT_route_rover", 
-                                        "ch_MUKI_enemyzero", 
-                                        "ch_NARI_09suikomi", 
-                                        "ch_MUKI_houdai", 
-                                        "ch_NARI_06start3hard", 
-                                        "ch_MAT_flier", 
-                                        "ch_MIYA_trap", 
-                                        "ch_MUKI_bombing", 
+                                        "ch_ABEM_tutorial",
+                                        "ch_NARI_07whitepurple",
+                                        "ch_NARI_03toy",
+                                        "ch_NARI_01kusachi",
+                                        "ch_ABEM_LeafChappy",
+                                        "ch_NARI_05start3easy",
+                                        "ch_MUKI_metal",
+                                        "ch_MAT_limited_time",
+                                        "ch_MAT_t_hunter_hana",
+                                        "ch_MUKI_damagumo",
+                                        "ch_MAT_t_hunter_enemy",
+                                        "ch_MAT_conc_cave",
+                                        "ch_NARI_04series",
+                                        "ch_MAT_t_hunter_otakara",
+                                        "ch_MUKI_bigfoot",
+                                        "ch_MIYA_oopan",
+                                        "ch_MAT_yellow_purple_white",
+                                        "ch_MUKI_redblue",
+                                        "ch_NARI_08tobasare",
+                                        "ch_NARI_02tile",
+                                        "ch_MAT_crawler",
+                                        "ch_MAT_route_rover",
+                                        "ch_MUKI_enemyzero",
+                                        "ch_NARI_09suikomi",
+                                        "ch_MUKI_houdai",
+                                        "ch_NARI_06start3hard",
+                                        "ch_MAT_flier",
+                                        "ch_MIYA_trap",
+                                        "ch_MUKI_bombing",
                                         "ch_MUKI_king"};
     static String special[] = new String[] {"EC", "SCx", "FC", "HoB", "WFG", "BK", "SH",
                                             "CoS", "GK", "SR", "SC", "CoC", "HoH", "DD",
@@ -51,35 +51,35 @@ class Parser {
                                             "wooden_fortress","grubdog_domain","steel_catacombs","yakushima_1",
                                             "yakushima_2","yakushima_3","yakushima_4",
                                             "last_1","last_2","last_3", "tutorial_4",
-                                            "ch1_snow_tutorial", 
-                                            "ch2_purplepikmin", 
-                                            "ch3_casino_easy", 
-                                            "ch4_bulbmin", 
-                                            "ch5_sand", 
-                                            "ch6_tutorial", 
-                                            "ch7_forest", 
-                                            "ch8_yakushima", 
-                                            "ch9_last", 
-                                            "ch10_special", 
-                                            "ch11_breadbugs", 
-                                            "ch12_newmetal_maze", 
-                                            "ch13_coc8", 
-                                            "ch14_orange", 
-                                            "ch15_candypop", 
-                                            "ch16_big_snow", 
-                                            "ch17_snagrets", 
-                                            "ch18_cavemetal05", 
-                                            "ch19_BigFoot", 
-                                            "ch20_crawbster", 
-                                            "ch21_casino_large", 
-                                            "ch22_big_tile", 
-                                            "ch23_shady_garden", 
-                                            "ch24_trap", 
-                                            "ch25_8floor", 
-                                            "ch26_waterwraith", 
-                                            "ch27_conveyor", 
-                                            "ch28_emperor", 
-                                            "ch29_bigtreasure", 
+                                            "ch1_snow_tutorial",
+                                            "ch2_purplepikmin",
+                                            "ch3_casino_easy",
+                                            "ch4_bulbmin",
+                                            "ch5_sand",
+                                            "ch6_tutorial",
+                                            "ch7_forest",
+                                            "ch8_yakushima",
+                                            "ch9_last",
+                                            "ch10_special",
+                                            "ch11_breadbugs",
+                                            "ch12_newmetal_maze",
+                                            "ch13_coc8",
+                                            "ch14_orange",
+                                            "ch15_candypop",
+                                            "ch16_big_snow",
+                                            "ch17_snagrets",
+                                            "ch18_cavemetal05",
+                                            "ch19_BigFoot",
+                                            "ch20_crawbster",
+                                            "ch21_casino_large",
+                                            "ch22_big_tile",
+                                            "ch23_shady_garden",
+                                            "ch24_trap",
+                                            "ch25_8floor",
+                                            "ch26_waterwraith",
+                                            "ch27_conveyor",
+                                            "ch28_emperor",
+                                            "ch29_bigtreasure",
                                             "ch30_gauntlet"};
     static String special251[] = new String[] {"AT", "IM", "AD", "GD", "FT", "WF", "GdD", "SC",
                                                 "AS", "SS", "CK", "PoW", "PoM", "EA", "DD", "PP",
@@ -89,6 +89,42 @@ class Parser {
                                                 "CH16","CH17","CH18","CH19","CH20",
                                                 "CH21","CH22","CH23","CH24","CH25",
                                                 "CH26","CH27","CH28","CH29","CH30"};
+
+    static String specialNewYear[] = new String[] {"BG", ""};
+    static String allNewYear[] = new String[] {"tutorial_1","tutorial_2","tutorial_3","forest_1",
+                                        "forest_2","forest_3","forest_4","yakushima_1",
+                                        "yakushima_2","yakushima_3","yakushima_4",
+                                        "last_1","last_2","last_3",
+                                        "ch_ABEM_tutorial",
+                                        "ch_NARI_07whitepurple",
+                                        "ch_NARI_03toy",
+                                        "ch_NARI_01kusachi",
+                                        "ch_ABEM_LeafChappy",
+                                        "ch_NARI_05start3easy",
+                                        "ch_MUKI_metal",
+                                        "ch_MAT_limited_time",
+                                        "ch_MAT_t_hunter_hana",
+                                        "ch_MUKI_damagumo",
+                                        "ch_MAT_t_hunter_enemy",
+                                        "ch_MAT_conc_cave",
+                                        "ch_NARI_04series",
+                                        "ch_MAT_t_hunter_otakara",
+                                        "ch_MUKI_bigfoot",
+                                        "ch_MIYA_oopan",
+                                        "ch_MAT_yellow_purple_white",
+                                        "ch_MUKI_redblue",
+                                        "ch_NARI_08tobasare",
+                                        "ch_NARI_02tile",
+                                        "ch_MAT_crawler",
+                                        "ch_MAT_route_rover",
+                                        "ch_MUKI_enemyzero",
+                                        "ch_NARI_09suikomi",
+                                        "ch_MUKI_houdai",
+                                        "ch_NARI_06start3hard",
+                                        "ch_MAT_flier",
+                                        "ch_MIYA_trap",
+                                        "ch_MUKI_bombing",
+                                        "ch_MUKI_king"};
 
     static String[] fullNames = { "Emergence Cave","Subterranean Complex","Frontier Cavern",
                 "Hole of Beasts","White Flower Garden","Bulblax Kingdom","Snagret Hole",
@@ -140,6 +176,10 @@ class Parser {
             all = all251;
             special = special251;
         }
+        else if (CaveGen.newYear) {
+            all = allNewYear;
+            special = specialNewYear;
+        }
         for (int i = 0; i < special.length; i++) {
             if (special[i].equalsIgnoreCase(s))
                 return all[i] + ".txt";
@@ -155,6 +195,10 @@ class Parser {
             all = all251;
             special = special251;
         }
+        else if (CaveGen.newYear) {
+            all = allNewYear;
+            special = specialNewYear;
+        }
         for (int i = 0; i < all.length; i++) {
             if (s.equals(all[i] + ".txt"))
                 return special[i];
@@ -167,7 +211,7 @@ class Parser {
         try {
             Reader r = new BufferedReader(new InputStreamReader(
                               new FileInputStream(fileName), "US-ASCII"));
-        
+
             int intch;
             while ((intch = r.read()) != -1) {
                 char ch = (char) intch;
@@ -181,7 +225,7 @@ class Parser {
         }
 
         try {
-            //if (CaveGen.prints) 
+            //if (CaveGen.prints)
             //    System.out.println("File read: " + fileName);
             Scanner s = new Scanner(sb2.toString());
             StringBuilder sb = new StringBuilder();
@@ -252,22 +296,22 @@ class Parser {
             CaveViewer.caveViewer.update();
         }
         g.isFinalFloor = g.sublevel == numSublevels;
-        //System.out.println(numSublevels); 
+        //System.out.println(numSublevels);
 
         for (int i = 0; i < g.sublevel*5 - 5; i++) nextBrace(sc);
 
-        
+
         while (true) {
             String id = nextString(sc);
             if (id.equals("{_eof}")) break;
 
             String inter = nextString(sc);
             switch(id) {
-            case "{f000}": 
+            case "{f000}":
             case "{f001}": int sublevel = nextInt(sc);
                 assert sublevel + 1 == g.sublevel; break;
             case "{f002}": g.maxMainTeki = nextInt(sc); break;
-            case "{f003}": g.maxItem = nextInt(sc); break;    
+            case "{f003}": g.maxItem = nextInt(sc); break;
             case "{f004}": g.maxGate = nextInt(sc); break;
             case "{f014}": g.capProb = nextInt(sc) / 100.0f; break;
             case "{f005}": g.maxRoom = nextInt(sc); break;
