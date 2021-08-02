@@ -1,0 +1,117 @@
+# CaveInfo
+{
+	{c000} 4 2 	# SublevelCount
+	{_eof} 
+}
+2 # FloorInfo
+{
+	{f000} 4 0 # CurrentSublevelIndex
+	{f001} 4 0 # CurrentSublevelIndex
+	{f002} 4 67 # EntityTotal
+	{f003} 4 10 # TreasureTotal
+	{f004} 4 2 # GateTotal
+	{f005} 4 2 # RoomTotal
+	{f006} 4 0.12 # CorridorRatio
+	{f007} 4 0 # Geyser
+	{f008} -1 1_MIYA_big_kusachi.txt # UnitFile
+	{f009} -1 jyoou_light_lv0.ini # LightFile
+	{f00A} -1 hiroba # Skybox
+	{f010} 4 0 # CloggedHole
+	{f011} 4 0 # Unknown
+	{f012} 4 0 # MusicType
+	{f013} 4 1 # SolidPlane
+    {f014} 4 100 # DeadEndTotal
+	{f015} 4 1 # Version(0=IgnoreCapInfo)
+	{f016} 4 0 # WaterwraithTimer
+	{f017} 4 0 # Seesaw(1=True)
+	{_eof} 
+}
+# TekiInfo
+{
+	6 # num
+	Magaret 50 # weight
+	6 # type
+	Hana_key 10 # weight
+	0 # type
+	Hana 20 # weight
+	0 # type
+	Sokkuri 100 # weight
+	1 # type
+	ShijimiChou 20 # weight
+	1 # type
+	Egg 20 # weight
+	1 # type
+}
+# ItemInfo
+{
+	10 # num
+	kinoko_tubu 50 # weight
+	flower_red 10 # weight
+	ichigo 10 # weight
+	ichigo_l 10 # weight
+	kuri 10 # weight
+	dia_a_red 10 # weight
+	leaf_yellow 10 # weight
+	leaf_normal 10 # weight
+	donguri 10 # weight
+	donguri_l 10 # weight
+}
+# GateInfo
+{
+	2 # num
+	gate 1000 # life
+	1 # weight
+	gate 1000 # life
+	1 # weight
+}
+# CapInfo
+{
+	0 # num
+}
+# FloorInfo
+{
+	{f000} 4 1 # CurrentSublevelIndex
+	{f001} 4 1 # CurrentSublevelIndex
+	{f002} 4 23 # EntityTotal
+	{f003} 4 2 # TreasureTotal
+	{f004} 4 0 # GateTotal
+	{f005} 4 1 # RoomTotal
+	{f006} 4 0.12 # CorridorRatio
+	{f007} 4 0 # Geyser
+	{f008} -1 1_units_5x5a_kusachi.txt # UnitFile
+	{f009} -1 hiroba_light.ini # LightFile
+	{f00A} -1 hiroba # Skybox
+	{f010} 4 0 # CloggedHole
+	{f011} 4 0 # Unknown
+	{f012} 4 0 # MusicType
+	{f013} 4 1 # SolidPlane
+    {f014} 4 100 # DeadEndTotal
+	{f015} 4 1 # Version(0=IgnoreCapInfo)
+	{f016} 4 0 # WaterwraithTimer
+	{f017} 4 0 # Seesaw(1=True)
+	{_eof} 
+}
+# TekiInfo
+{
+	3 # num
+	SnakeWhole_key 10 # weight
+	0 # type
+	SnakeCrow_momiji_red 20 # weight
+	1 # type
+	HikariKinoko 20 # weight
+	6 # type
+}
+# ItemInfo
+{
+	2 # num
+	ichigo 50 # weight
+	matu_bokkuri 10 # weight
+}
+# GateInfo
+{
+	0 # num
+}
+# CapInfo
+{
+	0 # num
+}

@@ -1,0 +1,124 @@
+# CaveInfo
+{
+	{c000} 4 2 	# SublevelCount
+	{_eof} 
+}
+2 # FloorInfo
+{
+	{f000} 4 0 # CurrentSublevelIndex
+	{f001} 4 0 # CurrentSublevelIndex
+	{f002} 4 26 # EntityTotal
+	{f003} 4 10 # TreasureTotal
+	{f004} 4 0 # GateTotal
+	{f005} 4 4 # RoomTotal
+	{f006} 4 0.12 # CorridorRatio
+	{f007} 4 0 # Geyser
+	{f008} -1 2_units_north_pool_tile.txt # UnitFile
+	{f009} -1 sirohana_light_lv1.ini # LightFile
+	{f00A} -1 none # Skybox
+	{f010} 4 1 # CloggedHole
+	{f011} 4 0 # Unknown
+	{f012} 4 0 # MusicType
+	{f013} 4 0 # SolidPlane
+    {f014} 4 100 # DeadEndTotal
+	{f015} 4 1 # Version(0=IgnoreCapInfo)
+	{f016} 4 0 # WaterwraithTimer
+	{f017} 4 0 # Seesaw(1=True)
+	{_eof} 
+}
+# TekiInfo
+{
+	9 # num
+	BluePom 50 # weight
+	0 # type
+	Damagumo_key 10 # weight
+	1 # type
+	Wtank 50 # weight
+	0 # type
+	Mar 20 # weight
+	0 # type
+	Qurione 50 # weight
+	1 # type
+	Fuefuki 10 # weight
+	0 # type
+	KumaKochappy 40 # weight
+	1 # type
+	KumaChappy 10 # weight
+	1 # type
+	TamagoMushi 20 # weight
+	1 # type
+}
+# ItemInfo
+{
+	10 # num
+	toy_teala 10 # weight
+	kan 10 # weight
+	hotate 10 # weight
+	makigai 10 # weight
+	dia_a_red 10 # weight
+	diamond_green_l 10 # weight
+	ahiru 10 # weight
+	ahiru_head 10 # weight
+	halloween 10 # weight
+	toy_dog 10 # weight
+}
+# GateInfo
+{
+	0 # num
+}
+# CapInfo
+{
+	0 # num
+}
+# FloorInfo
+{
+	{f000} 4 1 # CurrentSublevelIndex
+	{f001} 4 1 # CurrentSublevelIndex
+	{f002} 4 11 # EntityTotal
+	{f003} 4 3 # TreasureTotal
+	{f004} 4 0 # GateTotal
+	{f005} 4 1 # RoomTotal
+	{f006} 4 0.12 # CorridorRatio
+	{f007} 4 0 # Geyser
+	{f008} -1 1_ABE_king_tsuchi.txt # UnitFile
+	{f009} -1 normal_light_lv0.ini # LightFile
+	{f00A} -1 none # Skybox
+	{f010} 4 0 # CloggedHole
+	{f011} 4 0 # Unknown
+	{f012} 4 0 # MusicType
+	{f013} 4 0 # SolidPlane
+    {f014} 4 50 # DeadEndTotal
+	{f015} 4 1 # Version(0=IgnoreCapInfo)
+	{f016} 4 0 # WaterwraithTimer
+	{f017} 4 0 # Seesaw(1=True)
+	{_eof} 
+}
+# TekiInfo
+{
+	5 # num
+	DangoMushi_key 10 # weight
+	0 # type
+	SnakeCrow 20 # weight
+	1 # type
+	TamagoMushi 50 # weight
+	1 # type
+	KumaKochappy 20 # weight
+	0 # type
+	KumaChappy 10 # weight
+	0 # type
+}
+# ItemInfo
+{
+	3 # num
+	diamond_red_l 10 # weight
+	toy_dog 10 # weight
+	bell_blue 10 # weight
+}
+# GateInfo
+{
+	0 # num
+}
+# CapInfo
+{
+	0 # num
+}

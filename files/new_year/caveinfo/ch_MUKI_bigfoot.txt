@@ -1,0 +1,137 @@
+# CaveInfo
+{
+	{c000} 4 2 	# SublevelCount
+	{_eof} 
+}
+2 # FloorInfo
+{
+	{f000} 4 0 # CurrentSublevelIndex
+	{f001} 4 0 # CurrentSublevelIndex
+	{f002} 4 30 # EntityTotal
+	{f003} 4 4 # TreasureTotal
+	{f004} 4 3 # GateTotal
+	{f005} 4 3 # RoomTotal
+	{f006} 4 0.12 # CorridorRatio
+	{f007} 4 0 # Geyser
+	{f008} -1 1_unit_cents_garden.txt # UnitFile
+	{f009} -1 garden_light.ini # LightFile
+	{f00A} -1 none # Skybox
+	{f010} 4 0 # CloggedHole
+	{f011} 4 0 # Unknown
+	{f012} 4 0 # MusicType
+	{f013} 4 0 # SolidPlane
+    {f014} 4 50 # DeadEndTotal
+	{f015} 4 1 # Version(0=IgnoreCapInfo)
+	{f016} 4 0 # WaterwraithTimer
+	{f017} 4 0 # Seesaw(1=True)
+	{_eof} 
+}
+# TekiInfo
+{
+	9 # num
+	PanModoki 10 # weight
+	0 # type
+	Kogane 10 # weight
+	0 # type
+	Wealthy 10 # weight
+	0 # type
+	Fart 10 # weight
+	0 # type
+	FireOtakara 10 # weight
+	0 # type
+	UjiA 50 # weight
+	1 # type
+	UjiB 50 # weight
+	1 # type
+	Tobi 50 # weight
+	1 # type
+	Clover 10 # weight
+	6 # type
+}
+# ItemInfo
+{
+	4 # num
+	key 10 # weight
+	dia_a_green 50 # weight
+	flower_blue 20 # weight
+	momiji_red 10 # weight
+}
+# GateInfo
+{
+	3 # num
+	gate 1000 # life
+	1 # weight
+	gate 1000 # life
+	1 # weight
+	gate 1000 # life
+	1 # weight
+}
+# CapInfo
+{
+	0 # num
+}
+# FloorInfo
+{
+	{f000} 4 1 # CurrentSublevelIndex
+	{f001} 4 1 # CurrentSublevelIndex
+	{f002} 4 35 # EntityTotal
+	{f003} 4 4 # TreasureTotal
+	{f004} 4 3 # GateTotal
+	{f005} 4 3 # RoomTotal
+	{f006} 4 0.12 # CorridorRatio
+	{f007} 4 0 # Geyser
+	{f008} -1 1_unit_ike2_garden.txt # UnitFile
+	{f009} -1 garden_light.ini # LightFile
+	{f00A} -1 garden # Skybox
+	{f010} 4 0 # CloggedHole
+	{f011} 4 0 # Unknown
+	{f012} 4 0 # MusicType
+	{f013} 4 0 # SolidPlane
+    {f014} 4 50 # DeadEndTotal
+	{f015} 4 1 # Version(0=IgnoreCapInfo)
+	{f016} 4 0 # WaterwraithTimer
+	{f017} 4 0 # Seesaw(1=True)
+	{_eof} 
+}
+# TekiInfo
+{
+	8 # num
+	Sarai 10 # weight
+	0 # type
+	Demon 10 # weight
+	0 # type
+	FireOtakara 20 # weight
+	0 # type
+	ElecBug 60 # weight
+	0 # type
+	Sokkuri 100 # weight
+	1 # type
+	Ooinu_s 5 # weight
+	6 # type
+	Ooinu_l 5 # weight
+	6 # type
+	HikariKinoko 5 # weight
+	6 # type
+}
+# ItemInfo
+{
+	4 # num
+	key 10 # weight
+	dia_a_green 50 # weight
+	kouseki_suisyou 20 # weight
+	flask 10 # weight
+}
+# GateInfo
+{
+	3 # num
+	gate 1000 # life
+	1 # weight
+	gate 1000 # life
+	1 # weight
+	gate 1000 # life
+	1 # weight
+}
+# CapInfo
+{
+	0 # num
+}

@@ -1,0 +1,18 @@
+#
+#
+#	units definition file
+#
+#
+1 	# number of units
+# newtest
+{
+	1 	# version
+	newtest 	# foldername
+	1 1 	# dX/dZ ; cell size
+	0 	# room type
+	0 0 	# room Flags
+	1 	# num doors
+	0 	# index
+	2 0 0 	# dir/offs/wpindex
+	0 	# door links
+}

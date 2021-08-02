@@ -1,0 +1,65 @@
+# CaveInfo
+{
+	{c000} 4 1 	# SublevelCount
+	{_eof} 
+}
+1 # FloorInfo
+{
+	{f000} 4 0 # CurrentSublevelIndex
+	{f001} 4 0 # CurrentSublevelIndex
+	{f002} 4 27 # EntityTotal
+	{f003} 4 7 # TreasureTotal
+	{f004} 4 0 # GateTotal
+	{f005} 4 3 # RoomTotal
+	{f006} 4 0.5 # CorridorRatio
+	{f007} 4 0 # Geyser
+	{f008} -1 3_units_small_mid_large_toy.txt # UnitFile
+	{f009} -1 vs_10_light.ini # LightFile
+	{f00A} -1 checkerboard # Skybox
+	{f010} 4 0 # CloggedHole
+	{f011} 4 0 # Unknown
+	{f012} 4 0 # MusicType
+	{f013} 4 1 # SolidPlane
+    {f014} 4 100 # DeadEndTotal
+	{f015} 4 1 # Version(0=IgnoreCapInfo)
+	{f016} 4 0 # WaterwraithTimer
+	{f017} 4 0 # Seesaw(1=True)
+	{_eof} 
+}
+# TekiInfo
+{
+	7 # num
+	Kogane_chocolate 10 # weight
+	0 # type
+	Wealthy_chocoichigo 10 # weight
+	0 # type
+	Fart_chocowhite 10 # weight
+	0 # type
+	Fuefuki 50 # weight
+	0 # type
+	Fuefuki 50 # weight
+	5 # type
+	Ooinu_s 7 # weight
+	6 # type
+	Ooinu_l 7 # weight
+	6 # type
+}
+# ItemInfo
+{
+	7 # num
+	cookie_u 10 # weight
+	cookie_u_l 10 # weight
+	cookie_m_l 10 # weight
+	cookie_s 10 # weight
+	cookie_s_l 10 # weight
+	chocolate_l 10 # weight
+	key 10 # weight
+}
+# GateInfo
+{
+	0 # num
+}
+# CapInfo
+{
+	0 # num
+}
