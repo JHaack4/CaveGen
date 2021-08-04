@@ -201,7 +201,7 @@ public class Drawer {
     Image getItem(Item t, String inside, String region, float scale) throws Exception {
         String name = t != null ? t.itemName : inside;
         String loc = "files/" + CaveGen.fileSystem + "/" + "resulttex/" + region + "/arc.d/" + name.toLowerCase() + "/texture.bti.png";
-        if (CaveGen.p251 || CaveGen.newYear) loc =  "files/" + CaveGen.fileSystem + "/" + "resulttex/" + region + "/arc.d/" + name.toLowerCase() + ".bti.png";
+        if (CaveGen.p251) loc =  "files/" + CaveGen.fileSystem + "/" + "resulttex/" + region + "/arc.d/" + name.toLowerCase() + ".bti.png";
         if (CaveGen.colossal) loc = "files/" + "gc" + "/" + "resulttex/" + "us" + "/arc.d/" + name.toLowerCase() + "/texture.bti.png";
         String hash = loc + inside + scale + alpha2;
         if (IMG.containsKey(hash)) return IMG.get(hash);
