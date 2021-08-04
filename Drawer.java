@@ -26,7 +26,7 @@ public class Drawer {
     HashSet<String> noCarcassNames = Parser.hashSet("wealthy,fart,kogane,mar,hanachirashi,damagumo,bigfoot,bigtreasure,qurione,baby,bomb,egg,kurage,onikurage,bombotakara,blackman,tyre,houdai,ooinu_s,ooinu_l,wakame_s,wakame_l,kareooinu_s,kareooinu_l,daiodored,daiodogreen,clover,hikarikinoko,tanpopo,zenmai,nekojarashi,tukushi,magaret,watage,chiyogami,gashiba,hiba,elechiba,rock,bluepom,redpom,yellowpom,blackpom,whitepom,randpom,pom");
     HashSet<String> ignoreTreasuresPoD = Parser.hashSet("kinoko_doku,bird_hane,flower_blue,g_futa_kyodo,chocolate,tape_blue");
     HashSet<String> buriedItemNames = Parser.hashSet("diamond_blue,gum_tape,makigai,momiji_kare,tel_dial,toy_ring_a_red,toy_ring_a_green,toy_ring_b_blue,xmas_item,yoyo_red,teala_dia_a,teala_dia_c,bane_yellow,leaf_yellow,akagai,sinjyu,donutswhite_s");
-    
+
 
     Color[] colorsFT = new Color[] {
                 new Color(0,0,0),
@@ -70,7 +70,7 @@ public class Drawer {
     Drawer() {
         missing.put("fminihoudai", "minihoudai");
         missing.put("fkabuto","kabuto");
-        
+
         special.put("pod", "pod_icon");
         special.put("bomb", "Bingo_Battle_Bomb_icon");
         special.put("hole", "Cave_icon");
@@ -114,7 +114,7 @@ public class Drawer {
         }
         im = rotateImage(im, m.rotation * 90);
         Image im2 = im.getScaledInstance(m.dX*N + (CaveGen.drawPretty?1:0), m.dZ*N + (CaveGen.drawPretty?1:0), Image.SCALE_DEFAULT);
-            
+
         IMG.put(hash, im2);
         return im2;
     }
@@ -236,7 +236,7 @@ public class Drawer {
 
         BufferedImage img = new BufferedImage(N*g.mapMaxX, N*g.mapMaxZ,
                                                         BufferedImage.TYPE_INT_RGB);
-        Graphics G = img.getGraphics();  
+        Graphics G = img.getGraphics();
 
         if (CaveGen.drawPretty) {
             if (g.placedMapUnits.get(0).name.contains("toy")) {
@@ -287,9 +287,9 @@ public class Drawer {
             G.setColor(new Color(0,0,0));
             G.drawString(s1, x, z+=zz);
             G.setFont(new Font("Serif", Font.BOLD, 24));
-            String s2 = "   units:" + g.caveUnitFile 
+            String s2 = "   units:" + g.caveUnitFile
                 + "   lighting:" + g.lightingFile;
-            String s4 = "   music:" + g.musicType 
+            String s4 = "   music:" + g.musicType
                 + "   echo:" + g.echoStrength
                 + "   plane:" + g.hasFloorPlane
                 + "   skybox:" + g.skyboxFile;
@@ -322,7 +322,7 @@ public class Drawer {
             xx = 170;
             int[] types = new int[] {5,8,1,0,6};
             for (int type: types) {
-                ArrayList<Teki> li = type == 0 ? g.spawnTeki0 : type == 1 ? g.spawnTeki1 : 
+                ArrayList<Teki> li = type == 0 ? g.spawnTeki0 : type == 1 ? g.spawnTeki1 :
                     type == 5 ? g.spawnTeki5 : type == 8 ? g.spawnTeki8 : type == 6 ? g.spawnTeki6 : null;
                 for (Teki t: li) {
                     if (t.type == type) {
@@ -351,7 +351,7 @@ public class Drawer {
                     drawTextOutline(G, "  m" + t.min, xx, z+8+ext, colorsSP[2], bgt);
                 else if (t.min == 0)
                     drawTextOutline(G, "  w" + t.weight, xx, z+8+ext, colorsSP[2], bgt);
-                else 
+                else
                     drawTextOutline(G, "m" + t.min + "w" + t.weight, xx, z+8+ext, colorsSP[2], bgt);
                 xx += spa;
             }
@@ -401,9 +401,9 @@ public class Drawer {
         if (CaveGen.drawFlowPaths) {
             int[][] imgp = new int[img.getHeight()][img.getWidth()];
             for (int k = 0; k < img.getHeight(); k++)
-                for (int j = 0; j < img.getWidth(); j++) 
+                for (int j = 0; j < img.getWidth(); j++)
                     imgp[k][j] = img.getRGB(j, k);
-            
+
             int d = 10;
             for (int k = 1; k < g.mapMaxX*d; k++) {
                 for (int j = 1; j < g.mapMaxZ*d; j++) {
@@ -434,7 +434,7 @@ public class Drawer {
                     G.drawOval((int)((t.posX-r/2)/M*N), (int)((t.posZ-r/2)/M*N), (int)(r*N/M), (int)(r*N/M)); r-=d;
                     G.drawOval((int)((t.posX-r/2)/M*N), (int)((t.posZ-r/2)/M*N), (int)(r*N/M), (int)(r*N/M)); r-=d;
                 }
-            } 
+            }
         }
         if (CaveGen.drawQuickGlance) {
             int r = 100;
@@ -519,7 +519,7 @@ public class Drawer {
                 }
             }
         }
-        
+
 
         if (CaveGen.drawSpawnPoints
              || CaveGen.drawAngles) {
@@ -581,7 +581,7 @@ public class Drawer {
                 }
             }
         }
-      
+
         if (g.drawSpawnPoints) {
 
             G.setColor(new Color(255,0,0));
@@ -617,7 +617,7 @@ public class Drawer {
                     if (sp.type == 0) rad = (int)(sp.radius/M*N) + 6;
                     if (sp.type == 4 || sp.type == 7 || sp.type == 2 || sp.type == 9)
                         rad += 6;
-                    if ((sp.type == 0 && distToStart < 300) 
+                    if ((sp.type == 0 && distToStart < 300)
                         || (sp.type == 1 && (distToStart < 300 || distToHole < 200 || distToGeyser < 200))
                         || (sp.type == 4 && distToStart < 150)
                         || (sp.type == 8 && (distToStart < 300 || distToHole < 150 || distToGeyser < 150))) {
@@ -651,7 +651,7 @@ public class Drawer {
 
         // Draw the objects placed
         if (!g.drawNoObjects) {
-            
+
 
             if (g.placedStart != null) {
                 Image im = getSpecial("pod");
@@ -684,7 +684,7 @@ public class Drawer {
                 }
                 //G.drawString("G", (int)(pos[0]/M*N), (int)(pos[1]/M*N));
             }
-            
+
             if (!g.drawNoTeki) {
                 for (Teki t: g.placedTekis) {
                     if (g.drawNoPlants && plantNames.contains(t.tekiName.toLowerCase())) continue;
@@ -693,7 +693,7 @@ public class Drawer {
                     try {
                         Image im = getTeki(t);
                         int x = (int)(t.posX/M*N + xaddn - im.getWidth(null)/2);
-                        int z = (int)(t.posZ/M*N + yaddn - im.getHeight(null)/2); 
+                        int z = (int)(t.posZ/M*N + yaddn - im.getHeight(null)/2);
                         G.drawImage(im, x, z, null);
                         if (g.drawAngles)
                             drawAngle(G, t.posX, t.posZ, t.ang);
@@ -722,7 +722,7 @@ public class Drawer {
                         if (t.isInTheWay && g.drawInTheWay) {
                             String tgs = (int)Parser.tekiDifficultyJudgeSec.get(t.tekiName.toLowerCase())+"";
                             if (!tgs.equals("0"))
-                                drawTextOutline(G, tgs, (int)(t.posX/M*N + xaddn + 0), 
+                                drawTextOutline(G, tgs, (int)(t.posX/M*N + xaddn + 0),
                                                 (int)(t.posZ/M*N + xaddn + 0), new Color(255, 130, 180), bgt);
                         }
                     } catch(Exception e) {
@@ -761,7 +761,7 @@ public class Drawer {
                         String st = String.format("I%4.4s", t.itemName);
                         G.drawString(st, (int)(t.posX/M*N), (int)(t.posZ/M*N));
                     }
-                } 
+                }
             }
             if (!g.drawNoGates) {
                 for (Gate t: g.placedGates) {
@@ -795,17 +795,17 @@ public class Drawer {
                     Aggregator.Placed p = placements.get(i);
                     boolean wp = false;
                     float prob = p.count * 1.0f / aggregator.numInstances;
-                    if (p.start) 
+                    if (p.start)
                         wp = true;
-                    if (p.hole && !g.drawNoHoles) 
+                    if (p.hole && !g.drawNoHoles)
                         wp = true;
-                    if (p.geyser && !g.drawNoHoles) 
+                    if (p.geyser && !g.drawNoHoles)
                         wp = true;
-                    if (p.teki != null && (!g.drawNoTeki || ((p.teki.tekiName.equalsIgnoreCase("blackpom") || p.teki.tekiName.equalsIgnoreCase("whitepom") || p.teki.itemInside != null) && !(g.drawNoTeki && g.drawNoItems)) ) ) 
+                    if (p.teki != null && (!g.drawNoTeki || ((p.teki.tekiName.equalsIgnoreCase("blackpom") || p.teki.tekiName.equalsIgnoreCase("whitepom") || p.teki.itemInside != null) && !(g.drawNoTeki && g.drawNoItems)) ) )
                         wp = true;
-                    if (p.item != null) 
+                    if (p.item != null)
                         wp = true;
-                    if (p.gate != null) 
+                    if (p.gate != null)
                         wp = true;
                     if (wp && prob >= 0.005) {
                         float scale = prob * 0.5f + 0.5f;
@@ -821,7 +821,7 @@ public class Drawer {
                     Aggregator.Placed p = placements.get(i);
 
                     float prob = p.count * 1.0f / aggregator.numInstances;
-                    /*String ps = prob >= 0.0995 ? Math.round(prob*100) + "" 
+                    /*String ps = prob >= 0.0995 ? Math.round(prob*100) + ""
                             : prob >= 0.00995 ? Math.round(prob*1000)/10 + ""
                             : Math.round(prob * 10000)/100 + "";*/
                     String ps = Math.round(prob*100) + "";
@@ -868,7 +868,7 @@ public class Drawer {
                         if (t.itemInside != null) {
                             Image im2 = getItem(null, t.itemInside, g.region, scale);
                             G.drawImage(im2, x - im2.getWidth(null)/2 + (int)(7*scale), z - im2.getWidth(null)/2 + (int)(7*scale), null);
-                        } 
+                        }
                     }
                     if (p.item != null) {
                         Image im = getItem(p.item, "", g.region,scale);
@@ -1008,11 +1008,11 @@ public class Drawer {
                 int w = (int)(m.dX*N);
                 int h = (int)(m.dZ*N);
                 G.setColor(new Color(0,225,225,150));
-                G.drawRect(x,z,w,h);                
+                G.drawRect(x,z,w,h);
                 drawTextOutline(G, "" + (i++), x+2, z+h-2, new Color(0,255,255), bgt);
             }
             if (!g.drawNoObjects) {
-                G.setFont(new Font("Serif", Font.BOLD, 16)); 
+                G.setFont(new Font("Serif", Font.BOLD, 16));
                 drawTextOutline(G, ""+(i++), (int)(g.placedStart.posX/M*N-15), (int)(g.placedStart.posZ/M*N+15), new Color(0,255,255), bgt);
                 if (g.placedHole != null) {
                     drawTextOutline(G, ""+(i++), (int)(g.placedHole.posX/M*N-15), (int)(g.placedHole.posZ/M*N+15), new Color(0,255,255), bgt);
@@ -1046,7 +1046,7 @@ public class Drawer {
                 if (m.type == 1)
                     drawTextOutline(G, s, x-s.length()*5, z-3, new Color(0,155,0), bgt);
             }
-            G.setFont(new Font("Serif", Font.BOLD, 14)); 
+            G.setFont(new Font("Serif", Font.BOLD, 14));
             for (MapUnit m: g.placedMapUnits) {
                 for (Door d: m.doors) {
                     int xx = (int)(d.posX/M*N);
@@ -1065,7 +1065,7 @@ public class Drawer {
                 if (m.type == 1)
                     drawTextOutline(G, s, x-s.length()*5, z-3+24, new Color(175,110,0), bgt);
             }
-            G.setFont(new Font("Serif", Font.BOLD, 14)); 
+            G.setFont(new Font("Serif", Font.BOLD, 14));
             for (MapUnit m: g.placedMapUnits) {
                 for (Door d: m.doors) {
                     int xx = (int)(d.posX/M*N);
@@ -1163,7 +1163,16 @@ public class Drawer {
                 return;
         }
 
-        String output = g.p251 ? "output251/" : "output/";
+        String output;
+        if (g.p251) {
+            output = "output251/";
+        }
+        else if (g.newYear) {
+            output = "outputNewYear/";
+        }
+        else {
+            output = "output/";
+        }
         File outputDir0 = new File(output);
         outputDir0.mkdir();
         if (aggregator != null) {
@@ -1175,7 +1184,7 @@ public class Drawer {
             File outputDir4 = new File(output + as + "/" + caveN + "-" + g.sublevel + "/");
             outputDir4.mkdir();
             File outputFile3 = new File(output + as + "/"
-                                        + caveN + "-" + g.sublevel + "/" + idxs + "-" + pcts + ".png"); 
+                                        + caveN + "-" + g.sublevel + "/" + idxs + "-" + pcts + ".png");
             ImageIO.write(img, "png", outputFile3);
             return;
         }
@@ -1183,7 +1192,7 @@ public class Drawer {
             File outputDir3 = new File(output + "!caveinfo/");
             outputDir3.mkdir();
             File outputFile3 = new File(output + "!caveinfo/"
-                                        + caveN + "-" + g.sublevel + ".png"); 
+                                        + caveN + "-" + g.sublevel + ".png");
             ImageIO.write(img, "png", outputFile3);
             return;
         }
@@ -1191,7 +1200,7 @@ public class Drawer {
             File outputDir2 = new File(output + seedN);
             outputDir2.mkdir();
             File outputFile2 = new File(output + seedN + "/"
-                                        + caveN + "-" + g.sublevel + ".png"); 
+                                        + caveN + "-" + g.sublevel + ".png");
             ImageIO.write(img, "png", outputFile2);
         }
         if (g.folderCave) {
@@ -1223,7 +1232,7 @@ public class Drawer {
         g.mapMaxX = Math.max(g.mapMaxX, (int)(1+(180+(g.spawnCapFallingTeki.size()+g.spawnCapTeki.size())*45.0)/N));
         g.mapMaxX = Math.max(g.mapMaxX, (int)(1+(180+g.spawnItem.size()*45.0)/N));
         g.mapMaxX = Math.max(g.mapMaxX, (int)(1+(180+g.spawnGate.size()*2*45.0)/N));
-        
+
         for (MapUnit m: g.spawnMapUnitsSorted) {
             switch(m.type) {
             case 0: g.queueCap.add(m); break;
@@ -1267,7 +1276,7 @@ public class Drawer {
                 x = 0;
                 z = g.mapMaxZ + 1;
             }
-        }   
+        }
 
         for (MapUnit m: g.placedMapUnits) {
             for (Door d: m.doors) {
@@ -1276,7 +1285,7 @@ public class Drawer {
         }
 
         g.addSpawnPoints();
-        
+
         // build fake waypoint graph
         for (MapUnit m: g.placedMapUnits) {
             for (WayPoint wp: m.wayPoints) {
@@ -1406,7 +1415,7 @@ public class Drawer {
         seedN = String.format("%8s",seedN).replace(" ", "0");
         return seedN;
     }
-    
+
     public static BufferedImage rotateImage(BufferedImage src, int rotationAngle) {
         double theta = (Math.PI * 2) / 360 * rotationAngle;
         int width = src.getWidth();
@@ -1435,7 +1444,7 @@ public class Drawer {
     }
 
     public static void modAlpha(BufferedImage modMe, double modAmount) {
-        for (int x = 0; x < modMe.getWidth(); x++) {          
+        for (int x = 0; x < modMe.getWidth(); x++) {
             for (int y = 0; y < modMe.getHeight(); y++) {
                 int argb = modMe.getRGB(x, y);
                 int alpha = (argb >> 24) & 0xff;  //isolate alpha
@@ -1445,7 +1454,7 @@ public class Drawer {
 
                 argb &= 0x00ffffff;
                 argb |= (alpha << 24);
-                modMe.setRGB(x, y, argb);            
+                modMe.setRGB(x, y, argb);
             }
         }
     }
@@ -1487,7 +1496,7 @@ public class Drawer {
                    (int)(x + len*Math.sin(ang) + len2*Math.sin(Math.PI+ang-angd) + 0.5), (int)(z + len*Math.cos(ang) + len2*Math.cos(Math.PI+ang-angd) + 0.5));
         G.drawLine((int)(x + len*Math.sin(ang) + 0.5), (int)(z + len*Math.cos(ang) + 0.5),
                    (int)(x + len*Math.sin(ang) + len2*Math.sin(Math.PI+ang+angd) + 0.5), (int)(z + len*Math.cos(ang) + len2*Math.cos(Math.PI+ang+angd) + 0.5));
-        
+
     }
 
     public void drawTeki(Graphics G, CaveGen g, Teki t, int x, int z) {
@@ -1584,13 +1593,13 @@ public class Drawer {
                         if (r == 2 || r == 3)
                             d.offsetSide = m.dX - 1 - d.offsetSide;
                         break;
-                    case 1: 
+                    case 1:
                     case 3:
                         if (r == 1 || r == 2)
                             d.offsetSide = m.dZ - 1 - d.offsetSide;
                     }
                     d.dirSide = (d.dirSide + r) % 4;
-                
+
                 m.doorOffset(d);
                 m.doorPos(d);
                 d.spawnPoint.spawnPointPos();

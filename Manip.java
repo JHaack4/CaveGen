@@ -4,8 +4,8 @@ import java.awt.*;
 import javax.swing.*;
 import java.awt.event.*;
 
-import java.time.format.DateTimeFormatter;  
-import java.time.LocalDateTime;  
+import java.time.format.DateTimeFormatter;
+import java.time.LocalDateTime;
 
 public class Manip {
 
@@ -53,7 +53,7 @@ public class Manip {
         jfr.getContentPane().setLayout(null);
 		jfr.setSize(410, 660);
         jfr.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        
+
         jtext.setText("mode: " + mode);
         jtext.setFont(fontMono);
         jtext.setEditable(false);
@@ -85,25 +85,25 @@ public class Manip {
 			public void keyPressed(KeyEvent e) {
                 //System.out.println("key pressed");
                 if (e.getKeyCode() == KeyEvent.VK_OPEN_BRACKET || e.getKeyCode() == KeyEvent.VK_BRACELEFT || (e.getKeyCode() == KeyEvent.VK_B && e.isShiftDown())) {
-                    Manip.thisManip.nextStoryModeLevel(-1);                  
+                    Manip.thisManip.nextStoryModeLevel(-1);
                 }
                 if (e.getKeyCode() == KeyEvent.VK_CLOSE_BRACKET || e.getKeyCode() == KeyEvent.VK_BRACERIGHT || (e.getKeyCode() == KeyEvent.VK_N && e.isShiftDown())) {
-                    Manip.thisManip.nextStoryModeLevel(1);                   
+                    Manip.thisManip.nextStoryModeLevel(1);
                 }
                 if (e.getKeyCode() == KeyEvent.VK_K && e.isShiftDown()) {
-                    toggleCaptain();              
+                    toggleCaptain();
                 }
                 if (e.getKeyCode() == KeyEvent.VK_A && e.isShiftDown()) {
-                    setAnchor();              
+                    setAnchor();
                 }
                 if (e.getKeyCode() == KeyEvent.VK_X && e.isShiftDown()) {
-                    lastReadSeed = -1;              
+                    lastReadSeed = -1;
                 }
                 if (e.getKeyCode() == KeyEvent.VK_C && e.isControlDown()) {
                     System.exit(0);
                 }
                 if (e.getKeyCode() == KeyEvent.VK_R && e.isShiftDown()) {
-                    nextStoryModeLevel(-storyLevelsIndex);               
+                    nextStoryModeLevel(-storyLevelsIndex);
                 }
             }
         };
@@ -380,7 +380,7 @@ public class Manip {
                         storyLevelsIndex += 1;
                         if (storyLevelsIndex >= storyLevelsOrder.size()) storyLevelsIndex = 0;
                         jtext2.setText("Next expect:\n" + storyLevelsOrder.get(storyLevelsIndex).replace("-","") + "\n" + (captainOlimar ? "Olimar" : "Louie/Pres"));
-                        
+
                         if (!seed.letters.out_cave.equalsIgnoreCase(Parser.specialToFullName(curCave, params.get("language")).replace(" ","_"))) {
                             System.out.println("err, disagree about current cave... expected " + curCave + " got " + seed.letters.out_cave);
                         }
@@ -393,7 +393,7 @@ public class Manip {
                                 seed.letters.precomputeExpectedFutureVs(lastReadSeed, seed.letters.nearbySearchDist);
                         }
                         else {
-                            
+
                             sd = seed.next_seed(sd, seed.letters.out_num_chars);
                             lastReadSeed = sd;
                             String curCaveSp = curCave;
@@ -405,7 +405,7 @@ public class Manip {
                             //caveViewer.imageBuffer.clear();
                             //caveViewer.nameBuffer.clear();
                             CaveViewer.manipKeepImages = true;
-                            
+
                             storyLevels.add(0, curCaveSp + "-" + curSublevel);
                             storySeeds.add(0, sd);
                             for (int i = 0; i < 1; i++) {
@@ -429,7 +429,7 @@ public class Manip {
 
                                     continue;
                                 }
-                                
+
                                 if (i >= gY) continue;
                                 double rank = storyRanks.get(i);
                                 double avgDiff = storyDiffs.get(i);
@@ -443,7 +443,7 @@ public class Manip {
                                 jTextGrid.get(gX*i+7).setText(rank >= 100 ? "100.%" : String.format("%4.1f%%", rank));
                                 jTextGrid.get(gX*i+8).setText(String.format("%4d", Math.round(avgDiff)));
                             }
-                            
+
                             for (int i = numOptionsShow; i < gY; i++) {
                                 for (int j = 0; j < gX; j++) jTextGrid.get(gX*i+j).setText("");
                             }
@@ -474,7 +474,7 @@ public class Manip {
                     StringBuilder text1 = new StringBuilder();
 
                     boolean unknownSeed = lastReadSeed == -1;
-                    int numSeedsToConsider = realTimeAttackMode ? 
+                    int numSeedsToConsider = realTimeAttackMode ?
                                 (numLevelsPlayed == 0 ? (int)Double.parseDouble(params.get("secondsWaitingForLevel"))/5 : 5)
                                 : (int)Double.parseDouble(params.get("attkMaxWaitingForLevel"))/5;
                     if (unknownSeed) {
@@ -489,7 +489,7 @@ public class Manip {
                     String args = "none CH1-1,CH2-1,CH3-1,CH4-1,CH5-1,CH6-1,CH7-1,CH8-1,CH9-1,CH10-1,"
                         + "CH11-1,CH12-1,CH13-1,CH14-1,CH15-1,CH16-1,CH17-1,CH18-1,CH19-1,CH20-1,CH21-1,"
                         + "CH22-1,CH23-1,CH24-1,CH25-1,CH26-1,CH27-1,CH28-1,CH29-1,CH30-1 "
-                        + "-consecutiveseeds -seed 0x" + Drawer.seedToString(firstSeedToConsider) 
+                        + "-consecutiveseeds -seed 0x" + Drawer.seedToString(firstSeedToConsider)
                         + " -num " + numSeedsToConsider + " -judge " + attkMode;
                     System.out.println("Generating levels...");
                     CaveGen.main(args.split(" "));
@@ -638,7 +638,7 @@ public class Manip {
                         double remt = remainingTimesByLevel[o.level];
                         double playt = CaveGen.stats.judge.scoreMap.get("CH"+o.level+"-1 " + seedStr[o.seed]) - means.get("CH"+o.level+"-1");
                         double orpt = optimalResetGiveupByLevel[o.level];
-                        System.out.printf("%2d: CH%-2s %s t=%.3f play=%.2f rem=%.2f orp=%.1f wait=%.1f scroll=%.1f\n", 
+                        System.out.printf("%2d: CH%-2s %s t=%.3f play=%.2f rem=%.2f orp=%.1f wait=%.1f scroll=%.1f\n",
                             i+1, o.level+"", seedStr[o.seed], o.time, playt, remt, orpt, waitt, scrollt);
                         if (i >= gY) continue;
                         //jTextGrid.get(gX*i+0).setText(""+(i+1));
@@ -685,7 +685,7 @@ public class Manip {
                         jTextGrid.get(gX*i+7).setText(o.rank >= 100 ? "100.%" : String.format("%4.1f%%", o.rank));
                         jTextGrid.get(gX*i+8).setText(String.format("%4d", Math.round(o.avgDiff)));
                     }
-                    
+
                     for (int i = numOptionsShow; i < gY; i++) {
                         for (int j = 0; j < gX; j++) jTextGrid.get(gX*i+j).setText("");
                     }
@@ -695,9 +695,9 @@ public class Manip {
 
                     for (int i = numOptionsShow-1; i >= 0; i--) {
                         Option o = options.get(i);
-                        System.out.printf("%2d: CH%-2s %s %3d -> %6.2f + %.2f   %s\n", 
+                        System.out.printf("%2d: CH%-2s %s %3d -> %6.2f + %.2f   %s\n",
                             i+1, o.level+"", seedStr[o.seed], seed.dist(firstSeedToConsider,seedsConsidered[o.seed]),
-                                (o.targetFrame-o.targetWindow/2)/30.0,  o.targetWindow/30.0, 
+                                (o.targetFrame-o.targetWindow/2)/30.0,  o.targetWindow/30.0,
                                 scrollSeq[o.level]);
                     }
 
@@ -725,7 +725,7 @@ public class Manip {
                             specialTargetWindow = seed.frame_window;
                             System.out.println("Special target found: CH" + specialTargetLevel + " " + Drawer.seedToString(specialTargetSeed) +
                                     " " + specialTargetFrame + " " + specialTargetWindow);
-                            
+
                             StringBuilder text = new StringBuilder();
                             text.append("special target:\n CH" + specialTargetLevel + " " + Drawer.seedToString(specialTargetSeed) + "\n ");
                             // show timer, num advances, and window
@@ -739,14 +739,14 @@ public class Manip {
                                 text.append(String.format("%4d", (int)t));
                             else text.append(String.format("%4.1f", t));
                             text.append(" ");
-                            
+
                             double w = specialTargetWindow/30.0;
                             text.append(w >= 10 ? String.format("%2d.", (int)w) : String.format("%3.1f", w));
                             text.append(" ");
-    
+
                             text.append(seed.dist(firstSeedToConsider,specialTargetSeed));
                             text.append("\n");
-                        
+
                             jtext2.setText(text.toString());
                             repaintManip();
                         }
@@ -762,7 +762,7 @@ public class Manip {
                         caveViewer.imageBuffer.clear();
                         caveViewer.nameBuffer.clear();
                         CaveViewer.manipKeepImages = true;
-                        
+
                         for (int i = 0; i < numOptionsShow; i++) {
                             Option o = options.get(i);
                             String args2 = "cave CH" + o.level + "-1 -noprints " + params.get("attkAdditionalArgs")
@@ -811,12 +811,12 @@ public class Manip {
                         timerCurSeed = seed.next_seed(timerCurSeed);
                         timerTargetFrame += seed.seed_duration(timerCurSeed);
                     }
-                    
+
                     StringBuilder text = new StringBuilder();
                     text.append(""+String.format("%6.1f\n", timeShow/30.0));
                     double dt = timerTargetFrame - timeShow;
                     dt = Math.max(0,Math.min(30*9.9,dt));
-                    text.append(Drawer.seedToString(timerCurSeed) + " " + seed.dist(timerStartSeed,timerCurSeed) + " " 
+                    text.append(Drawer.seedToString(timerCurSeed) + " " + seed.dist(timerStartSeed,timerCurSeed) + " "
                             + String.format("%3.1f", dt/30.0) + "\n");
                     text.append(String.format("fd=%d,en=%d,lp=%d\n",  numFadeouts, numLevelEnters, numTitleLoops));
 
@@ -835,7 +835,7 @@ public class Manip {
                             text.append(String.format("%4d", (int)t));
                         else text.append(String.format("%4.1f", t));
                         text.append(" ");
-                        
+
                         double w = specialTargetWindow/30.0;
                         if (t <= 0) {
                             w += (specialTargetFrame-specialTargetWindow/2.0)/30.0-timeShow/30.0;
@@ -877,10 +877,10 @@ public class Manip {
                     jtext2.setText(text.toString());
                     repaintManip();
 
-                    int cave = caveViewer.lastSSeed < options.size() ? 
+                    int cave = caveViewer.lastSSeed < options.size() ?
                                     options.get(caveViewer.lastSSeed).level : 1;
-                    System.out.printf(" TIMER:  %s %3d -> %6.2f    (cur %s %d)                   \r", 
-                                        Drawer.seedToString(seed.seed_from_A(cave, timerCurSeed, timerTargetFrame-timeShow)), 
+                    System.out.printf(" TIMER:  %s %3d -> %6.2f    (cur %s %d)                   \r",
+                                        Drawer.seedToString(seed.seed_from_A(cave, timerCurSeed, timerTargetFrame-timeShow)),
                                         seed.dist(timerStartSeed,timerCurSeed), timeShow/30.0, Drawer.seedToString(timerCurSeed),
                                         seed.nth_inv(timerCurSeed));
 
@@ -1069,7 +1069,7 @@ public class Manip {
             avgs[f] = means.get("CH" + (f+1) + "-1").floatValue();
         }
 
-        
+
         int n = 1 << 30;
         float[] t = new float[n];
 
@@ -1105,7 +1105,7 @@ public class Manip {
 
         try {
             RandomAccessFile raf = new RandomAccessFile("files/times_table_" + kind + ".txt", "rw");
-            
+
             for (int i = 0; i < t.length; i++) {
                 //raf.seek(4*i);
                 raf.writeFloat(t[i]);
@@ -1114,16 +1114,16 @@ public class Manip {
             raf.close();
         } catch (Exception e) {
             e.printStackTrace();
-        } 
+        }
 
         /* try {
             RandomAccessFile raf = new RandomAccessFile("files/times_table_" + kind + ".txt", "r");
-            
+
             System.out.println(raf.length());
 
             for (int i = 0; i < t.length; i++) {
                 //raf.seek(4*i);
-                
+
                 float rd = raf.readFloat();
                 //System.out.printf("%d %.3f\n", i, rd);
             }
@@ -1161,7 +1161,7 @@ public class Manip {
                 stddevs.put(id, Math.sqrt(Math.max(0,x2/rank.length - x*x)));
                 ranges.put(id, rank[rank.length-1]-rank[0]);
                 topPercentile.put(id, rank[rank.length*5/100]);
-            } 
+            }
         }
     }
 
@@ -1197,11 +1197,11 @@ public class Manip {
                 story_stddevs.put(id, Math.sqrt(Math.max(0,x2/rank.length - x*x)));
                 story_ranges.put(id, rank[rank.length-1]-rank[0]);
                 story_topPercentile.put(id, rank[rank.length*50/100]);
-            } 
+            }
         }
     }
 
-    HashMap<String, double[]> rankFile = null; 
+    HashMap<String, double[]> rankFile = null;
     double[] readRankFile(String id) {
         if (rankFile == null) {
             rankFile = new HashMap<String, double[]>();
@@ -1226,7 +1226,7 @@ public class Manip {
         }
         return rankFile.get(id);
     }
-    
+
     public char[] intToByteArray(int value) {
         return new char[] {
                 (char)(value >>> 24),
@@ -1338,7 +1338,7 @@ public class Manip {
 
         if (numDigitsUse == -1) return;
         seedRead = true;
-        
+
         // recover the digit sequence to search for
         System.out.println("Using last " + numDigitsUse + " digits");
         String sequenceFull = "";
@@ -1396,9 +1396,18 @@ public class Manip {
         if (out == null) {
             try {
                 DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd-HH-mm-ss");
-                LocalDateTime now = LocalDateTime.now();  
+                LocalDateTime now = LocalDateTime.now();
                 String dateString = dtf.format(now);
-                String output = CaveGen.p251 ? "output251" : "output";
+                String output;
+                if (CaveGen.p251) {
+                    output = "output251/";
+                }
+                else if (CaveGen.newYear) {
+                    output = "outputNewYear/";
+                }
+                else {
+                    output = "output/";
+                }
                 new File(output+"/").mkdir();
                 new File(output + "/!seeds/").mkdir();
                 String outputFileName = output + "/!seeds/seeds-" + dateString + ".txt";
@@ -1428,7 +1437,7 @@ public class Manip {
     }
 
     void toggleCaptain() {
-        Manip.thisManip.captainOlimar = !Manip.thisManip.captainOlimar;    
+        Manip.thisManip.captainOlimar = !Manip.thisManip.captainOlimar;
         jtext2.setText("Next expect:\n" + storyLevelsOrder.get(storyLevelsIndex).replace("-","") + "\n" + (captainOlimar ? "Olimar" : "Louie/Pres"));
     }
 

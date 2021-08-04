@@ -16,6 +16,7 @@
 output/*/*.png
 output/*
 output251/*
+outputNewYear/*
 !reports/*.txt
 seed_chosen.png
 files/times_table*
