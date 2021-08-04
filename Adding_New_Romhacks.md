@@ -24,7 +24,7 @@ There are 5 folders Cavegen requires to generate layout images for a romhack: `a
 
 `enemytex` can be found in `disc_fs/user/Yamashita`. The `arc` in this folder is different and should be ignored. Copy `disc_fs/user/Yamashita/enemytex` into `romhack/`. Note that existing romhacks in Cavegen have a `special` folder located inside `enemytex` that isn't present in the ISO. You can just copy this folder from another romhack into our `enemytex` and it should work.
 
-`resulttex` can be found in `disc_fs/user/Matoba`. Copy it into `romhack/`.
+`resulttex` can be found in `disc_fs/user/Matoba`, however extracting it properly is a pain and it doesn't tend to change between romhacks. You can copy the `resulttex` in `CaveGen/files/251/` instead.
 
 ### Extracting SZS and BTI files
 Now that we have our folder set up, we need to extract the Gamecube file formats into regular computer ones. We'll do this in two steps: SZS first, then BTI second.

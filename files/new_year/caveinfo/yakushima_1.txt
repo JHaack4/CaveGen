@@ -179,7 +179,7 @@
 {
 	{f000} 4 3 # CurrentSublevelIndex
 	{f001} 4 3 # CurrentSublevelIndex
-	{f002} 4 24 # EntityTotal
+	{f002} 4 25 # EntityTotal
 	{f003} 4 3 # TreasureTotal
 	{f004} 4 4 # GateTotal
 	{f005} 4 3 # RoomTotal
@@ -200,7 +200,7 @@
 }
 # TekiInfo
 {
-	12 # num
+	13 # num
 	FireOtakara 10 # weight
 	0 # type
 	ElecOtakara 10 # weight
@@ -219,6 +219,8 @@
 	5 # type
 	Kabuto 10 # weight
 	0 # type
+	BlackMan 10 # weight
+	1 # type
 	KareOoinu_s 5 # weight
 	6 # type
 	KareOoinu_l 5 # weight

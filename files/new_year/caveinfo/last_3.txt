@@ -117,7 +117,7 @@
 	{f000} 4 2 # CurrentSublevelIndex
 	{f001} 4 2 # CurrentSublevelIndex
 	{f002} 4 22 # EntityTotal
-	{f003} 4 2 # TreasureTotal
+	{f003} 4 1 # TreasureTotal
 	{f004} 4 0 # GateTotal
 	{f005} 4 3 # RoomTotal
 	{f006} 4 0.12 # CorridorRatio
@@ -155,9 +155,8 @@
 }
 # ItemInfo
 {
-	2 # num
+	1 # num
 	denchi_1_black 10 # weight
-	milk_cap 10 # weight
 }
 # GateInfo
 {
@@ -553,7 +552,7 @@
 # ItemInfo
 {
 	1 # num
-	denchi_2_red 10 # weight
+	milk_cap 10 # weight
 }
 # GateInfo
 {

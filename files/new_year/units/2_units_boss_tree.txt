@@ -136,18 +136,6 @@
 	1 	# door links
 	340.009064 0 1 	# dist/door-id/tekiflag
 }
-# room_Oashi8x9_s_tree
-{
-	1 	# version
-	room_Oashi8x9_s_tree 	# foldername
-	8 9 	# dX/dZ ; cell size
-	1 	# room type
-	0 1 	# room Flags
-	1 	# num doors
-	0 	# index
-	1 4 0 	# dir/offs/wpindex
-	0 	# door links
-}
 # room_4x4c_4_tree
 {
 	1 	# version
@@ -180,4 +168,16 @@
 	693.790894 0 1 	# dist/door-id/tekiflag
 	1005.192871 1 1 	# dist/door-id/tekiflag
 	657.244812 2 1 	# dist/door-id/tekiflag
+}
+# room_Oashi8x9_s_tree
+{
+	1 	# version
+	room_Oashi8x9_s_tree 	# foldername
+	8 9 	# dX/dZ ; cell size
+	1 	# room type
+	0 1 	# room Flags
+	1 	# num doors
+	0 	# index
+	1 4 0 	# dir/offs/wpindex
+	0 	# door links
 }
