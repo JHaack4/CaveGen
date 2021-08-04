@@ -40,6 +40,7 @@ noPrints - no info printed to console
 noStats - no stats report is generated to the !reports folder
 region [us|jpn|pal] - changes treasure icons (default us)
 251 - uses pikmin 251 caves
+newYear - uses Pikmin 2: New Year caves
 caveInfoReport - generates pictures containing all info about a sublevel
 drawSpawnPoints - draws locations where things can spawn
 drawSpawnOrder - draws order objects spawned in

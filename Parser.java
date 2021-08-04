@@ -745,7 +745,7 @@ class Parser {
         helpText.add("  Output: seed|cave|both|none is which folder the output is sent to.");
         helpText.add("  Sublevels: BK-4|SCx|CH1|CH2|all|story|cmal|tutorial1.txt...");
         helpText.add("\nOptional: -seed 0x12345678 -num 100 -consecutiveSeeds -challengeMode -storyMode");
-        helpText.add("  -noImages -noPrint -noStats -region us|jpn|pal -251 -caveInfoReport");
+        helpText.add("  -noImages -noPrint -noStats -region us|jpn|pal -251 -newYear -caveInfoReport");
         helpText.add("  -drawSpawnPoints -drawSpawnOrder -drawAngles -drawDoorIds -drawTreasureGauge -drawHoleProbs");
         helpText.add("  -drawWayPoints -drawWPVertexDists -drawWPEdgeDists -drawAllWayPoints -noWayPointGraph");
         helpText.add("  -drawScores -drawDoorLinks -drawEnemyScores -drawUnitHoleScores -drawUnitItemScores -drawAllScores");
