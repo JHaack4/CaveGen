@@ -1,5 +1,3 @@
-** THIS IS A FORK made specifically to work better with my Discord bot. See the original for general usage! **
-
 Feel free to use/modify this tool as you see fit
 If you have questions, ping the Pikmin Speedrunning or Hocotate Hacker Discord
 
