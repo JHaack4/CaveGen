@@ -1398,16 +1398,7 @@ public class Manip {
                 DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd-HH-mm-ss");
                 LocalDateTime now = LocalDateTime.now();
                 String dateString = dtf.format(now);
-                String output;
-                if (CaveGen.p251) {
-                    output = "output251/";
-                }
-                else if (CaveGen.newYear) {
-                    output = "outputNewYear/";
-                }
-                else {
-                    output = "output/";
-                }
+                String output = CaveGen.outputFolder.replace("/", "");
                 new File(output+"/").mkdir();
                 new File(output + "/!seeds/").mkdir();
                 String outputFileName = output + "/!seeds/seeds-" + dateString + ".txt";
