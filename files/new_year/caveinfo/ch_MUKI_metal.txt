@@ -1,0 +1,150 @@
+# CaveInfo
+{
+	{c000} 4 2 	# SublevelCount
+	{_eof} 
+}
+2 # FloorInfo
+{
+	{f000} 4 0 # CurrentSublevelIndex
+	{f001} 4 0 # CurrentSublevelIndex
+	{f002} 4 34 # EntityTotal
+	{f003} 4 11 # TreasureTotal
+	{f004} 4 4 # GateTotal
+	{f005} 4 2 # RoomTotal
+	{f006} 4 0.12 # CorridorRatio
+	{f007} 4 0 # Geyser
+	{f008} -1 1_ABE_vshit67_toy.txt # UnitFile
+	{f009} -1 forest_3_light.ini # LightFile
+	{f00A} -1 flooring # Skybox
+	{f010} 4 0 # CloggedHole
+	{f011} 4 0 # Unknown
+	{f012} 4 0 # MusicType
+	{f013} 4 1 # SolidPlane
+    {f014} 4 100 # DeadEndTotal
+	{f015} 4 1 # Version(0=IgnoreCapInfo)
+	{f016} 4 0 # WaterwraithTimer
+	{f017} 4 0 # Seesaw(1=True)
+	{_eof} 
+}
+# TekiInfo
+{
+	14 # num
+	$BombOtakara 20 # weight
+	0 # type
+	$2BombOtakara 20 # weight
+	0 # type
+	$3BombOtakara 20 # weight
+	0 # type
+	$4BombOtakara 20 # weight
+	0 # type
+	$5BombOtakara 20 # weight
+	0 # type
+	$Bomb 20 # weight
+	5 # type
+	$2Bomb 20 # weight
+	5 # type
+	$3Bomb 20 # weight
+	5 # type
+	$4Bomb 20 # weight
+	5 # type
+	$5Bomb 20 # weight
+	5 # type
+	$Egg 50 # weight
+	1 # type
+	Rock 50 # weight
+	0 # type
+	BombOtakara 20 # weight
+	0 # type
+	Bomb 20 # weight
+	5 # type
+}
+# ItemInfo
+{
+	11 # num
+	key 10 # weight
+	channel 10 # weight
+	bell_blue 10 # weight
+	tel_dial 10 # weight
+	sinkukan 10 # weight
+	sinkukan_b 10 # weight
+	sinkukan_c 10 # weight
+	denchi_3_red 10 # weight
+	denchi_2_black 10 # weight
+	denchi_1_red 10 # weight
+	denchi_3_black 10 # weight
+}
+# GateInfo
+{
+	4 # num
+	gate 1000 # life
+	1 # weight
+	gate 1000 # life
+	1 # weight
+	gate 1000 # life
+	1 # weight
+	gate 1000 # life
+	1 # weight
+}
+# CapInfo
+{
+	0 # num
+}
+# FloorInfo
+{
+	{f000} 4 1 # CurrentSublevelIndex
+	{f001} 4 1 # CurrentSublevelIndex
+	{f002} 4 20 # EntityTotal
+	{f003} 4 10 # TreasureTotal
+	{f004} 4 0 # GateTotal
+	{f005} 4 3 # RoomTotal
+	{f006} 4 0.12 # CorridorRatio
+	{f007} 4 0 # Geyser
+	{f008} -1 1_NARI_hit6x6_toy.txt # UnitFile
+	{f009} -1 forest_3_light.ini # LightFile
+	{f00A} -1 hiroba # Skybox
+	{f010} 4 0 # CloggedHole
+	{f011} 4 0 # Unknown
+	{f012} 4 0 # MusicType
+	{f013} 4 1 # SolidPlane
+    {f014} 4 100 # DeadEndTotal
+	{f015} 4 1 # Version(0=IgnoreCapInfo)
+	{f016} 4 0 # WaterwraithTimer
+	{f017} 4 0 # Seesaw(1=True)
+	{_eof} 
+}
+# TekiInfo
+{
+	5 # num
+	MiniHoudai 20 # weight
+	0 # type
+	Fkabuto_key 10 # weight
+	1 # type
+	Bomb 100 # weight
+	5 # type
+	DaiodoRed 5 # weight
+	6 # type
+	Demon 20 # weight
+	1 # type
+}
+# ItemInfo
+{
+	10 # num
+	kinoko 10 # weight
+	kinoko_doku 10 # weight
+	kinoko_tubu 10 # weight
+	gear 10 # weight
+	gear_silver 10 # weight
+	bolt 10 # weight
+	bolt_l 10 # weight
+	nut 10 # weight
+	nut_l 10 # weight
+	bane 10 # weight
+}
+# GateInfo
+{
+	0 # num
+}
+# CapInfo
+{
+	0 # num
+}

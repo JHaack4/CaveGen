@@ -18,12 +18,12 @@ java -jar CaveGen.jar [args]
 
 
 ARGUMENTS:
-output (required) - folder that the images get sent to. 
+output (required) - folder that the images get sent to.
 	seed - a folder such as "12345678" is generated for each seed
 	cave - a folder such as "BK-4" is generated for this sublevel
 	both - both folders are made
 	none - no images are generated (tool runs much faster for collecting stats)
-cave (required) - cave that gets generated. 
+cave (required) - cave that gets generated.
 	.txt file: e.g. caveinfo.txt
 	group: "cmal" "story" "both" generates sublevels for the entire game
 	abbreviation: e.g. BK, SCx, CH1, CH2, etc.
@@ -38,6 +38,7 @@ noPrints - no info printed to console
 noStats - no stats report is generated to the !reports folder
 region [us|jpn|pal] - changes treasure icons (default us)
 251 - uses pikmin 251 caves
+newYear - uses Pikmin 2: New Year caves
 caveInfoReport - generates pictures containing all info about a sublevel
 drawSpawnPoints - draws locations where things can spawn
 drawSpawnOrder - draws order objects spawned in
@@ -62,9 +63,9 @@ drawNoObjects - doesn't draw any objects
 findGoodLayouts 0.01 - runs a heuristic to only output images for the best 1% of layouts
 requiredMapUnits unitType,rot,idFrom,doorFrom,doorTo;... - only outputs maps such that
 	for the ith entry in this semicolon separated list, the ith map unit generated
-	has this unit type and rotation, and is attached at the door with id doorTo 
+	has this unit type and rotation, and is attached at the door with id doorTo
 	to the map unit with id idFrom at the door with id doorFrom
-judge attk|pod|at|key|cmat|score [<0.5%] [>12345] - runs various heuristics to score/rank 
+judge attk|pod|at|key|cmat|score [<0.5%] [>12345] - runs various heuristics to score/rank
 	levels, with optional filtering
 
 EXAMPLES:
@@ -143,7 +144,7 @@ GENERAL QUESTIONS (for story mode)
 9. Where do treasures (not in enemies) spawn? How does ordering matter? Which enemies matter?
 10. What determines where enemies in alcoves spawn? How does ordering matter?
 11. How do gates prioritize their spawning? If you see a gate between two rooms, what does that tell you about the alcoves?
-12. Which direction does the camera face at the start of a sublevel? 
+12. Which direction does the camera face at the start of a sublevel?
 13. How does the view during the comedown relate to view from pressing L at the start of the sublevel?
 14. From how far away does the treasure gauge pick up a treasure?
 
@@ -178,7 +179,7 @@ REAL TIME SEED DETECTION (FOR CHALLENGE MODE AND STORY MODE)
 6) Install the virtual cam plugin for OBS (https://obsproject.com/forum/resources/obs-virtualcam.949/)
 7) Use Git to download CaveGen from GitHub (git clone https://github.com/jhaack4/CaveGen from the command line)
 8) Configure OBS in some reasonable way (unobstructed game feed). Once you've set up the configuration, you can't change your layout.
-9) Record a video of yourself playing. Make sure you get the letters from at least 2 different caves, one of which is WFG. 
+9) Record a video of yourself playing. Make sure you get the letters from at least 2 different caves, one of which is WFG.
 		Also, record yourself playing through a challenge mode level, where you get a score of exactly 1000 (including the results screen) (Red Chasm recommended)
 10) For the rest of the time, you will be editing the file "config.txt". This is the only text file you will edit.
 11) In the config, set video_path to the directory that your OBS videos are outputting to.
@@ -219,11 +220,11 @@ REAL TIME SEED DETECTION (FOR CHALLENGE MODE AND STORY MODE)
 31) To set up a JP config (which will need to be separate to your English config), you should do the following:
 -Set language = Japanese
 -Add -region jpn to the storyArgs (to see the right treasures)
--When running setup_seed_detect.py, Insead of naming images like "Emergence_Cave", you need to name them "_u59cb_u307e_u308a_u306e_u6d1e_u7a9f". 
+-When running setup_seed_detect.py, Insead of naming images like "Emergence_Cave", you need to name them "_u59cb_u307e_u308a_u306e_u6d1e_u7a9f".
 	You can copy these text strings from the bottom of the config file. You only need to test 1 cave for aligning characters. x_scrunch_limit does not matter.
--Finally, you need to make sure that the parameter "letterPosOffset" is correct. Hopefully, the default value of 164 will work for most people. 
-	But if not, you need to adjust it. To do this, record a video of yourself playing through BK. Then, run "seed detect pod". 
-	Look at the value of "offsetsum" printed out on the Command prompt. This value should be close to zero on average (within ~20). 
+-Finally, you need to make sure that the parameter "letterPosOffset" is correct. Hopefully, the default value of 164 will work for most people.
+	But if not, you need to adjust it. To do this, record a video of yourself playing through BK. Then, run "seed detect pod".
+	Look at the value of "offsetsum" printed out on the Command prompt. This value should be close to zero on average (within ~20).
 	If it's not, adjust letterPosOffset by small amounts until it is.
 -When doing runs, make sure to use Shift-A to set the anchor seed every so often.
 --FUTURE UPDATES

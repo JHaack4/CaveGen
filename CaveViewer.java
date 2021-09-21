@@ -133,28 +133,28 @@ public class CaveViewer {
                 if (e.getKeyCode() == KeyEvent.VK_OPEN_BRACKET || e.getKeyCode() == KeyEvent.VK_BRACELEFT || (e.getKeyCode() == KeyEvent.VK_B && e.isShiftDown())) {
                     if (currentImage >= 0 && currentImage < nameBuffer.size() && Manip.thisManip != null) {
                         Manip.thisManip.nextStoryModeLevel(-1);
-                    }                    
+                    }
                 }
                 if (e.getKeyCode() == KeyEvent.VK_CLOSE_BRACKET || e.getKeyCode() == KeyEvent.VK_BRACERIGHT || (e.getKeyCode() == KeyEvent.VK_N && e.isShiftDown())) {
                     if (currentImage >= 0 && currentImage < nameBuffer.size() && Manip.thisManip != null) {
                         Manip.thisManip.nextStoryModeLevel(1);
-                    }                    
+                    }
                 }
                 if (e.getKeyCode() == KeyEvent.VK_K && e.isShiftDown()) {
                     if (Manip.thisManip != null)
-                        Manip.thisManip.toggleCaptain();               
+                        Manip.thisManip.toggleCaptain();
                 }
                 if (e.getKeyCode() == KeyEvent.VK_R && e.isShiftDown()) {
                     if (Manip.thisManip != null)
-                        Manip.thisManip.nextStoryModeLevel(-Manip.thisManip.storyLevelsIndex);               
+                        Manip.thisManip.nextStoryModeLevel(-Manip.thisManip.storyLevelsIndex);
                 }
                 if (e.getKeyCode() == KeyEvent.VK_A && e.isShiftDown()) {
                     if (Manip.thisManip != null)
-                        Manip.thisManip.setAnchor();              
+                        Manip.thisManip.setAnchor();
                 }
                 if (e.getKeyCode() == KeyEvent.VK_X && e.isShiftDown()) {
                     if (Manip.thisManip != null)
-                        Manip.thisManip.lastReadSeed = -1;              
+                        Manip.thisManip.lastReadSeed = -1;
                 }
 				if (e.getKeyCode() == KeyEvent.VK_MINUS) {
                     if (currentImage >= 0 && currentImage < nameBuffer.size()) {
@@ -167,7 +167,7 @@ public class CaveViewer {
                             CaveViewer.manipKeepImages = false;
                             lastImg();
                         }
-                    } 
+                    }
                 }
                 if (e.getKeyCode() == KeyEvent.VK_PLUS || e.getKeyCode() == KeyEvent.VK_EQUALS) {
                     if (currentImage >= 0 && currentImage < nameBuffer.size()) {
@@ -180,7 +180,7 @@ public class CaveViewer {
                             CaveViewer.manipKeepImages = false;
                             lastImg();
                         }
-                    }                    
+                    }
 				}
 				if (e.getKeyCode() == KeyEvent.VK_MINUS) {
                     if (currentImage >= 0 && currentImage < nameBuffer.size()) {
@@ -193,7 +193,7 @@ public class CaveViewer {
                             CaveViewer.manipKeepImages = false;
                             lastImg();
                         }
-                    } 
+                    }
                 }
                 if (e.getKeyCode() == KeyEvent.VK_C && e.isControlDown()) {
                     System.exit(0);
@@ -211,7 +211,7 @@ public class CaveViewer {
                         if (nameBuffer.size() > 0) {
                             String[] sa = nameBuffer.get(currentImage).split(" ");
                             if (sa.length >= 2 && !sa[0].equals("Report:") && !sa[0].equals("Agg:")) {
-                                seed = Long.decode("0x" + sa[1]); 
+                                seed = Long.decode("0x" + sa[1]);
                             }
                         }
                         if (seed > -1) {
@@ -267,13 +267,13 @@ public class CaveViewer {
         jbuttonRun.setFont(font);
 		jbuttonRun.setBounds(10, 10, 400, 20);
         jfr.add(jbuttonRun);
-        
+
         jbuttonRun.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent ae) {
 				runCaveGen();
 			}
 		});
-        
+
         jtextReport.setBounds(10, 375, 400, 135);
 		jtextReport.setFont(font);
 		jtextReport.setMargin(new Insets(3, 3, 3, 3));
@@ -283,7 +283,7 @@ public class CaveViewer {
 		jtextReport.setContentType("text/plain");
 		jtextReport.putClientProperty(JEditorPane.HONOR_DISPLAY_PROPERTIES, true);
         jfr.add(jtextChatSP);
-        
+
         jfrView.getContentPane().setLayout(null);
 		jfrView.setSize(100, 100);
         jfrView.setResizable(true);
@@ -294,7 +294,7 @@ public class CaveViewer {
         jfrView.setVisible(false);
         jfrView.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
 
-        jfrView.addComponentListener(new ComponentAdapter() {  
+        jfrView.addComponentListener(new ComponentAdapter() {
             public void componentResized(ComponentEvent evt) {
                 viewPanel.setBounds(0,0,jfrView.getWidth()-14,jfrView.getHeight()-37);
             }
@@ -505,7 +505,7 @@ public class CaveViewer {
                         break;
                     case 4:
                         s.append("both ");
-                } 
+                }
             } else if (a.name.equals("cave")) {
                 s.append((String)(a.jComboBox.getSelectedItem()) + " ");
             } else if (a.name.equals("sublevel")) {

@@ -1,0 +1,87 @@
+# CaveInfo
+{
+	{c000} 4 1 	# SublevelCount
+	{_eof} 
+}
+1 # FloorInfo
+{
+	{f000} 4 0 # CurrentSublevelIndex
+	{f001} 4 0 # CurrentSublevelIndex
+	{f002} 4 196 # EntityTotal
+	{f003} 4 13 # TreasureTotal
+	{f004} 4 2 # GateTotal
+	{f005} 4 4 # RoomTotal
+	{f006} 4 0.12 # CorridorRatio
+	{f007} 4 0 # Geyser
+	{f008} -1 2_MAT_5x5_mid_kusachi.txt # UnitFile
+	{f009} -1 kusachi_light_cha.ini # LightFile
+	{f00A} -1 hiroba # Skybox
+	{f010} 4 0 # CloggedHole
+	{f011} 4 0 # Unknown
+	{f012} 4 0 # MusicType
+	{f013} 4 1 # SolidPlane
+    {f014} 4 100 # DeadEndTotal
+	{f015} 4 1 # Version(0=IgnoreCapInfo)
+	{f016} 4 200 # WaterwraithTimer
+	{f017} 4 0 # Seesaw(1=True)
+	{_eof} 
+}
+# TekiInfo
+{
+	13 # num
+	Wakame_l 20 # weight
+	6 # type
+	Ooinu_s 15 # weight
+	6 # type
+	Watage 10 # weight
+	6 # type
+	HikariKinoko 20 # weight
+	6 # type
+	Nekojarashi 20 # weight
+	6 # type
+	Clover 20 # weight
+	6 # type
+	Tukushi 20 # weight
+	6 # type
+	Tanpopo 20 # weight
+	6 # type
+	Magaret 20 # weight
+	6 # type
+	BlackMan 30 # weight
+	0 # type
+	BlackMan 20 # weight
+	1 # type
+	Qurione 50 # weight
+	1 # type
+	ShijimiChou 10 # weight
+	1 # type
+}
+# ItemInfo
+{
+	13 # num
+	cookie 10 # weight
+	key 10 # weight
+	j_block_white 10 # weight
+	j_block_yellow 10 # weight
+	donutschoco 10 # weight
+	donutsichigo_s 10 # weight
+	j_block_red 10 # weight
+	momiji_red 10 # weight
+	kuri 10 # weight
+	robot_head 10 # weight
+	leaf_yellow 10 # weight
+	donutsichigo 10 # weight
+	donutswhite 10 # weight
+}
+# GateInfo
+{
+	2 # num
+	gate 1000 # life
+	1 # weight
+	gate 1000 # life
+	1 # weight
+}
+# CapInfo
+{
+	0 # num
+}

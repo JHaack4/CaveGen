@@ -1,0 +1,187 @@
+# CaveInfo
+{
+	{c000} 4 3 	# SublevelCount
+	{_eof} 
+}
+3 # FloorInfo
+{
+	{f000} 4 0 # CurrentSublevelIndex
+	{f001} 4 0 # CurrentSublevelIndex
+	{f002} 4 19 # EntityTotal
+	{f003} 4 5 # TreasureTotal
+	{f004} 4 0 # GateTotal
+	{f005} 4 3 # RoomTotal
+	{f006} 4 0.12 # CorridorRatio
+	{f007} 4 0 # Geyser
+	{f008} -1 1_units_big2_desert.txt # UnitFile
+	{f009} -1 desert_light.ini # LightFile
+	{f00A} -1 desert # Skybox
+	{f010} 4 0 # CloggedHole
+	{f011} 4 0 # Unknown
+	{f012} 4 0 # MusicType
+	{f013} 4 1 # SolidPlane
+    {f014} 4 50 # DeadEndTotal
+	{f015} 4 1 # Version(0=IgnoreCapInfo)
+	{f016} 4 0 # WaterwraithTimer
+	{f017} 4 0 # Seesaw(1=True)
+	{_eof} 
+}
+# TekiInfo
+{
+	5 # num
+	Rkabuto 20 # weight
+	0 # type
+	Demon 10 # weight
+	1 # type
+	MiniHoudai_key 10 # weight
+	0 # type
+	Bomb 50 # weight
+	1 # type
+	Zenmai 10 # weight
+	6 # type
+}
+# ItemInfo
+{
+	5 # num
+	dia_c_red 10 # weight
+	dia_a_red 10 # weight
+	tape_blue 10 # weight
+	uji_jisyaku 10 # weight
+	makigai 10 # weight
+}
+# GateInfo
+{
+	0 # num
+}
+# CapInfo
+{
+	0 # num
+}
+# FloorInfo
+{
+	{f000} 4 1 # CurrentSublevelIndex
+	{f001} 4 1 # CurrentSublevelIndex
+	{f002} 4 26 # EntityTotal
+	{f003} 4 5 # TreasureTotal
+	{f004} 4 0 # GateTotal
+	{f005} 4 2 # RoomTotal
+	{f006} 4 0.12 # CorridorRatio
+	{f007} 4 0 # Geyser
+	{f008} -1 1_units_big2_desert.txt # UnitFile
+	{f009} -1 jyoou_light_lv1.ini # LightFile
+	{f00A} -1 desert # Skybox
+	{f010} 4 0 # CloggedHole
+	{f011} 4 0 # Unknown
+	{f012} 4 0 # MusicType
+	{f013} 4 1 # SolidPlane
+    {f014} 4 50 # DeadEndTotal
+	{f015} 4 1 # Version(0=IgnoreCapInfo)
+	{f016} 4 0 # WaterwraithTimer
+	{f017} 4 0 # Seesaw(1=True)
+	{_eof} 
+}
+# TekiInfo
+{
+	7 # num
+	Mar 10 # weight
+	0 # type
+	Hanachirashi 10 # weight
+	0 # type
+	Kurage 10 # weight
+	1 # type
+	OniKurage_key 10 # weight
+	1 # type
+	ElecHiba 100 # weight
+	5 # type
+	Tanpopo 5 # weight
+	6 # type
+	Watage 5 # weight
+	6 # type
+}
+# ItemInfo
+{
+	5 # num
+	flower_blue 50 # weight
+	matu_bokkuri 20 # weight
+	ichigo_l 10 # weight
+	ichigo 10 # weight
+	dia_a_red 10 # weight
+}
+# GateInfo
+{
+	0 # num
+}
+# CapInfo
+{
+	1 # num
+	0 # captype
+	Egg 20 # weight
+	1 # type
+}
+# FloorInfo
+{
+	{f000} 4 2 # CurrentSublevelIndex
+	{f001} 4 2 # CurrentSublevelIndex
+	{f002} 4 28 # EntityTotal
+	{f003} 4 5 # TreasureTotal
+	{f004} 4 3 # GateTotal
+	{f005} 4 3 # RoomTotal
+	{f006} 4 0.12 # CorridorRatio
+	{f007} 4 0 # Geyser
+	{f008} -1 1_units_big2_desert.txt # UnitFile
+	{f009} -1 chikahimi_metal_light_lv4.ini # LightFile
+	{f00A} -1 desert # Skybox
+	{f010} 4 0 # CloggedHole
+	{f011} 4 0 # Unknown
+	{f012} 4 0 # MusicType
+	{f013} 4 1 # SolidPlane
+    {f014} 4 100 # DeadEndTotal
+	{f015} 4 1 # Version(0=IgnoreCapInfo)
+	{f016} 4 0 # WaterwraithTimer
+	{f017} 4 0 # Seesaw(1=True)
+	{_eof} 
+}
+# TekiInfo
+{
+	7 # num
+	MaroFrog 20 # weight
+	0 # type
+	Armor 20 # weight
+	0 # type
+	KumaKochappy 30 # weight
+	0 # type
+	Demon_key 10 # weight
+	1 # type
+	Qurione 20 # weight
+	1 # type
+	ElecBug 60 # weight
+	1 # type
+	HikariKinoko 10 # weight
+	6 # type
+}
+# ItemInfo
+{
+	5 # num
+	diamond_red 20 # weight
+	diamond_blue_l 20 # weight
+	light_a 10 # weight
+	momiji_red 10 # weight
+	kinoko_doku 10 # weight
+}
+# GateInfo
+{
+	3 # num
+	gate 1000 # life
+	1 # weight
+	gate 1000 # life
+	1 # weight
+	gate 1000 # life
+	1 # weight
+}
+# CapInfo
+{
+	1 # num
+	0 # captype
+	Egg 20 # weight
+	1 # type
+}

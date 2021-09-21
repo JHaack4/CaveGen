@@ -1,6 +1,6 @@
 import java.io.*;
-import java.time.format.DateTimeFormatter;  
-import java.time.LocalDateTime;  
+import java.time.format.DateTimeFormatter;
+import java.time.LocalDateTime;
 import java.util.*;
 
 // this class computes various statistics
@@ -34,9 +34,18 @@ class Stats {
         try {
             startTime = System.currentTimeMillis();
             DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd-HH-mm-ss");
-            LocalDateTime now = LocalDateTime.now();  
+            LocalDateTime now = LocalDateTime.now();
             String dateString = dtf.format(now);
-            String output = CaveGen.p251 ? "output251" : "output";
+            String output;
+            if (CaveGen.p251) {
+                output = "output251/";
+            }
+            else if (CaveGen.newYear) {
+                output = "outputNewYear/";
+            }
+            else {
+                output = "output/";
+            }
             new File(output+"/").mkdir();
             new File(output + "/!reports/").mkdir();
             String outputFileName = output + "/!reports/report-" + dateString + ".txt";
@@ -59,7 +68,7 @@ class Stats {
 
     // this function gets called once for every sublevel g that generates
     void analyze(CaveGen g) {
-        caveGenCount += 1; 
+        caveGenCount += 1;
 
         // count the number of purple flowers
         if (CaveGen.countObject.length() > 0) {
@@ -79,9 +88,9 @@ class Stats {
         if (CaveGen.judgeActive)
             judge.judge(g);
 
-        if (CaveGen.findGoodLayouts) 
+        if (CaveGen.findGoodLayouts)
             judge.findGoodLayouts(g);
-        
+
     }
 
     // this function gets called once at the end of the process

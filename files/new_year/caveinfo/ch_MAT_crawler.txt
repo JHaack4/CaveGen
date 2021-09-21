@@ -1,0 +1,275 @@
+# CaveInfo
+{
+	{c000} 4 4 	# SublevelCount
+	{_eof} 
+}
+4 # FloorInfo
+{
+	{f000} 4 0 # CurrentSublevelIndex
+	{f001} 4 0 # CurrentSublevelIndex
+	{f002} 4 16 # EntityTotal
+	{f003} 4 3 # TreasureTotal
+	{f004} 4 3 # GateTotal
+	{f005} 4 1 # RoomTotal
+	{f006} 4 0.12 # CorridorRatio
+	{f007} 4 0 # Geyser
+	{f008} -1 1_units_nobo2_medi.txt # UnitFile
+	{f009} -1 toy_light_cha.ini # LightFile
+	{f00A} -1 sky # Skybox
+	{f010} 4 0 # CloggedHole
+	{f011} 4 0 # Unknown
+	{f012} 4 0 # MusicType
+	{f013} 4 0 # SolidPlane
+    {f014} 4 100 # DeadEndTotal
+	{f015} 4 1 # Version(0=IgnoreCapInfo)
+	{f016} 4 0 # WaterwraithTimer
+	{f017} 4 0 # Seesaw(1=True)
+	{_eof} 
+}
+# TekiInfo
+{
+	6 # num
+	Miulin 20 # weight
+	0 # type
+	LeafChappy 10 # weight
+	1 # type
+	PanModoki 20 # weight
+	1 # type
+	Armor 10 # weight
+	0 # type
+	Wakame_s 5 # weight
+	6 # type
+	Wakame_l 5 # weight
+	6 # type
+}
+# ItemInfo
+{
+	3 # num
+	key 10 # weight
+	kinoko_tubu 10 # weight
+	kinoko_doku 10 # weight
+}
+# GateInfo
+{
+	3 # num
+	gate 1000 # life
+	1 # weight
+	gate 1000 # life
+	1 # weight
+	gate 1000 # life
+	1 # weight
+}
+# CapInfo
+{
+	0 # num
+}
+# FloorInfo
+{
+	{f000} 4 1 # CurrentSublevelIndex
+	{f001} 4 1 # CurrentSublevelIndex
+	{f002} 4 21 # EntityTotal
+	{f003} 4 8 # TreasureTotal
+	{f004} 4 0 # GateTotal
+	{f005} 4 3 # RoomTotal
+	{f006} 4 0.050000 # CorridorRatio
+	{f007} 4 0 # Geyser
+	{f008} -1 3_MAT_castle2_medi.txt # UnitFile
+	{f009} -1 medieval_light.ini # LightFile
+	{f00A} -1 space # Skybox
+	{f010} 4 0 # CloggedHole
+	{f011} 4 0 # Unknown
+	{f012} 4 0 # MusicType
+	{f013} 4 0 # SolidPlane
+    {f014} 4 100 # DeadEndTotal
+	{f015} 4 1 # Version(0=IgnoreCapInfo)
+	{f016} 4 0 # WaterwraithTimer
+	{f017} 4 0 # Seesaw(1=True)
+	{_eof} 
+}
+# TekiInfo
+{
+	11 # num
+	Armor_key 10 # weight
+	0 # type
+	Armor 10 # weight
+	0 # type
+	Hana 20 # weight
+	1 # type
+	$5OniKurage_key 10 # weight
+	1 # type
+	$5Sarai 10 # weight
+	1 # type
+	$5Rkabuto 10 # weight
+	1 # type
+	$5FireOtakara 10 # weight
+	5 # type
+	$5ElecOtakara 10 # weight
+	5 # type
+	$5Egg 20 # weight
+	0 # type
+	Magaret 5 # weight
+	6 # type
+	HikariKinoko 5 # weight
+	6 # type
+}
+# ItemInfo
+{
+	8 # num
+	toy_ring_c_blue 20 # weight
+	toy_teala 10 # weight
+	ichigo 10 # weight
+	g_futa_hiruzen 10 # weight
+	dia_c_blue 10 # weight
+	flask 10 # weight
+	akagai 10 # weight
+	sensya 10 # weight
+}
+# GateInfo
+{
+	0 # num
+}
+# CapInfo
+{
+	0 # num
+}
+# FloorInfo
+{
+	{f000} 4 2 # CurrentSublevelIndex
+	{f001} 4 2 # CurrentSublevelIndex
+	{f002} 4 19 # EntityTotal
+	{f003} 4 9 # TreasureTotal
+	{f004} 4 0 # GateTotal
+	{f005} 4 3 # RoomTotal
+	{f006} 4 0.050000 # CorridorRatio
+	{f007} 4 0 # Geyser
+	{f008} -1 2_units_exterior2_medi.txt # UnitFile
+	{f009} -1 medieval_light.ini # LightFile
+	{f00A} -1 medieval # Skybox
+	{f010} 4 0 # CloggedHole
+	{f011} 4 0 # Unknown
+	{f012} 4 0 # MusicType
+	{f013} 4 0 # SolidPlane
+    {f014} 4 50 # DeadEndTotal
+	{f015} 4 1 # Version(0=IgnoreCapInfo)
+	{f016} 4 0 # WaterwraithTimer
+	{f017} 4 0 # Seesaw(1=True)
+	{_eof} 
+}
+# TekiInfo
+{
+	11 # num
+	$5Tank 10 # weight
+	0 # type
+	$5Wtank 10 # weight
+	0 # type
+	$5Kurage 10 # weight
+	0 # type
+	$5YellowChappy 10 # weight
+	0 # type
+	$5BombSarai 10 # weight
+	1 # type
+	$5Kabuto_key 10 # weight
+	1 # type
+	$5Mar 10 # weight
+	1 # type
+	$5Hanachirashi 10 # weight
+	1 # type
+	$5MiniHoudai 10 # weight
+	5 # type
+	Tanpopo 5 # weight
+	6 # type
+	Watage 5 # weight
+	6 # type
+}
+# ItemInfo
+{
+	9 # num
+	chess_king_black 10 # weight
+	badminton 10 # weight
+	donutschoco_s 10 # weight
+	map01 10 # weight
+	map02 10 # weight
+	kan_b_silver 10 # weight
+	halloween 10 # weight
+	kumakibori 10 # weight
+	leaf_normal 10 # weight
+}
+# GateInfo
+{
+	0 # num
+}
+# CapInfo
+{
+	0 # num
+}
+# FloorInfo
+{
+	{f000} 4 3 # CurrentSublevelIndex
+	{f001} 4 3 # CurrentSublevelIndex
+	{f002} 4 23 # EntityTotal
+	{f003} 4 8 # TreasureTotal
+	{f004} 4 0 # GateTotal
+	{f005} 4 3 # RoomTotal
+	{f006} 4 0.12 # CorridorRatio
+	{f007} 4 0 # Geyser
+	{f008} -1 2_units_exterior2_medi.txt # UnitFile
+	{f009} -1 medieval_light.ini # LightFile
+	{f00A} -1 medieval # Skybox
+	{f010} 4 0 # CloggedHole
+	{f011} 4 0 # Unknown
+	{f012} 4 0 # MusicType
+	{f013} 4 0 # SolidPlane
+    {f014} 4 50 # DeadEndTotal
+	{f015} 4 1 # Version(0=IgnoreCapInfo)
+	{f016} 4 0 # WaterwraithTimer
+	{f017} 4 0 # Seesaw(1=True)
+	{_eof} 
+}
+# TekiInfo
+{
+	12 # num
+	$5KumaKochappy 20 # weight
+	0 # type
+	$5KumaChappy 10 # weight
+	0 # type
+	$5MaroFrog 10 # weight
+	0 # type
+	$5Frog 10 # weight
+	0 # type
+	$5Demon_key 10 # weight
+	1 # type
+	$5Catfish 20 # weight
+	1 # type
+	$5Kochappy 20 # weight
+	1 # type
+	$5Chappy 10 # weight
+	1 # type
+	$5GasOtakara 10 # weight
+	5 # type
+	$5WaterOtakara 10 # weight
+	5 # type
+	Tukushi 5 # weight
+	6 # type
+	Nekojarashi 5 # weight
+	6 # type
+}
+# ItemInfo
+{
+	8 # num
+	dia_c_green 10 # weight
+	apple 10 # weight
+	diamond_green 10 # weight
+	tatebue 10 # weight
+	bolt_l 10 # weight
+	nut_l 10 # weight
+	diamond_red_l 10 # weight
+	diamond_green_l 10 # weight
+}
+# GateInfo
+{
+	0 # num
+}
+# CapInfo
+{
+	0 # num
+}

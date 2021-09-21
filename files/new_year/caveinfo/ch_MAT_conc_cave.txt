@@ -1,0 +1,234 @@
+# CaveInfo
+{
+	{c000} 4 4 	# SublevelCount
+	{_eof} 
+}
+4 # FloorInfo
+{
+	{f000} 4 0 # CurrentSublevelIndex
+	{f001} 4 0 # CurrentSublevelIndex
+	{f002} 4 87 # EntityTotal
+	{f003} 4 0 # TreasureTotal
+	{f004} 4 0 # GateTotal
+	{f005} 4 6 # RoomTotal
+	{f006} 4 0.12 # CorridorRatio
+	{f007} 4 0 # Geyser
+	{f008} -1 2_ABE_units_5x5a_mid_kusachi.txt # UnitFile
+	{f009} -1 toy_light_cha.ini # LightFile
+	{f00A} -1 hiroba # Skybox
+	{f010} 4 0 # CloggedHole
+	{f011} 4 0 # Unknown
+	{f012} 4 0 # MusicType
+	{f013} 4 1 # SolidPlane
+    {f014} 4 100 # DeadEndTotal
+	{f015} 4 1 # Version(0=IgnoreCapInfo)
+	{f016} 4 0 # WaterwraithTimer
+	{f017} 4 0 # Seesaw(1=True)
+	{_eof} 
+}
+# TekiInfo
+{
+	14 # num
+	ShijimiChou 10 # weight
+	0 # type
+	Sokkuri 100 # weight
+	0 # type
+	Miulin 20 # weight
+	1 # type
+	Fuefuki 10 # weight
+	1 # type
+	Kogane 10 # weight
+	0 # type
+	Wealthy_key 10 # weight
+	0 # type
+	Magaret 10 # weight
+	6 # type
+	Clover 10 # weight
+	6 # type
+	Tanpopo 10 # weight
+	6 # type
+	Watage 10 # weight
+	6 # type
+	Ooinu_l 10 # weight
+	6 # type
+	Ooinu_s 10 # weight
+	6 # type
+	Wakame_s 10 # weight
+	6 # type
+	Chappy 10 # weight
+	0 # type
+}
+# ItemInfo
+{
+	0 # num
+}
+# GateInfo
+{
+	0 # num
+}
+# CapInfo
+{
+	0 # num
+}
+# FloorInfo
+{
+	{f000} 4 1 # CurrentSublevelIndex
+	{f001} 4 1 # CurrentSublevelIndex
+	{f002} 4 32 # EntityTotal
+	{f003} 4 0 # TreasureTotal
+	{f004} 4 0 # GateTotal
+	{f005} 4 6 # RoomTotal
+	{f006} 4 0.12 # CorridorRatio
+	{f007} 4 0 # Geyser
+	{f008} -1 2_ABE_units_5x5a_mid_kusachi.txt # UnitFile
+	{f009} -1 vs_10_light.ini # LightFile
+	{f00A} -1 hiroba # Skybox
+	{f010} 4 0 # CloggedHole
+	{f011} 4 0 # Unknown
+	{f012} 4 0 # MusicType
+	{f013} 4 1 # SolidPlane
+    {f014} 4 100 # DeadEndTotal
+	{f015} 4 1 # Version(0=IgnoreCapInfo)
+	{f016} 4 0 # WaterwraithTimer
+	{f017} 4 0 # Seesaw(1=True)
+	{_eof} 
+}
+# TekiInfo
+{
+	9 # num
+	MiniHoudai 20 # weight
+	0 # type
+	Houdai_key 10 # weight
+	0 # type
+	BigFoot_bolt_l 10 # weight
+	1 # type
+	BombSarai 50 # weight
+	1 # type
+	Fkabuto 40 # weight
+	1 # type
+	KareOoinu_s 10 # weight
+	6 # type
+	WhitePom 20 # weight
+	5 # type
+	BlackPom 20 # weight
+	5 # type
+	BombOtakara 50 # weight
+	1 # type
+}
+# ItemInfo
+{
+	0 # num
+}
+# GateInfo
+{
+	0 # num
+}
+# CapInfo
+{
+	0 # num
+}
+# FloorInfo
+{
+	{f000} 4 2 # CurrentSublevelIndex
+	{f001} 4 2 # CurrentSublevelIndex
+	{f002} 4 5 # EntityTotal
+	{f003} 4 5 # TreasureTotal
+	{f004} 4 0 # GateTotal
+	{f005} 4 6 # RoomTotal
+	{f006} 4 0.12 # CorridorRatio
+	{f007} 4 0 # Geyser
+	{f008} -1 2_ABE_units_5x5a_mid_kusachi.txt # UnitFile
+	{f009} -1 forest_3_light.ini # LightFile
+	{f00A} -1 hiroba # Skybox
+	{f010} 4 0 # CloggedHole
+	{f011} 4 0 # Unknown
+	{f012} 4 0 # MusicType
+	{f013} 4 1 # SolidPlane
+    {f014} 4 100 # DeadEndTotal
+	{f015} 4 1 # Version(0=IgnoreCapInfo)
+	{f016} 4 0 # WaterwraithTimer
+	{f017} 4 0 # Seesaw(1=True)
+	{_eof} 
+}
+# TekiInfo
+{
+	1 # num
+	Qurione 50 # weight
+	0 # type
+}
+# ItemInfo
+{
+	5 # num
+	key 10 # weight
+	saru_head 90 # weight
+	saru_head 90 # weight
+	saru_head 90 # weight
+	saru_head 90 # weight
+}
+# GateInfo
+{
+	0 # num
+}
+# CapInfo
+{
+	0 # num
+}
+# FloorInfo
+{
+	{f000} 4 3 # CurrentSublevelIndex
+	{f001} 4 3 # CurrentSublevelIndex
+	{f002} 4 56 # EntityTotal
+	{f003} 4 8 # TreasureTotal
+	{f004} 4 0 # GateTotal
+	{f005} 4 6 # RoomTotal
+	{f006} 4 0.12 # CorridorRatio
+	{f007} 4 0 # Geyser
+	{f008} -1 2_ABE_units_5x5a_mid_kusachi.txt # UnitFile
+	{f009} -1 vs_7_light.ini # LightFile
+	{f00A} -1 hiroba # Skybox
+	{f010} 4 0 # CloggedHole
+	{f011} 4 0 # Unknown
+	{f012} 4 0 # MusicType
+	{f013} 4 1 # SolidPlane
+    {f014} 4 100 # DeadEndTotal
+	{f015} 4 1 # Version(0=IgnoreCapInfo)
+	{f016} 4 0 # WaterwraithTimer
+	{f017} 4 0 # Seesaw(1=True)
+	{_eof} 
+}
+# TekiInfo
+{
+	6 # num
+	Miulin 50 # weight
+	0 # type
+	ShijimiChou 10 # weight
+	1 # type
+	Sokkuri 100 # weight
+	1 # type
+	Ooinu_s 10 # weight
+	6 # type
+	Ooinu_l 10 # weight
+	6 # type
+	Chiyogami 20 # weight
+	6 # type
+}
+# ItemInfo
+{
+	8 # num
+	key 10 # weight
+	flower_blue 10 # weight
+	haniwa 10 # weight
+	haniwa 10 # weight
+	dia_c_blue 10 # weight
+	dia_c_blue 10 # weight
+	diamond_red 10 # weight
+	diamond_red 10 # weight
+}
+# GateInfo
+{
+	0 # num
+}
+# CapInfo
+{
+	0 # num
+}

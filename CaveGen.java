@@ -11,9 +11,9 @@ public class CaveGen {
         drawWayPoints, drawWayPointVertDists, drawWayPointEdgeDists, drawWPEdges, drawWPVertices,
         drawScores, drawAngles, drawPodAngle, drawTreasureGauge, drawPathDists,
         drawNoPlants, drawNoFallType, drawWaterBox, drawQuickGlance, drawInTheWay,
-        drawDoorLinks, drawDoorIds, drawSpawnOrder, drawNoObjects, 
+        drawDoorLinks, drawDoorIds, drawSpawnOrder, drawNoObjects,
         drawNoBuriedItems, drawNoItems, drawNoTeki, drawNoGates, drawNoOnions,
-        drawNoGateLife, drawNoHoles, drawHoleProbs, p251, 
+        drawNoGateLife, drawNoHoles, drawHoleProbs, p251, newYear,
         colossal, colossalUltraRandomizer, colossalExtraUnits, colossal5Onion,
         drawSH6Bulborb, drawFlowPaths, drawTreasurePaths, drawAllPaths,
         drawEnemyScores, drawUnitHoleScores, drawUnitItemScores,
@@ -43,7 +43,7 @@ public class CaveGen {
         drawNoPlants = false; drawNoFallType = false; drawWaterBox = true; drawQuickGlance = false;
         drawDoorLinks = false; drawDoorIds = false; drawSpawnOrder = false; drawNoObjects = false; drawInTheWay = false;
         drawNoBuriedItems = false; drawNoItems = false; drawNoTeki = false; drawNoGates = false; drawNoOnions = false;
-        drawNoGateLife = false; drawNoHoles = false; drawHoleProbs = false; p251 = false;  
+        drawNoGateLife = false; drawNoHoles = false; drawHoleProbs = false; p251 = false; newYear = false;
         colossal = false; colossalUltraRandomizer = false; colossalExtraUnits = false; colossal5Onion = false;
         drawSH6Bulborb = false; drawFlowPaths = false; drawTreasurePaths = false; drawAllPaths = false;
         drawEnemyScores = false; drawUnitHoleScores = false; drawUnitItemScores = false;
@@ -121,6 +121,10 @@ public class CaveGen {
                     else if (s.equalsIgnoreCase("-251")) {
                         p251 = true;
                         fileSystem = "251";
+                    }
+                    else if (s.equalsIgnoreCase("-newYear")) {
+                        newYear = true;
+                        fileSystem = "new_year";
                     }
                     else if (s.equalsIgnoreCase("-ultraRandomizer")) {
                         colossalUltraRandomizer = true;
@@ -364,7 +368,7 @@ public class CaveGen {
 
             for (String s: Parser.helpText)
                 System.out.println(s);
-            
+
             if (CaveViewer.active) {
                 StringWriter errors = new StringWriter();
                 e.printStackTrace(new PrintWriter(errors));
@@ -610,8 +614,8 @@ public class CaveGen {
     ArrayList<Teki> spawnTeki0;
     ArrayList<Teki> spawnTeki1;
     ArrayList<Teki> spawnTeki5;
-    ArrayList<Teki> spawnTeki8; 
-    ArrayList<Teki> spawnTeki6; 
+    ArrayList<Teki> spawnTeki8;
+    ArrayList<Teki> spawnTeki6;
     ArrayList<Item> spawnItem;
     ArrayList<Gate> spawnGate;
     ArrayList<Teki> spawnCapTeki;
@@ -673,7 +677,7 @@ public class CaveGen {
         // add spawnpoints for doors (type 5), item alcoves (type 9)
         // and corridors (type 9)
         recomputeOffset();
-        addSpawnPoints(); 
+        addSpawnPoints();
 
         // logic for spawning teki, gate, and item objects
         setStart();
@@ -698,7 +702,7 @@ public class CaveGen {
             buildWayPointGraph();
         }
     }
-    
+
     // Generate Map Units ---------------------------------------------------------------------
 
     void mapUnitsInitialSorting() {
@@ -784,7 +788,7 @@ public class CaveGen {
         minTeki0 = allocatedSlots0158[0];
         // extra main teki slots are allocated randomly between types 0 1 5 8
         ArrayList<Integer> weights = new ArrayList<Integer>();
-        for (int w: weightSum0158) 
+        for (int w: weightSum0158)
             weights.add(w);
         for (int i = 0; i < maxMainTeki - numSlotsUsedForMin; i++) {
             int idx = randIndexWeight(weights);
@@ -796,7 +800,7 @@ public class CaveGen {
         maxTeki5 = allocatedSlots0158[5];
         maxTeki8 = allocatedSlots0158[8];
     }
-    
+
     void setFirstMapUnit() {
         // pick first room in queue that has a start spawnpoint
         for (MapUnit m: queueRoom) {
@@ -1054,7 +1058,7 @@ public class CaveGen {
 
         return false;
     }
-  
+
     void shuffleCorridorPriority() {
         // This sorts the priority queue for corridors during
         // the "Normal" phase.
@@ -1062,7 +1066,7 @@ public class CaveGen {
         int M = maxNumDoorsSingleUnit;
         int openDoorCount = openDoors.size();
         ArrayList<Integer> corridorPriority = new ArrayList<Integer>();
-        
+
         // If there are only a few open doors, prioritize corridors
         // with a lot of doors (e.g. 4-ways)
         if (openDoorCount < 4) {
@@ -1072,7 +1076,7 @@ public class CaveGen {
         // If there are a lot of open doors, prioritize corridors
         // with few doors (e.g. hallways)
         else if (openDoorCount >= 10) {
-            for (int i = 0; i < M; i++) 
+            for (int i = 0; i < M; i++)
                 corridorPriority.add(i+1);
         }
         // Otherwise, prioirize corridors randomly
@@ -1083,7 +1087,7 @@ public class CaveGen {
         }
         // Update the queue to be sorted by the num-door prioirity
         for (int numDoors: corridorPriority) {
-            ArrayList<MapUnit> c = new ArrayList<MapUnit>(); 
+            ArrayList<MapUnit> c = new ArrayList<MapUnit>();
             for (int i = 0; i < queueCorridor.size(); i++) {
                 if (queueCorridor.get(i).numDoors == numDoors) {
                     c.add(queueCorridor.remove(i));
@@ -1199,10 +1203,10 @@ public class CaveGen {
                 else if (dz == 0) a = cld == 0 || cld == 3 ? 0 : 3;
                 else if (dz == 1) a = cld == 1 || cld == 2 ? 2 : 3;
                 else if (dz > 1) a = 2;
-            } 
+            }
             dirPriority[0] = a;
             // if the complicated formula fails, we try a straight hallway
-            dirPriority[1] = d.dirSide; 
+            dirPriority[1] = d.dirSide;
 
             // try placing a hallway with the desired shape
             // into the map, taking the first thing that fits
@@ -1441,8 +1445,8 @@ public class CaveGen {
         }
 
         // compute global positions for all spawnpoints, waypoints, and doors
-        // which are fixed from this point on. 
-        
+        // which are fixed from this point on.
+
         for (MapUnit m: placedMapUnits)
             m.recomputePos();
     }
@@ -1554,7 +1558,7 @@ public class CaveGen {
         // Special enemies are not counted. What counts as an easy or hard enemy
         // depends on the spawnpoint type, which depends on the sublevel
         for (Teki t: placedTekis) {
-            if (t.spawnPoint.type == 0) { 
+            if (t.spawnPoint.type == 0) {
                 t.spawnPoint.mapUnit.enemyScore += 2;
             } else if (t.spawnPoint.type == 1) {
                 t.spawnPoint.mapUnit.enemyScore += 10;
@@ -1565,13 +1569,13 @@ public class CaveGen {
             if (t.spawnPoint.door != null) {
                 t.spawnPoint.door.gateScore += t.life;
                 t.spawnPoint.door.adjacentDoor.gateScore += t.life;
-            } 
+            }
         }
         for (Teki t: placedTekis) {
             if (t.spawnPoint.door != null) {
                 t.spawnPoint.door.gateScore += 5;
                 t.spawnPoint.door.adjacentDoor.gateScore += 5;
-            } 
+            }
         }
     }
 
@@ -1591,7 +1595,7 @@ public class CaveGen {
 
             for (MapUnit m: placedMapUnits) {
                 if (m.type != mapUnitType) continue;
-                int score = isHardMode() ? (int)m.unitScore 
+                int score = isHardMode() ? (int)m.unitScore
                     : (int)(sqrt(m.unitScore)) + 10;
                 for (SpawnPoint sp: m.spawnPoints) {
                     if (sp.filled) continue;
@@ -1889,7 +1893,7 @@ public class CaveGen {
                         if (sp.type != 2 || sp.filled) continue;
                         // For rooms, the score is (unitScore / (1+numItemsThisMapUnit))
                         // on hard mode, and (1+unitScore/numSpawnPointsType2) on normal mode
-                        int score = isHardMode() ? (int)(m.unitScore / (1 + numItemsThisMapUnit)) 
+                        int score = isHardMode() ? (int)(m.unitScore / (1 + numItemsThisMapUnit))
                             : (int)(1 + m.unitScore / numSpawnPointsType2);
                         sps.add(sp);
                         weights.add(score);
@@ -1903,7 +1907,7 @@ public class CaveGen {
                         if (sp.filled) continue;
                         // For item alcoves, the score is (1+unitScore) on hard mode,
                         // and (1+10*unitScore) on normal mode.
-                        int score = isHardMode() ? (int)(1 + m.unitScore) 
+                        int score = isHardMode() ? (int)(1 + m.unitScore)
                             : (int)(1 + m.unitScore * 10);
                         sps.add(sp);
                         weights.add(score);
@@ -2480,7 +2484,7 @@ public class CaveGen {
                         sp.probVisuallyEmpty *= 1 - missingScore/(missingScore+sumWeight);
                 }
             }
-        }          
+        }
     }
 
     void challengeModeHoleProbCap() {
@@ -2510,7 +2514,7 @@ public class CaveGen {
             }
         }
     }
-    
+
     float spawnPointDist(SpawnPoint a, SpawnPoint b) {
         float dx = a.posX - b.posX;
         float dz = a.posZ - b.posZ;
@@ -2535,7 +2539,7 @@ public class CaveGen {
     int rand() { // the star of the show!
         seed = seed * 0x41c64e6d + 0x3039;
         int ret = (seed >>> 0x10) & 0x7fff;
-        return ret; 
+        return ret;
     }
     // some important to understand random helper functions
     int randInt(int max) {
@@ -2577,7 +2581,7 @@ public class CaveGen {
         }
     }
 
-    
+
     public static float sqrt(float x) {
         return (float)(x * ApproximateReciprocalSquareRoot((double)x));
     }
@@ -2611,7 +2615,7 @@ public class CaveGen {
     {
         double valf = val;
         long vali = Double.doubleToRawLongBits(valf);
-		
+
         long mantissa = vali & ((1L << 52) - 1);
         long sign = vali & (1L << 63);
         long exponent = vali & (0x7FFL << 52);
@@ -2675,7 +2679,7 @@ public class CaveGen {
         if (len <= 0) return new Vec3(0,0,0);
         return diff.scale(1.0f/len);
     }
-    
+
     float pointToSegmentDist(Vec3 p, Vec3 l1, Vec3 l2, float r1, float r2) {
         float lenL = l2.subtract(l1).length();
         if (lenL <= 0) return 128000;
@@ -2783,7 +2787,7 @@ public class CaveGen {
                 float lenNextCur = curVec.dist(nextVec);
 
                 float t = curPos.subtract(curVec).dot(d) / lenNextCur;
-                
+
                 float curRadius = path.get(0).radius;
                 float nextRadius = path.get(1).radius;
                 float adjRadius = (1-t)*curRadius + t*nextRadius;
@@ -2806,7 +2810,7 @@ public class CaveGen {
                     t0 = curPathNode-1 <= -1 ? curPos.copy() : curPathNode-1 >= path.size() ? goalPos : path.get(curPathNode-1).vec;
                     t1 = curPathNode   <= -1 ? curPos.copy() : curPathNode   >= path.size() ? goalPos : path.get(curPathNode  ).vec;
                     t3 = curPathNode+2 <= -1 ? curPos.copy() : curPathNode+2 >= path.size() ? goalPos : path.get(curPathNode+2).vec;
-                    
+
                     if (t >= 0 && t <= 1) {
                         t2 = d.scale(t * lenNextCur).add(curVec);
                     } else if (t < 0) {
@@ -2830,7 +2834,7 @@ public class CaveGen {
                 Vec3 diff = goalPos.subtract(curPos);
                 if (diff.length() < 20) break;
                 use = diff.normalize();
-                
+
                 //System.out.println("goal");
             }
             else if (nextVec.dist2(curPos) < 6) {
@@ -2849,7 +2853,7 @@ public class CaveGen {
                     use = vel; //System.out.println("close goal");
                 }
 
-            } else { 
+            } else {
                 Vec3 d = normVector(curVec, nextVec);
                 float lenNextCur = curVec.dist(nextVec);
 
@@ -2857,7 +2861,7 @@ public class CaveGen {
                 //System.out.println("t=" +t  + " d=" + d.string() + " lenNC" + lenNextCur);
                 if (t < 0) t = 0;
                 if (t > 1) t = 1;
-                
+
                 float curRadius = curPathNode == -1 ? 10 : curPathNode >= path.size() ? 50 : path.get(curPathNode).radius;
                 float nextRadius = curPathNode+1 >= path.size() ? 50 : path.get(curPathNode+1).radius;
                 float adjRadius = (1-t)*curRadius + t*nextRadius;
@@ -2913,7 +2917,7 @@ public class CaveGen {
             if (curVel.length() > 1) curVel = curVel.normalize();
             curPos = curPos.add(curVel.scale(speed));
             ret.add(curPos.copy());
-        } 
+        }
 
         return ret;
     }

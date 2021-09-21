@@ -40,6 +40,7 @@ noPrints - コンソールに情報が出力されません。
 noStats - !reportsフォルダに統計レポートが生成されません。
 region [us|jpn|pal] - お宝のアイコンが変更されます。(デフォルトはusです)
 251 - pikmin 251の洞窟を使用します。
+newYear - 「Pikmin 2: New Year」の洞窟を使用します。
 caveInfoReport - 階層に関する全ての情報を含んだ画像を生成します。
 drawSpawnPoints - 物体が生成される位置を描画します。
 drawSpawnOrder - 物体が生成される順序を描画します。
@@ -112,4 +113,3 @@ special thanks to ice cube, Meeo, and Espyo for their help
 生成アルゴリズムについて知りたい場合、CaveGen.javaのコードを読むか、
 https://www.twitch.tv/videos/499998582を見るといいでしょう。
 あなたの理解度をテストするために、以下のクイズに挑戦してみてください。
-

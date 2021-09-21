@@ -1,0 +1,409 @@
+# CaveInfo
+{
+	{c000} 4 7 	# SublevelCount
+	{_eof} 
+}
+7 # FloorInfo
+{
+	{f000} 4 0 # CurrentSublevelIndex
+	{f001} 4 0 # CurrentSublevelIndex
+	{f002} 4 8 # EntityTotal
+	{f003} 4 2 # TreasureTotal
+	{f004} 4 0 # GateTotal
+	{f005} 4 1 # RoomTotal
+	{f006} 4 0.12 # CorridorRatio
+	{f007} 4 0 # Geyser
+	{f008} -1 1_units_torigoya_snow.txt # UnitFile
+	{f009} -1 normal_light_lv0.ini # LightFile
+	{f00A} -1 none # Skybox
+	{f010} 4 0 # CloggedHole
+	{f011} 4 0 # Unknown
+	{f012} 4 0 # MusicType
+	{f013} 4 0 # SolidPlane
+    {f014} 4 50 # DeadEndTotal
+	{f015} 4 1 # Version(0=IgnoreCapInfo)
+	{f016} 4 0 # WaterwraithTimer
+	{f017} 4 0 # Seesaw(1=True)
+	{_eof} 
+}
+# TekiInfo
+{
+	3 # num
+	UjiA 50 # weight
+	0 # type
+	Hana 10 # weight
+	1 # type
+	Tukushi 2 # weight
+	6 # type
+}
+# ItemInfo
+{
+	2 # num
+	momiji_normal 10 # weight
+	toy_dog 10 # weight
+}
+# GateInfo
+{
+	0 # num
+}
+# CapInfo
+{
+	0 # num
+}
+# FloorInfo
+{
+	{f000} 4 1 # CurrentSublevelIndex
+	{f001} 4 1 # CurrentSublevelIndex
+	{f002} 4 28 # EntityTotal
+	{f003} 4 2 # TreasureTotal
+	{f004} 4 0 # GateTotal
+	{f005} 4 3 # RoomTotal
+	{f006} 4 0.150000 # CorridorRatio
+	{f007} 4 0 # Geyser
+	{f008} -1 2_ABE_units_5x5a_mid_kusachi.txt # UnitFile
+	{f009} -1 kusachi_light_cha.ini # LightFile
+	{f00A} -1 snow # Skybox
+	{f010} 4 0 # CloggedHole
+	{f011} 4 0 # Unknown
+	{f012} 4 0 # MusicType
+	{f013} 4 1 # SolidPlane
+    {f014} 4 100 # DeadEndTotal
+	{f015} 4 1 # Version(0=IgnoreCapInfo)
+	{f016} 4 0 # WaterwraithTimer
+	{f017} 4 0 # Seesaw(1=True)
+	{_eof} 
+}
+# TekiInfo
+{
+	5 # num
+	YellowChappy 20 # weight
+	0 # type
+	YellowKochappy 50 # weight
+	0 # type
+	Miulin 10 # weight
+	1 # type
+	Tobi 50 # weight
+	1 # type
+	Tukushi 10 # weight
+	6 # type
+}
+# ItemInfo
+{
+	2 # num
+	chocowhite 10 # weight
+	kan_b_gold 10 # weight
+}
+# GateInfo
+{
+	0 # num
+}
+# CapInfo
+{
+	3 # num
+	0 # captype
+	Kogane 10 # weight
+	1 # type
+	0 # captype
+	BlackPom 20 # weight
+	1 # type
+	0 # captype
+	BluePom 20 # weight
+	1 # type
+}
+# FloorInfo
+{
+	{f000} 4 2 # CurrentSublevelIndex
+	{f001} 4 2 # CurrentSublevelIndex
+	{f002} 4 26 # EntityTotal
+	{f003} 4 1 # TreasureTotal
+	{f004} 4 0 # GateTotal
+	{f005} 4 3 # RoomTotal
+	{f006} 4 0.12 # CorridorRatio
+	{f007} 4 0 # Geyser
+	{f008} -1 2_MAT_lake_sky.txt # UnitFile
+	{f009} -1 sky_light.ini # LightFile
+	{f00A} -1 sky # Skybox
+	{f010} 4 0 # CloggedHole
+	{f011} 4 0 # Unknown
+	{f012} 4 0 # MusicType
+	{f013} 4 0 # SolidPlane
+    {f014} 4 50 # DeadEndTotal
+	{f015} 4 1 # Version(0=IgnoreCapInfo)
+	{f016} 4 0 # WaterwraithTimer
+	{f017} 4 0 # Seesaw(1=True)
+	{_eof} 
+}
+# TekiInfo
+{
+	10 # num
+	SnakeCrow 10 # weight
+	0 # type
+	Kurage 10 # weight
+	1 # type
+	BombSarai 10 # weight
+	1 # type
+	Demon 10 # weight
+	1 # type
+	ShijimiChou 10 # weight
+	0 # type
+	YellowKochappy 30 # weight
+	0 # type
+	BluePom 20 # weight
+	5 # type
+	Clover 5 # weight
+	6 # type
+	KareOoinu_s 5 # weight
+	6 # type
+	KareOoinu_l 5 # weight
+	6 # type
+}
+# ItemInfo
+{
+	1 # num
+	toy_ring_c_red 10 # weight
+}
+# GateInfo
+{
+	0 # num
+}
+# CapInfo
+{
+	1 # num
+	0 # captype
+	BluePom 10 # weight
+	1 # type
+}
+# FloorInfo
+{
+	{f000} 4 3 # CurrentSublevelIndex
+	{f001} 4 3 # CurrentSublevelIndex
+	{f002} 4 22 # EntityTotal
+	{f003} 4 3 # TreasureTotal
+	{f004} 4 0 # GateTotal
+	{f005} 4 2 # RoomTotal
+	{f006} 4 0.200000 # CorridorRatio
+	{f007} 4 0 # Geyser
+	{f008} -1 1_units_mid2_ice.txt # UnitFile
+	{f009} -1 vs_2_light.ini # LightFile
+	{f00A} -1 none # Skybox
+	{f010} 4 0 # CloggedHole
+	{f011} 4 0 # Unknown
+	{f012} 4 0 # MusicType
+	{f013} 4 0 # SolidPlane
+    {f014} 4 50 # DeadEndTotal
+	{f015} 4 1 # Version(0=IgnoreCapInfo)
+	{f016} 4 0 # WaterwraithTimer
+	{f017} 4 0 # Seesaw(1=True)
+	{_eof} 
+}
+# TekiInfo
+{
+	8 # num
+	SnakeCrow 10 # weight
+	0 # type
+	Fuefuki 10 # weight
+	1 # type
+	Fkabuto 20 # weight
+	1 # type
+	Wealthy 10 # weight
+	1 # type
+	WhitePom 10 # weight
+	0 # type
+	WhitePom 10 # weight
+	1 # type
+	GasHiba 50 # weight
+	5 # type
+	HikariKinoko 10 # weight
+	6 # type
+}
+# ItemInfo
+{
+	3 # num
+	ahiru_head 10 # weight
+	ahiru 10 # weight
+	chocolate_l 10 # weight
+}
+# GateInfo
+{
+	0 # num
+}
+# CapInfo
+{
+	0 # num
+}
+# FloorInfo
+{
+	{f000} 4 4 # CurrentSublevelIndex
+	{f001} 4 4 # CurrentSublevelIndex
+	{f002} 4 28 # EntityTotal
+	{f003} 4 2 # TreasureTotal
+	{f004} 4 0 # GateTotal
+	{f005} 4 3 # RoomTotal
+	{f006} 4 0.200000 # CorridorRatio
+	{f007} 4 0 # Geyser
+	{f008} -1 1_MAT_lake_sky.txt # UnitFile
+	{f009} -1 skysunset_light.ini # LightFile
+	{f00A} -1 skysunset # Skybox
+	{f010} 4 0 # CloggedHole
+	{f011} 4 0 # Unknown
+	{f012} 4 0 # MusicType
+	{f013} 4 0 # SolidPlane
+    {f014} 4 100 # DeadEndTotal
+	{f015} 4 1 # Version(0=IgnoreCapInfo)
+	{f016} 4 0 # WaterwraithTimer
+	{f017} 4 0 # Seesaw(1=True)
+	{_eof} 
+}
+# TekiInfo
+{
+	10 # num
+	SnakeCrow 10 # weight
+	0 # type
+	Hanachirashi 10 # weight
+	1 # type
+	Mar 10 # weight
+	1 # type
+	Tobi 30 # weight
+	1 # type
+	Catfish 20 # weight
+	1 # type
+	BluePom 20 # weight
+	5 # type
+	Qurione 20 # weight
+	5 # type
+	ElecHiba 50 # weight
+	5 # type
+	Wakame_s 5 # weight
+	6 # type
+	Wakame_l 5 # weight
+	6 # type
+}
+# ItemInfo
+{
+	2 # num
+	cookie_s 10 # weight
+	cookie_s_l 10 # weight
+}
+# GateInfo
+{
+	0 # num
+}
+# CapInfo
+{
+	1 # num
+	0 # captype
+	BluePom 10 # weight
+	1 # type
+}
+# FloorInfo
+{
+	{f000} 4 5 # CurrentSublevelIndex
+	{f001} 4 5 # CurrentSublevelIndex
+	{f002} 4 25 # EntityTotal
+	{f003} 4 4 # TreasureTotal
+	{f004} 4 0 # GateTotal
+	{f005} 4 3 # RoomTotal
+	{f006} 4 0.12 # CorridorRatio
+	{f007} 4 0 # Geyser
+	{f008} -1 1_MAT_bridge_sky.txt # UnitFile
+	{f009} -1 space_light.ini # LightFile
+	{f00A} -1 space # Skybox
+	{f010} 4 0 # CloggedHole
+	{f011} 4 0 # Unknown
+	{f012} 4 0 # MusicType
+	{f013} 4 0 # SolidPlane
+    {f014} 4 100 # DeadEndTotal
+	{f015} 4 1 # Version(0=IgnoreCapInfo)
+	{f016} 4 0 # WaterwraithTimer
+	{f017} 4 0 # Seesaw(1=True)
+	{_eof} 
+}
+# TekiInfo
+{
+	9 # num
+	SnakeCrow 10 # weight
+	0 # type
+	Mar 10 # weight
+	1 # type
+	Kogane 10 # weight
+	1 # type
+	Wealthy 10 # weight
+	1 # type
+	Fart 10 # weight
+	1 # type
+	OniKurage 10 # weight
+	1 # type
+	Wtank 20 # weight
+	0 # type
+	ElecBug 50 # weight
+	0 # type
+	HikariKinoko 10 # weight
+	6 # type
+}
+# ItemInfo
+{
+	4 # num
+	chess_queen_black 10 # weight
+	chess_king_white 10 # weight
+	compact_make 10 # weight
+	bird_hane 10 # weight
+}
+# GateInfo
+{
+	0 # num
+}
+# CapInfo
+{
+	1 # num
+	0 # captype
+	RandPom 20 # weight
+	1 # type
+}
+# FloorInfo
+{
+	{f000} 4 6 # CurrentSublevelIndex
+	{f001} 4 6 # CurrentSublevelIndex
+	{f002} 4 15 # EntityTotal
+	{f003} 4 0 # TreasureTotal
+	{f004} 4 0 # GateTotal
+	{f005} 4 1 # RoomTotal
+	{f006} 4 0.12 # CorridorRatio
+	{f007} 4 0 # Geyser
+	{f008} -1 1_units_big2_snow_kusachi.txt # UnitFile
+	{f009} -1 forest_2_siro_light.ini # LightFile
+	{f00A} -1 snow # Skybox
+	{f010} 4 0 # CloggedHole
+	{f011} 4 0 # Unknown
+	{f012} 4 1 # MusicType
+	{f013} 4 1 # SolidPlane
+    {f014} 4 50 # DeadEndTotal
+	{f015} 4 1 # Version(0=IgnoreCapInfo)
+	{f016} 4 0 # WaterwraithTimer
+	{f017} 4 0 # Seesaw(1=True)
+	{_eof} 
+}
+# TekiInfo
+{
+	3 # num
+	SnakeWhole_fue_b 10 # weight
+	8 # type
+	Egg 30 # weight
+	1 # type
+	HikariKinoko 10 # weight
+	6 # type
+}
+# ItemInfo
+{
+	0 # num
+}
+# GateInfo
+{
+	0 # num
+}
+# CapInfo
+{
+	1 # num
+	0 # captype
+	Miulin 10 # weight
+	1 # type
+}
