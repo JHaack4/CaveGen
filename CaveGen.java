@@ -4,7 +4,7 @@ import java.io.*;
 public class CaveGen {
 
     // Tool parameters
-    static String caveInfoName, specialCaveInfoName, region, fileSystem, countObject, judgeType;
+    static String caveInfoName, specialCaveInfoName, region, fileSystem, countObject, judgeType, outputFolder;
     static int sublevel, firstGenSeed, numToGenerate, indexBeingGenerated;
     static boolean hardMode, challengeMode, images, prints, showStats, seedOrder, storyModeOverride, challengeModeOverride,
         folderSeed, folderCave, showCaveInfo, drawSpawnPoints, drawPretty, drawSpawnPointDists,
@@ -52,7 +52,7 @@ public class CaveGen {
         judgeActive = false; judgeCombine = false; judgeRankFile = false; judgeVsAvg = false;
         findGoodLayoutsRatio = 0.01; judgeFilterScore = 0; judgeFilterRank = 0; judgeFilterScoreSign = 0; dontStoreJudge = false;
         requireMapUnitsConfig = ""; judgeType = "default"; seedFile = ""; rotateForDraw = "";
-        firstGenSeed = 0; numToGenerate = 1; indexBeingGenerated = 0;
+        firstGenSeed = 0; numToGenerate = 1; indexBeingGenerated = 0; outputFolder = "output/";
         imageToggle = true;
         seedCalc = new Seed();
     }
@@ -121,10 +121,12 @@ public class CaveGen {
                     else if (s.equalsIgnoreCase("-251")) {
                         p251 = true;
                         fileSystem = "251";
+                        outputFolder = "output251/";
                     }
                     else if (s.equalsIgnoreCase("-newYear")) {
                         newYear = true;
                         fileSystem = "new_year";
+                        outputFolder = "outputNewYear/";
                     }
                     else if (s.equalsIgnoreCase("-ultraRandomizer")) {
                         colossalUltraRandomizer = true;

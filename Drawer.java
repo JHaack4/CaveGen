@@ -1163,16 +1163,7 @@ public class Drawer {
                 return;
         }
 
-        String output;
-        if (g.p251) {
-            output = "output251/";
-        }
-        else if (g.newYear) {
-            output = "outputNewYear/";
-        }
-        else {
-            output = "output/";
-        }
+        String output = CaveGen.outputFolder;
         File outputDir0 = new File(output);
         outputDir0.mkdir();
         if (aggregator != null) {

@@ -36,16 +36,7 @@ class Stats {
             DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd-HH-mm-ss");
             LocalDateTime now = LocalDateTime.now();
             String dateString = dtf.format(now);
-            String output;
-            if (CaveGen.p251) {
-                output = "output251/";
-            }
-            else if (CaveGen.newYear) {
-                output = "outputNewYear/";
-            }
-            else {
-                output = "output/";
-            }
+            String output = CaveGen.outputFolder;
             new File(output+"/").mkdir();
             new File(output + "/!reports/").mkdir();
             String outputFileName = output + "/!reports/report-" + dateString + ".txt";
