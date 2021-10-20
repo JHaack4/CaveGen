@@ -32,6 +32,8 @@ attk (score attack): output is ( pokos * 10 + [start pikis+8*queen candypops] * 
 defaults: pod/score
 low score is better
 
+alcove: output is number of alcoves
+
 special cases:
 pod sh 6 - (todo?)
 pod breadbugs/high treasures
@@ -808,6 +810,14 @@ pod breadbugs/high treasures
 
         else if (CaveGen.judgeType.equals("mapunitcount")) {
             score = g.placedMapUnits.size();
+        }
+
+        else if (CaveGen.judgeType.equals("alcove")) {
+            for (MapUnit U: g.placedMapUnits) {
+                if (U.type == 0) {
+                    score += 1.0;
+                }
+            }
         }
     
         // calculate rank
